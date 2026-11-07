@@ -18,6 +18,7 @@ use App\Models\Trabajador;
 use App\Models\User;
 use App\Services\Dni\ConsultaDni;
 use App\Services\Empresas\EmpresaActiva;
+use App\Services\Trabajadores\HistorialTrabajador;
 use Carbon\CarbonImmutable;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\RedirectResponse;
@@ -29,7 +30,10 @@ use Inertia\Response;
 /** Trabajadores de la empresa activa (rutas con middleware `empresa.activa`). */
 class TrabajadorController extends Controller
 {
-    public function __construct(private readonly EmpresaActiva $empresaActiva) {}
+    public function __construct(
+        private readonly EmpresaActiva $empresaActiva,
+        private readonly HistorialTrabajador $historial,
+    ) {}
 
     public function index(Request $request): Response
     {
@@ -43,7 +47,7 @@ class TrabajadorController extends Controller
 
         $trabajadores = Trabajador::query()
             ->deEmpresa($empresa->id)
-            ->with('establecimiento:id,codigo,nombre')
+            ->with(['establecimiento:id,codigo,nombre', 'historial'])
             ->when($buscar !== '', fn (Builder $q) => $q->where(fn (Builder $q) => $q
                 ->where('numero_documento', 'like', "{$buscar}%")
                 ->orWhere('apellido_paterno', 'like', "%{$buscar}%")
@@ -65,7 +69,7 @@ class TrabajadorController extends Controller
                 'cargo' => $t->cargo,
                 'establecimiento' => $t->establecimiento?->nombre,
                 'fecha_ingreso' => $t->fecha_ingreso->format('d/m/Y'),
-                'remuneracion_basica' => $t->remuneracion_basica,
+                'remuneracion_basica' => $this->historial->valoresAl($t, CarbonImmutable::today())['remuneracion_basica'],
                 'pension' => $t->sistema_pension === SistemaPension::Afp ? 'AFP' : ($t->sistema_pension === SistemaPension::Onp ? 'ONP' : '—'),
                 'cesado' => $t->estaCesado(),
                 'fecha_cese' => $t->fecha_cese?->format('d/m/Y'),
@@ -140,6 +144,10 @@ class TrabajadorController extends Controller
                 'en_planilla' => $trabajador->lineas()->exists(),
             ],
             'catalogos' => $this->catalogos($empresa),
+            'historial' => $this->historial->lineaDeTiempo($trabajador),
+            'grupos_historial' => collect(HistorialTrabajador::GRUPOS)
+                ->map(fn (array $g, string $clave) => ['value' => $clave, 'label' => $g[0]])
+                ->values()->all(),
         ]);
     }
 

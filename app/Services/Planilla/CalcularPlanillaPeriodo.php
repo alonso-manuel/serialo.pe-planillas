@@ -11,6 +11,7 @@ use App\Enums\TipoConcepto;
 use App\Models\Concepto;
 use App\Models\Periodo;
 use App\Models\PlanillaLinea;
+use App\Services\Trabajadores\HistorialTrabajador;
 use Illuminate\Support\Facades\DB;
 
 /**
@@ -22,6 +23,7 @@ class CalcularPlanillaPeriodo
     public function __construct(
         private readonly CalculadoraPlanilla $calculadora,
         private readonly ParametrosRepositorio $parametros,
+        private readonly HistorialTrabajador $historial,
     ) {}
 
     public function ejecutar(Periodo $periodo): void
@@ -67,7 +69,8 @@ class CalcularPlanillaPeriodo
 
     private function datosTrabajador(PlanillaLinea $linea, Periodo $periodo): DatosTrabajador
     {
-        $t = $linea->trabajador;
+        // Valores vigentes al cierre del mes (regla 3: un periodo antiguo se recalcula igual).
+        $t = $this->historial->vistaAl($linea->trabajador, $periodo->ultimoDia());
 
         return new DatosTrabajador(
             remuneracionBasica: (string) $t->remuneracion_basica,

@@ -55,6 +55,12 @@ Test: `CalculadoraPlanillaTest::caso_real_microempresa_afp_con_sis`. **No modifi
 
 **Meta antes de vender:** al menos 10 casos reales validados (ONP, AFP flujo y mixta, EsSalud, SIS, HE, faltas, subsidio, ingreso y cese a mitad de mes).
 
+## Datos del trabajador vigentes en el mes
+
+- El cálculo de un periodo usa sueldo, asignación familiar, sistema de pensiones (AFP, comisión) y seguro **vigentes al último día del mes** (`HistorialTrabajador::vistaAl`). Así un periodo antiguo se recalcula igual aunque después haya aumentos.
+- Los cambios rigen **por mes completo** (desde el día 1). ⚠ Un aumento a mitad de mes se registra desde el mes que acuerden empleador y contador; el prorrateo por días dentro del mes no está en v1.0.
+- No se registra ni anula un cambio que afecte un mes con periodo cerrado.
+
 ## Regímenes (REMYPE) ⚠ confirmar con contador
 
 |                     | General                       | Pequeña empresa               | Microempresa                                       |

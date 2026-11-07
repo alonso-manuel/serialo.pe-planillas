@@ -30,7 +30,7 @@ Marca `[x]` al terminar (o usa `/actualizar-roadmap`). Cada tarea: código + tes
 
 - [x] Trabajadores: listado con filtros, ficha por pestañas (personales, laborales, pensión/salud, cuentas)
 - [x] Autocompletar nombre por DNI (servicio intercambiable)
-- [ ] Historial: cambios de sueldo/cargo/pensión con vigencia
+- [x] Historial: cambios de sueldo/cargo/pensión con vigencia
 - [ ] Cese de trabajador (fecha y motivo tabla SUNAT)
 - [ ] Carga masiva desde Excel con plantilla descargable, vista previa y errores por fila
 

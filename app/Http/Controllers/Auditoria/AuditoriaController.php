@@ -22,6 +22,7 @@ class AuditoriaController extends Controller
         'establecimiento' => 'Establecimiento',
         'usuario' => 'Usuario',
         'trabajador' => 'Trabajador',
+        'trabajador_historial' => 'Cambio de trabajador',
         'novedad' => 'Novedad',
         'parametro' => 'Parámetro',
         'tasa_afp' => 'Tasa AFP',

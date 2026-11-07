@@ -34,12 +34,23 @@ import {
     store,
     update,
 } from '@/routes/trabajadores';
-import type { CatalogosTrabajador, TrabajadorEditable } from '@/types';
+import HistorialTrabajador from '@/components/trabajadores/HistorialTrabajador.vue';
+import type {
+    CatalogosTrabajador,
+    CambioHistorial,
+    Opcion,
+    TrabajadorEditable,
+} from '@/types';
 
 const props = defineProps<{
     trabajador: TrabajadorEditable | null;
     catalogos: CatalogosTrabajador;
+    historial?: CambioHistorial[];
+    grupos_historial?: Opcion[];
 }>();
+
+/** Ya figura en planillas: sueldo, cargo, pensión... solo cambian con historial. */
+const bloqueado = computed(() => props.trabajador?.en_planilla ?? false);
 
 const esNuevo = props.trabajador === null;
 const titulo = esNuevo ? 'Nuevo trabajador' : props.trabajador!.nombre_completo;
@@ -112,11 +123,15 @@ const PESTANAS = {
     cuentas: ['cuenta_sueldo', 'cuenta_cts'],
 } as const;
 
-type Pestana = keyof typeof PESTANAS;
+type Pestana = keyof typeof PESTANAS | 'historial';
 
 const pestana = ref<Pestana>('personales');
 
 function errores(p: Pestana): number {
+    if (p === 'historial') {
+        return 0;
+    }
+
     return PESTANAS[p].filter((campo) => campo in form.errors).length;
 }
 
@@ -126,9 +141,9 @@ function guardar(): void {
     const opciones = {
         preserveScroll: true,
         onError: () => {
-            const conError = (Object.keys(PESTANAS) as Pestana[]).find(
-                (p) => errores(p) > 0,
-            );
+            const conError = (
+                Object.keys(PESTANAS) as (keyof typeof PESTANAS)[]
+            ).find((p) => errores(p) > 0);
             if (conError) {
                 pestana.value = conError;
             }
@@ -277,7 +292,8 @@ function eliminar(): void {
                             laborales: 'Laborales',
                             pension: 'Pensión y salud',
                             cuentas: 'Cuentas',
-                        }"
+                            ...(esNuevo ? {} : { historial: 'Historial' }),
+                        } as Record<Pestana, string>"
                         :key="clave"
                         :value="clave"
                         class="gap-1.5"
@@ -447,6 +463,21 @@ function eliminar(): void {
                     value="laborales"
                     class="grid gap-5 pt-4 sm:grid-cols-2"
                 >
+                    <p
+                        v-if="bloqueado"
+                        class="rounded-md bg-muted/60 p-3 text-xs text-muted-foreground sm:col-span-2"
+                    >
+                        Este trabajador ya figura en planillas: sueldo, cargo,
+                        contrato, asignación familiar, pensión y seguro se
+                        cambian en la pestaña
+                        <button
+                            type="button"
+                            class="font-medium text-foreground underline"
+                            @click="pestana = 'historial'"
+                        >
+                            Historial</button
+                        >, indicando desde qué mes rigen.
+                    </p>
                     <div class="grid gap-2">
                         <Label for="establecimiento_id">Establecimiento</Label>
                         <Select v-model="form.establecimiento_id">
@@ -472,7 +503,11 @@ function eliminar(): void {
                     </div>
                     <div class="grid gap-2">
                         <Label for="cargo">Cargo</Label>
-                        <Input id="cargo" v-model="form.cargo" />
+                        <Input
+                            id="cargo"
+                            v-model="form.cargo"
+                            :disabled="bloqueado"
+                        />
                         <InputError :message="form.errors.cargo" />
                     </div>
                     <div class="grid gap-2">
@@ -487,7 +522,10 @@ function eliminar(): void {
                     </div>
                     <div class="grid gap-2">
                         <Label for="tipo_contrato">Tipo de contrato</Label>
-                        <Select v-model="form.tipo_contrato">
+                        <Select
+                            v-model="form.tipo_contrato"
+                            :disabled="bloqueado"
+                        >
                             <SelectTrigger id="tipo_contrato" class="w-full"
                                 ><SelectValue
                             /></SelectTrigger>
@@ -517,6 +555,7 @@ function eliminar(): void {
                                 v-model="form.remuneracion_basica"
                                 inputmode="decimal"
                                 class="pl-9 tabular-nums"
+                                :disabled="bloqueado"
                                 required
                             />
                         </div>
@@ -535,13 +574,31 @@ function eliminar(): void {
                     <label
                         class="flex items-center gap-2 self-end pb-2 text-sm"
                     >
-                        <Checkbox v-model="form.asignacion_familiar" />
+                        <Checkbox
+                            v-model="form.asignacion_familiar"
+                            :disabled="bloqueado"
+                        />
                         Percibe asignación familiar
                     </label>
                 </TabsContent>
 
                 <!-- Pensión y salud -->
                 <TabsContent value="pension" class="grid gap-5 pt-4">
+                    <p
+                        v-if="bloqueado"
+                        class="rounded-md bg-muted/60 p-3 text-xs text-muted-foreground sm:col-span-2"
+                    >
+                        Este trabajador ya figura en planillas: sueldo, cargo,
+                        contrato, asignación familiar, pensión y seguro se
+                        cambian en la pestaña
+                        <button
+                            type="button"
+                            class="font-medium text-foreground underline"
+                            @click="pestana = 'historial'"
+                        >
+                            Historial</button
+                        >, indicando desde qué mes rigen.
+                    </p>
                     <div class="grid gap-2">
                         <Label>Sistema de pensiones</Label>
                         <div
@@ -572,6 +629,7 @@ function eliminar(): void {
                             >
                                 <input
                                     v-model="form.sistema_pension"
+                                    :disabled="bloqueado"
                                     type="radio"
                                     :value="o.value"
                                     class="mt-1 accent-primary"
@@ -596,7 +654,7 @@ function eliminar(): void {
                     >
                         <div class="grid gap-2">
                             <Label for="afp_id">AFP</Label>
-                            <Select v-model="form.afp_id">
+                            <Select v-model="form.afp_id" :disabled="bloqueado">
                                 <SelectTrigger id="afp_id" class="w-full"
                                     ><SelectValue placeholder="Elige"
                                 /></SelectTrigger>
@@ -617,6 +675,7 @@ function eliminar(): void {
                             <Input
                                 id="cuspp"
                                 v-model="form.cuspp"
+                                :disabled="bloqueado"
                                 maxlength="12"
                                 class="font-mono uppercase"
                             />
@@ -624,7 +683,10 @@ function eliminar(): void {
                         </div>
                         <div class="grid gap-2">
                             <Label for="tipo_comision_afp">Comisión</Label>
-                            <Select v-model="form.tipo_comision_afp">
+                            <Select
+                                v-model="form.tipo_comision_afp"
+                                :disabled="bloqueado"
+                            >
                                 <SelectTrigger
                                     id="tipo_comision_afp"
                                     class="w-full"
@@ -648,7 +710,10 @@ function eliminar(): void {
 
                     <div class="grid gap-2 sm:max-w-xs">
                         <Label for="seguro_salud">Seguro de salud</Label>
-                        <Select v-model="form.seguro_salud">
+                        <Select
+                            v-model="form.seguro_salud"
+                            :disabled="bloqueado"
+                        >
                             <SelectTrigger id="seguro_salud" class="w-full"
                                 ><SelectValue
                             /></SelectTrigger>
@@ -691,6 +756,16 @@ function eliminar(): void {
                         />
                         <InputError :message="form.errors.cuenta_cts" />
                     </div>
+                </TabsContent>
+
+                <!-- Historial -->
+                <TabsContent v-if="trabajador" value="historial" class="pt-4">
+                    <HistorialTrabajador
+                        :trabajador="trabajador"
+                        :historial="historial ?? []"
+                        :grupos="grupos_historial ?? []"
+                        :catalogos="catalogos"
+                    />
                 </TabsContent>
             </Tabs>
 

@@ -10,6 +10,7 @@ use App\Models\Parametro;
 use App\Models\Periodo;
 use App\Models\TasaAfp;
 use App\Models\Trabajador;
+use App\Models\TrabajadorHistorial;
 use App\Models\User;
 use App\Services\Dni\ConsultaDni;
 use App\Services\Dni\ConsultaDniDecolecta;
@@ -81,6 +82,7 @@ class AppServiceProvider extends ServiceProvider
             'establecimiento' => Establecimiento::class,
             'usuario' => User::class,
             'trabajador' => Trabajador::class,
+            'trabajador_historial' => TrabajadorHistorial::class,
             'novedad' => Novedad::class,
             'parametro' => Parametro::class,
             'tasa_afp' => TasaAfp::class,

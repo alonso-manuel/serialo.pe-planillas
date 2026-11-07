@@ -88,6 +88,13 @@ Con `DECOLECTA_TOKEN`, el driver `openruc` consulta los RUC 20 en OpenRUC y el r
 - Eliminar solo si nunca estuvo en planilla (se borra del todo para poder registrarlo de nuevo); si no, cese.
 - Enums: `TipoDocumento` (01, 04, 07 ⚠ confirmar), `TipoContrato` (simplificado hasta T-Registro), `TipoComisionAfp`.
 
+## Historial del trabajador
+
+- `trabajador_historial` (modelo `TrabajadorHistorial`): una fila por campo con `grupo`, antes, después, `vigente_desde` (día 1) y usuario. Grupos: remuneración, cargo, asignación familiar, pensión (sistema + AFP + comisión + CUSPP), seguro de salud y tipo de contrato.
+- La ficha guarda el último valor (aunque sea futuro); `HistorialTrabajador::valoresAl()` reconstruye el de cualquier fecha. El listado muestra el vigente hoy.
+- Por grupo, los cambios solo se agregan hacia adelante y solo se anula el último; nunca alteran un mes con periodo cerrado.
+- Si el trabajador ya figura en planillas, esos campos se bloquean en la ficha y se cambian con «Registrar cambio» (pestaña Historial). Sin planilla, se corrigen directo.
+
 ## Consulta de DNI
 
 - `App\Services\Dni\ConsultaDni` (driver `DNI_DRIVER=decolecta|ninguno`, token `DECOLECTA_TOKEN` compartido con RUC; plan gratuito ~100 consultas/mes). Sin token, el botón aparece desactivado.

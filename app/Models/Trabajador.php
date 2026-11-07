@@ -86,6 +86,12 @@ class Trabajador extends Model
         return Attribute::get(fn () => trim("{$this->apellido_paterno} {$this->apellido_materno}, {$this->nombres}"));
     }
 
+    /** @return HasMany<TrabajadorHistorial, $this> */
+    public function historial(): HasMany
+    {
+        return $this->hasMany(TrabajadorHistorial::class);
+    }
+
     /** @return BelongsTo<Establecimiento, $this> */
     public function establecimiento(): BelongsTo
     {

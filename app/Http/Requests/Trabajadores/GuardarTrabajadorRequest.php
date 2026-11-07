@@ -12,6 +12,9 @@ use App\Models\Empresa;
 use App\Models\Trabajador;
 use App\Models\User;
 use App\Services\Empresas\EmpresaActiva;
+use App\Services\Trabajadores\HistorialTrabajador;
+use Brick\Math\BigDecimal;
+use Brick\Math\RoundingMode;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
@@ -98,6 +101,8 @@ class GuardarTrabajadorRequest extends FormRequest
                     $validator->errors()->add('numero_documento', $tipo->mensajeFormato());
                 }
 
+                $this->bloquearCamposConHistorial($validator);
+
                 if ($this->input('seguro_salud') === SeguroSalud::Sis->value
                     && $this->empresa()->regimen_laboral !== RegimenLaboral::Microempresa) {
                     $validator->errors()->add('seguro_salud', 'El SIS solo aplica a trabajadores de microempresas.');
@@ -172,6 +177,38 @@ class GuardarTrabajadorRequest extends FormRequest
         }
 
         return $datos;
+    }
+
+    /**
+     * Si el trabajador ya figura en planillas, sueldo, cargo, pensión... solo cambian
+     * con «Registrar cambio» (historial con vigencia), no editando la ficha.
+     */
+    private function bloquearCamposConHistorial(Validator $validator): void
+    {
+        $trabajador = $this->trabajadorEditado();
+
+        if ($trabajador === null || ! $trabajador->lineas()->exists()) {
+            return;
+        }
+
+        $historial = app(HistorialTrabajador::class);
+        $esAfp = $this->input('sistema_pension') === SistemaPension::Afp->value;
+
+        foreach (HistorialTrabajador::campos() as $campo) {
+            $enviado = $this->input($campo);
+
+            if (! $esAfp && in_array($campo, ['afp_id', 'tipo_comision_afp', 'cuspp'], true)) {
+                $enviado = null;
+            } elseif ($campo === 'asignacion_familiar') {
+                $enviado = $this->boolean($campo);
+            } elseif ($campo === 'remuneracion_basica' && is_string($enviado) && preg_match('/^\d+(\.\d+)?$/', $enviado) === 1) {
+                $enviado = (string) BigDecimal::of($enviado)->toScale(2, RoundingMode::HalfUp);
+            }
+
+            if ($historial->normalizar($enviado) !== $historial->valorActual($trabajador, $campo)) {
+                $validator->errors()->add($campo, 'Ya figura en planillas: usa «Registrar cambio» para que rija desde un mes.');
+            }
+        }
     }
 
     private function trabajadorEditado(): ?Trabajador

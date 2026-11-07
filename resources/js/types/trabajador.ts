@@ -56,3 +56,16 @@ export type CatalogosTrabajador = {
     rmv: string | null;
     consulta_dni: boolean;
 };
+
+/** Un cambio del historial (grupo + mes), con sus campos antes → después. */
+export type CambioHistorial = {
+    id: number;
+    grupo: string;
+    grupo_etiqueta: string;
+    desde: string;
+    orden: string;
+    usuario: string;
+    registrado: string | null;
+    cambios: { campo: string; antes: string; despues: string }[];
+    anulable: boolean;
+};

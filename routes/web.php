@@ -11,6 +11,7 @@ use App\Http\Controllers\Empresas\EstadoEmpresaController;
 use App\Http\Controllers\Parametros\ParametroController;
 use App\Http\Controllers\TasasAfp\ImportacionTasasAfpController;
 use App\Http\Controllers\TasasAfp\TasaAfpController;
+use App\Http\Controllers\Trabajadores\CambioTrabajadorController;
 use App\Http\Controllers\Trabajadores\ConsultaDniController;
 use App\Http\Controllers\Trabajadores\TrabajadorController;
 use App\Http\Controllers\Usuarios\EstadoUsuarioController;
@@ -29,6 +30,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::middleware('empresa.activa')->group(function () {
         Route::get('trabajadores/consulta-dni/{dni}', [ConsultaDniController::class, 'show'])
             ->middleware('throttle:10,1')->name('trabajadores.consulta-dni');
+        Route::post('trabajadores/{trabajador}/cambios', [CambioTrabajadorController::class, 'store'])
+            ->name('trabajadores.cambios.store');
+        Route::delete('trabajadores/{trabajador}/cambios/{historial}', [CambioTrabajadorController::class, 'destroy'])
+            ->name('trabajadores.cambios.destroy');
         Route::resource('trabajadores', TrabajadorController::class)
             ->except(['show'])->parameters(['trabajadores' => 'trabajador']);
     });
