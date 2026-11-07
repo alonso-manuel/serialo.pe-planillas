@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Enums\TipoConcepto;
+use App\Models\Concerns\Auditable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
@@ -20,6 +21,8 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  */
 class Concepto extends Model
 {
+    use Auditable;
+
     protected $fillable = [
         'codigo_plame', 'nombre', 'tipo', 'afecto_essalud', 'afecto_onp',
         'afecto_afp', 'afecto_quinta', 'sistema', 'activo',
@@ -57,5 +60,10 @@ class Concepto extends Model
     public function estaEnUso(): bool
     {
         return $this->novedades()->exists() || $this->resultados()->exists();
+    }
+
+    public function descripcionAuditoria(): string
+    {
+        return "{$this->codigo_plame} {$this->nombre}";
     }
 }

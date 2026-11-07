@@ -6,7 +6,7 @@ argument-hint: <nombre del módulo en español, ej. "centros de costo">
 Crea el módulo **$ARGUMENTS** siguiendo `docs/convenciones.md` y `docs/modelo-datos.md`:
 
 1. Migración (si falta) con `empresa_id` cuando el dato pertenece a una empresa; montos `decimal(12,2)`.
-2. Modelo con `$fillable`, `casts`, relaciones y, si aplica, el trait de auditoría.
+2. Modelo con `$fillable`, `casts`, relaciones, trait `Auditable` + `descripcionAuditoria()` y su nombre en el morph map.
 3. Multiempresa según `docs/convenciones.md` → "Multiempresa": trait `PerteneceAEmpresa` en el modelo, policy con `AutorizaPorEmpresa`, rutas con middleware `empresa.activa`.
 4. `FormRequest` Store/Update con mensajes en español.
 5. Controlador delgado + rutas con nombres en español.

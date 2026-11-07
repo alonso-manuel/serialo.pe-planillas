@@ -2,12 +2,15 @@
 
 namespace App\Models;
 
+use App\Models\Concerns\Auditable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Establecimiento extends Model
 {
+    use Auditable;
+
     /** Código SUNAT del establecimiento principal (domicilio fiscal). */
     public const CODIGO_PRINCIPAL = '0000';
 
@@ -28,5 +31,10 @@ class Establecimiento extends Model
     public function trabajadores(): HasMany
     {
         return $this->hasMany(Trabajador::class);
+    }
+
+    public function descripcionAuditoria(): string
+    {
+        return "Establecimiento {$this->codigo} {$this->nombre}";
     }
 }

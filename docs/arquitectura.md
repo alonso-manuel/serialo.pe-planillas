@@ -71,6 +71,14 @@ Cada consulta exitosa se guarda 24 h en caché (`ConsultaRucEnCache`). Ruta `GET
 - **Propios**: solo ingresos (01xx–05xx, 09xx, 10xx) o descuentos (07xx); el tipo se deduce del código. Los descuentos no llevan afectaciones. Se eliminan solo si nunca se usaron en novedades ni resultados; si no, se desactivan.
 - Cambiar una afectación vale para cálculos nuevos y recálculos de periodos abiertos; los cerrados conservan su resultado.
 
+## Auditoría
+
+- Trait `App\Models\Concerns\Auditable` en Empresa, Establecimiento, User, Trabajador, Novedad, Parametro, TasaAfp, Concepto y Periodo: registra creado/actualizado/eliminado/restaurado con usuario, empresa, IP, descripción y `{campo: [antes, después]}`.
+- Nunca guarda secretos: `password` = "(cambiada)"; los atributos ocultos no se registran. Cambios solo de fechas internas no generan fila.
+- Acciones especiales: `$modelo->registrarAuditoria('cerrado', [...])`. Cambios fuera de columnas (empresas asignadas): `conCambiosAuditables()` + `registrarCambiosPendientes()`.
+- `auditable_type` usa nombres cortos (morph map en `AppServiceProvider`). Seeders e instalador envuelven en `Auditoria::sinRegistrar()`.
+- `Auditoria` es inmutable (updating/deleting cancelados). Se conserva indefinidamente. Pantalla `/auditoria` (solo admin) con filtros por empresa, usuario, registro, acción y fechas.
+
 ## Licencia (v1.0, semana 7)
 
 - Clave = JSON firmado con **Ed25519** (`sodium_crypto_sign_detached`), en base64:

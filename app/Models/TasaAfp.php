@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Concerns\Auditable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
@@ -20,6 +21,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  */
 class TasaAfp extends Model
 {
+    use Auditable;
+
     protected $table = 'tasas_afp';
 
     protected $fillable = [
@@ -43,5 +46,10 @@ class TasaAfp extends Model
     public function afp(): BelongsTo
     {
         return $this->belongsTo(Afp::class);
+    }
+
+    public function descripcionAuditoria(): string
+    {
+        return ($this->afp->nombre ?? 'AFP').' '.sprintf('%02d/%d', $this->mes, $this->anio);
     }
 }

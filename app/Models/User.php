@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Enums\RolUsuario;
+use App\Models\Concerns\Auditable;
 use App\Models\Concerns\TieneEmpresas;
 use Carbon\CarbonImmutable;
 use Database\Factories\UserFactory;
@@ -36,7 +37,7 @@ use Laravel\Fortify\TwoFactorAuthenticatable;
 class User extends Authenticatable implements MustVerifyEmail, PasskeyUser
 {
     /** @use HasFactory<UserFactory> */
-    use HasFactory, Notifiable, PasskeyAuthenticatable, TieneEmpresas, TwoFactorAuthenticatable;
+    use Auditable, HasFactory, Notifiable, PasskeyAuthenticatable, TieneEmpresas, TwoFactorAuthenticatable;
 
     /**
      * Mismos valores por defecto que la migración, para que un modelo recién creado
@@ -63,5 +64,10 @@ class User extends Authenticatable implements MustVerifyEmail, PasskeyUser
             'activo' => 'boolean',
             'two_factor_confirmed_at' => 'datetime',
         ];
+    }
+
+    public function descripcionAuditoria(): string
+    {
+        return "{$this->name} ({$this->email})";
     }
 }

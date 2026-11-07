@@ -3,6 +3,7 @@
 namespace App\Services\Usuarios;
 
 use App\Enums\RolUsuario;
+use App\Models\Empresa;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
@@ -35,9 +36,11 @@ class GestionUsuarios
                 'activo' => true,
             ]);
             $usuario->email_verified_at = now();
+            $empresas = $this->empresasPara($rol, $datos);
+            $usuario->conCambiosAuditables(['empresas' => [[], $this->nombresDeEmpresas($empresas)]]);
             $usuario->save();
 
-            $usuario->empresas()->sync($this->empresasPara($rol, $datos));
+            $usuario->empresas()->sync($empresas);
 
             return $usuario;
         });
@@ -67,8 +70,15 @@ class GestionUsuarios
                 $usuario->password = $datos['password'];
             }
 
+            $empresas = $this->empresasPara($rol, $datos);
+            $usuario->conCambiosAuditables(['empresas' => [
+                $this->nombresDeEmpresas($usuario->empresas()->pluck('empresas.id')->all()),
+                $this->nombresDeEmpresas($empresas),
+            ]]);
+
             $usuario->save();
-            $usuario->empresas()->sync($this->empresasPara($rol, $datos));
+            $usuario->registrarCambiosPendientes(); // si solo cambiaron las empresas asignadas
+            $usuario->empresas()->sync($empresas);
 
             return $usuario;
         });
@@ -85,6 +95,23 @@ class GestionUsuarios
         $usuario->save();
 
         return $usuario->activo;
+    }
+
+    /**
+     * Razones sociales ordenadas (legibles en la auditoría aun si cambian los ids).
+     *
+     * @param  array<int, int>  $ids
+     * @return array<int, string>
+     */
+    private function nombresDeEmpresas(array $ids): array
+    {
+        return $ids === [] ? [] : Empresa::query()
+            ->whereKey($ids)
+            ->orderBy('razon_social')
+            ->pluck('razon_social')
+            ->map(fn (mixed $r) => (string) $r)
+            ->values()
+            ->all();
     }
 
     /**

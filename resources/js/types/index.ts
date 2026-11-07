@@ -6,3 +6,4 @@ export * from './usuario';
 export * from './parametro';
 export * from './tasa-afp';
 export * from './concepto';
+export * from './auditoria';

@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Enums\ClaveParametro;
+use App\Models\Concerns\Auditable;
 use Carbon\CarbonImmutable;
 use Illuminate\Database\Eloquent\Model;
 
@@ -15,6 +16,8 @@ use Illuminate\Database\Eloquent\Model;
  */
 class Parametro extends Model
 {
+    use Auditable;
+
     protected $fillable = ['clave', 'valor', 'vigente_desde', 'base_legal'];
 
     /** @return array<string, string> */
@@ -41,5 +44,10 @@ class Parametro extends Model
         }
 
         return (string) $valor;
+    }
+
+    public function descripcionAuditoria(): string
+    {
+        return $this->clave->etiqueta().' desde '.$this->vigente_desde->format('m/Y');
     }
 }

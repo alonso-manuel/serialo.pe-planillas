@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Enums\EstadoPeriodo;
+use App\Models\Concerns\Auditable;
 use App\Models\Concerns\PerteneceAEmpresa;
 use Carbon\CarbonImmutable;
 use Database\Factories\PeriodoFactory;
@@ -22,7 +23,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 class Periodo extends Model
 {
     /** @use HasFactory<PeriodoFactory> */
-    use HasFactory, PerteneceAEmpresa;
+    use Auditable, HasFactory, PerteneceAEmpresa;
 
     protected $fillable = ['empresa_id', 'anio', 'mes', 'estado', 'cerrado_por', 'cerrado_en'];
 
@@ -49,5 +50,10 @@ class Periodo extends Model
     public function estaCerrado(): bool
     {
         return $this->estado === EstadoPeriodo::Cerrado;
+    }
+
+    public function descripcionAuditoria(): string
+    {
+        return sprintf('Periodo %02d/%d', $this->mes, $this->anio);
     }
 }

@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Enums\RegimenLaboral;
 use App\Enums\SeguroSalud;
+use App\Models\Concerns\Auditable;
 use Database\Factories\EmpresaFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -22,7 +23,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class Empresa extends Model
 {
     /** @use HasFactory<EmpresaFactory> */
-    use HasFactory, SoftDeletes;
+    use Auditable, HasFactory, SoftDeletes;
 
     protected $fillable = [
         'ruc', 'razon_social', 'nombre_comercial', 'direccion', 'ubigeo',
@@ -61,5 +62,10 @@ class Empresa extends Model
     public function usuarios(): BelongsToMany
     {
         return $this->belongsToMany(User::class);
+    }
+
+    public function descripcionAuditoria(): string
+    {
+        return "{$this->razon_social} (RUC {$this->ruc})";
     }
 }

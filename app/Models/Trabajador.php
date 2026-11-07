@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Enums\SeguroSalud;
 use App\Enums\SistemaPension;
+use App\Models\Concerns\Auditable;
 use App\Models\Concerns\PerteneceAEmpresa;
 use Carbon\CarbonImmutable;
 use Database\Factories\TrabajadorFactory;
@@ -33,7 +34,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class Trabajador extends Model
 {
     /** @use HasFactory<TrabajadorFactory> */
-    use HasFactory, PerteneceAEmpresa, SoftDeletes;
+    use Auditable, HasFactory, PerteneceAEmpresa, SoftDeletes;
 
     protected $table = 'trabajadores';
 
@@ -76,5 +77,10 @@ class Trabajador extends Model
     public function lineas(): HasMany
     {
         return $this->hasMany(PlanillaLinea::class);
+    }
+
+    public function descripcionAuditoria(): string
+    {
+        return trim("{$this->apellido_paterno} {$this->apellido_materno}, {$this->nombres}")." (doc. {$this->numero_documento})";
     }
 }

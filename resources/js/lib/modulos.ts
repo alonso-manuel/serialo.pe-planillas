@@ -17,6 +17,7 @@ import {
     Users,
 } from '@lucide/vue';
 import { dashboard } from '@/routes';
+import { index as auditoria } from '@/routes/auditoria';
 import { index as conceptos } from '@/routes/conceptos';
 import { index as empresas } from '@/routes/empresas';
 import { index as parametros } from '@/routes/parametros';
@@ -77,7 +78,7 @@ export const gruposNav: GrupoNav[] = [
             },
             { title: 'Tasas AFP', href: tasasAfp(), icon: Percent },
             { title: 'Conceptos', href: conceptos(), icon: ListChecks },
-            { title: 'Auditoría', icon: ScrollText },
+            { title: 'Auditoría', href: auditoria(), icon: ScrollText },
         ],
     },
 ];

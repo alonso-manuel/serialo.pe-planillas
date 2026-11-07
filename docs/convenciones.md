@@ -13,6 +13,11 @@
 - Consultas: siempre `with()` para evitar N+1 en listados; paginar (`->paginate(25)`).
 - Migraciones nuevas: `database/migrations/AAAA_MM_DD_HHMMSS_<accion>_<tabla>.php`; nunca editar una ya publicada a clientes, crear otra.
 
+## Auditoría
+
+- Todo modelo de negocio nuevo usa `Auditable` y define `descripcionAuditoria()` (texto legible: "Andes S.A.C. (RUC …)"). Agregar su nombre corto al morph map.
+- Test: la acción principal del módulo deja su fila en `auditorias`.
+
 ## Multiempresa (cómo hacer un módulo nuevo)
 
 1. **Modelo** con `empresa_id`: `use PerteneceAEmpresa;` (relación `empresa()` y scopes `deEmpresa()` / `visiblesPara()`).

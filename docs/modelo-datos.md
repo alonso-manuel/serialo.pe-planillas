@@ -18,7 +18,7 @@ Migraciones en `database/migrations/2026_11_09_*`. Montos `decimal(12,2)`, tasas
 | planilla_lineas      | Un trabajador en un periodo: entradas (días, horas) y totales     | único (periodo, trabajador)                                    |
 | novedades            | Conceptos variables del mes (bono, adelanto, falta)               | planilla_linea_id, concepto_id, monto                          |
 | planilla_conceptos   | Resultado del cálculo por concepto (fuente del PLAME y la boleta) | monto_devengado, monto_pagado                                  |
-| auditorias           | Quién cambió qué                                                  | morphs auditable, cambios json                                 |
+| auditorias           | Quién cambió qué (inmutable)                                      | morphs auditable, descripcion, accion, cambios json, ip        |
 
 ## Relaciones
 

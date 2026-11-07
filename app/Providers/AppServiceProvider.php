@@ -2,6 +2,15 @@
 
 namespace App\Providers;
 
+use App\Models\Concepto;
+use App\Models\Empresa;
+use App\Models\Establecimiento;
+use App\Models\Novedad;
+use App\Models\Parametro;
+use App\Models\Periodo;
+use App\Models\TasaAfp;
+use App\Models\Trabajador;
+use App\Models\User;
 use App\Services\Empresas\EmpresaActiva;
 use App\Services\Ruc\ConsultaRuc;
 use App\Services\Ruc\ConsultaRucDecolecta;
@@ -11,6 +20,7 @@ use App\Services\Ruc\ConsultaRucOpenRuc;
 use Carbon\CarbonImmutable;
 use Illuminate\Contracts\Cache\Repository;
 use Illuminate\Contracts\Foundation\Application;
+use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\ServiceProvider;
@@ -43,6 +53,19 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         $this->configureDefaults();
+
+        // Nombres cortos y estables para auditorias.auditable_type (no dependen del namespace).
+        Relation::morphMap([
+            'empresa' => Empresa::class,
+            'establecimiento' => Establecimiento::class,
+            'usuario' => User::class,
+            'trabajador' => Trabajador::class,
+            'novedad' => Novedad::class,
+            'parametro' => Parametro::class,
+            'tasa_afp' => TasaAfp::class,
+            'concepto' => Concepto::class,
+            'periodo' => Periodo::class,
+        ]);
     }
 
     /**

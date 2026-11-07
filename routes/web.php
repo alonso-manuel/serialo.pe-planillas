@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Auditoria\AuditoriaController;
 use App\Http\Controllers\Conceptos\ConceptoController;
 use App\Http\Controllers\Conceptos\EstadoConceptoController;
 use App\Http\Controllers\EmpresaActivaController;
@@ -51,6 +52,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
     // Conceptos tabla 22 (solo admin; los de sistema no se borran ni desactivan)
     Route::resource('conceptos', ConceptoController::class)->only(['index', 'store', 'update', 'destroy']);
     Route::patch('conceptos/{concepto}/estado', [EstadoConceptoController::class, 'update'])->name('conceptos.estado');
+
+    // Auditoría (solo admin, solo lectura)
+    Route::get('auditoria', [AuditoriaController::class, 'index'])->name('auditoria.index');
 
     // Usuarios (solo admin; nunca se eliminan, se desactivan)
     Route::resource('usuarios', UsuarioController::class)->except(['show', 'destroy']);
