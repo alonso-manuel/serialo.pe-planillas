@@ -1,22 +1,19 @@
 {
-  "permissions": {
-    "allow": [
-      "Bash(php artisan test:*)",
-      "Bash(php artisan make:*)",
-      "Bash(php artisan migrate:*)",
-      "Bash(php artisan route:list:*)",
-      "Bash(composer test)",
-      "Bash(composer lint)",
-      "Bash(npm run check:*)",
-      "Bash(npm run types:check)",
-      "Bash(npm run build)",
-      "Bash(git status)",
-      "Bash(git diff:*)",
-      "Bash(git log:*)"
-    ],
-    "deny": [
-      "Read(./.env)",
-      "Bash(php artisan migrate:fresh --force*)"
-    ]
-  }
+    "permissions": {
+        "allow": [
+            "Bash(php artisan test:*)",
+            "Bash(php artisan make:*)",
+            "Bash(php artisan migrate:*)",
+            "Bash(php artisan route:list:*)",
+            "Bash(composer test)",
+            "Bash(composer lint)",
+            "Bash(npm run check:*)",
+            "Bash(npm run types:check)",
+            "Bash(npm run build)",
+            "Bash(git status)",
+            "Bash(git diff:*)",
+            "Bash(git log:*)"
+        ],
+        "deny": ["Read(./.env)", "Bash(php artisan migrate:fresh --force*)"]
+    }
 }

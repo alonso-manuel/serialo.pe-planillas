@@ -79,23 +79,23 @@ docs/                          # Documentación del producto (mantenerla al día
 
 ## Glosario rápido
 
-| Término | Significado |
-| --- | --- |
-| RMV | Remuneración Mínima Vital (S/ 1,130 desde 2025) |
-| UIT | Unidad Impositiva Tributaria |
-| PLAME | Planilla Mensual de Pagos (SUNAT, formulario 0601) |
-| T-Registro | Registro de trabajadores en SUNAT (altas, bajas, datos) |
-| AFP / SPP | Sistema Privado de Pensiones (Habitat, Integra, Prima, Profuturo) |
-| ONP / SNP | Sistema Nacional de Pensiones (13 %) |
-| CUSPP | Código único del afiliado a AFP |
-| RMA | Remuneración máxima asegurable (tope para la prima de seguro AFP) |
-| EsSalud | Seguro de salud, 9 % a cargo del empleador, base mínima RMV |
-| SIS | Seguro Integral de Salud, monto fijo, solo microempresas (REMYPE) |
-| Tabla 22 | Catálogo SUNAT de conceptos remunerativos (códigos de 4 dígitos) |
-| Novedad | Dato variable del mes: horas extra, faltas, bonos, adelantos |
+| Término       | Significado                                                                   |
+| ------------- | ----------------------------------------------------------------------------- |
+| RMV           | Remuneración Mínima Vital (S/ 1,130 desde 2025)                               |
+| UIT           | Unidad Impositiva Tributaria                                                  |
+| PLAME         | Planilla Mensual de Pagos (SUNAT, formulario 0601)                            |
+| T-Registro    | Registro de trabajadores en SUNAT (altas, bajas, datos)                       |
+| AFP / SPP     | Sistema Privado de Pensiones (Habitat, Integra, Prima, Profuturo)             |
+| ONP / SNP     | Sistema Nacional de Pensiones (13 %)                                          |
+| CUSPP         | Código único del afiliado a AFP                                               |
+| RMA           | Remuneración máxima asegurable (tope para la prima de seguro AFP)             |
+| EsSalud       | Seguro de salud, 9 % a cargo del empleador, base mínima RMV                   |
+| SIS           | Seguro Integral de Salud, monto fijo, solo microempresas (REMYPE)             |
+| Tabla 22      | Catálogo SUNAT de conceptos remunerativos (códigos de 4 dígitos)              |
+| Novedad       | Dato variable del mes: horas extra, faltas, bonos, adelantos                  |
 | Gratificación | Julio y diciembre, + bonificación extraordinaria 9 % (EsSalud) o 6.75 % (EPS) |
-| CTS | Compensación por tiempo de servicios, depósitos en mayo y noviembre |
-| Quinta | Renta de quinta categoría (impuesto a la renta del trabajador) |
+| CTS           | Compensación por tiempo de servicios, depósitos en mayo y noviembre           |
+| Quinta        | Renta de quinta categoría (impuesto a la renta del trabajador)                |
 
 ## Flujo de trabajo con Claude Code
 
