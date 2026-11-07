@@ -3,7 +3,7 @@
 namespace App\Http\Middleware;
 
 use App\Models\Empresa;
-use App\Services\Empresa\EmpresaActiva;
+use App\Services\Empresas\EmpresaActiva;
 use Illuminate\Http\Request;
 use Inertia\Middleware;
 

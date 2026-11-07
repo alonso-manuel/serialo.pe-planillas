@@ -14,6 +14,17 @@ return [
     |
     */
 
+    /*
+    | Consulta de RUC (autocompletar empresas). Drivers:
+    |   openruc   gratis, sin token, solo personas jurídicas (RUC 20)
+    |   decolecta plan gratuito con token (decolecta.com/profile), todos los RUC
+    |   ninguno   sin consulta; los datos se escriben a mano
+    */
+    'ruc' => [
+        'driver' => env('RUC_DRIVER', 'openruc'),
+        'decolecta_token' => env('DECOLECTA_TOKEN'),
+    ],
+
     'postmark' => [
         'key' => env('POSTMARK_API_KEY'),
     ],

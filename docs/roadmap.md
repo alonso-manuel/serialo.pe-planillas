@@ -19,7 +19,7 @@ Marca `[x]` al terminar (o usa `/actualizar-roadmap`). Cada tarea: código + tes
 - [x] Proyecto creado con el kit, `composer test` en verde (corregir avisos de PHPStan del kit si aparecen), primer commit
 - [x] Layout: barra lateral con módulos, selector de empresa activa (sesión + `HandleInertiaRequests`)
 - [x] Usuarios: CRUD admin, rol, activar/desactivar, asignar empresas
-- [ ] Empresas: CRUD, establecimientos, autocompletado por RUC (servicio intercambiable: API de consulta RUC o Padrón Reducido)
+- [x] Empresas: CRUD, establecimientos, autocompletado por RUC (servicio intercambiable: API de consulta RUC o Padrón Reducido)
 - [ ] Policies multiempresa + test Feature "asistente no ve empresa ajena"
 - [ ] Parámetros: listado por clave con vigencias, alta de nueva vigencia (no editar pasadas)
 - [ ] Tasas AFP: grilla mensual por AFP, importar desde Excel/CSV

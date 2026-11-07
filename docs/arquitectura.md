@@ -30,9 +30,25 @@ Vue (Inertia) ──► Controller (delgado) ──► FormRequest (validación)
 - Un admin no puede desactivarse ni quitarse el rol a sí mismo; así el sistema nunca queda sin un admin activo.
 - Un admin no guarda filas en `empresa_user` (ve todas); al pasar a admin se limpian.
 - Empresa activa: guardada en sesión (`session('empresa_id')`), selector en la barra lateral, compartida a Vue vía `HandleInertiaRequests::share()` (`empresaActiva`, `empresas`, `auth.esAdmin`).
-    - Se resuelve con `App\Services\Empresa\EmpresaActiva` (registrado `scoped`): solo empresas visibles y activas; si la de la sesión deja de serlo, se activa la primera por razón social. Los controladores filtran por `$empresaActiva->obtener($user)`.
+    - Se resuelve con `App\Services\Empresas\EmpresaActiva` (registrado `scoped`): solo empresas visibles y activas; si la de la sesión deja de serlo, se activa la primera por razón social. Los controladores filtran por `$empresaActiva->obtener($user)`.
     - Se cambia con `PUT /empresa-activa` (`empresa-activa.update`): 403 si es ajena, error de validación si está inactiva o eliminada.
 - Policies por modelo comprueban `puedeVerEmpresa($modelo->empresa_id)`.
+
+## Empresas y consulta de RUC
+
+- Solo el admin gestiona empresas (`EmpresaPolicy`). No se eliminan: se desactivan y salen del selector de empresa activa.
+- El RUC se valida con `App\Domain\Sunat\Ruc` (11 dígitos, prefijo 10/15/16/17/20, dígito verificador módulo 11) y **no cambia** después de crear la empresa.
+- Toda empresa nace con su establecimiento `0000 · Principal`. Los establecimientos van anidados con `scopeBindings()`; el `0000` no se elimina ni cambia de código.
+- SIS solo para régimen de microempresa (validado en `GuardarEmpresaRequest`).
+- Consulta RUC intercambiable (`App\Services\Ruc\ConsultaRuc`), elegida con `RUC_DRIVER`:
+
+| Driver                  | Costo                   | Cobertura                        | Configuración                                 |
+| ----------------------- | ----------------------- | -------------------------------- | --------------------------------------------- |
+| `openruc` (por defecto) | Gratis, sin token       | Solo personas jurídicas (RUC 20) | nada                                          |
+| `decolecta`             | Plan gratuito con token | Todos los RUC                    | `DECOLECTA_TOKEN` (registro en decolecta.com) |
+| `ninguno`               | —                       | —                                | datos a mano                                  |
+
+Cada consulta exitosa se guarda 24 h en caché (`ConsultaRucEnCache`). Ruta `GET /empresas/consulta-ruc/{ruc}` limitada a 20/min. Pendiente v1.1: driver Padrón Reducido.
 
 ## Licencia (v1.0, semana 7)
 

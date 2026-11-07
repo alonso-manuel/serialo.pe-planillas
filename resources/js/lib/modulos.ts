@@ -17,6 +17,7 @@ import {
     Users,
 } from '@lucide/vue';
 import { dashboard } from '@/routes';
+import { index as empresas } from '@/routes/empresas';
 import { index as usuarios } from '@/routes/usuarios';
 import type { GrupoNav } from '@/types';
 
@@ -64,7 +65,7 @@ export const gruposNav: GrupoNav[] = [
         title: 'Administración',
         soloAdmin: true,
         items: [
-            { title: 'Empresas', icon: Building },
+            { title: 'Empresas', href: empresas(), icon: Building },
             { title: 'Usuarios', href: usuarios(), icon: UserCog },
             { title: 'Parámetros', icon: SlidersHorizontal },
             { title: 'Tasas AFP', icon: Percent },

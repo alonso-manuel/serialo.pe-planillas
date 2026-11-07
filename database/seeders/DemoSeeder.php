@@ -32,8 +32,8 @@ class DemoSeeder extends Seeder
 
         $empresas = [
             ['20000000001', 'Comercial Los Andes S.A.C.', RegimenLaboral::Microempresa, SeguroSalud::Sis],
-            ['20000000002', 'Servicios Generales Huallaga E.I.R.L.', RegimenLaboral::PequenaEmpresa, SeguroSalud::Essalud],
-            ['20000000003', 'Distribuidora Pacífico S.A.', RegimenLaboral::General, SeguroSalud::Essalud],
+            ['20000000010', 'Servicios Generales Huallaga E.I.R.L.', RegimenLaboral::PequenaEmpresa, SeguroSalud::Essalud],
+            ['20000000028', 'Distribuidora Pacífico S.A.', RegimenLaboral::General, SeguroSalud::Essalud],
         ];
 
         $trabajadores = [

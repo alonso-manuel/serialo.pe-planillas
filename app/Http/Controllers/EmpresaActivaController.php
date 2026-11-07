@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\CambiarEmpresaActivaRequest;
-use App\Services\Empresa\EmpresaActiva;
+use App\Services\Empresas\EmpresaActiva;
 use Illuminate\Http\RedirectResponse;
 
 class EmpresaActivaController extends Controller
