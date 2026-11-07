@@ -48,7 +48,7 @@ Vue (Inertia) ──► Controller (delgado) ──► FormRequest (validación)
 | `decolecta`             | Plan gratuito con token | Todos los RUC                    | `DECOLECTA_TOKEN` (registro en decolecta.com) |
 | `ninguno`               | —                       | —                                | datos a mano                                  |
 
-Cada consulta exitosa se guarda 24 h en caché (`ConsultaRucEnCache`). Ruta `GET /empresas/consulta-ruc/{ruc}` limitada a 20/min. Pendiente v1.1: driver Padrón Reducido.
+Con `DECOLECTA_TOKEN`, el driver `openruc` consulta los RUC 20 en OpenRUC y el resto (personas naturales) en Decolecta (`ConsultaRucCombinada`), para reservar el cupo mensual. Cada consulta exitosa se guarda 24 h en caché (`ConsultaRucEnCache`). Ruta `GET /empresas/consulta-ruc/{ruc}` limitada a 20/min. Pendiente v1.1: driver Padrón Reducido.
 
 ## Parámetros legales
 
@@ -87,6 +87,12 @@ Cada consulta exitosa se guarda 24 h en caché (`ConsultaRucEnCache`). Ruta `GET
 - Avisos no bloqueantes: básico < RMV vigente (tiempo parcial) y menor de edad.
 - Eliminar solo si nunca estuvo en planilla (se borra del todo para poder registrarlo de nuevo); si no, cese.
 - Enums: `TipoDocumento` (01, 04, 07 ⚠ confirmar), `TipoContrato` (simplificado hasta T-Registro), `TipoComisionAfp`.
+
+## Consulta de DNI
+
+- `App\Services\Dni\ConsultaDni` (driver `DNI_DRIVER=decolecta|ninguno`, token `DECOLECTA_TOKEN` compartido con RUC; plan gratuito ~100 consultas/mes). Sin token, el botón aparece desactivado.
+- Ruta `GET /trabajadores/consulta-dni/{dni}` (empresa activa, 10/min). No gasta cupo si el DNI es inválido o ya está registrado en la empresa.
+- Ley 29733: solo se usan apellidos y nombres; caché de 10 min con la clave cifrada (sha256). Un 429 del proveedor = cupo agotado (mensaje claro).
 
 ## Licencia (v1.0, semana 7)
 
