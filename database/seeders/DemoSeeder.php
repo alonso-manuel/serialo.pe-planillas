@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use App\Enums\EstadoPeriodo;
 use App\Enums\RegimenLaboral;
+use App\Enums\RolUsuario;
 use App\Enums\SeguroSalud;
 use App\Enums\SistemaPension;
 use App\Models\Afp;
@@ -25,7 +26,7 @@ class DemoSeeder extends Seeder
             'name' => 'Usuario Demo',
             'password' => Hash::make('demo1234'),
             'email_verified_at' => now(),
-            'rol' => 'admin',
+            'rol' => RolUsuario::Admin,
             'activo' => true,
         ]);
 

@@ -4,6 +4,8 @@ namespace App\Models;
 
 use App\Enums\RegimenLaboral;
 use App\Enums\SeguroSalud;
+use Database\Factories\EmpresaFactory;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -19,7 +21,8 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  */
 class Empresa extends Model
 {
-    use SoftDeletes;
+    /** @use HasFactory<EmpresaFactory> */
+    use HasFactory, SoftDeletes;
 
     protected $fillable = [
         'ruc', 'razon_social', 'nombre_comercial', 'direccion', 'ubigeo',

@@ -2,6 +2,7 @@
 
 namespace App\Models\Concerns;
 
+use App\Enums\RolUsuario;
 use App\Models\Empresa;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -20,7 +21,7 @@ trait TieneEmpresas
 
     public function esAdmin(): bool
     {
-        return $this->rol === 'admin';
+        return $this->rol === RolUsuario::Admin;
     }
 
     /**

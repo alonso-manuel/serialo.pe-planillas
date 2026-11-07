@@ -20,7 +20,9 @@ Vue (Inertia) ──► Controller (delgado) ──► FormRequest (validación)
 
 - Una instalación = un cliente (un estudio). Dentro hay muchas empresas.
 - `users.rol`: `admin` (ve todo y configura) | `asistente` (solo empresas asignadas en `empresa_user`).
-- Empresa activa: guardada en sesión (`session('empresa_id')`), selector en la barra lateral, compartida a Vue vía `HandleInertiaRequests::share()`.
+- Empresa activa: guardada en sesión (`session('empresa_id')`), selector en la barra lateral, compartida a Vue vía `HandleInertiaRequests::share()` (`empresaActiva`, `empresas`, `auth.esAdmin`).
+    - Se resuelve con `App\Services\Empresa\EmpresaActiva` (registrado `scoped`): solo empresas visibles y activas; si la de la sesión deja de serlo, se activa la primera por razón social. Los controladores filtran por `$empresaActiva->obtener($user)`.
+    - Se cambia con `PUT /empresa-activa` (`empresa-activa.update`): 403 si es ajena, error de validación si está inactiva o eliminada.
 - Policies por modelo comprueban `puedeVerEmpresa($modelo->empresa_id)`.
 
 ## Licencia (v1.0, semana 7)

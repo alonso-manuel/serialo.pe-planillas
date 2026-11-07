@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Enums\RolUsuario;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Facades\Hash;
@@ -34,6 +35,22 @@ class UserFactory extends Factory
             'two_factor_recovery_codes' => null,
             'two_factor_confirmed_at' => null,
         ];
+    }
+
+    /**
+     * Administrador: ve todas las empresas.
+     */
+    public function admin(): static
+    {
+        return $this->state(fn (array $attributes) => ['rol' => RolUsuario::Admin]);
+    }
+
+    /**
+     * Asistente: solo ve las empresas asignadas.
+     */
+    public function asistente(): static
+    {
+        return $this->state(fn (array $attributes) => ['rol' => RolUsuario::Asistente]);
     }
 
     /**

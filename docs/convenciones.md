@@ -6,6 +6,7 @@
 - Controladores **delgados**: validan con `FormRequest`, autorizan con Policy, llaman a un Service, devuelven `Inertia::render` o redirect.
 - Rutas en `routes/web.php` agrupadas por módulo, nombres en español: `empresas.index`, `planillas.calcular`.
 - Lógica que cambia datos en varias tablas → Service con `DB::transaction`.
+- Roles con `App\Enums\RolUsuario` (`Admin`, `Asistente`); nunca comparar con `'admin'`.
 - Enums respaldados por string; casts en el modelo. Nada de strings mágicos (`'afp'`) fuera del enum.
 - Montos: `string` en DTOs, `decimal:2` en casts, `BigDecimal` para operar. **Nunca** `(float)`, `round()`, `+` sobre montos.
 - Excepciones de negocio: `\DomainException` con mensaje en español apto para mostrar al usuario.
@@ -16,6 +17,7 @@
 
 - Páginas en `resources/js/pages/<modulo>/` (`Index.vue`, `Create.vue`, `Edit.vue`, `Show.vue`).
 - Componentes UI de `@/components/ui` (shadcn-vue). Componentes propios del dominio en `@/components/<modulo>/`.
+- Menú lateral definido en `resources/js/lib/modulos.ts`; un módulo sin `href` se muestra deshabilitado con "Pronto". Los grupos con `soloAdmin` se ocultan a los asistentes.
 - Rutas tipadas con Wayfinder (`import { index } from '@/routes/empresas'`), nunca URLs a mano.
 - Formularios con `useForm` / `<Form>` de Inertia; errores con `InputError`.
 - Montos se muestran con `Intl.NumberFormat('es-PE', { style: 'currency', currency: 'PEN' })`; se envían como string.

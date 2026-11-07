@@ -4,27 +4,29 @@ import {
     SidebarGroup,
     SidebarGroupLabel,
     SidebarMenu,
+    SidebarMenuBadge,
     SidebarMenuButton,
     SidebarMenuItem,
 } from '@/components/ui/sidebar';
 import { useCurrentUrl } from '@/composables/useCurrentUrl';
-import type { NavItem } from '@/types';
+import type { GrupoNav } from '@/types';
 
 defineProps<{
-    items: NavItem[];
+    grupos: GrupoNav[];
 }>();
 
-const { isCurrentUrl } = useCurrentUrl();
+const { isCurrentOrParentUrl } = useCurrentUrl();
 </script>
 
 <template>
-    <SidebarGroup class="px-2 py-0">
-        <SidebarGroupLabel>Platform</SidebarGroupLabel>
+    <SidebarGroup v-for="grupo in grupos" :key="grupo.title" class="py-0">
+        <SidebarGroupLabel>{{ grupo.title }}</SidebarGroupLabel>
         <SidebarMenu>
-            <SidebarMenuItem v-for="item in items" :key="item.title">
+            <SidebarMenuItem v-for="item in grupo.items" :key="item.title">
                 <SidebarMenuButton
+                    v-if="item.href"
                     as-child
-                    :is-active="isCurrentUrl(item.href)"
+                    :is-active="isCurrentOrParentUrl(item.href)"
                     :tooltip="item.title"
                 >
                     <Link :href="item.href">
@@ -32,6 +34,22 @@ const { isCurrentUrl } = useCurrentUrl();
                         <span>{{ item.title }}</span>
                     </Link>
                 </SidebarMenuButton>
+                <template v-else>
+                    <SidebarMenuButton
+                        disabled
+                        aria-disabled="true"
+                        :tooltip="`${item.title} (pronto)`"
+                        class="cursor-not-allowed"
+                    >
+                        <component :is="item.icon" />
+                        <span>{{ item.title }}</span>
+                    </SidebarMenuButton>
+                    <SidebarMenuBadge
+                        class="text-[10px] font-normal text-muted-foreground"
+                    >
+                        Pronto
+                    </SidebarMenuBadge>
+                </template>
             </SidebarMenuItem>
         </SidebarMenu>
     </SidebarGroup>

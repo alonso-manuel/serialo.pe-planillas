@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\RolUsuario;
 use App\Models\Concerns\TieneEmpresas;
 use Database\Factories\UserFactory;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
@@ -19,7 +20,7 @@ use Laravel\Fortify\TwoFactorAuthenticatable;
  * @property int $id
  * @property string $name
  * @property string $email
- * @property string $rol
+ * @property RolUsuario $rol
  * @property bool $activo
  * @property Carbon|null $email_verified_at
  * @property string $password
@@ -47,6 +48,7 @@ class User extends Authenticatable implements MustVerifyEmail, PasskeyUser
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'rol' => RolUsuario::class,
             'activo' => 'boolean',
             'two_factor_confirmed_at' => 'datetime',
         ];
