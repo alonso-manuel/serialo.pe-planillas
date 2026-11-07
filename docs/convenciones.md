@@ -13,6 +13,16 @@
 - Consultas: siempre `with()` para evitar N+1 en listados; paginar (`->paginate(25)`).
 - Migraciones nuevas: `database/migrations/AAAA_MM_DD_HHMMSS_<accion>_<tabla>.php`; nunca editar una ya publicada a clientes, crear otra.
 
+## Multiempresa (cómo hacer un módulo nuevo)
+
+1. **Modelo** con `empresa_id`: `use PerteneceAEmpresa;` (relación `empresa()` y scopes `deEmpresa()` / `visiblesPara()`).
+2. **Policy**: `use AutorizaPorEmpresa;` (view/update/delete solo en empresas visibles). Agrega reglas propias sobrescribiendo métodos (ver `PeriodoPolicy`: periodo cerrado = inmutable).
+3. **Rutas** de trabajo con middleware `empresa.activa` (`RequiereEmpresaActiva`): sin empresa activa → panel con aviso.
+4. **Controlador**: lista con `Modelo::deEmpresa($empresaActiva->obtener($user)->id)`; crea siempre en la empresa activa; `Gate::authorize('view|update', $modelo)` en lo demás. Nunca recibir `empresa_id` del formulario.
+5. **Test Feature obligatorio**: asistente con empresa A no ve, edita ni borra registros de la empresa B (por URL directa → 403).
+
+Las pruebas base están en `tests/Feature/Multiempresa/AislamientoTest.php`.
+
 ## Idioma
 
 - `APP_LOCALE=es` (por defecto en `config/app.php`), `fallback_locale=en`. Mensajes propios en `lang/es/*.php` y `lang/es.json`.

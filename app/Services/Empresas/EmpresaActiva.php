@@ -13,15 +13,14 @@ use Illuminate\Database\Eloquent\Builder;
  * Solo se puede activar una empresa visible para el usuario y activa. Si la que está
  * en sesión deja de serlo (se quitó la asignación, se desactivó o se eliminó), se
  * activa la primera seleccionable por razón social. Registrado como `scoped`:
- * el valor se calcula una vez por request.
+ * el valor se calcula una vez por request y por usuario.
  */
 class EmpresaActiva
 {
     public const CLAVE_SESION = 'empresa_id';
 
-    private ?Empresa $resuelta = null;
-
-    private bool $yaResuelta = false;
+    /** @var array<int, Empresa|null> empresa resuelta por id de usuario (memoria del request) */
+    private array $resueltas = [];
 
     public function __construct(private readonly Session $session) {}
 
@@ -39,8 +38,8 @@ class EmpresaActiva
 
     public function obtener(User $user): ?Empresa
     {
-        if ($this->yaResuelta) {
-            return $this->resuelta;
+        if (array_key_exists($user->id, $this->resueltas)) {
+            return $this->resueltas[$user->id];
         }
 
         $id = $this->session->get(self::CLAVE_SESION);
@@ -54,16 +53,13 @@ class EmpresaActiva
                 : $this->session->put(self::CLAVE_SESION, $empresa->id);
         }
 
-        $this->yaResuelta = true;
-
-        return $this->resuelta = $empresa;
+        return $this->resueltas[$user->id] = $empresa;
     }
 
     /** Requiere que la empresa ya esté validada como seleccionable (ver CambiarEmpresaActivaRequest). */
-    public function cambiar(Empresa $empresa): void
+    public function cambiar(User $user, Empresa $empresa): void
     {
         $this->session->put(self::CLAVE_SESION, $empresa->id);
-        $this->resuelta = $empresa;
-        $this->yaResuelta = true;
+        $this->resueltas[$user->id] = $empresa;
     }
 }

@@ -3,9 +3,11 @@
 namespace App\Models;
 
 use App\Enums\EstadoPeriodo;
+use App\Models\Concerns\PerteneceAEmpresa;
 use Carbon\CarbonImmutable;
+use Database\Factories\PeriodoFactory;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
@@ -19,6 +21,9 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  */
 class Periodo extends Model
 {
+    /** @use HasFactory<PeriodoFactory> */
+    use HasFactory, PerteneceAEmpresa;
+
     protected $fillable = ['empresa_id', 'anio', 'mes', 'estado', 'cerrado_por', 'cerrado_en'];
 
     /** @return array<string, string> */
@@ -28,12 +33,6 @@ class Periodo extends Model
             'estado' => EstadoPeriodo::class,
             'cerrado_en' => 'datetime',
         ];
-    }
-
-    /** @return BelongsTo<Empresa, $this> */
-    public function empresa(): BelongsTo
-    {
-        return $this->belongsTo(Empresa::class);
     }
 
     /** @return HasMany<PlanillaLinea, $this> */

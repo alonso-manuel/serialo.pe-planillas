@@ -38,6 +38,12 @@ trait TieneEmpresas
 
     public function puedeVerEmpresa(Empresa $empresa): bool
     {
-        return $this->esAdmin() || $this->empresas()->whereKey($empresa->id)->exists();
+        return $this->puedeVerEmpresaId($empresa->id);
+    }
+
+    /** Igual que puedeVerEmpresa() sin cargar la empresa (para policies de modelos con empresa_id). */
+    public function puedeVerEmpresaId(int $empresaId): bool
+    {
+        return $this->esAdmin() || $this->empresas()->whereKey($empresaId)->exists();
     }
 }

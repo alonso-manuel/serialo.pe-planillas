@@ -4,8 +4,11 @@ namespace App\Models;
 
 use App\Enums\SeguroSalud;
 use App\Enums\SistemaPension;
+use App\Models\Concerns\PerteneceAEmpresa;
 use Carbon\CarbonImmutable;
+use Database\Factories\TrabajadorFactory;
 use Illuminate\Database\Eloquent\Casts\Attribute;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -29,7 +32,8 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  */
 class Trabajador extends Model
 {
-    use SoftDeletes;
+    /** @use HasFactory<TrabajadorFactory> */
+    use HasFactory, PerteneceAEmpresa, SoftDeletes;
 
     protected $table = 'trabajadores';
 
@@ -60,12 +64,6 @@ class Trabajador extends Model
     protected function nombreCompleto(): Attribute
     {
         return Attribute::get(fn () => trim("{$this->apellido_paterno} {$this->apellido_materno}, {$this->nombres}"));
-    }
-
-    /** @return BelongsTo<Empresa, $this> */
-    public function empresa(): BelongsTo
-    {
-        return $this->belongsTo(Empresa::class);
     }
 
     /** @return BelongsTo<Afp, $this> */
