@@ -22,6 +22,7 @@ import { index as conceptos } from '@/routes/conceptos';
 import { index as empresas } from '@/routes/empresas';
 import { index as parametros } from '@/routes/parametros';
 import { index as tasasAfp } from '@/routes/tasas-afp';
+import { index as trabajadores } from '@/routes/trabajadores';
 import { index as usuarios } from '@/routes/usuarios';
 import type { GrupoNav } from '@/types';
 
@@ -37,7 +38,7 @@ export const gruposNav: GrupoNav[] = [
     },
     {
         title: 'Personal',
-        items: [{ title: 'Trabajadores', icon: Users }],
+        items: [{ title: 'Trabajadores', href: trabajadores(), icon: Users }],
     },
     {
         title: 'Planilla',

@@ -5,6 +5,7 @@ namespace App\Services\Planilla;
 use App\Domain\Planilla\ParametrosPeriodo;
 use App\Domain\Planilla\TasaAfpPeriodo;
 use App\Enums\ClaveParametro as C;
+use App\Enums\TipoComisionAfp;
 use App\Models\Parametro;
 use App\Models\Periodo;
 use App\Models\TasaAfp;
@@ -47,7 +48,7 @@ class ParametrosRepositorio
         return new TasaAfpPeriodo(
             aporteObligatorio: (string) $tasa->aporte_obligatorio,
             primaSeguro: (string) $tasa->prima_seguro,
-            comision: (string) ($trabajador->tipo_comision_afp === 'mixta' ? $tasa->comision_mixta : $tasa->comision_flujo),
+            comision: (string) ($trabajador->tipo_comision_afp === TipoComisionAfp::Mixta ? $tasa->comision_mixta : $tasa->comision_flujo),
             remuneracionMaximaAsegurable: (string) $tasa->remuneracion_maxima_asegurable,
         );
     }

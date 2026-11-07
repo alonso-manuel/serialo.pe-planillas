@@ -79,6 +79,15 @@ Cada consulta exitosa se guarda 24 h en caché (`ConsultaRucEnCache`). Ruta `GET
 - `auditable_type` usa nombres cortos (morph map en `AppServiceProvider`). Seeders e instalador envuelven en `Auditoria::sinRegistrar()`.
 - `Auditoria` es inmutable (updating/deleting cancelados). Se conserva indefinidamente. Pantalla `/auditoria` (solo admin) con filtros por empresa, usuario, registro, acción y fechas.
 
+## Trabajadores
+
+- `/trabajadores` (admin y asistente, middleware `empresa.activa`): solo los de la empresa activa; se crean siempre en ella (se ignora `empresa_id` del formulario).
+- Ficha en 4 pestañas (personales, laborales, pensión y salud, cuentas). Documento: DNI 8 dígitos; CE y pasaporte 4–12 caracteres; único por empresa y tipo.
+- AFP exige AFP, CUSPP (12) y tipo de comisión; al pasar a ONP se limpian. SIS solo si la empresa es microempresa.
+- Avisos no bloqueantes: básico < RMV vigente (tiempo parcial) y menor de edad.
+- Eliminar solo si nunca estuvo en planilla (se borra del todo para poder registrarlo de nuevo); si no, cese.
+- Enums: `TipoDocumento` (01, 04, 07 ⚠ confirmar), `TipoContrato` (simplificado hasta T-Registro), `TipoComisionAfp`.
+
 ## Licencia (v1.0, semana 7)
 
 - Clave = JSON firmado con **Ed25519** (`sodium_crypto_sign_detached`), en base64:

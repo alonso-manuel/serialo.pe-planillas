@@ -11,6 +11,7 @@ use App\Http\Controllers\Empresas\EstadoEmpresaController;
 use App\Http\Controllers\Parametros\ParametroController;
 use App\Http\Controllers\TasasAfp\ImportacionTasasAfpController;
 use App\Http\Controllers\TasasAfp\TasaAfpController;
+use App\Http\Controllers\Trabajadores\TrabajadorController;
 use App\Http\Controllers\Usuarios\EstadoUsuarioController;
 use App\Http\Controllers\Usuarios\UsuarioController;
 use Illuminate\Support\Facades\Route;
@@ -22,6 +23,12 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::inertia('dashboard', 'Dashboard')->name('dashboard');
 
     Route::put('empresa-activa', [EmpresaActivaController::class, 'update'])->name('empresa-activa.update');
+
+    // Personal de la empresa activa (admin y asistente; aislado por empresa)
+    Route::middleware('empresa.activa')->group(function () {
+        Route::resource('trabajadores', TrabajadorController::class)
+            ->except(['show'])->parameters(['trabajadores' => 'trabajador']);
+    });
 
     // Empresas y establecimientos (solo admin; no se eliminan, se desactivan)
     Route::get('empresas/consulta-ruc/{ruc}', [ConsultaRucController::class, 'show'])

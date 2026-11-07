@@ -46,6 +46,7 @@ Las pruebas base están en `tests/Feature/Multiempresa/AislamientoTest.php`.
 ## Tests
 
 - `tests/Unit/<Area>`: dominio puro (extiende `PHPUnit\Framework\TestCase`).
+- `tests/TestCase::call()` limpia los servicios `scoped` antes de cada petición (como en producción).
 - `tests/Feature/<Modulo>`: HTTP con `RefreshDatabase`; siempre incluir: listado, crear, validación, editar, borrar y **aislamiento multiempresa**.
 - Nombre de método en español y snake_case con `#[Test]`: `asistente_no_ve_trabajadores_de_otra_empresa`.
 - Caso legal validado por contador = test con comentario de origen (mes, régimen, "validado por ...") y sin datos personales.

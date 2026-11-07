@@ -28,7 +28,7 @@ Marca `[x]` al terminar (o usa `/actualizar-roadmap`). Cada tarea: código + tes
 
 ### Semana 2 (16–20 nov) · Personal
 
-- [ ] Trabajadores: listado con filtros, ficha por pestañas (personales, laborales, pensión/salud, cuentas)
+- [x] Trabajadores: listado con filtros, ficha por pestañas (personales, laborales, pensión/salud, cuentas)
 - [ ] Autocompletar nombre por DNI (servicio intercambiable)
 - [ ] Historial: cambios de sueldo/cargo/pensión con vigencia
 - [ ] Cese de trabajador (fecha y motivo tabla SUNAT)

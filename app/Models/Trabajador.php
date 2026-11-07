@@ -4,6 +4,9 @@ namespace App\Models;
 
 use App\Enums\SeguroSalud;
 use App\Enums\SistemaPension;
+use App\Enums\TipoComisionAfp;
+use App\Enums\TipoContrato;
+use App\Enums\TipoDocumento;
 use App\Models\Concerns\Auditable;
 use App\Models\Concerns\PerteneceAEmpresa;
 use Carbon\CarbonImmutable;
@@ -18,17 +21,30 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 /**
  * @property int $id
  * @property int $empresa_id
+ * @property int|null $establecimiento_id
+ * @property TipoDocumento $tipo_documento
+ * @property string $numero_documento
  * @property string $apellido_paterno
  * @property string|null $apellido_materno
  * @property string $nombres
+ * @property CarbonImmutable|null $fecha_nacimiento
+ * @property string|null $sexo
+ * @property string|null $cargo
+ * @property TipoContrato $tipo_contrato
  * @property string $remuneracion_basica
  * @property bool $asignacion_familiar
  * @property SistemaPension $sistema_pension
  * @property int|null $afp_id
- * @property string|null $tipo_comision_afp
+ * @property string|null $cuspp
+ * @property TipoComisionAfp|null $tipo_comision_afp
  * @property SeguroSalud $seguro_salud
  * @property CarbonImmutable $fecha_ingreso
  * @property CarbonImmutable|null $fecha_cese
+ * @property string|null $motivo_cese
+ * @property string|null $cuenta_sueldo
+ * @property string|null $cuenta_cts
+ * @property string|null $email
+ * @property string|null $telefono
  * @property-read string $nombre_completo
  */
 class Trabajador extends Model
@@ -56,7 +72,10 @@ class Trabajador extends Model
             'fecha_cese' => 'date',
             'remuneracion_basica' => 'decimal:2',
             'asignacion_familiar' => 'boolean',
+            'tipo_documento' => TipoDocumento::class,
+            'tipo_contrato' => TipoContrato::class,
             'sistema_pension' => SistemaPension::class,
+            'tipo_comision_afp' => TipoComisionAfp::class,
             'seguro_salud' => SeguroSalud::class,
         ];
     }
@@ -65,6 +84,18 @@ class Trabajador extends Model
     protected function nombreCompleto(): Attribute
     {
         return Attribute::get(fn () => trim("{$this->apellido_paterno} {$this->apellido_materno}, {$this->nombres}"));
+    }
+
+    /** @return BelongsTo<Establecimiento, $this> */
+    public function establecimiento(): BelongsTo
+    {
+        return $this->belongsTo(Establecimiento::class);
+    }
+
+    /** ¿Tiene cese registrado a la fecha indicada? */
+    public function estaCesado(?CarbonImmutable $fecha = null): bool
+    {
+        return $this->fecha_cese !== null && $this->fecha_cese->lte($fecha ?? CarbonImmutable::today());
     }
 
     /** @return BelongsTo<Afp, $this> */
