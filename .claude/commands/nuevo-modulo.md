@@ -1,0 +1,17 @@
+---
+description: Crea un módulo CRUD completo siguiendo las convenciones del proyecto
+argument-hint: <nombre del módulo en español, ej. "centros de costo">
+---
+Crea el módulo **$ARGUMENTS** siguiendo `docs/convenciones.md` y `docs/modelo-datos.md`:
+
+1. Migración (si falta) con `empresa_id` cuando el dato pertenece a una empresa; montos `decimal(12,2)`.
+2. Modelo con `$fillable`, `casts`, relaciones y, si aplica, el trait de auditoría.
+3. Policy que use `puedeVerEmpresa()`; registrarla si no se autodescubre.
+4. `FormRequest` Store/Update con mensajes en español.
+5. Controlador delgado + rutas con nombres en español.
+6. Páginas Vue (`Index`, `Create`/`Edit` o un `Form` compartido) con shadcn-vue, Wayfinder y la empresa activa.
+7. Entrada en la barra lateral.
+8. Tests Feature: listar, crear, validar, editar, eliminar y aislamiento multiempresa.
+9. Actualiza `docs/modelo-datos.md` y `docs/roadmap.md`.
+
+Muéstrame el plan antes de escribir código.
