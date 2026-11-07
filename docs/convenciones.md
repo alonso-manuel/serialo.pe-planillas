@@ -2,7 +2,7 @@
 
 ## Backend
 
-- PHP 8.3, `declare` no obligatorio; tipos estrictos en firmas y retornos. PHPStan del starter kit debe pasar.
+- PHP 8.3 (hosting de clientes). `composer.json` fija `config.platform.php = 8.3.0` para que el lock nunca traiga paquetes que exijan 8.4 aunque desarrolles en 8.4; no quitarlo. `declare` no obligatorio; tipos estrictos en firmas y retornos. PHPStan del starter kit debe pasar.
 - Controladores **delgados**: validan con `FormRequest`, autorizan con Policy, llaman a un Service, devuelven `Inertia::render` o redirect.
 - Rutas en `routes/web.php` agrupadas por módulo, nombres en español: `empresas.index`, `planillas.calcular`.
 - Lógica que cambia datos en varias tablas → Service con `DB::transaction`.

@@ -13,6 +13,22 @@ jobs:
   ci:
     runs-on: ubuntu-latest
 
+    # MySQL 8 como en producción: composer setup migra contra él.
+    # Las variables DB_* van solo en ese paso: los tests usan SQLite en memoria (phpunit.xml).
+    services:
+      mysql:
+        image: mysql:8.4
+        env:
+          MYSQL_DATABASE: serialo_planillas
+          MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping -h 127.0.0.1"
+          --health-interval=5s
+          --health-timeout=5s
+          --health-retries=20
+
     steps:
       - name: Checkout code
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -24,6 +40,7 @@ jobs:
         with:
           php-version: '8.3'
           tools: composer:v2
+          extensions: bcmath, intl, mbstring, pdo_mysql, sodium, zip
           coverage: none
 
       - name: Setup Node
@@ -33,6 +50,13 @@ jobs:
 
       - name: Setup Application
         run: composer setup
+        env:
+          DB_CONNECTION: mysql
+          DB_HOST: 127.0.0.1
+          DB_PORT: 3306
+          DB_DATABASE: serialo_planillas
+          DB_USERNAME: root
+          DB_PASSWORD: ""
 
       - name: Run CI Checks
         run: composer ci:check
