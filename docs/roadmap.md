@@ -21,7 +21,7 @@ Marca `[x]` al terminar (o usa `/actualizar-roadmap`). Cada tarea: código + tes
 - [x] Usuarios: CRUD admin, rol, activar/desactivar, asignar empresas
 - [x] Empresas: CRUD, establecimientos, autocompletado por RUC (servicio intercambiable: API de consulta RUC o Padrón Reducido)
 - [x] Policies multiempresa + test Feature "asistente no ve empresa ajena"
-- [ ] Parámetros: listado por clave con vigencias, alta de nueva vigencia (no editar pasadas)
+- [x] Parámetros: listado por clave con vigencias, alta de nueva vigencia (no editar pasadas)
 - [ ] Tasas AFP: grilla mensual por AFP, importar desde Excel/CSV
 - [ ] Conceptos: listado y edición de afectaciones (los de `sistema` no se borran)
 - [ ] Auditoría: trait `Auditable` en modelos clave

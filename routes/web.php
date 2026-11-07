@@ -5,6 +5,7 @@ use App\Http\Controllers\Empresas\ConsultaRucController;
 use App\Http\Controllers\Empresas\EmpresaController;
 use App\Http\Controllers\Empresas\EstablecimientoController;
 use App\Http\Controllers\Empresas\EstadoEmpresaController;
+use App\Http\Controllers\Parametros\ParametroController;
 use App\Http\Controllers\Usuarios\EstadoUsuarioController;
 use App\Http\Controllers\Usuarios\UsuarioController;
 use Illuminate\Support\Facades\Route;
@@ -30,6 +31,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::delete('empresas/{empresa}/establecimientos/{establecimiento}', [EstablecimientoController::class, 'destroy'])
             ->name('empresas.establecimientos.destroy');
     });
+
+    // Parámetros legales (solo admin; vigencias nuevas, nunca se editan)
+    Route::resource('parametros', ParametroController::class)->only(['index', 'store', 'destroy']);
 
     // Usuarios (solo admin; nunca se eliminan, se desactivan)
     Route::resource('usuarios', UsuarioController::class)->except(['show', 'destroy']);

@@ -50,6 +50,13 @@ Vue (Inertia) ──► Controller (delgado) ──► FormRequest (validación)
 
 Cada consulta exitosa se guarda 24 h en caché (`ConsultaRucEnCache`). Ruta `GET /empresas/consulta-ruc/{ruc}` limitada a 20/min. Pendiente v1.1: driver Padrón Reducido.
 
+## Parámetros legales
+
+- Pantalla `/parametros` (solo admin): una tarjeta por `ClaveParametro` con valor vigente, próximo e historial.
+- **No se editan.** Un cambio legal = vigencia nueva desde el día 1 de un mes (`NuevaVigenciaRequest`), con base legal obligatoria.
+- Tasas: se guardan como fracción (`0.0900`) y se ingresan/muestran en porcentaje (`9.00 %`). Formato y conversión con `BigDecimal` en el enum.
+- Anular solo si ningún periodo **cerrado** cae en su rango de vigencia (`VigenciasParametros::esAnulable`). Base legal con la palabra "VERIFICAR" se marca en pantalla para revisión del contador.
+
 ## Licencia (v1.0, semana 7)
 
 - Clave = JSON firmado con **Ed25519** (`sodium_crypto_sign_detached`), en base64:
