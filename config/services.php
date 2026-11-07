@@ -16,13 +16,26 @@ return [
 
     /*
     | Consulta de RUC (autocompletar empresas). Drivers:
-    |   openruc   gratis, sin token, solo personas jurídicas (RUC 20)
-    |   decolecta plan gratuito con token (decolecta.com/profile), todos los RUC
+    |   openruc   gratis, sin token. Con DECOLECTA_TOKEN, los RUC que no son 20
+    |             (personas naturales) se consultan en Decolecta.
+    |   decolecta todos los RUC en Decolecta (gasta el cupo mensual)
     |   ninguno   sin consulta; los datos se escriben a mano
     */
     'ruc' => [
         'driver' => env('RUC_DRIVER', 'openruc'),
-        'decolecta_token' => env('DECOLECTA_TOKEN'),
+    ],
+
+    /*
+    | Consulta de DNI (autocompletar trabajadores): decolecta | ninguno.
+    | Sin token, el botón aparece desactivado.
+    */
+    'dni' => [
+        'driver' => env('DNI_DRIVER', 'decolecta'),
+    ],
+
+    // Token del plan gratuito de Decolecta (decolecta.com/profile), compartido por RUC y DNI.
+    'decolecta' => [
+        'token' => env('DECOLECTA_TOKEN'),
     ],
 
     'postmark' => [

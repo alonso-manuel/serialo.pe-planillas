@@ -16,6 +16,7 @@ use App\Models\Establecimiento;
 use App\Models\Parametro;
 use App\Models\Trabajador;
 use App\Models\User;
+use App\Services\Dni\ConsultaDni;
 use App\Services\Empresas\EmpresaActiva;
 use Carbon\CarbonImmutable;
 use Illuminate\Database\Eloquent\Builder;
@@ -214,6 +215,7 @@ class TrabajadorController extends Controller
             'seguro_por_defecto' => $empresa->seguro_salud->value,
             'permite_sis' => $empresa->regimen_laboral === RegimenLaboral::Microempresa,
             'rmv' => $rmv,
+            'consulta_dni' => app(ConsultaDni::class)->disponible(),
         ];
     }
 }

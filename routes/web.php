@@ -11,6 +11,7 @@ use App\Http\Controllers\Empresas\EstadoEmpresaController;
 use App\Http\Controllers\Parametros\ParametroController;
 use App\Http\Controllers\TasasAfp\ImportacionTasasAfpController;
 use App\Http\Controllers\TasasAfp\TasaAfpController;
+use App\Http\Controllers\Trabajadores\ConsultaDniController;
 use App\Http\Controllers\Trabajadores\TrabajadorController;
 use App\Http\Controllers\Usuarios\EstadoUsuarioController;
 use App\Http\Controllers\Usuarios\UsuarioController;
@@ -26,6 +27,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     // Personal de la empresa activa (admin y asistente; aislado por empresa)
     Route::middleware('empresa.activa')->group(function () {
+        Route::get('trabajadores/consulta-dni/{dni}', [ConsultaDniController::class, 'show'])
+            ->middleware('throttle:10,1')->name('trabajadores.consulta-dni');
         Route::resource('trabajadores', TrabajadorController::class)
             ->except(['show'])->parameters(['trabajadores' => 'trabajador']);
     });

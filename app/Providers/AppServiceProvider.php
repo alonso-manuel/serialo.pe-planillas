@@ -11,8 +11,13 @@ use App\Models\Periodo;
 use App\Models\TasaAfp;
 use App\Models\Trabajador;
 use App\Models\User;
+use App\Services\Dni\ConsultaDni;
+use App\Services\Dni\ConsultaDniDecolecta;
+use App\Services\Dni\ConsultaDniEnCache;
+use App\Services\Dni\ConsultaDniNinguna;
 use App\Services\Empresas\EmpresaActiva;
 use App\Services\Ruc\ConsultaRuc;
+use App\Services\Ruc\ConsultaRucCombinada;
 use App\Services\Ruc\ConsultaRucDecolecta;
 use App\Services\Ruc\ConsultaRucEnCache;
 use App\Services\Ruc\ConsultaRucNinguna;
@@ -37,13 +42,29 @@ class AppServiceProvider extends ServiceProvider
 
         // Proveedor de consulta RUC según config('services.ruc.driver'), con caché de 24 h.
         $this->app->bind(ConsultaRuc::class, function (Application $app): ConsultaRuc {
+            $token = config('services.decolecta.token');
+            $token = is_string($token) && $token !== '' ? $token : null;
+
             $proveedor = match (config('services.ruc.driver')) {
-                'openruc' => new ConsultaRucOpenRuc,
-                'decolecta' => new ConsultaRucDecolecta(config('services.ruc.decolecta_token')),
+                'openruc' => $token === null
+                    ? new ConsultaRucOpenRuc
+                    : new ConsultaRucCombinada(new ConsultaRucOpenRuc, new ConsultaRucDecolecta($token)),
+                'decolecta' => new ConsultaRucDecolecta($token),
                 default => new ConsultaRucNinguna,
             };
 
             return new ConsultaRucEnCache($proveedor, $app->make(Repository::class));
+        });
+
+        // Proveedor de consulta DNI (RENIEC), con caché corta (dato personal).
+        $this->app->bind(ConsultaDni::class, function (Application $app): ConsultaDni {
+            $token = config('services.decolecta.token');
+
+            $proveedor = config('services.dni.driver') === 'decolecta' && is_string($token) && $token !== ''
+                ? new ConsultaDniDecolecta($token)
+                : new ConsultaDniNinguna;
+
+            return new ConsultaDniEnCache($proveedor, $app->make(Repository::class));
         });
     }
 

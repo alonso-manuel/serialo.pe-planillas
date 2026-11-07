@@ -54,4 +54,5 @@ export type CatalogosTrabajador = {
     seguro_por_defecto: 'essalud' | 'sis';
     permite_sis: boolean;
     rmv: string | null;
+    consulta_dni: boolean;
 };

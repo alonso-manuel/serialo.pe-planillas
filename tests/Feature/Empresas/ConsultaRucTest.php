@@ -32,7 +32,7 @@ class ConsultaRucTest extends TestCase
 
     private function usarDriver(string $driver, ?string $token = null): void
     {
-        config(['services.ruc.driver' => $driver, 'services.ruc.decolecta_token' => $token]);
+        config(['services.ruc.driver' => $driver, 'services.decolecta.token' => $token]);
     }
 
     #[Test]
@@ -196,5 +196,29 @@ class ConsultaRucTest extends TestCase
         $this->getJson(route('empresas.consulta-ruc', '20000000001'))->assertOk();
 
         Http::assertSentCount(1);
+    }
+
+    #[Test]
+    public function con_token_las_personas_naturales_se_consultan_en_decolecta(): void
+    {
+        $this->usarDriver('openruc', 'token-de-prueba');
+        Http::fake([
+            'api.decolecta.com/v1/sunat/ruc*' => Http::response([
+                'razon_social' => 'PERSONA FICTICIA', 'numero_documento' => '10000000006',
+                'estado' => 'ACTIVO', 'condicion' => 'HABIDO', 'direccion' => '-', 'ubigeo' => '-',
+            ]),
+            'openruc.com/*' => Http::response([
+                'ruc' => '20000000001', 'razon_social' => 'EMPRESA FICTICIA S.A.C.', 'estado' => 'ACTIVO',
+                'condicion' => 'HABIDO', 'direccion' => 'AV. X', 'ubigeo' => '150101',
+            ]),
+        ]);
+
+        $this->actingAs($this->admin);
+        $this->getJson(route('empresas.consulta-ruc', '10000000006'))->assertOk()->assertJson(['razon_social' => 'PERSONA FICTICIA']);
+        $this->getJson(route('empresas.consulta-ruc', '20000000001'))->assertOk()->assertJson(['razon_social' => 'EMPRESA FICTICIA S.A.C.']);
+
+        Http::assertSentCount(2);
+        Http::assertSent(fn (Request $r) => str_contains($r->url(), 'openruc.com/api/ruc/20000000001'));
+        Http::assertSent(fn (Request $r) => str_contains($r->url(), 'api.decolecta.com') && $r['numero'] === '10000000006');
     }
 }

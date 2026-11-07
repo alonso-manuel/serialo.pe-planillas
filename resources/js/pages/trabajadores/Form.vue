@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { Head, Link, router, useForm } from '@inertiajs/vue3';
-import { TriangleAlert, Trash2 } from '@lucide/vue';
+import { Search, TriangleAlert, Trash2 } from '@lucide/vue';
 import { computed, ref } from 'vue';
 import Heading from '@/components/Heading.vue';
 import InputError from '@/components/InputError.vue';
@@ -27,7 +27,13 @@ import {
 } from '@/components/ui/select';
 import { Spinner } from '@/components/ui/spinner';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { destroy, index, store, update } from '@/routes/trabajadores';
+import {
+    consultaDni,
+    destroy,
+    index,
+    store,
+    update,
+} from '@/routes/trabajadores';
 import type { CatalogosTrabajador, TrabajadorEditable } from '@/types';
 
 const props = defineProps<{
@@ -144,6 +150,62 @@ function guardar(): void {
     }
 }
 
+/* ---------- Consultar DNI (RENIEC) ---------- */
+const consultando = ref(false);
+const avisoDni = ref<{ ok: boolean; texto: string } | null>(null);
+const puedeConsultar = computed(
+    () =>
+        props.catalogos.consulta_dni &&
+        form.tipo_documento === '01' &&
+        /^\d{8}$/.test(form.numero_documento),
+);
+
+async function consultarDni(): Promise<void> {
+    if (!puedeConsultar.value || consultando.value) {
+        return;
+    }
+
+    consultando.value = true;
+    avisoDni.value = null;
+    form.clearErrors('numero_documento');
+
+    try {
+        const respuesta = await fetch(consultaDni.url(form.numero_documento), {
+            headers: { Accept: 'application/json' },
+        });
+        const datos = (await respuesta.json()) as {
+            apellido_paterno?: string;
+            apellido_materno?: string | null;
+            nombres?: string;
+            message?: string;
+        };
+
+        if (!respuesta.ok) {
+            avisoDni.value = {
+                ok: false,
+                texto: datos.message ?? 'No se pudo consultar el DNI.',
+            };
+
+            return;
+        }
+
+        form.apellido_paterno = datos.apellido_paterno ?? form.apellido_paterno;
+        form.apellido_materno = datos.apellido_materno ?? '';
+        form.nombres = datos.nombres ?? form.nombres;
+        avisoDni.value = {
+            ok: true,
+            texto: 'Apellidos y nombres completados desde RENIEC.',
+        };
+    } catch {
+        avisoDni.value = {
+            ok: false,
+            texto: 'No se pudo consultar el DNI. Completa los datos a mano.',
+        };
+    } finally {
+        consultando.value = false;
+    }
+}
+
 /* ---------- Avisos (no bloquean) ---------- */
 const avisoRmv = computed(() => {
     const rmv = props.catalogos.rmv;
@@ -256,20 +318,56 @@ function eliminar(): void {
                     </div>
                     <div class="grid gap-2">
                         <Label for="numero_documento">Número</Label>
-                        <Input
-                            id="numero_documento"
-                            v-model="form.numero_documento"
-                            :inputmode="
-                                form.tipo_documento === '01'
-                                    ? 'numeric'
-                                    : 'text'
-                            "
-                            :maxlength="form.tipo_documento === '01' ? 8 : 12"
-                            class="font-mono"
-                            autocomplete="off"
-                            required
-                        />
+                        <div class="flex gap-2">
+                            <Input
+                                id="numero_documento"
+                                v-model="form.numero_documento"
+                                :inputmode="
+                                    form.tipo_documento === '01'
+                                        ? 'numeric'
+                                        : 'text'
+                                "
+                                :maxlength="
+                                    form.tipo_documento === '01' ? 8 : 12
+                                "
+                                class="font-mono"
+                                autocomplete="off"
+                                required
+                                @keydown.enter.prevent="consultarDni"
+                            />
+                            <Button
+                                v-if="form.tipo_documento === '01'"
+                                type="button"
+                                variant="outline"
+                                :disabled="!puedeConsultar || consultando"
+                                :title="
+                                    catalogos.consulta_dni
+                                        ? 'Completar apellidos y nombres desde RENIEC'
+                                        : 'La consulta de DNI no está configurada'
+                                "
+                                @click="consultarDni"
+                            >
+                                <Spinner v-if="consultando" />
+                                <Search v-else />
+                                Consultar
+                            </Button>
+                        </div>
                         <InputError :message="form.errors.numero_documento" />
+                        <p
+                            v-if="avisoDni"
+                            class="flex gap-1.5 text-xs"
+                            :class="
+                                avisoDni.ok
+                                    ? 'text-muted-foreground'
+                                    : 'text-amber-700 dark:text-amber-400'
+                            "
+                            role="status"
+                        >
+                            <TriangleAlert
+                                v-if="!avisoDni.ok"
+                                class="size-3.5 shrink-0"
+                            />{{ avisoDni.texto }}
+                        </p>
                     </div>
                     <div class="grid gap-2">
                         <Label for="apellido_paterno">Apellido paterno</Label>
