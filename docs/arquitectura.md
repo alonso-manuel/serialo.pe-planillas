@@ -64,6 +64,13 @@ Cada consulta exitosa se guarda 24 h en caché (`ConsultaRucEnCache`). Ruta `GET
 - Un mes con algún periodo **cerrado** (de cualquier empresa) no se modifica, ni por grilla ni por importación.
 - Importación (`ImportadorTasasAfp`, openspout): plantilla `.xlsx` (columnas `anio, mes, afp, aporte, prima, comision_flujo, comision_mixta, rma`) prellenada con el último mes; acepta `.xlsx` o `.csv` (`,` o `;`, decimales con coma). Vista previa en sesión con errores por fila → confirmar guarda solo las válidas. Si el aporte viene < 1 se asume fracción y se convierte, con aviso.
 
+## Conceptos (tabla 22)
+
+- Pantalla `/conceptos` (solo admin), agrupada por tipo. Se cargan solo los conceptos que se usan; el contador agrega los demás desde la tabla 22 oficial (no se transcribe la tabla completa).
+- **Sistema** (los calcula el motor): solo se renombran; no cambian afectaciones, no se desactivan ni eliminan.
+- **Propios**: solo ingresos (01xx–05xx, 09xx, 10xx) o descuentos (07xx); el tipo se deduce del código. Los descuentos no llevan afectaciones. Se eliminan solo si nunca se usaron en novedades ni resultados; si no, se desactivan.
+- Cambiar una afectación vale para cálculos nuevos y recálculos de periodos abiertos; los cerrados conservan su resultado.
+
 ## Licencia (v1.0, semana 7)
 
 - Clave = JSON firmado con **Ed25519** (`sodium_crypto_sign_detached`), en base64:

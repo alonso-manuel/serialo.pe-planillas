@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\Conceptos\ConceptoController;
+use App\Http\Controllers\Conceptos\EstadoConceptoController;
 use App\Http\Controllers\EmpresaActivaController;
 use App\Http\Controllers\Empresas\ConsultaRucController;
 use App\Http\Controllers\Empresas\EmpresaController;
@@ -45,6 +47,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::delete('tasas-afp/importar', [ImportacionTasasAfpController::class, 'cancelar'])->name('tasas-afp.importar.cancelar');
     Route::put('tasas-afp/{anio}/{mes}', [TasaAfpController::class, 'update'])
         ->whereNumber('anio')->where('mes', '[1-9]|1[0-2]')->name('tasas-afp.update');
+
+    // Conceptos tabla 22 (solo admin; los de sistema no se borran ni desactivan)
+    Route::resource('conceptos', ConceptoController::class)->only(['index', 'store', 'update', 'destroy']);
+    Route::patch('conceptos/{concepto}/estado', [EstadoConceptoController::class, 'update'])->name('conceptos.estado');
 
     // Usuarios (solo admin; nunca se eliminan, se desactivan)
     Route::resource('usuarios', UsuarioController::class)->except(['show', 'destroy']);

@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Enums\TipoConcepto;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
  * @property int $id
@@ -36,5 +37,25 @@ class Concepto extends Model
             'sistema' => 'boolean',
             'activo' => 'boolean',
         ];
+    }
+
+    public const AFECTACIONES = ['afecto_essalud', 'afecto_onp', 'afecto_afp', 'afecto_quinta'];
+
+    /** @return HasMany<Novedad, $this> */
+    public function novedades(): HasMany
+    {
+        return $this->hasMany(Novedad::class);
+    }
+
+    /** @return HasMany<PlanillaConcepto, $this> */
+    public function resultados(): HasMany
+    {
+        return $this->hasMany(PlanillaConcepto::class);
+    }
+
+    /** ¿Ya aparece en alguna novedad o resultado de planilla? (entonces no se elimina) */
+    public function estaEnUso(): bool
+    {
+        return $this->novedades()->exists() || $this->resultados()->exists();
     }
 }

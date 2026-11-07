@@ -23,7 +23,7 @@ Marca `[x]` al terminar (o usa `/actualizar-roadmap`). Cada tarea: código + tes
 - [x] Policies multiempresa + test Feature "asistente no ve empresa ajena"
 - [x] Parámetros: listado por clave con vigencias, alta de nueva vigencia (no editar pasadas)
 - [x] Tasas AFP: grilla mensual por AFP, importar desde Excel/CSV
-- [ ] Conceptos: listado y edición de afectaciones (los de `sistema` no se borran)
+- [x] Conceptos: listado y edición de afectaciones (los de `sistema` no se borran)
 - [ ] Auditoría: trait `Auditable` en modelos clave
 
 ### Semana 2 (16–20 nov) · Personal
