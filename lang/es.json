@@ -1,0 +1,18 @@
+{
+    "Profile updated.": "Perfil actualizado.",
+    "Password updated.": "Contraseña actualizada.",
+    "The provided password was incorrect.": "La contraseña no es correcta.",
+    "The provided two factor authentication code was invalid.": "El código de verificación en dos pasos no es válido.",
+    "The provided two factor recovery code was invalid.": "El código de recuperación no es válido.",
+    "Invalid credential format.": "El formato de la llave de acceso no es válido.",
+    "Passkey registration session expired. Please try again.": "Se agotó el tiempo para registrar la llave de acceso. Inténtalo de nuevo.",
+    "Passkey verification session expired. Please try again.": "Se agotó el tiempo para verificar la llave de acceso. Inténtalo de nuevo.",
+    "The :attribute must be at least :length characters.": "La :attribute debe tener al menos :length caracteres.",
+    "The :attribute must be at least :length characters and contain at least one number.": "La :attribute debe tener al menos :length caracteres y un número.",
+    "The :attribute must be at least :length characters and contain at least one special character.": "La :attribute debe tener al menos :length caracteres y un símbolo.",
+    "The :attribute must be at least :length characters and contain at least one special character and one number.": "La :attribute debe tener al menos :length caracteres, un símbolo y un número.",
+    "The :attribute must be at least :length characters and contain at least one uppercase character.": "La :attribute debe tener al menos :length caracteres y una mayúscula.",
+    "The :attribute must be at least :length characters and contain at least one uppercase character and one number.": "La :attribute debe tener al menos :length caracteres, una mayúscula y un número.",
+    "The :attribute must be at least :length characters and contain at least one uppercase character and one special character.": "La :attribute debe tener al menos :length caracteres, una mayúscula y un símbolo.",
+    "The :attribute must be at least :length characters and contain at least one uppercase character, one number, and one special character.": "La :attribute debe tener al menos :length caracteres, una mayúscula, un número y un símbolo."
+}

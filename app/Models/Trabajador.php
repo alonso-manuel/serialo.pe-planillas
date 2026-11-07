@@ -4,12 +4,12 @@ namespace App\Models;
 
 use App\Enums\SeguroSalud;
 use App\Enums\SistemaPension;
+use Carbon\CarbonImmutable;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Support\Carbon;
 
 /**
  * @property int $id
@@ -23,8 +23,8 @@ use Illuminate\Support\Carbon;
  * @property int|null $afp_id
  * @property string|null $tipo_comision_afp
  * @property SeguroSalud $seguro_salud
- * @property Carbon $fecha_ingreso
- * @property Carbon|null $fecha_cese
+ * @property CarbonImmutable $fecha_ingreso
+ * @property CarbonImmutable|null $fecha_cese
  * @property-read string $nombre_completo
  */
 class Trabajador extends Model

@@ -13,6 +13,11 @@
 - Consultas: siempre `with()` para evitar N+1 en listados; paginar (`->paginate(25)`).
 - Migraciones nuevas: `database/migrations/AAAA_MM_DD_HHMMSS_<accion>_<tabla>.php`; nunca editar una ya publicada a clientes, crear otra.
 
+## Idioma
+
+- `APP_LOCALE=es` (por defecto en `config/app.php`), `fallback_locale=en`. Mensajes propios en `lang/es/*.php` y `lang/es.json`.
+- Al crear un campo nuevo de formulario, agrega su nombre visible en `lang/es/validation.php` → `attributes`.
+
 ## Frontend
 
 - Páginas en `resources/js/pages/<modulo>/` (`Index.vue`, `Create.vue`, `Edit.vue`, `Show.vue`).

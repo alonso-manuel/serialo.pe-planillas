@@ -7,7 +7,6 @@ use Carbon\CarbonImmutable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Support\Carbon;
 
 /**
  * @property int $id
@@ -16,7 +15,7 @@ use Illuminate\Support\Carbon;
  * @property int $mes
  * @property EstadoPeriodo $estado
  * @property int|null $cerrado_por
- * @property Carbon|null $cerrado_en
+ * @property CarbonImmutable|null $cerrado_en
  */
 class Periodo extends Model
 {

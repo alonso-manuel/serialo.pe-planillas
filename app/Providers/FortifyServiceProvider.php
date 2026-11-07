@@ -2,14 +2,16 @@
 
 namespace App\Providers;
 
-use App\Actions\Fortify\CreateNewUser;
 use App\Actions\Fortify\ResetUserPassword;
+use App\Models\User;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rules\Password;
+use Illuminate\Validation\ValidationException;
 use Inertia\Inertia;
 use Laravel\Fortify\Features;
 use Laravel\Fortify\Fortify;
@@ -40,7 +42,23 @@ class FortifyServiceProvider extends ServiceProvider
     private function configureActions(): void
     {
         Fortify::resetUserPasswordsUsing(ResetUserPassword::class);
-        Fortify::createUsersUsing(CreateNewUser::class);
+
+        // Igual que el login por defecto, pero un usuario desactivado no entra.
+        Fortify::authenticateUsing(function (Request $request): ?User {
+            $usuario = User::query()->where('email', $request->string(Fortify::username())->toString())->first();
+
+            if ($usuario === null || ! Hash::check($request->string('password')->toString(), $usuario->password)) {
+                return null;
+            }
+
+            if (! $usuario->activo) {
+                throw ValidationException::withMessages([
+                    Fortify::username() => 'Tu cuenta está desactivada. Contacta al administrador.',
+                ]);
+            }
+
+            return $usuario;
+        });
     }
 
     /**
@@ -65,10 +83,6 @@ class FortifyServiceProvider extends ServiceProvider
 
         Fortify::verifyEmailView(fn (Request $request) => Inertia::render('auth/VerifyEmail', [
             'status' => $request->session()->get('status'),
-        ]));
-
-        Fortify::registerView(fn () => Inertia::render('auth/Register', [
-            'passwordRules' => Password::defaults()->toPasswordRulesString(),
         ]));
 
         Fortify::twoFactorChallengeView(fn () => Inertia::render('auth/TwoFactorChallenge'));

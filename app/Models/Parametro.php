@@ -3,14 +3,14 @@
 namespace App\Models;
 
 use App\Enums\ClaveParametro;
+use Carbon\CarbonImmutable;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Carbon;
 
 /**
  * @property int $id
  * @property ClaveParametro $clave
  * @property string $valor
- * @property Carbon $vigente_desde
+ * @property CarbonImmutable $vigente_desde
  * @property string|null $base_legal
  */
 class Parametro extends Model

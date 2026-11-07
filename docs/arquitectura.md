@@ -20,6 +20,15 @@ Vue (Inertia) ──► Controller (delgado) ──► FormRequest (validación)
 
 - Una instalación = un cliente (un estudio). Dentro hay muchas empresas.
 - `users.rol`: `admin` (ve todo y configura) | `asistente` (solo empresas asignadas en `empresa_user`).
+
+## Usuarios y acceso
+
+- Sin registro público ni autoeliminación de cuenta: los usuarios los crea un admin en `/usuarios` (`UserPolicy`, `GestionUsuarios`).
+- El admin define la contraseña inicial (el formulario sugiere una segura) y el correo queda verificado.
+- Los usuarios **nunca se eliminan**, se desactivan: se conserva la autoría en auditoría y cierres de periodo.
+- Un usuario inactivo no puede iniciar sesión (`Fortify::authenticateUsing`) y, si tenía sesión abierta, `AsegurarUsuarioActivo` la cierra en su siguiente petición.
+- Un admin no puede desactivarse ni quitarse el rol a sí mismo; así el sistema nunca queda sin un admin activo.
+- Un admin no guarda filas en `empresa_user` (ve todas); al pasar a admin se limpian.
 - Empresa activa: guardada en sesión (`session('empresa_id')`), selector en la barra lateral, compartida a Vue vía `HandleInertiaRequests::share()` (`empresaActiva`, `empresas`, `auth.esAdmin`).
     - Se resuelve con `App\Services\Empresa\EmpresaActiva` (registrado `scoped`): solo empresas visibles y activas; si la de la sesión deja de serlo, se activa la primera por razón social. Los controladores filtran por `$empresaActiva->obtener($user)`.
     - Se cambia con `PUT /empresa-activa` (`empresa-activa.update`): 403 si es ajena, error de validación si está inactiva o eliminada.
