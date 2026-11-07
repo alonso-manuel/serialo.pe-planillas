@@ -19,6 +19,7 @@ import {
 import { dashboard } from '@/routes';
 import { index as empresas } from '@/routes/empresas';
 import { index as parametros } from '@/routes/parametros';
+import { index as tasasAfp } from '@/routes/tasas-afp';
 import { index as usuarios } from '@/routes/usuarios';
 import type { GrupoNav } from '@/types';
 
@@ -73,7 +74,7 @@ export const gruposNav: GrupoNav[] = [
                 href: parametros(),
                 icon: SlidersHorizontal,
             },
-            { title: 'Tasas AFP', icon: Percent },
+            { title: 'Tasas AFP', href: tasasAfp(), icon: Percent },
             { title: 'Conceptos', icon: ListChecks },
             { title: 'Auditoría', icon: ScrollText },
         ],

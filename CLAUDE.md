@@ -14,7 +14,7 @@ Lee también: `docs/producto.md` (qué se vende), `docs/roadmap.md` (qué toca a
 - MySQL 8 en producción (los clientes usan hosting compartido con cPanel). SQLite en memoria para tests.
 - `brick/math` (`BigDecimal`) para TODO cálculo de dinero o tasas.
 - PDF de boletas: `barryvdh/laravel-dompdf` (pendiente de instalar cuando llegue el módulo de boletas).
-- Excel: `maatwebsite/excel` o `openspout/openspout` (pendiente, para carga masiva).
+- Excel: `openspout/openspout` 5.3 (lectura/escritura .xlsx y .csv; usado en tasas AFP y carga masiva).
 - Colas: driver `database` (funciona en hosting compartido con cron).
 
 ## Comandos

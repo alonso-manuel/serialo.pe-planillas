@@ -5,6 +5,19 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
+/**
+ * Tasas guardadas como fracción con 4 decimales (0.0137); RMA en soles.
+ *
+ * @property int $id
+ * @property int $afp_id
+ * @property int $anio
+ * @property int $mes
+ * @property string $aporte_obligatorio
+ * @property string $prima_seguro
+ * @property string $comision_flujo
+ * @property string $comision_mixta
+ * @property string $remuneracion_maxima_asegurable
+ */
 class TasaAfp extends Model
 {
     protected $table = 'tasas_afp';

@@ -6,6 +6,8 @@ use App\Http\Controllers\Empresas\EmpresaController;
 use App\Http\Controllers\Empresas\EstablecimientoController;
 use App\Http\Controllers\Empresas\EstadoEmpresaController;
 use App\Http\Controllers\Parametros\ParametroController;
+use App\Http\Controllers\TasasAfp\ImportacionTasasAfpController;
+use App\Http\Controllers\TasasAfp\TasaAfpController;
 use App\Http\Controllers\Usuarios\EstadoUsuarioController;
 use App\Http\Controllers\Usuarios\UsuarioController;
 use Illuminate\Support\Facades\Route;
@@ -34,6 +36,15 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     // Parámetros legales (solo admin; vigencias nuevas, nunca se editan)
     Route::resource('parametros', ParametroController::class)->only(['index', 'store', 'destroy']);
+
+    // Tasas AFP mensuales (solo admin; un mes con periodo cerrado ya no cambia)
+    Route::get('tasas-afp', [TasaAfpController::class, 'index'])->name('tasas-afp.index');
+    Route::get('tasas-afp/plantilla', [TasaAfpController::class, 'plantilla'])->name('tasas-afp.plantilla');
+    Route::post('tasas-afp/importar', [ImportacionTasasAfpController::class, 'store'])->name('tasas-afp.importar');
+    Route::post('tasas-afp/importar/confirmar', [ImportacionTasasAfpController::class, 'confirmar'])->name('tasas-afp.importar.confirmar');
+    Route::delete('tasas-afp/importar', [ImportacionTasasAfpController::class, 'cancelar'])->name('tasas-afp.importar.cancelar');
+    Route::put('tasas-afp/{anio}/{mes}', [TasaAfpController::class, 'update'])
+        ->whereNumber('anio')->where('mes', '[1-9]|1[0-2]')->name('tasas-afp.update');
 
     // Usuarios (solo admin; nunca se eliminan, se desactivan)
     Route::resource('usuarios', UsuarioController::class)->except(['show', 'destroy']);

@@ -57,6 +57,13 @@ Cada consulta exitosa se guarda 24 h en caché (`ConsultaRucEnCache`). Ruta `GET
 - Tasas: se guardan como fracción (`0.0900`) y se ingresan/muestran en porcentaje (`9.00 %`). Formato y conversión con `BigDecimal` en el enum.
 - Anular solo si ningún periodo **cerrado** cae en su rango de vigencia (`VigenciasParametros::esAnulable`). Base legal con la palabra "VERIFICAR" se marca en pantalla para revisión del contador.
 
+## Tasas AFP
+
+- Pantalla `/tasas-afp` (solo admin): resumen anual (mes completo/incompleto/vacío) y grilla editable del mes, con "Copiar del mes anterior".
+- Tasas en porcentaje en pantalla y archivos; se guardan como fracción (`App\Domain\Planilla\Porcentaje`, sin float). Rangos de seguridad: aporte 0–20 %, prima y comisiones 0–5 %.
+- Un mes con algún periodo **cerrado** (de cualquier empresa) no se modifica, ni por grilla ni por importación.
+- Importación (`ImportadorTasasAfp`, openspout): plantilla `.xlsx` (columnas `anio, mes, afp, aporte, prima, comision_flujo, comision_mixta, rma`) prellenada con el último mes; acepta `.xlsx` o `.csv` (`,` o `;`, decimales con coma). Vista previa en sesión con errores por fila → confirmar guarda solo las válidas. Si el aporte viene < 1 se asume fracción y se convierte, con aviso.
+
 ## Licencia (v1.0, semana 7)
 
 - Clave = JSON firmado con **Ed25519** (`sodium_crypto_sign_detached`), en base64:
