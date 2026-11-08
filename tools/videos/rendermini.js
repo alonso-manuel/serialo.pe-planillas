@@ -1,6 +1,6 @@
 const { chromium } = require('playwright');
 const path = require('path');
-(async () => {
+void (async () => {
     const b = await chromium.launch();
     const p = await b.newPage({ viewport: { width: 1080, height: 1920 } });
     await p.goto(

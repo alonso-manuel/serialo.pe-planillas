@@ -1,6 +1,6 @@
 const { chromium } = require('playwright');
 const { cambiarEmpresa } = require('./lib');
-(async () => {
+void (async () => {
     const b = await chromium.launch();
     const p = await b.newPage({
         viewport: { width: 1280, height: 760 },
