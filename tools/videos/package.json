@@ -1,0 +1,11 @@
+{
+    "name": "serialo-planillas-videos",
+    "private": true,
+    "description": "Graba los videos de demo con Playwright (ver docs/videos/guiones.md).",
+    "scripts": {
+        "grabar": "node videos.js"
+    },
+    "devDependencies": {
+        "playwright": "1.48.2"
+    }
+}

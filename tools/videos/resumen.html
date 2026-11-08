@@ -1,0 +1,404 @@
+<!doctype html>
+<html lang="es">
+    <head>
+        <meta charset="utf-8" />
+        <title>Serialo Planillas · Resumen</title>
+        <style>
+            :root {
+                --tinta: #0f172a;
+                --suave: #475569;
+                --azul: #2563eb;
+                --azul2: #1d4ed8;
+                --fondo: #f8fafc;
+                --verde: #16a34a;
+                --ambar: #d97706;
+            }
+            * {
+                box-sizing: border-box;
+                margin: 0;
+            }
+            html,
+            body {
+                width: 1280px;
+                height: 720px;
+                overflow: hidden;
+                background: var(--fondo);
+                color: var(--tinta);
+                font-family: 'Segoe UI', system-ui, sans-serif;
+            }
+            .lam {
+                position: absolute;
+                inset: 0;
+                padding: 70px 96px;
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                opacity: 0;
+                transform: translateY(18px);
+                transition:
+                    opacity 0.7s ease,
+                    transform 0.7s ease;
+            }
+            .lam.on {
+                opacity: 1;
+                transform: none;
+            }
+            .marca {
+                position: absolute;
+                left: 96px;
+                top: 44px;
+                font-weight: 600;
+                color: var(--suave);
+                letter-spacing: 0.02em;
+                font-size: 15px;
+            }
+            .marca b {
+                color: var(--azul);
+            }
+            .barra {
+                position: absolute;
+                left: 0;
+                bottom: 0;
+                height: 5px;
+                background: var(--azul);
+                transition: width 0.6s ease;
+            }
+            h1 {
+                font-size: 64px;
+                letter-spacing: -0.02em;
+                line-height: 1.05;
+            }
+            h2 {
+                font-size: 40px;
+                letter-spacing: -0.01em;
+                margin-bottom: 28px;
+            }
+            .sub {
+                font-size: 24px;
+                color: var(--suave);
+                margin-top: 18px;
+                max-width: 900px;
+                line-height: 1.45;
+            }
+            .chip {
+                display: inline-block;
+                background: #dbeafe;
+                color: var(--azul2);
+                font-weight: 600;
+                font-size: 15px;
+                padding: 6px 14px;
+                border-radius: 999px;
+                margin-bottom: 22px;
+            }
+            ul.items {
+                list-style: none;
+                padding: 0;
+                display: grid;
+                gap: 16px;
+                font-size: 24px;
+                line-height: 1.35;
+            }
+            ul.items li {
+                display: flex;
+                gap: 14px;
+                align-items: flex-start;
+                opacity: 0;
+                transform: translateX(-10px);
+                transition:
+                    opacity 0.5s ease,
+                    transform 0.5s ease;
+            }
+            ul.items li.on {
+                opacity: 1;
+                transform: none;
+            }
+            ul.items li::before {
+                content: '';
+                flex: 0 0 12px;
+                height: 12px;
+                border-radius: 50%;
+                background: var(--azul);
+                margin-top: 11px;
+            }
+            ul.items.malo li::before {
+                background: #dc2626;
+            }
+            .grid {
+                display: grid;
+                grid-template-columns: repeat(3, 1fr);
+                gap: 18px;
+            }
+            .card {
+                background: #fff;
+                border: 1px solid #e2e8f0;
+                border-radius: 16px;
+                padding: 20px 22px;
+                opacity: 0;
+                transform: translateY(10px);
+                transition:
+                    opacity 0.5s ease,
+                    transform 0.5s ease;
+            }
+            .card.on {
+                opacity: 1;
+                transform: none;
+            }
+            .card h3 {
+                font-size: 20px;
+                margin-bottom: 6px;
+                display: flex;
+                gap: 10px;
+                align-items: center;
+            }
+            .card p {
+                color: var(--suave);
+                font-size: 16px;
+                line-height: 1.4;
+            }
+            .ok {
+                color: var(--verde);
+            }
+            .pronto {
+                color: var(--ambar);
+            }
+            .dos {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 40px;
+            }
+            .col h3 {
+                font-size: 22px;
+                margin-bottom: 14px;
+            }
+            .lista {
+                list-style: none;
+                padding: 0;
+                display: grid;
+                gap: 9px;
+                font-size: 20px;
+            }
+            .lista li {
+                opacity: 0;
+                transition: opacity 0.4s ease;
+            }
+            .lista li.on {
+                opacity: 1;
+            }
+            .num {
+                display: inline-flex;
+                width: 30px;
+                height: 30px;
+                border-radius: 8px;
+                background: var(--azul);
+                color: #fff;
+                font-size: 15px;
+                font-weight: 700;
+                align-items: center;
+                justify-content: center;
+                margin-right: 12px;
+            }
+            .pie {
+                margin-top: 34px;
+                font-size: 18px;
+                color: var(--suave);
+            }
+        </style>
+    </head>
+    <body>
+        <div class="marca"><b>Serialo.pe</b> · Manu Dev</div>
+
+        <section class="lam" id="l1">
+            <span class="chip">Sistema web de planillas para el Perú</span>
+            <h1>Serialo Planillas</h1>
+            <p class="sub">
+                Calcula la planilla mensual, los beneficios sociales y genera
+                los archivos oficiales para SUNAT y AFP, para estudios contables
+                y empresas.
+            </p>
+        </section>
+
+        <section class="lam" id="l2">
+            <h2>El problema de hoy</h2>
+            <ul class="items malo">
+                <li>Libros de Excel con macros: un archivo por empresa.</li>
+                <li>
+                    Cada cambio legal (RMV, tasas AFP, UIT) se corrige a mano,
+                    fórmula por fórmula.
+                </li>
+                <li>
+                    Datos copiados a mano al PLAME y a AFPnet: errores y
+                    rechazos.
+                </li>
+                <li>
+                    Un solo usuario a la vez y sin registro de quién cambió qué.
+                </li>
+            </ul>
+        </section>
+
+        <section class="lam" id="l3">
+            <h2>Qué hace Serialo Planillas</h2>
+            <div class="grid">
+                <div class="card">
+                    <h3>🧮 Planilla mensual</h3>
+                    <p>
+                        Régimen general, pequeña y microempresa: ingresos,
+                        ONP/AFP, EsSalud o SIS y neto a pagar.
+                    </p>
+                </div>
+                <div class="card">
+                    <h3>🏢 Multiempresa</h3>
+                    <p>
+                        Un estudio atiende decenas de empresas, con varios
+                        asistentes trabajando a la vez.
+                    </p>
+                </div>
+                <div class="card">
+                    <h3>⚡ Cálculo en lote</h3>
+                    <p>
+                        Calcula todas las empresas del mes en segundo plano, con
+                        avance en pantalla.
+                    </p>
+                </div>
+                <div class="card">
+                    <h3>🎁 Beneficios</h3>
+                    <p>
+                        Gratificaciones, CTS y vacaciones con sus reglas
+                        legales.
+                    </p>
+                </div>
+                <div class="card">
+                    <h3>📄 Boletas PDF</h3>
+                    <p>
+                        Boletas de pago en lote, listas para enviar por correo.
+                    </p>
+                </div>
+                <div class="card">
+                    <h3>🏛️ Archivos oficiales</h3>
+                    <p>
+                        PLAME (SUNAT), AFPnet y T-Registro, sin digitar nada dos
+                        veces.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <section class="lam" id="l4">
+            <h2>Principios del sistema</h2>
+            <ul class="items">
+                <li>
+                    Cálculo exacto al céntimo: sin decimales flotantes, redondeo
+                    por concepto.
+                </li>
+                <li>
+                    Las leyes son datos: RMV, UIT y tasas con fecha de vigencia.
+                    Un mes antiguo se recalcula igual.
+                </li>
+                <li>
+                    Periodo cerrado = inmutable. Solo el administrador lo
+                    reabre, con motivo.
+                </li>
+                <li>Auditoría completa: quién, cuándo y qué cambió.</li>
+                <li>
+                    Se instala en el hosting del cliente: los datos de los
+                    trabajadores no salen de su servidor (Ley 29733).
+                </li>
+            </ul>
+        </section>
+
+        <section class="lam" id="l5">
+            <h2>Cómo va el desarrollo</h2>
+            <div class="dos">
+                <div class="col">
+                    <h3 class="ok">✔ Disponible hoy</h3>
+                    <ul class="lista" id="hoy">
+                        <li>Acceso seguro (2FA y passkeys)</li>
+                        <li>Empresas y establecimientos</li>
+                        <li>Usuarios y roles</li>
+                        <li>Parámetros legales con vigencia</li>
+                        <li>Tasas AFP mensuales</li>
+                        <li>Conceptos (tabla 22 SUNAT)</li>
+                        <li>Trabajadores, historial, cese y carga Excel</li>
+                        <li>Periodos: novedades, cálculo, cierre</li>
+                        <li>Auditoría</li>
+                    </ul>
+                </div>
+                <div class="col">
+                    <h3 class="pronto">◷ Próximas semanas</h3>
+                    <ul class="lista" id="prox">
+                        <li>Gratificación de diciembre</li>
+                        <li>Boletas de pago en PDF</li>
+                        <li>CTS y vacaciones</li>
+                        <li>Archivos PLAME y AFPnet</li>
+                        <li>T-Registro y quinta categoría</li>
+                        <li>Reportes y panel del estudio</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <section class="lam" id="l6">
+            <h2>En los siguientes videos</h2>
+            <div class="dos">
+                <ul class="lista" id="vids1">
+                    <li><span class="num">1</span>Acceso al sistema</li>
+                    <li><span class="num">2</span>Empresas</li>
+                    <li><span class="num">3</span>Usuarios</li>
+                    <li><span class="num">4</span>Parámetros legales</li>
+                    <li><span class="num">5</span>Tasas AFP</li>
+                </ul>
+                <ul class="lista" id="vids2">
+                    <li><span class="num">6</span>Conceptos</li>
+                    <li><span class="num">7</span>Trabajadores</li>
+                    <li><span class="num">8</span>Periodos y planilla</li>
+                    <li><span class="num">9</span>Auditoría</li>
+                </ul>
+            </div>
+            <p class="pie">Todos los datos que verás son ficticios.</p>
+        </section>
+
+        <div class="barra" id="barra" style="width: 0"></div>
+
+        <script>
+            const espera = (ms) => new Promise((r) => setTimeout(r, ms));
+            const pasos = [
+                ['l1', 6000],
+                ['l2', 9500, '#l2 li'],
+                ['l3', 12000, '#l3 .card'],
+                ['l4', 12500, '#l4 li'],
+                ['l5', 11000, '#hoy li, #prox li'],
+                ['l6', 8000, '#vids1 li, #vids2 li'],
+            ];
+            window.terminado = false;
+            window.iniciar = async () => {
+                let anterior = null;
+                for (let i = 0; i < pasos.length; i++) {
+                    const [id, ms, hijos] = pasos[i];
+                    if (anterior) {
+                        anterior.classList.remove('on');
+                        await espera(500);
+                    }
+                    const l = document.getElementById(id);
+                    l.classList.add('on');
+                    document.getElementById('barra').style.width =
+                        ((i + 1) / pasos.length) * 100 + '%';
+                    let usado = 0;
+                    if (hijos) {
+                        const els = document.querySelectorAll(hijos);
+                        const paso = Math.min(1100, (ms * 0.6) / els.length);
+                        await espera(500);
+                        for (const e of els) {
+                            e.classList.add('on');
+                            await espera(paso);
+                            usado += paso;
+                        }
+                        usado += 500;
+                    }
+                    await espera(Math.max(1500, ms - usado));
+                    anterior = l;
+                }
+                await espera(800);
+                window.terminado = true;
+            };
+        </script>
+    </body>
+</html>

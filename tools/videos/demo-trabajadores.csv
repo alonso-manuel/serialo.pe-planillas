@@ -1,0 +1,4 @@
+tipo_documento,numero_documento,apellido_paterno,apellido_materno,nombres,fecha_nacimiento,sexo,fecha_ingreso,cargo,establecimiento,tipo_contrato,remuneracion_basica,asignacion_familiar,sistema_pension,afp,cuspp,comision_afp,seguro_salud,cuenta_sueldo,cuenta_cts,email,telefono
+DNI,70000101,Prueba,Ejemplo,Andrea,1995-03-14,F,2026-11-01,Vendedora,,indeterminado,1300.00,si,ONP,,,,,,,,
+DNI,70000102,Demo,Muestra,Bruno,1990-07-02,M,2026-11-01,Almacenero,,plazo_fijo,1250.00,no,AFP,Integra,70000102DEMO,flujo,,,,,
+DNI,7000010,Ficticio,Ensayo,Celia,1998-01-20,F,2026-11-01,Cajera,,indeterminado,1130.00,no,ONP,,,,,,,,
