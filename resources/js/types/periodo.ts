@@ -126,3 +126,13 @@ export type DetalleLinea = {
     posicion: number;
     total: number;
 };
+
+/** Cierre del periodo: permisos del usuario, quién cerró y avisos de orden entre meses. */
+export type CierrePeriodo = {
+    puede_cerrar: boolean;
+    puede_reabrir: boolean;
+    cerrado_por: string | null;
+    cerrado_en: string | null;
+    anterior_sin_cerrar: string | null;
+    posteriores_cerrados: string[];
+};

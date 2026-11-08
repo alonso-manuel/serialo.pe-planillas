@@ -1,8 +1,10 @@
 <script setup lang="ts">
-import { Head, Link, router, usePage } from '@inertiajs/vue3';
+import { Head, Link, router, useForm, usePage } from '@inertiajs/vue3';
 import {
     Calculator,
     CircleAlert,
+    Lock,
+    LockOpen,
     RefreshCw,
     Trash2,
     TriangleAlert,
@@ -21,10 +23,22 @@ import {
     DialogHeader,
     DialogTitle,
 } from '@/components/ui/dialog';
-import { calcular, destroy, index, sincronizar } from '@/routes/periodos';
+import InputError from '@/components/InputError.vue';
+import { Label } from '@/components/ui/label';
+import { Spinner } from '@/components/ui/spinner';
+import { formatoMonto, sumarMontos } from '@/lib/montos';
+import {
+    calcular,
+    cerrar,
+    destroy,
+    index,
+    reabrir,
+    sincronizar,
+} from '@/routes/periodos';
 import { index as parametros } from '@/routes/parametros';
 import { index as tasasAfp } from '@/routes/tasas-afp';
 import type {
+    CierrePeriodo,
     ConceptoNovedad,
     EstadoPeriodo as Estado,
     LineaPeriodo,
@@ -37,6 +51,7 @@ const props = defineProps<{
     columnas: number[];
     conceptos: ConceptoNovedad[];
     problemas: string[];
+    cierre: CierrePeriodo;
 }>();
 
 const page = usePage();
@@ -100,6 +115,37 @@ async function calcularPlanilla(): Promise<void> {
     );
 }
 
+/* ---------- Cerrar / reabrir (solo admin) ---------- */
+const dialogoCerrar = ref(false);
+const netoTotal = computed(() =>
+    sumarMontos(props.lineas.map((l) => l.neto_pagar)),
+);
+const formCerrar = useForm({});
+
+function cerrarPeriodo(): void {
+    formCerrar.post(cerrar.url(props.periodo.id), {
+        preserveScroll: true,
+        preserveState: false,
+    });
+}
+
+const dialogoReabrir = ref(false);
+const formReabrir = useForm({ motivo: '' });
+
+function abrirReabrir(): void {
+    formReabrir.reset();
+    formReabrir.clearErrors();
+    dialogoReabrir.value = true;
+}
+
+function reabrirPeriodo(): void {
+    formReabrir.post(reabrir.url(props.periodo.id), {
+        preserveScroll: true,
+        // Con errores se queda el diálogo; si sale bien se recarga la página entera.
+        preserveState: (page) => Object.keys(page.props.errors).length > 0,
+    });
+}
+
 const confirmarEliminar = ref(false);
 
 function eliminar(): void {
@@ -118,6 +164,30 @@ function eliminar(): void {
                     :description="periodo.empresa ?? undefined"
                 />
                 <EstadoPeriodo :estado="estado" :etiqueta="ETIQUETAS[estado]" />
+            </div>
+            <div
+                v-if="
+                    cierre.puede_reabrir ||
+                    (cierre.puede_cerrar && estado === 'calculado')
+                "
+                class="flex flex-wrap gap-2 sm:order-last"
+            >
+                <Button
+                    v-if="cierre.puede_cerrar && estado === 'calculado'"
+                    variant="outline"
+                    @click="dialogoCerrar = true"
+                >
+                    <Lock />
+                    Cerrar periodo
+                </Button>
+                <Button
+                    v-if="cierre.puede_reabrir"
+                    variant="outline"
+                    @click="abrirReabrir"
+                >
+                    <LockOpen />
+                    Reabrir periodo
+                </Button>
             </div>
             <div v-if="periodo.puede_editar" class="flex flex-wrap gap-2">
                 <Button
@@ -187,9 +257,22 @@ function eliminar(): void {
         </p>
         <p
             v-else-if="estado === 'cerrado'"
-            class="rounded-md bg-muted/50 p-3 text-sm text-muted-foreground"
+            class="flex items-center gap-2 rounded-md bg-muted/50 p-3 text-sm text-muted-foreground"
         >
-            Periodo cerrado: las novedades son solo de lectura.
+            <Lock class="size-4 shrink-0" />
+            <span>
+                Periodo cerrado
+                <template v-if="cierre.cerrado_por">
+                    por {{ cierre.cerrado_por }}</template
+                >
+                <template v-if="cierre.cerrado_en">
+                    el {{ cierre.cerrado_en }}</template
+                >. Las novedades y los montos son solo de lectura<template
+                    v-if="!cierre.puede_reabrir"
+                    >; para corregirlo, pide al administrador que lo
+                    reabra</template
+                >.
+            </span>
         </p>
 
         <GrillaNovedades
@@ -202,6 +285,97 @@ function eliminar(): void {
             @estado="(e) => (estado = e)"
         />
     </div>
+
+    <Dialog v-model:open="dialogoCerrar">
+        <DialogContent>
+            <DialogHeader>
+                <DialogTitle
+                    >¿Cerrar la planilla de {{ periodo.etiqueta }}?</DialogTitle
+                >
+                <DialogDescription>
+                    {{ lineas.length }}
+                    {{ lineas.length === 1 ? 'trabajador' : 'trabajadores' }},
+                    neto total S/ {{ formatoMonto(netoTotal) }}. Una vez cerrado
+                    nadie podrá editar novedades ni recalcular; solo el
+                    administrador puede reabrirlo indicando el motivo.
+                </DialogDescription>
+            </DialogHeader>
+            <p
+                v-if="cierre.anterior_sin_cerrar"
+                class="flex items-start gap-2 rounded-md border border-amber-300 bg-amber-50 p-3 text-sm text-amber-900 dark:border-amber-900 dark:bg-amber-950/40 dark:text-amber-300"
+            >
+                <TriangleAlert class="mt-0.5 size-4 shrink-0" />
+                {{ cierre.anterior_sin_cerrar }} aún no está cerrado. Puedes
+                continuar, pero lo usual es cerrar los meses en orden.
+            </p>
+            <DialogFooter>
+                <DialogClose as-child>
+                    <Button variant="outline">Cancelar</Button>
+                </DialogClose>
+                <Button
+                    :disabled="formCerrar.processing"
+                    @click="cerrarPeriodo"
+                >
+                    <Spinner v-if="formCerrar.processing" />
+                    <Lock v-else />
+                    Cerrar periodo
+                </Button>
+            </DialogFooter>
+        </DialogContent>
+    </Dialog>
+
+    <Dialog v-model:open="dialogoReabrir">
+        <DialogContent>
+            <DialogHeader>
+                <DialogTitle>Reabrir {{ periodo.etiqueta }}</DialogTitle>
+                <DialogDescription>
+                    El periodo vuelve a «Calculado» con los mismos montos. Si
+                    cambias alguna novedad pasará a «Abierto» y deberás
+                    recalcular. El motivo queda en la auditoría.
+                </DialogDescription>
+            </DialogHeader>
+            <p
+                v-if="cierre.posteriores_cerrados.length"
+                class="flex items-start gap-2 rounded-md border border-amber-300 bg-amber-50 p-3 text-sm text-amber-900 dark:border-amber-900 dark:bg-amber-950/40 dark:text-amber-300"
+            >
+                <TriangleAlert class="mt-0.5 size-4 shrink-0" />
+                Ya están cerrados meses posteriores:
+                {{ cierre.posteriores_cerrados.join(', ') }}. Si cambias este
+                mes, revisa si también deben corregirse.
+            </p>
+            <form
+                id="form-reabrir"
+                class="grid gap-2"
+                @submit.prevent="reabrirPeriodo"
+            >
+                <Label for="motivo">Motivo</Label>
+                <textarea
+                    id="motivo"
+                    v-model="formReabrir.motivo"
+                    rows="3"
+                    maxlength="500"
+                    required
+                    placeholder="Ej.: rectificatoria del PLAME por un bono no registrado"
+                    class="w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm shadow-xs outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50"
+                />
+                <InputError :message="formReabrir.errors.motivo" />
+            </form>
+            <DialogFooter>
+                <DialogClose as-child>
+                    <Button variant="outline">Cancelar</Button>
+                </DialogClose>
+                <Button
+                    type="submit"
+                    form="form-reabrir"
+                    :disabled="formReabrir.processing"
+                >
+                    <Spinner v-if="formReabrir.processing" />
+                    <LockOpen v-else />
+                    Reabrir periodo
+                </Button>
+            </DialogFooter>
+        </DialogContent>
+    </Dialog>
 
     <Dialog v-model:open="confirmarEliminar">
         <DialogContent>

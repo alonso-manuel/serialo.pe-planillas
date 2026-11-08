@@ -138,6 +138,10 @@ const COLORES: Record<string, string> = {
         'border-sky-300 text-sky-700 dark:border-sky-800 dark:text-sky-400',
     eliminado:
         'border-red-300 text-red-700 dark:border-red-900 dark:text-red-400',
+    cerrado:
+        'border-violet-300 text-violet-700 dark:border-violet-800 dark:text-violet-400',
+    reabierto:
+        'border-amber-300 text-amber-700 dark:border-amber-800 dark:text-amber-400',
 };
 </script>
 

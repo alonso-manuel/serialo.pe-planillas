@@ -10,6 +10,7 @@ use App\Http\Controllers\Empresas\EstablecimientoController;
 use App\Http\Controllers\Empresas\EstadoEmpresaController;
 use App\Http\Controllers\Parametros\ParametroController;
 use App\Http\Controllers\Periodos\CalculoController;
+use App\Http\Controllers\Periodos\CierrePeriodoController;
 use App\Http\Controllers\Periodos\LineaPlanillaController;
 use App\Http\Controllers\Periodos\PeriodoController;
 use App\Http\Controllers\TasasAfp\ImportacionTasasAfpController;
@@ -35,6 +36,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::middleware('empresa.activa')->group(function () {
         Route::resource('periodos', PeriodoController::class)->only(['index', 'store', 'show', 'destroy']);
         Route::post('periodos/{periodo}/calcular', [CalculoController::class, 'periodo'])->name('periodos.calcular');
+        Route::post('periodos/{periodo}/cerrar', [CierrePeriodoController::class, 'cerrar'])->name('periodos.cerrar');
+        Route::post('periodos/{periodo}/reabrir', [CierrePeriodoController::class, 'reabrir'])->name('periodos.reabrir');
         Route::post('periodos/{periodo}/sincronizar', [PeriodoController::class, 'sincronizar'])->name('periodos.sincronizar');
         Route::put('periodos/{periodo}/lineas/{linea}', [LineaPlanillaController::class, 'update'])
             ->scopeBindings()->name('periodos.lineas.update');

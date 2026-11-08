@@ -40,7 +40,7 @@ Marca `[x]` al terminar (o usa `/actualizar-roadmap`). Cada tarea: código + tes
 - [x] Grilla de novedades editable (días, faltas, HE, bonos, adelantos) estilo hoja de cálculo
 - [x] Botón "Calcular" → `CalcularPlanillaPeriodo`; cálculo de todas las empresas en cola con progreso
 - [x] Vista de resultado por trabajador (detalle de conceptos)
-- [ ] Cerrar / reabrir periodo (solo admin, auditado)
+- [x] Cerrar / reabrir periodo (solo admin, auditado)
 - [ ] **Demo visual** con `DemoSeeder` + grabar video de 3–5 min
 
 ### Semana 4 (30 nov – 4 dic) · Gratificación de diciembre + boletas

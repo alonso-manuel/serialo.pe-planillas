@@ -9,6 +9,7 @@ use Carbon\CarbonImmutable;
 use Database\Factories\PeriodoFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
@@ -19,6 +20,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property EstadoPeriodo $estado
  * @property int|null $cerrado_por
  * @property CarbonImmutable|null $cerrado_en
+ * @property-read User|null $cerradoPor
  */
 class Periodo extends Model
 {
@@ -34,6 +36,12 @@ class Periodo extends Model
             'estado' => EstadoPeriodo::class,
             'cerrado_en' => 'datetime',
         ];
+    }
+
+    /** @return BelongsTo<User, $this> */
+    public function cerradoPor(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'cerrado_por');
     }
 
     /** @return HasMany<PlanillaLinea, $this> */

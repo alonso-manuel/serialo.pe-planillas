@@ -11,6 +11,7 @@ use App\Models\Periodo;
 use App\Models\PlanillaLinea;
 use App\Models\User;
 use App\Services\Empresas\EmpresaActiva;
+use App\Services\Planilla\CierrePeriodo;
 use App\Services\Planilla\NovedadesPlanilla;
 use App\Services\Planilla\PeriodosPlanilla;
 use Illuminate\Http\RedirectResponse;
@@ -26,6 +27,7 @@ class PeriodoController extends Controller
         private readonly PeriodosPlanilla $periodos,
         private readonly EmpresaActiva $empresaActiva,
         private readonly NovedadesPlanilla $novedades,
+        private readonly CierrePeriodo $cierre,
     ) {}
 
     public function index(Request $request): Response
@@ -117,6 +119,13 @@ class PeriodoController extends Controller
                 'estado_etiqueta' => $periodo->estado->etiqueta(),
                 'puede_editar' => $usuario->can('update', $periodo),
                 'empresa' => $periodo->empresa?->razon_social,
+            ],
+            'cierre' => [
+                'puede_cerrar' => $usuario->can('cerrar', $periodo),
+                'puede_reabrir' => $usuario->can('reabrir', $periodo),
+                'cerrado_por' => $periodo->cerradoPor?->name,
+                'cerrado_en' => $periodo->cerrado_en?->format('d/m/Y H:i'),
+                ...$this->cierre->avisos($periodo),
             ],
             'lineas' => $lineas,
             'problemas' => $request->session()->get('problemas_calculo', []),
