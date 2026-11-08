@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { Head, Link, router, usePage } from '@inertiajs/vue3';
-import { Pencil, Plus, Search, Users } from '@lucide/vue';
+import { Pencil, Plus, Search, Upload, Users } from '@lucide/vue';
 import { useDebounceFn } from '@vueuse/core';
 import { computed, ref, watch } from 'vue';
 import Heading from '@/components/Heading.vue';
@@ -14,7 +14,7 @@ import {
     SelectTrigger,
     SelectValue,
 } from '@/components/ui/select';
-import { create, edit, index } from '@/routes/trabajadores';
+import { create, edit, importar, index } from '@/routes/trabajadores';
 import type { Opcion, Paginado, TrabajadorFila } from '@/types';
 
 type Filtros = {
@@ -92,12 +92,20 @@ const hayFiltros = computed(
                 title="Trabajadores"
                 :description="`Personal de ${empresa ?? 'la empresa activa'}.`"
             />
-            <Button as-child>
-                <Link :href="create()">
-                    <Plus />
-                    Nuevo trabajador
-                </Link>
-            </Button>
+            <div class="flex gap-2">
+                <Button variant="outline" as-child>
+                    <Link :href="importar()">
+                        <Upload />
+                        Importar desde Excel
+                    </Link>
+                </Button>
+                <Button as-child>
+                    <Link :href="create()">
+                        <Plus />
+                        Nuevo trabajador
+                    </Link>
+                </Button>
+            </div>
         </div>
 
         <div class="flex flex-wrap gap-3">
@@ -166,9 +174,16 @@ const hayFiltros = computed(
                 Registra el primero con su ficha completa: datos personales,
                 laborales, pensión y cuentas.
             </p>
-            <Button as-child class="mt-2">
-                <Link :href="create()"><Plus />Nuevo trabajador</Link>
-            </Button>
+            <div class="mt-2 flex gap-2">
+                <Button variant="outline" as-child>
+                    <Link :href="importar()"
+                        ><Upload />Importar desde Excel</Link
+                    >
+                </Button>
+                <Button as-child>
+                    <Link :href="create()"><Plus />Nuevo trabajador</Link>
+                </Button>
+            </div>
         </div>
 
         <div v-else class="overflow-x-auto rounded-lg border">

@@ -14,6 +14,7 @@ use App\Http\Controllers\TasasAfp\TasaAfpController;
 use App\Http\Controllers\Trabajadores\CambioTrabajadorController;
 use App\Http\Controllers\Trabajadores\CeseTrabajadorController;
 use App\Http\Controllers\Trabajadores\ConsultaDniController;
+use App\Http\Controllers\Trabajadores\ImportacionTrabajadoresController;
 use App\Http\Controllers\Trabajadores\TrabajadorController;
 use App\Http\Controllers\Usuarios\EstadoUsuarioController;
 use App\Http\Controllers\Usuarios\UsuarioController;
@@ -29,6 +30,11 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     // Personal de la empresa activa (admin y asistente; aislado por empresa)
     Route::middleware('empresa.activa')->group(function () {
+        Route::get('trabajadores/importar', [ImportacionTrabajadoresController::class, 'index'])->name('trabajadores.importar');
+        Route::get('trabajadores/importar/plantilla', [ImportacionTrabajadoresController::class, 'plantilla'])->name('trabajadores.importar.plantilla');
+        Route::post('trabajadores/importar', [ImportacionTrabajadoresController::class, 'store'])->name('trabajadores.importar.store');
+        Route::post('trabajadores/importar/confirmar', [ImportacionTrabajadoresController::class, 'confirmar'])->name('trabajadores.importar.confirmar');
+        Route::delete('trabajadores/importar', [ImportacionTrabajadoresController::class, 'cancelar'])->name('trabajadores.importar.cancelar');
         Route::get('trabajadores/consulta-dni/{dni}', [ConsultaDniController::class, 'show'])
             ->middleware('throttle:10,1')->name('trabajadores.consulta-dni');
         Route::post('trabajadores/{trabajador}/cese', [CeseTrabajadorController::class, 'store'])

@@ -32,7 +32,7 @@ Marca `[x]` al terminar (o usa `/actualizar-roadmap`). Cada tarea: código + tes
 - [x] Autocompletar nombre por DNI (servicio intercambiable)
 - [x] Historial: cambios de sueldo/cargo/pensión con vigencia
 - [x] Cese de trabajador (fecha y motivo tabla SUNAT)
-- [ ] Carga masiva desde Excel con plantilla descargable, vista previa y errores por fila
+- [x] Carga masiva desde Excel con plantilla descargable, vista previa y errores por fila
 
 ### Semana 3 (23–27 nov) · Planilla mensual + DEMO VISUAL
 

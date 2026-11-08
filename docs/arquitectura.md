@@ -101,6 +101,13 @@ Con `DECOLECTA_TOKEN`, el driver `openruc` consulta los RUC 20 en OpenRUC y el r
 - No se cesa si figura en una planilla de un mes posterior; no se registran cambios de historial después del mes de cese.
 - «Revertir cese» solo para errores. Reingreso con nuevo periodo laboral y liquidación de beneficios: v1.1.
 
+## Carga masiva de trabajadores
+
+- `/trabajadores/importar` (empresa activa): plantilla .xlsx con hojas «Trabajadores» (2 ejemplos ficticios que el importador rechaza si no se borran) e «Instrucciones».
+- `ImportadorTrabajadores` traduce cada fila (tildes, mayúsculas, fechas dd/mm/aaaa, celda o número de serie de Excel, montos con coma, código de establecimiento, AFP por código) y la valida con `ReglasTrabajador`, las mismas reglas de la ficha.
+- Solo altas (documento existente = error); vista previa en sesión; confirmar crea solo las válidas y solo si la empresa activa no cambió. Máximo 500 filas. Sin consulta de DNI (cupo).
+- Lectura común de Excel/CSV: `App\Services\Importacion\LectorHojaCalculo` (también la usan las tasas AFP), con número de línea real.
+
 ## Consulta de DNI
 
 - `App\Services\Dni\ConsultaDni` (driver `DNI_DRIVER=decolecta|ninguno`, token `DECOLECTA_TOKEN` compartido con RUC; plan gratuito ~100 consultas/mes). Sin token, el botón aparece desactivado.

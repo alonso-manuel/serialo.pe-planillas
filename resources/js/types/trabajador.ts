@@ -76,3 +76,21 @@ export type CambioHistorial = {
     cambios: { campo: string; antes: string; despues: string }[];
     anulable: boolean;
 };
+
+export type FilaImportadaTrabajador = {
+    linea: number;
+    documento: string;
+    nombre: string;
+    cargo: string | null;
+    remuneracion_basica: string;
+    pension: string;
+    errores: string[];
+    avisos: string[];
+};
+
+export type ImportacionTrabajadores = {
+    archivo: string;
+    validas: number;
+    con_errores: number;
+    filas: FilaImportadaTrabajador[];
+};

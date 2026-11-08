@@ -2,16 +2,9 @@
 
 namespace App\Services\TasasAfp;
 
+use App\Services\Importacion\LectorHojaCalculo;
 use Brick\Math\BigDecimal;
 use Illuminate\Contracts\Session\Session;
-use Illuminate\Validation\ValidationException;
-use OpenSpout\Reader\CSV\Options as OpcionesCsv;
-use OpenSpout\Reader\CSV\Reader as LectorCsv;
-use OpenSpout\Reader\ReaderInterface;
-use OpenSpout\Reader\RowIteratorInterface;
-use OpenSpout\Reader\SheetInterface;
-use OpenSpout\Reader\SheetIteratorInterface;
-use OpenSpout\Reader\XLSX\Reader as LectorXlsx;
 
 /**
  * Importa tasas AFP desde la plantilla (CSV o XLSX) en dos pasos:
@@ -37,6 +30,7 @@ class ImportadorTasasAfp
     public function __construct(
         private readonly TasasAfpMensuales $tasas,
         private readonly Session $session,
+        private readonly LectorHojaCalculo $lector,
     ) {}
 
     /**
@@ -44,7 +38,7 @@ class ImportadorTasasAfp
      */
     public function previsualizar(string $ruta, string $extension, string $nombreArchivo): array
     {
-        $filas = $this->validar($this->leer($ruta, $extension));
+        $filas = $this->validar($this->lector->leer($ruta, $extension, self::COLUMNAS, self::MAXIMO_FILAS));
 
         $this->session->put(self::CLAVE_SESION, ['archivo' => $nombreArchivo, 'filas' => $filas]);
 
@@ -122,93 +116,7 @@ class ImportadorTasasAfp
     }
 
     /**
-     * Lee el archivo y devuelve las filas como [columna => texto], sin el encabezado.
-     *
-     * @return list<array<string, string>>
-     */
-    private function leer(string $ruta, string $extension): array
-    {
-        $lector = $this->lector($ruta, $extension);
-
-        try {
-            $lector->open($ruta);
-            $encabezado = null;
-            $filas = [];
-
-            foreach ($lector->getSheetIterator() as $hoja) {
-                foreach ($hoja->getRowIterator() as $fila) {
-                    $valores = array_map(fn ($v) => $this->texto($v), $fila->toArray());
-
-                    if ($encabezado === null) {
-                        $encabezado = array_map(fn (string $v) => mb_strtolower(trim($v)), $valores);
-                        if (array_diff(self::COLUMNAS, $encabezado) !== []) {
-                            throw $this->errorArchivo('El archivo no tiene las columnas de la plantilla: '.implode(', ', self::COLUMNAS).'.');
-                        }
-
-                        continue;
-                    }
-
-                    if (implode('', $valores) === '') {
-                        continue;
-                    }
-
-                    if (count($filas) >= self::MAXIMO_FILAS) {
-                        throw $this->errorArchivo('El archivo tiene más de '.self::MAXIMO_FILAS.' filas.');
-                    }
-
-                    $filas[] = array_combine(
-                        $encabezado,
-                        array_pad(array_slice($valores, 0, count($encabezado)), count($encabezado), ''),
-                    );
-                }
-
-                break; // solo la primera hoja
-            }
-        } catch (ValidationException $e) {
-            throw $e;
-        } catch (\Throwable $e) {
-            report($e);
-            throw $this->errorArchivo('No se pudo leer el archivo. Usa la plantilla en formato .xlsx o .csv.');
-        } finally {
-            $lector->close();
-        }
-
-        if ($encabezado === null) {
-            throw $this->errorArchivo('El archivo está vacío.');
-        }
-
-        return $filas;
-    }
-
-    /** @return ReaderInterface<covariant SheetIteratorInterface<covariant SheetInterface<covariant RowIteratorInterface>>> */
-    private function lector(string $ruta, string $extension): ReaderInterface
-    {
-        if ($extension === 'xlsx') {
-            return new LectorXlsx;
-        }
-
-        // CSV: separador coma o punto y coma (Excel en español suele usar ';').
-        $archivo = fopen($ruta, 'r') ?: throw $this->errorArchivo('No se pudo abrir el archivo.');
-        $primeraLinea = (string) fgets($archivo);
-        fclose($archivo);
-        $separador = substr_count($primeraLinea, ';') > substr_count($primeraLinea, ',') ? ';' : ',';
-
-        return new LectorCsv(new OpcionesCsv(FIELD_DELIMITER: $separador));
-    }
-
-    /** Valor de celda → texto. Los números de Excel llegan como float: se escriben sin notación científica. */
-    private function texto(mixed $valor): string
-    {
-        return match (true) {
-            is_float($valor) => rtrim(rtrim(sprintf('%.10F', $valor), '0'), '.'),
-            is_int($valor) => (string) $valor,
-            is_string($valor) => trim($valor),
-            default => '',
-        };
-    }
-
-    /**
-     * @param  list<array<string, string>>  $filas
+     * @param  list<array{linea: int, valores: array<string, string>}>  $filas
      * @return list<array<string, mixed>>
      */
     private function validar(array $filas): array
@@ -217,8 +125,7 @@ class ImportadorTasasAfp
         $vistas = [];
         $resultado = [];
 
-        foreach ($filas as $i => $fila) {
-            $linea = $i + 2; // la línea 1 es el encabezado
+        foreach ($filas as ['linea' => $linea, 'valores' => $fila]) {
             $errores = [];
             $avisos = [];
 
@@ -296,10 +203,5 @@ class ImportadorTasasAfp
         }
 
         return $resultado;
-    }
-
-    private function errorArchivo(string $mensaje): ValidationException
-    {
-        return ValidationException::withMessages(['archivo' => $mensaje]);
     }
 }
