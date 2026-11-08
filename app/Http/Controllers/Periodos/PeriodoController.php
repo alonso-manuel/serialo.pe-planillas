@@ -55,6 +55,7 @@ class PeriodoController extends Controller
             'periodos' => $periodos,
             'siguiente' => $this->periodos->siguiente($empresa),
             'hoy' => ['anio' => (int) now()->year, 'mes' => (int) now()->month],
+            'calculo' => $request->string('calculo')->toString() ?: null,
         ]);
     }
 
@@ -118,6 +119,7 @@ class PeriodoController extends Controller
                 'empresa' => $periodo->empresa?->razon_social,
             ],
             'lineas' => $lineas,
+            'problemas' => $request->session()->get('problemas_calculo', []),
             'columnas' => Novedad::query()
                 ->whereIn('planilla_linea_id', $lineas->pluck('id'))
                 ->distinct()

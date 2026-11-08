@@ -47,3 +47,28 @@ export type ConceptoNovedad = {
     nombre: string;
     tipo: 'ingreso' | 'descuento';
 };
+
+export type EstadoCalculoEmpresa =
+    | 'pendiente'
+    | 'calculado'
+    | 'con_problemas'
+    | 'sin_periodo'
+    | 'omitido';
+
+/** Estado de un cálculo masivo (todas las empresas), consultado cada pocos segundos. */
+export type CalculoMasivoEstado = {
+    id: string;
+    mes: string;
+    total: number;
+    pendientes: number;
+    terminado: boolean;
+    empresas: {
+        empresa: string;
+        periodo_id: number | null;
+        estado: EstadoCalculoEmpresa;
+        trabajadores?: number;
+        neto?: string;
+        problemas?: string[];
+        detalle?: string;
+    }[];
+};

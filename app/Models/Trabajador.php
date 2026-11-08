@@ -85,7 +85,7 @@ class Trabajador extends Model
     /** @return Attribute<string, never> */
     protected function nombreCompleto(): Attribute
     {
-        return Attribute::get(fn () => trim("{$this->apellido_paterno} {$this->apellido_materno}, {$this->nombres}"));
+        return Attribute::get(fn () => trim(implode(' ', array_filter([$this->apellido_paterno, $this->apellido_materno])).', '.$this->nombres));
     }
 
     /** @return HasMany<TrabajadorHistorial, $this> */

@@ -1,8 +1,9 @@
 <script setup lang="ts">
 import { Head, Link, useForm, usePage } from '@inertiajs/vue3';
-import { CalendarDays, ChevronRight, Plus } from '@lucide/vue';
+import { Building2, CalendarDays, ChevronRight, Plus } from '@lucide/vue';
 import { computed, ref } from 'vue';
 import EstadoPeriodo from '@/components/periodos/EstadoPeriodo.vue';
+import ProgresoCalculoMasivo from '@/components/periodos/ProgresoCalculoMasivo.vue';
 import Heading from '@/components/Heading.vue';
 import InputError from '@/components/InputError.vue';
 import { Button } from '@/components/ui/button';
@@ -18,6 +19,7 @@ import {
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Spinner } from '@/components/ui/spinner';
+import { store as calcularTodas } from '@/routes/calculos';
 import { index, show, store } from '@/routes/periodos';
 import type { PeriodoFila } from '@/types';
 
@@ -25,6 +27,7 @@ const props = defineProps<{
     periodos: PeriodoFila[];
     siguiente: { anio: number; mes: number } | null;
     hoy: { anio: number; mes: number };
+    calculo: string | null;
 }>();
 
 defineOptions({
@@ -74,6 +77,28 @@ function abrirPeriodo(): void {
     form.post(store.url(), { onSuccess: () => (abierto.value = false) });
 }
 
+/* ---------- Calcular todas las empresas (en cola) ---------- */
+const masivoAbierto = ref(false);
+const mesMasivo = ref('');
+const formMasivo = useForm({ anio: 0, mes: 0 });
+
+function abrirMasivo(): void {
+    formMasivo.clearErrors();
+    const ultimo = props.periodos[0];
+    const base = ultimo ?? props.hoy;
+    mesMasivo.value = `${base.anio}-${String(base.mes).padStart(2, '0')}`;
+    masivoAbierto.value = true;
+}
+
+function iniciarMasivo(): void {
+    const [anio, mes] = mesMasivo.value.split('-').map(Number);
+    formMasivo.anio = anio;
+    formMasivo.mes = mes;
+    formMasivo.post(calcularTodas.url(), {
+        onSuccess: () => (masivoAbierto.value = false),
+    });
+}
+
 const soles = new Intl.NumberFormat('es-PE', {
     style: 'currency',
     currency: 'PEN',
@@ -89,11 +114,23 @@ const soles = new Intl.NumberFormat('es-PE', {
                 title="Periodos"
                 :description="`Planillas mensuales de ${empresa ?? 'la empresa activa'}.`"
             />
-            <Button @click="abrirDialogo">
-                <Plus />
-                Abrir {{ etiquetaPropuesta }}
-            </Button>
+            <div class="flex flex-wrap gap-2">
+                <Button variant="outline" @click="abrirMasivo">
+                    <Building2 />
+                    Calcular todas las empresas
+                </Button>
+                <Button @click="abrirDialogo">
+                    <Plus />
+                    Abrir {{ etiquetaPropuesta }}
+                </Button>
+            </div>
         </div>
+
+        <ProgresoCalculoMasivo
+            v-if="calculo"
+            :key="calculo"
+            :calculo="calculo"
+        />
 
         <div
             v-if="periodos.length === 0"
@@ -188,6 +225,51 @@ const soles = new Intl.NumberFormat('es-PE', {
                 >
                     <Spinner v-if="form.processing" />
                     Abrir periodo
+                </Button>
+            </DialogFooter>
+        </DialogContent>
+    </Dialog>
+
+    <Dialog v-model:open="masivoAbierto">
+        <DialogContent>
+            <DialogHeader>
+                <DialogTitle>Calcular todas las empresas</DialogTitle>
+                <DialogDescription>
+                    Se calcula en segundo plano la planilla del mes en cada
+                    empresa a la que tienes acceso. Las empresas sin el mes
+                    abierto o con el periodo cerrado se omiten; si una empresa
+                    tiene datos incompletos, no se calcula y verás el motivo.
+                </DialogDescription>
+            </DialogHeader>
+
+            <form
+                id="form-masivo"
+                class="grid gap-2 sm:max-w-56"
+                @submit.prevent="iniciarMasivo"
+            >
+                <Label for="mes-masivo">Mes</Label>
+                <Input
+                    id="mes-masivo"
+                    v-model="mesMasivo"
+                    type="month"
+                    required
+                />
+                <InputError
+                    :message="formMasivo.errors.mes || formMasivo.errors.anio"
+                />
+            </form>
+
+            <DialogFooter>
+                <DialogClose as-child>
+                    <Button variant="outline">Cancelar</Button>
+                </DialogClose>
+                <Button
+                    type="submit"
+                    form="form-masivo"
+                    :disabled="formMasivo.processing"
+                >
+                    <Spinner v-if="formMasivo.processing" />
+                    Calcular
                 </Button>
             </DialogFooter>
         </DialogContent>

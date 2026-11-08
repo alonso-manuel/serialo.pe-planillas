@@ -63,6 +63,7 @@ type Fila = {
     estado: EstadoFila;
     errores: Record<string, string>;
     mensaje: string | null;
+    netoDesactualizado: boolean;
 };
 
 function crearFila(l: LineaPeriodo): Fila {
@@ -84,6 +85,7 @@ function crearFila(l: LineaPeriodo): Fila {
         estado: 'guardado',
         errores: {},
         mensaje: null,
+        netoDesactualizado: false,
     };
 }
 
@@ -172,12 +174,31 @@ async function guardar(fila: Fila): Promise<void> {
             ),
         );
         fila.estado = 'guardado';
+        fila.netoDesactualizado = fila.linea.neto_pagar !== null;
         emit('estado', datos.estado_periodo);
     } catch {
         fila.estado = 'error';
         fila.mensaje = 'Sin conexión con el servidor.';
     }
 }
+
+/** Guarda todas las filas con cambios. Devuelve false si alguna quedó con error. */
+async function guardarPendientes(): Promise<boolean> {
+    await Promise.all(
+        filas
+            .filter((f) => f.estado === 'cambiado' || f.estado === 'error')
+            .map((f) => guardar(f)),
+    );
+
+    return filas.every((f) => f.estado === 'guardado');
+}
+
+defineExpose({ guardarPendientes });
+
+/* ---------- Neto (después de calcular) ---------- */
+const mostrarNeto = computed(() =>
+    filas.some((f) => f.linea.neto_pagar !== null),
+);
 
 /* ---------- Navegación con teclado y guardado al cambiar de fila ---------- */
 const filaActiva = ref<number | null>(null);
@@ -245,6 +266,15 @@ function totalConcepto(id: number): string {
         filas.reduce((s, f) => s + centimos(f.montos[id]), 0) / 100,
     );
 }
+
+const totalNeto = computed(() =>
+    soles.format(
+        filas.reduce(
+            (s, f) => s + centimos(f.linea.neto_pagar ?? undefined),
+            0,
+        ) / 100,
+    ),
+);
 
 const totalDiasPagados = computed(() =>
     filas.reduce((s, f) => s + diasPagados(f), 0),
@@ -354,6 +384,12 @@ const COLUMNAS_FIJAS: { campo: Campo; titulo: string; ancho: string }[] = [
                             <span class="font-mono font-normal">{{
                                 c.codigo_plame
                             }}</span>
+                        </th>
+                        <th
+                            v-if="mostrarNeto"
+                            class="w-28 px-3 py-2 text-right font-medium text-foreground"
+                        >
+                            Neto
                         </th>
                         <th class="w-10 px-2 py-2">
                             <span class="sr-only">Estado</span>
@@ -480,6 +516,28 @@ const COLUMNAS_FIJAS: { campo: Campo; titulo: string; ancho: string }[] = [
                         </td>
 
                         <td
+                            v-if="mostrarNeto"
+                            class="px-3 py-1.5 text-right font-medium tabular-nums"
+                            :class="{
+                                'text-muted-foreground line-through':
+                                    fila.netoDesactualizado,
+                            }"
+                            :title="
+                                fila.netoDesactualizado
+                                    ? 'Cambiaste novedades: vuelve a calcular'
+                                    : undefined
+                            "
+                        >
+                            {{
+                                fila.linea.neto_pagar === null
+                                    ? '—'
+                                    : soles.format(
+                                          centimos(fila.linea.neto_pagar) / 100,
+                                      )
+                            }}
+                        </td>
+
+                        <td
                             class="px-2 py-1.5 text-center"
                             :title="fila.mensaje ?? undefined"
                         >
@@ -504,7 +562,9 @@ const COLUMNAS_FIJAS: { campo: Campo; titulo: string; ancho: string }[] = [
                     </tr>
                     <tr v-if="filas.length === 0">
                         <td
-                            :colspan="8 + visibles.length"
+                            :colspan="
+                                8 + visibles.length + (mostrarNeto ? 1 : 0)
+                            "
                             class="px-4 py-10 text-center text-muted-foreground"
                         >
                             Ningún trabajador laboró en este mes. Registra
@@ -543,6 +603,12 @@ const COLUMNAS_FIJAS: { campo: Campo; titulo: string; ancho: string }[] = [
                             class="px-3 py-2 text-right tabular-nums"
                         >
                             {{ totalConcepto(c.id) }}
+                        </td>
+                        <td
+                            v-if="mostrarNeto"
+                            class="px-3 py-2 text-right font-medium tabular-nums"
+                        >
+                            {{ totalNeto }}
                         </td>
                         <td />
                     </tr>

@@ -14,7 +14,7 @@ Vue (Inertia) ──► Controller (delgado) ──► FormRequest (validación)
 
 - **Domain** no conoce Laravel. Recibe strings decimales y enums, devuelve `ResultadoPlanilla`.
 - **Services** convierten modelos ⇄ DTOs (`ParametrosRepositorio`, `CalcularPlanillaPeriodo`).
-- **Jobs** (cola `database`) para cálculo/exportación en lote de muchas empresas: `CalcularPlanillaEmpresaJob` por empresa, agrupados con `Bus::batch` y barra de progreso en la UI.
+- **Jobs** (cola `database`) para cálculo/exportación en lote de muchas empresas: `CalcularPlanillaEmpresaJob` por empresa, agrupados con `Bus::batch` (`CalculoMasivo`). El avance de cada empresa se guarda en caché (`calculo-masivo:{id}:{empresa}`, 24 h) y la UI lo consulta cada 2 s (`GET /calculos/{id}`). Antes de calcular, `VerificadorCalculo` lista los problemas de datos (parámetros, tasas AFP, conceptos de sistema, AFP sin asignar); si hay alguno, la empresa no se calcula (todo o nada).
 
 ## Multiempresa
 

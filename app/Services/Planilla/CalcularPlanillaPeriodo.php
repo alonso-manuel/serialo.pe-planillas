@@ -12,6 +12,7 @@ use App\Models\Concepto;
 use App\Models\Periodo;
 use App\Models\PlanillaLinea;
 use App\Services\Trabajadores\HistorialTrabajador;
+use Brick\Math\BigDecimal;
 use Illuminate\Support\Facades\DB;
 
 /**
@@ -24,12 +25,25 @@ class CalcularPlanillaPeriodo
         private readonly CalculadoraPlanilla $calculadora,
         private readonly ParametrosRepositorio $parametros,
         private readonly HistorialTrabajador $historial,
+        private readonly VerificadorCalculo $verificador,
     ) {}
 
-    public function ejecutar(Periodo $periodo): void
+    /**
+     * Calcula todo el periodo o nada: si falta algún dato, lanza ProblemasDeCalculo con la lista completa.
+     *
+     * @return array{trabajadores: int, neto: string}
+     *
+     * @throws ProblemasDeCalculo
+     */
+    public function ejecutar(Periodo $periodo): array
     {
         if ($periodo->estaCerrado()) {
             throw new \DomainException('El periodo está cerrado. Reábrelo para recalcular.');
+        }
+
+        $problemas = $this->verificador->problemas($periodo);
+        if ($problemas !== []) {
+            throw new ProblemasDeCalculo($problemas);
         }
 
         $parametros = $this->parametros->delPeriodo($periodo);
@@ -65,6 +79,14 @@ class CalcularPlanillaPeriodo
 
             $periodo->update(['estado' => EstadoPeriodo::Calculado]);
         });
+
+        $neto = $periodo->lineas()->pluck('neto_pagar')
+            ->reduce(fn (BigDecimal $suma, $n) => $suma->plus((string) $n), BigDecimal::zero());
+
+        return [
+            'trabajadores' => $periodo->lineas()->count(),
+            'neto' => (string) $neto->toScale(2),
+        ];
     }
 
     private function datosTrabajador(PlanillaLinea $linea, Periodo $periodo): DatosTrabajador
