@@ -38,6 +38,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::post('periodos/{periodo}/sincronizar', [PeriodoController::class, 'sincronizar'])->name('periodos.sincronizar');
         Route::put('periodos/{periodo}/lineas/{linea}', [LineaPlanillaController::class, 'update'])
             ->scopeBindings()->name('periodos.lineas.update');
+        Route::get('periodos/{periodo}/lineas/{linea}', [LineaPlanillaController::class, 'show'])
+            ->scopeBindings()->name('periodos.lineas.show');
 
         Route::get('trabajadores/importar', [ImportacionTrabajadoresController::class, 'index'])->name('trabajadores.importar');
         Route::get('trabajadores/importar/plantilla', [ImportacionTrabajadoresController::class, 'plantilla'])->name('trabajadores.importar.plantilla');

@@ -33,7 +33,8 @@ class CalculoController extends Controller
                 .$this->formatoSoles($resumen['neto']).'.',
         ]);
 
-        return to_route('periodos.show', $periodo);
+        // Vuelve a donde se pidió (periodo o detalle de un trabajador).
+        return back(fallback: route('periodos.show', $periodo));
     }
 
     public function iniciar(Request $request, CalculoMasivo $masivo): RedirectResponse

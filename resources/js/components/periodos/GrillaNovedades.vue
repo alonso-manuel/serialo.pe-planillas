@@ -12,8 +12,7 @@ import {
     DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { update } from '@/routes/periodos/lineas';
-import { edit as editarTrabajador } from '@/routes/trabajadores';
+import { show as verLinea, update } from '@/routes/periodos/lineas';
 import type { ConceptoNovedad, EstadoPeriodo, LineaPeriodo } from '@/types';
 
 const props = defineProps<{
@@ -412,9 +411,13 @@ const COLUMNAS_FIJAS: { campo: Campo; titulo: string; ancho: string }[] = [
                         >
                             <Link
                                 :href="
-                                    editarTrabajador(fila.linea.trabajador_id)
+                                    verLinea({
+                                        periodo: periodoId,
+                                        linea: fila.linea.id,
+                                    })
                                 "
                                 class="font-medium hover:underline"
+                                title="Ver detalle del cálculo"
                             >
                                 {{ fila.linea.nombre }}
                             </Link>
@@ -528,13 +531,23 @@ const COLUMNAS_FIJAS: { campo: Campo; titulo: string; ancho: string }[] = [
                                     : undefined
                             "
                         >
-                            {{
-                                fila.linea.neto_pagar === null
-                                    ? '—'
-                                    : soles.format(
-                                          centimos(fila.linea.neto_pagar) / 100,
-                                      )
-                            }}
+                            <Link
+                                v-if="fila.linea.neto_pagar !== null"
+                                :href="
+                                    verLinea({
+                                        periodo: periodoId,
+                                        linea: fila.linea.id,
+                                    })
+                                "
+                                class="hover:underline"
+                            >
+                                {{
+                                    soles.format(
+                                        centimos(fila.linea.neto_pagar) / 100,
+                                    )
+                                }}
+                            </Link>
+                            <template v-else>—</template>
                         </td>
 
                         <td
