@@ -95,6 +95,12 @@ Con `DECOLECTA_TOKEN`, el driver `openruc` consulta los RUC 20 en OpenRUC y el r
 - Por grupo, los cambios solo se agregan hacia adelante y solo se anula el último; nunca alteran un mes con periodo cerrado.
 - Si el trabajador ya figura en planillas, esos campos se bloquean en la ficha y se cambian con «Registrar cambio» (pestaña Historial). Sin planilla, se corrigen directo.
 
+## Cese
+
+- «Registrar cese» en la ficha: fecha + motivo (`MotivoCese`, tabla 17 de T-Registro ⚠ confirmar códigos). Puede ser futuro: sigue activo hasta ese día.
+- No se cesa si figura en una planilla de un mes posterior; no se registran cambios de historial después del mes de cese.
+- «Revertir cese» solo para errores. Reingreso con nuevo periodo laboral y liquidación de beneficios: v1.1.
+
 ## Consulta de DNI
 
 - `App\Services\Dni\ConsultaDni` (driver `DNI_DRIVER=decolecta|ninguno`, token `DECOLECTA_TOKEN` compartido con RUC; plan gratuito ~100 consultas/mes). Sin token, el botón aparece desactivado.

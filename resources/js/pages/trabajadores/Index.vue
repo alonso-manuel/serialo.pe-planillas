@@ -216,6 +216,13 @@ const hayFiltros = computed(
                             >
                                 Cesado {{ t.fecha_cese }}
                             </Badge>
+                            <Badge
+                                v-else-if="t.fecha_cese"
+                                variant="outline"
+                                class="ml-1"
+                            >
+                                Cesa el {{ t.fecha_cese }}
+                            </Badge>
                         </td>
                         <td class="px-4 py-3 text-right tabular-nums">
                             {{ soles.format(Number(t.remuneracion_basica)) }}

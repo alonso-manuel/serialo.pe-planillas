@@ -185,6 +185,7 @@ return [
         'nombres' => 'nombres',
         'fecha_ingreso' => 'fecha de ingreso',
         'fecha_cese' => 'fecha de cese',
+        'motivo_cese' => 'motivo de cese',
         'remuneracion_basica' => 'remuneración básica',
         'asignacion_familiar' => 'asignación familiar',
         'sistema_pension' => 'sistema de pensiones',

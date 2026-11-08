@@ -4,7 +4,6 @@ import { Search, TriangleAlert, Trash2 } from '@lucide/vue';
 import { computed, ref } from 'vue';
 import Heading from '@/components/Heading.vue';
 import InputError from '@/components/InputError.vue';
-import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import {
@@ -34,6 +33,7 @@ import {
     store,
     update,
 } from '@/routes/trabajadores';
+import CeseTrabajador from '@/components/trabajadores/CeseTrabajador.vue';
 import HistorialTrabajador from '@/components/trabajadores/HistorialTrabajador.vue';
 import type {
     CatalogosTrabajador,
@@ -280,7 +280,11 @@ function eliminar(): void {
                         : catalogos.empresa
                 "
             />
-            <Badge v-if="trabajador?.cesado" variant="secondary">Cesado</Badge>
+            <CeseTrabajador
+                v-if="trabajador"
+                :trabajador="trabajador"
+                :motivos="catalogos.motivos_cese"
+            />
         </div>
 
         <form class="grid max-w-3xl gap-6" @submit.prevent="guardar">

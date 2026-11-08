@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\MotivoCese;
 use App\Enums\SeguroSalud;
 use App\Enums\SistemaPension;
 use App\Enums\TipoComisionAfp;
@@ -40,7 +41,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property SeguroSalud $seguro_salud
  * @property CarbonImmutable $fecha_ingreso
  * @property CarbonImmutable|null $fecha_cese
- * @property string|null $motivo_cese
+ * @property MotivoCese|null $motivo_cese
  * @property string|null $cuenta_sueldo
  * @property string|null $cuenta_cts
  * @property string|null $email
@@ -76,6 +77,7 @@ class Trabajador extends Model
             'tipo_contrato' => TipoContrato::class,
             'sistema_pension' => SistemaPension::class,
             'tipo_comision_afp' => TipoComisionAfp::class,
+            'motivo_cese' => MotivoCese::class,
             'seguro_salud' => SeguroSalud::class,
         ];
     }

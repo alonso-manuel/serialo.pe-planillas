@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Trabajadores;
 
 use App\Enums\ClaveParametro;
+use App\Enums\MotivoCese;
 use App\Enums\RegimenLaboral;
 use App\Enums\SistemaPension;
 use App\Enums\TipoComisionAfp;
@@ -141,6 +142,12 @@ class TrabajadorController extends Controller
                 'cuenta_cts' => $trabajador->cuenta_cts,
                 'nombre_completo' => $trabajador->nombre_completo,
                 'cesado' => $trabajador->estaCesado(),
+                'cese' => $trabajador->fecha_cese === null ? null : [
+                    'fecha' => $trabajador->fecha_cese->format('d/m/Y'),
+                    'fecha_iso' => $trabajador->fecha_cese->toDateString(),
+                    'motivo' => $trabajador->motivo_cese?->value,
+                    'motivo_etiqueta' => $trabajador->motivo_cese?->etiqueta(),
+                ],
                 'en_planilla' => $trabajador->lineas()->exists(),
             ],
             'catalogos' => $this->catalogos($empresa),
@@ -220,6 +227,7 @@ class TrabajadorController extends Controller
             'tipos_documento' => $opciones(TipoDocumento::cases()),
             'tipos_contrato' => $opciones(TipoContrato::cases()),
             'tipos_comision' => $opciones(TipoComisionAfp::cases()),
+            'motivos_cese' => array_map(fn (MotivoCese $m) => ['value' => $m->value, 'label' => "{$m->value} · {$m->etiqueta()}"], MotivoCese::cases()),
             'seguro_por_defecto' => $empresa->seguro_salud->value,
             'permite_sis' => $empresa->regimen_laboral === RegimenLaboral::Microempresa,
             'rmv' => $rmv,

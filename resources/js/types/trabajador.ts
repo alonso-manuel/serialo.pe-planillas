@@ -41,6 +41,12 @@ export type TrabajadorEditable = {
     cuenta_cts: string | null;
     nombre_completo: string;
     cesado: boolean;
+    cese: {
+        fecha: string;
+        fecha_iso: string;
+        motivo: string | null;
+        motivo_etiqueta: string | null;
+    } | null;
     en_planilla: boolean;
 };
 
@@ -51,6 +57,7 @@ export type CatalogosTrabajador = {
     tipos_documento: Opcion[];
     tipos_contrato: Opcion[];
     tipos_comision: Opcion[];
+    motivos_cese: Opcion[];
     seguro_por_defecto: 'essalud' | 'sis';
     permite_sis: boolean;
     rmv: string | null;

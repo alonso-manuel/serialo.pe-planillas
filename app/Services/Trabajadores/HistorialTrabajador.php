@@ -99,6 +99,12 @@ class HistorialTrabajador
             ]);
         }
 
+        if ($trabajador->fecha_cese !== null && $desde->gt($trabajador->fecha_cese->startOfMonth())) {
+            throw ValidationException::withMessages([
+                'vigente_desde' => 'El trabajador cesó el '.$trabajador->fecha_cese->format('d/m/Y').': no se registran cambios posteriores.',
+            ]);
+        }
+
         $ultimo = $this->ultimoCambio($trabajador, $grupo);
         if ($ultimo !== null && $desde->lte($ultimo->vigente_desde)) {
             throw ValidationException::withMessages([
