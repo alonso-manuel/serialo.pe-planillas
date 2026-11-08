@@ -55,6 +55,11 @@ Test: `CalculadoraPlanillaTest::caso_real_microempresa_afp_con_sis`. **No modifi
 
 **Meta antes de vender:** al menos 10 casos reales validados (ONP, AFP flujo y mixta, EsSalud, SIS, HE, faltas, subsidio, ingreso y cese a mitad de mes).
 
+## Días laborados al abrir el mes (mes comercial de 30) ⚠ confirmar con contador
+
+- `App\Domain\Planilla\DiasLaborados`: mes completo = 30 (también febrero); ingreso en el mes = desde ese día hasta el 30 (el 16 → 15, el 31 → 1); cese en el mes = hasta ese día (el 10 → 10; el último día del mes → 30).
+- Entra al periodo quien ingresó antes de que termine el mes y no cesó antes de que empiece. Faltas, licencias y subsidios se ajustan en las novedades.
+
 ## Datos del trabajador vigentes en el mes
 
 - El cálculo de un periodo usa sueldo, asignación familiar, sistema de pensiones (AFP, comisión) y seguro **vigentes al último día del mes** (`HistorialTrabajador::vistaAl`). Así un periodo antiguo se recalcula igual aunque después haya aumentos.

@@ -36,7 +36,7 @@ Marca `[x]` al terminar (o usa `/actualizar-roadmap`). Cada tarea: código + tes
 
 ### Semana 3 (23–27 nov) · Planilla mensual + DEMO VISUAL
 
-- [ ] Periodos: abrir mes (crea líneas para trabajadores activos), estados
+- [x] Periodos: abrir mes (crea líneas para trabajadores activos), estados
 - [ ] Grilla de novedades editable (días, faltas, HE, bonos, adelantos) estilo hoja de cálculo
 - [ ] Botón "Calcular" → `CalcularPlanillaPeriodo`; cálculo de todas las empresas en cola con progreso
 - [ ] Vista de resultado por trabajador (detalle de conceptos)

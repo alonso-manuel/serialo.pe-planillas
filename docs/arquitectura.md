@@ -108,6 +108,11 @@ Con `DECOLECTA_TOKEN`, el driver `openruc` consulta los RUC 20 en OpenRUC y el r
 - Solo altas (documento existente = error); vista previa en sesión; confirmar crea solo las válidas y solo si la empresa activa no cambió. Máximo 500 filas. Sin consulta de DNI (cupo).
 - Lectura común de Excel/CSV: `App\Services\Importacion\LectorHojaCalculo` (también la usan las tasas AFP), con número de línea real.
 
+## Periodos
+
+- `/periodos` (empresa activa): el primer periodo es libre; luego solo el mes siguiente al último (`PeriodosPlanilla`). Al abrir se crea una línea por trabajador del mes con días propuestos.
+- «Actualizar trabajadores»: agrega a los que faltan y quita a los que ya no corresponden (nunca líneas con novedades). Eliminar: solo el último, abierto y sin calcular. Un periodo cerrado no se toca (`PeriodoPolicy`).
+
 ## Consulta de DNI
 
 - `App\Services\Dni\ConsultaDni` (driver `DNI_DRIVER=decolecta|ninguno`, token `DECOLECTA_TOKEN` compartido con RUC; plan gratuito ~100 consultas/mes). Sin token, el botón aparece desactivado.

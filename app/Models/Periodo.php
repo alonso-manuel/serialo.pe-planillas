@@ -42,6 +42,17 @@ class Periodo extends Model
         return $this->hasMany(PlanillaLinea::class);
     }
 
+    public const MESES = [
+        1 => 'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
+        'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre',
+    ];
+
+    /** "Noviembre 2026" */
+    public function etiqueta(): string
+    {
+        return self::MESES[$this->mes]." {$this->anio}";
+    }
+
     public function ultimoDia(): CarbonImmutable
     {
         return CarbonImmutable::create($this->anio, $this->mes, 1)->endOfMonth();

@@ -8,3 +8,4 @@ export * from './tasa-afp';
 export * from './concepto';
 export * from './auditoria';
 export * from './trabajador';
+export * from './periodo';
