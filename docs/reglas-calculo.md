@@ -60,6 +60,11 @@ Test: `CalculadoraPlanillaTest::caso_real_microempresa_afp_con_sis`. **No modifi
 - `App\Domain\Planilla\DiasLaborados`: mes completo = 30 (también febrero); ingreso en el mes = desde ese día hasta el 30 (el 16 → 15, el 31 → 1); cese en el mes = hasta ese día (el 10 → 10; el último día del mes → 30).
 - Entra al periodo quien ingresó antes de que termine el mes y no cesó antes de que empiece. Faltas, licencias y subsidios se ajustan en las novedades.
 
+## Novedades del mes
+
+- Días pagados = días del mes (según ingreso/cese) − faltas − días subsidiados. ⚠ El pago del subsidio (primeros 20 días por incapacidad a cargo del empleador o subsidio de EsSalud) no está en v1.0: se registra como novedad manual.
+- Una novedad por concepto y trabajador; monto 0 o vacío la elimina. Solo conceptos activos de tipo ingreso o descuento (los de sistema los calcula el motor).
+
 ## Datos del trabajador vigentes en el mes
 
 - El cálculo de un periodo usa sueldo, asignación familiar, sistema de pensiones (AFP, comisión) y seguro **vigentes al último día del mes** (`HistorialTrabajador::vistaAl`). Así un periodo antiguo se recalcula igual aunque después haya aumentos.

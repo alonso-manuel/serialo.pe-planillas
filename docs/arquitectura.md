@@ -113,6 +113,11 @@ Con `DECOLECTA_TOKEN`, el driver `openruc` consulta los RUC 20 en OpenRUC y el r
 - `/periodos` (empresa activa): el primer periodo es libre; luego solo el mes siguiente al último (`PeriodosPlanilla`). Al abrir se crea una línea por trabajador del mes con días propuestos.
 - «Actualizar trabajadores»: agrega a los que faltan y quita a los que ya no corresponden (nunca líneas con novedades). Eliminar: solo el último, abierto y sin calcular. Un periodo cerrado no se toca (`PeriodoPolicy`).
 
+## Grilla de novedades
+
+- En el detalle del periodo: faltas, subsidios, horas extra y una columna por concepto usado (más «Agregar columna»). Teclado ↑ ↓ Enter Tab; guardado automático por fila al salir de ella (`PUT /periodos/{p}/lineas/{l}`, JSON, `scopeBindings`).
+- Editar un periodo calculado lo devuelve a Abierto; uno cerrado es solo lectura. `PlanillaLinea` y `Novedad` son auditables.
+
 ## Consulta de DNI
 
 - `App\Services\Dni\ConsultaDni` (driver `DNI_DRIVER=decolecta|ninguno`, token `DECOLECTA_TOKEN` compartido con RUC; plan gratuito ~100 consultas/mes). Sin token, el botón aparece desactivado.

@@ -4,11 +4,14 @@ namespace App\Http\Controllers\Periodos;
 
 use App\Enums\EstadoPeriodo;
 use App\Http\Controllers\Controller;
+use App\Models\Concepto;
 use App\Models\Empresa;
+use App\Models\Novedad;
 use App\Models\Periodo;
 use App\Models\PlanillaLinea;
 use App\Models\User;
 use App\Services\Empresas\EmpresaActiva;
+use App\Services\Planilla\NovedadesPlanilla;
 use App\Services\Planilla\PeriodosPlanilla;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -22,6 +25,7 @@ class PeriodoController extends Controller
     public function __construct(
         private readonly PeriodosPlanilla $periodos,
         private readonly EmpresaActiva $empresaActiva,
+        private readonly NovedadesPlanilla $novedades,
     ) {}
 
     public function index(Request $request): Response
@@ -83,6 +87,7 @@ class PeriodoController extends Controller
 
         $lineas = $periodo->lineas()
             ->with('trabajador:id,tipo_documento,numero_documento,apellido_paterno,apellido_materno,nombres,fecha_ingreso,fecha_cese,cargo')
+            ->with('novedades')
             ->withCount('novedades')
             ->get()
             ->sortBy(fn (PlanillaLinea $l) => $l->trabajador->nombre_completo)
@@ -100,6 +105,7 @@ class PeriodoController extends Controller
                     ? $cese->format('d/m') : null,
                 'novedades' => (int) $l->getAttribute('novedades_count'),
                 'neto_pagar' => $l->calculado_en === null ? null : $l->neto_pagar,
+                ...$this->novedades->fila($l, $periodo),
             ]);
 
         return Inertia::render('periodos/Show', [
@@ -112,6 +118,19 @@ class PeriodoController extends Controller
                 'empresa' => $periodo->empresa?->razon_social,
             ],
             'lineas' => $lineas,
+            'columnas' => Novedad::query()
+                ->whereIn('planilla_linea_id', $lineas->pluck('id'))
+                ->distinct()
+                ->orderBy('concepto_id')
+                ->pluck('concepto_id')
+                ->all(),
+            'conceptos' => $this->novedades->conceptosDisponibles()
+                ->map(fn (Concepto $c) => [
+                    'id' => $c->id,
+                    'codigo_plame' => $c->codigo_plame,
+                    'nombre' => $c->nombre,
+                    'tipo' => $c->tipo->value,
+                ])->values()->all(),
         ]);
     }
 

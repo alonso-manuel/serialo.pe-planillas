@@ -2,12 +2,35 @@
 
 namespace App\Models;
 
+use App\Models\Concerns\Auditable;
+use Carbon\CarbonImmutable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
+/**
+ * Un trabajador en un periodo: entradas del mes (días, horas) y totales calculados.
+ *
+ * @property int $id
+ * @property int $periodo_id
+ * @property int $trabajador_id
+ * @property int $dias_laborados
+ * @property int $dias_no_laborados
+ * @property int $dias_subsidiados
+ * @property string $horas_extra_25
+ * @property string $horas_extra_35
+ * @property string $total_ingresos
+ * @property string $total_descuentos
+ * @property string $total_aportes_empleador
+ * @property string $neto_pagar
+ * @property CarbonImmutable|null $calculado_en
+ * @property-read Periodo $periodo
+ * @property-read Trabajador $trabajador
+ */
 class PlanillaLinea extends Model
 {
+    use Auditable;
+
     protected $fillable = [
         'periodo_id', 'trabajador_id', 'dias_laborados', 'dias_no_laborados', 'dias_subsidiados',
         'horas_ordinarias', 'minutos_ordinarios', 'horas_extra_25', 'horas_extra_35',
@@ -50,5 +73,15 @@ class PlanillaLinea extends Model
     public function conceptos(): HasMany
     {
         return $this->hasMany(PlanillaConcepto::class);
+    }
+
+    public function empresaIdAuditoria(): ?int
+    {
+        return $this->periodo->empresa_id;
+    }
+
+    public function descripcionAuditoria(): string
+    {
+        return "{$this->trabajador->nombre_completo} · {$this->periodo->etiqueta()}";
     }
 }

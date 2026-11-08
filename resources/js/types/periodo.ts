@@ -30,6 +30,20 @@ export type LineaPeriodo = {
     dias_laborados: number;
     ingresa_en_mes: string | null;
     cesa_en_mes: string | null;
-    novedades: number;
     neto_pagar: string | null;
+    dias_mes: number;
+    dias_no_laborados: number;
+    dias_subsidiados: number;
+    horas_extra_25: string;
+    horas_extra_35: string;
+    /** concepto_id => monto */
+    novedades: Record<string, string>;
+};
+
+/** Concepto que se puede ingresar como novedad en la grilla. */
+export type ConceptoNovedad = {
+    id: number;
+    codigo_plame: string;
+    nombre: string;
+    tipo: 'ingreso' | 'descuento';
 };

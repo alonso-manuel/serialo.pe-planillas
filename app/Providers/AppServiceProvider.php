@@ -8,6 +8,7 @@ use App\Models\Establecimiento;
 use App\Models\Novedad;
 use App\Models\Parametro;
 use App\Models\Periodo;
+use App\Models\PlanillaLinea;
 use App\Models\TasaAfp;
 use App\Models\Trabajador;
 use App\Models\TrabajadorHistorial;
@@ -84,6 +85,7 @@ class AppServiceProvider extends ServiceProvider
             'trabajador' => Trabajador::class,
             'trabajador_historial' => TrabajadorHistorial::class,
             'novedad' => Novedad::class,
+            'planilla_linea' => PlanillaLinea::class,
             'parametro' => Parametro::class,
             'tasa_afp' => TasaAfp::class,
             'concepto' => Concepto::class,

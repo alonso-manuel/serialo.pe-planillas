@@ -9,6 +9,7 @@ use App\Http\Controllers\Empresas\EmpresaController;
 use App\Http\Controllers\Empresas\EstablecimientoController;
 use App\Http\Controllers\Empresas\EstadoEmpresaController;
 use App\Http\Controllers\Parametros\ParametroController;
+use App\Http\Controllers\Periodos\LineaPlanillaController;
 use App\Http\Controllers\Periodos\PeriodoController;
 use App\Http\Controllers\TasasAfp\ImportacionTasasAfpController;
 use App\Http\Controllers\TasasAfp\TasaAfpController;
@@ -33,6 +34,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::middleware('empresa.activa')->group(function () {
         Route::resource('periodos', PeriodoController::class)->only(['index', 'store', 'show', 'destroy']);
         Route::post('periodos/{periodo}/sincronizar', [PeriodoController::class, 'sincronizar'])->name('periodos.sincronizar');
+        Route::put('periodos/{periodo}/lineas/{linea}', [LineaPlanillaController::class, 'update'])
+            ->scopeBindings()->name('periodos.lineas.update');
 
         Route::get('trabajadores/importar', [ImportacionTrabajadoresController::class, 'index'])->name('trabajadores.importar');
         Route::get('trabajadores/importar/plantilla', [ImportacionTrabajadoresController::class, 'plantilla'])->name('trabajadores.importar.plantilla');

@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import { Head, Link, router } from '@inertiajs/vue3';
-import { RefreshCw, Trash2 } from '@lucide/vue';
+import { Head, router } from '@inertiajs/vue3';
+import { RefreshCw, Trash2, TriangleAlert } from '@lucide/vue';
 import { computed, ref } from 'vue';
 import EstadoPeriodo from '@/components/periodos/EstadoPeriodo.vue';
+import GrillaNovedades from '@/components/periodos/GrillaNovedades.vue';
 import Heading from '@/components/Heading.vue';
-import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import {
     Dialog,
@@ -16,12 +16,18 @@ import {
     DialogTitle,
 } from '@/components/ui/dialog';
 import { destroy, index, sincronizar } from '@/routes/periodos';
-import { edit as editarTrabajador } from '@/routes/trabajadores';
-import type { LineaPeriodo, PeriodoDetalle } from '@/types';
+import type {
+    ConceptoNovedad,
+    EstadoPeriodo as Estado,
+    LineaPeriodo,
+    PeriodoDetalle,
+} from '@/types';
 
 const props = defineProps<{
     periodo: PeriodoDetalle;
     lineas: LineaPeriodo[];
+    columnas: number[];
+    conceptos: ConceptoNovedad[];
 }>();
 
 defineOptions({
@@ -29,6 +35,17 @@ defineOptions({
         breadcrumbs: [{ title: 'Periodos', href: index() }],
     },
 });
+
+/* El estado puede cambiar al guardar una fila (calculado → abierto). */
+const estado = ref<Estado>(props.periodo.estado);
+const ETIQUETAS: Record<Estado, string> = {
+    abierto: 'Abierto',
+    calculado: 'Calculado',
+    cerrado: 'Cerrado',
+};
+const volvioAbierto = computed(
+    () => props.periodo.estado === 'calculado' && estado.value === 'abierto',
+);
 
 const actualizando = ref(false);
 
@@ -49,30 +66,19 @@ const confirmarEliminar = ref(false);
 function eliminar(): void {
     router.delete(destroy.url(props.periodo.id));
 }
-
-const totalDias = computed(() =>
-    props.lineas.reduce((s, l) => s + l.dias_laborados, 0),
-);
-const soles = new Intl.NumberFormat('es-PE', {
-    style: 'currency',
-    currency: 'PEN',
-});
 </script>
 
 <template>
     <Head :title="`Planilla ${periodo.etiqueta}`" />
 
-    <div class="flex flex-1 flex-col gap-6 p-4 md:p-6">
+    <div class="flex min-w-0 flex-1 flex-col gap-6 p-4 md:p-6">
         <div class="flex flex-wrap items-start justify-between gap-4">
             <div class="flex flex-wrap items-center gap-3">
                 <Heading
                     :title="`Planilla de ${periodo.etiqueta}`"
                     :description="periodo.empresa ?? undefined"
                 />
-                <EstadoPeriodo
-                    :estado="periodo.estado"
-                    :etiqueta="periodo.estado_etiqueta"
-                />
+                <EstadoPeriodo :estado="estado" :etiqueta="ETIQUETAS[estado]" />
             </div>
             <div v-if="periodo.puede_editar" class="flex flex-wrap gap-2">
                 <Button
@@ -95,98 +101,29 @@ const soles = new Intl.NumberFormat('es-PE', {
         </div>
 
         <p
-            v-if="periodo.estado === 'abierto'"
-            class="max-w-3xl rounded-md bg-muted/50 p-3 text-sm text-muted-foreground"
+            v-if="volvioAbierto"
+            class="flex items-center gap-2 rounded-md border border-amber-300 bg-amber-50 p-3 text-sm text-amber-900 dark:border-amber-900 dark:bg-amber-950/40 dark:text-amber-300"
+            role="status"
         >
-            Revisa los días de cada trabajador. Si registraste ingresos o ceses
-            después de abrir el mes, usa «Actualizar trabajadores».
+            <TriangleAlert class="size-4 shrink-0" />
+            Hay cambios sin calcular: el periodo volvió a «Abierto». Recalcula
+            la planilla para actualizar los netos.
+        </p>
+        <p
+            v-else-if="estado === 'cerrado'"
+            class="rounded-md bg-muted/50 p-3 text-sm text-muted-foreground"
+        >
+            Periodo cerrado: las novedades son solo de lectura.
         </p>
 
-        <div class="overflow-x-auto rounded-lg border">
-            <table class="w-full text-sm">
-                <thead class="bg-muted/50 text-left text-muted-foreground">
-                    <tr>
-                        <th class="px-4 py-3 font-medium">Trabajador</th>
-                        <th class="px-4 py-3 font-medium">Cargo</th>
-                        <th class="px-4 py-3 text-right font-medium">Días</th>
-                        <th class="px-4 py-3 font-medium">Observación</th>
-                        <th class="px-4 py-3 text-right font-medium">Neto</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr v-for="l in lineas" :key="l.id" class="border-t">
-                        <td class="px-4 py-3">
-                            <Link
-                                :href="editarTrabajador(l.trabajador_id)"
-                                class="font-medium hover:underline"
-                            >
-                                {{ l.nombre }}
-                            </Link>
-                            <div class="text-xs text-muted-foreground">
-                                {{ l.documento }}
-                            </div>
-                        </td>
-                        <td class="px-4 py-3">{{ l.cargo ?? '—' }}</td>
-                        <td class="px-4 py-3 text-right tabular-nums">
-                            {{ l.dias_laborados }}
-                        </td>
-                        <td class="px-4 py-3">
-                            <div class="flex flex-wrap gap-1">
-                                <Badge v-if="l.ingresa_en_mes" variant="outline"
-                                    >Ingresa {{ l.ingresa_en_mes }}</Badge
-                                >
-                                <Badge v-if="l.cesa_en_mes" variant="outline"
-                                    >Cesa {{ l.cesa_en_mes }}</Badge
-                                >
-                                <Badge v-if="l.novedades" variant="secondary">
-                                    {{ l.novedades }}
-                                    {{
-                                        l.novedades === 1
-                                            ? 'novedad'
-                                            : 'novedades'
-                                    }}
-                                </Badge>
-                            </div>
-                        </td>
-                        <td class="px-4 py-3 text-right tabular-nums">
-                            {{
-                                l.neto_pagar !== null
-                                    ? soles.format(Number(l.neto_pagar))
-                                    : '—'
-                            }}
-                        </td>
-                    </tr>
-                    <tr v-if="lineas.length === 0">
-                        <td
-                            colspan="5"
-                            class="px-4 py-10 text-center text-muted-foreground"
-                        >
-                            Ningún trabajador laboró en este mes. Registra
-                            trabajadores y usa «Actualizar trabajadores».
-                        </td>
-                    </tr>
-                </tbody>
-                <tfoot
-                    v-if="lineas.length"
-                    class="border-t bg-muted/30 text-sm"
-                >
-                    <tr>
-                        <td class="px-4 py-2 font-medium" colspan="2">
-                            {{ lineas.length }}
-                            {{
-                                lineas.length === 1
-                                    ? 'trabajador'
-                                    : 'trabajadores'
-                            }}
-                        </td>
-                        <td class="px-4 py-2 text-right tabular-nums">
-                            {{ totalDias }}
-                        </td>
-                        <td colspan="2" />
-                    </tr>
-                </tfoot>
-            </table>
-        </div>
+        <GrillaNovedades
+            :periodo-id="periodo.id"
+            :lineas="lineas"
+            :columnas="columnas"
+            :conceptos="conceptos"
+            :editable="periodo.puede_editar"
+            @estado="(e) => (estado = e)"
+        />
     </div>
 
     <Dialog v-model:open="confirmarEliminar">
