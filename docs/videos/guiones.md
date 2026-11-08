@@ -130,6 +130,40 @@ Presentación animada (no es la aplicación). Seis láminas.
 
 ---
 
+## Voz en off con ElevenLabs
+
+Los textos listos para pegar están en [`elevenlabs/`](elevenlabs/), un archivo por video. Son la narración de las tablas
+de arriba, adaptada para voz:
+
+- **Ajustados al tiempo del video**: a ritmo normal (~2.5 palabras por segundo) cada audio dura menos que su video
+  (habla + pausas: 00 ≈ 63 s de 65, 08 ≈ 70 s de 87, 09 ≈ 22 s de 27…).
+- **Pausas entre escenas** con `<break time="1.5s" />` (ElevenLabs acepta hasta 3 s por pausa). Cada párrafo es una escena.
+- **Siglas escritas como se pronuncian**: «o ene pe» (ONP), «a efe pe» (AFP), «u i te» (UIT), «ese be ese» (SBS),
+  «de ene i» (DNI), «Es Salud», «cero uno cero siete», «tabla veintidós». Se evitan símbolos (S/, %, códigos) y
+  palabras en inglés (passkey → «llave de acceso», 2FA → «doble factor»).
+- **Total: ~6,700 caracteres** para los 10 videos. Revisar el saldo del plan antes de generar.
+
+**Configuración sugerida**
+
+| Opción     | Valor                                                                              |
+| ---------- | ---------------------------------------------------------------------------------- |
+| Modelo     | Eleven Multilingual v2 (respeta las etiquetas `<break>`)                           |
+| Voz        | Una voz en español latinoamericano, tono profesional y cercano; la misma en los 10 |
+| Stability  | ~50 %                                                                              |
+| Similarity | ~75 %                                                                              |
+| Style      | 0 % (más natural y estable para narración)                                         |
+| Velocidad  | 1.0 (si un audio queda largo, 1.05–1.1)                                            |
+
+**Montaje** (Clipchamp, incluido en Windows 11, o CapCut)
+
+1. Importar el video `.webm` y su audio `.mp3`.
+2. Poner el audio al inicio. Si una escena se adelanta o se atrasa, cortar el audio en la pausa entre párrafos
+   y moverlo hasta que coincida con el subtítulo en pantalla.
+3. Exportar en 1080p. Si se agrega música de fondo, dejarla por debajo de la voz (~10–15 %).
+
+Si una palabra suena mal, se corrige solo esa frase: se escribe como se pronuncia (como con las siglas) o se usa
+el diccionario de pronunciación de ElevenLabs, y se regenera únicamente ese archivo.
+
 ## Cómo volver a grabarlos
 
 Los videos se graban de forma automática con Playwright (`tools/videos/`), así se pueden regenerar cuando cambie la interfaz.

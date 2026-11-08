@@ -1,0 +1,7 @@
+La remuneración mínima vital, la u i te, Es Salud, la o ene pe y el SIS no están escritos en el programa: son datos con fecha de vigencia y base legal.
+<break time="1.0s" />
+Así, un mes antiguo siempre se recalcula con los valores de su época. Lo que falta confirmar queda marcado «por verificar».
+<break time="1.0s" />
+El historial muestra cada valor anterior.
+<break time="1.5s" />
+Si cambia la ley, se registra una vigencia nueva, con su mes de inicio y su base legal. Esto es solo un ejemplo, así que cancelamos.

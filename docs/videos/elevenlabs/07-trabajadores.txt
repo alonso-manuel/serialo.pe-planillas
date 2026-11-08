@@ -1,0 +1,11 @@
+Aquí está el personal de la empresa activa, con búsqueda y filtros por estado y por sistema de pensión.
+<break time="2.5s" />
+La ficha se organiza en pestañas. Con el de ene i, un botón consulta RENIEC y completa los nombres; aquí los escribimos a mano.
+<break time="3.0s" />
+En los datos laborales van el cargo, la fecha de ingreso, el sueldo y la asignación familiar.
+<break time="3.0s" />
+Si está en a efe pe, se indica cuál, su código de afiliado y el tipo de comisión.
+<break time="2.0s" />
+Los cambios de sueldo, cargo o pensión se registran con el mes desde el que rigen. El cese se registra con su fecha y el motivo de la tabla diecisiete de SUNAT.
+<break time="3.0s" />
+Para empezar rápido, se sube la plantilla de Excel. Antes de guardar, el sistema muestra una vista previa con los errores y avisos de cada fila. Y los nuevos trabajadores ya están en la lista.

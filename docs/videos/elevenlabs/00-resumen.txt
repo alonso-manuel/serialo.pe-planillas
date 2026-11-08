@@ -1,0 +1,11 @@
+Esto es Serialo Planillas: planillas en la web, hecho en Perú para contadores y empresas.
+<break time="1.0s" />
+Hoy se trabaja con Excel y macros: un archivo por empresa, fórmulas que se corrigen a mano, y datos copiados uno por uno al PLAME.
+<break time="1.0s" />
+Serialo Planillas calcula la planilla del régimen general, pequeña y microempresa, atiende muchas empresas a la vez, y muy pronto emitirá boletas, beneficios y los archivos para SUNAT y las a efe pe.
+<break time="1.0s" />
+Todo con cálculo exacto al céntimo, leyes guardadas con su fecha de vigencia, periodos cerrados que nadie puede tocar, auditoría completa, y los datos siempre en el servidor del cliente.
+<break time="1.0s" />
+A la izquierda, lo que ya funciona hoy. A la derecha, lo que llega en las próximas semanas: gratificaciones, boletas, CTS, vacaciones y archivos oficiales.
+<break time="1.0s" />
+En los siguientes videos te muestro cada módulo, paso a paso. Todos los datos que verás son ficticios.

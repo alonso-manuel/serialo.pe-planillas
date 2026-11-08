@@ -1,0 +1,7 @@
+Los pagos y descuentos usan los códigos de la tabla veintidós de SUNAT, los mismos del PLAME, con sus afectaciones a Es Salud, o ene pe, a efe pe y renta de quinta.
+<break time="0.8s" />
+Los marcados como «sistema» los usa el motor de cálculo, y están protegidos.
+<break time="1.0s" />
+Agregamos el código cero uno cero siete: trabajo en día feriado. El tipo se deduce del código; marcamos sus afectaciones y lo registramos.
+<break time="2.0s" />
+Listo: ya se puede usar en la planilla del mes.

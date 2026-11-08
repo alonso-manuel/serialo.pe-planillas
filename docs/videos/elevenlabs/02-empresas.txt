@@ -1,0 +1,9 @@
+El sistema es multiempresa. Aquí el administrador registra cada empresa que atiende, con su ruc, su régimen laboral y su seguro de salud.
+<break time="1.5s" />
+Registremos una nueva. Con el botón «Buscar en SUNAT» se completan la razón social y el domicilio; aquí los escribimos a mano.
+<break time="2.0s" />
+Elegimos el régimen de pequeña empresa. El régimen define los beneficios, y solo la microempresa puede usar el SIS en lugar de Es Salud.
+<break time="2.0s" />
+Al registrarla, el sistema crea su establecimiento principal, con el código cuatro ceros, que es el que pide SUNAT.
+<break time="2.0s" />
+Ya aparece en la lista. Se puede editar o desactivar, pero su historial nunca se borra. Y ya está disponible en el selector de empresa activa.

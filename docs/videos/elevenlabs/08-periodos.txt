@@ -1,0 +1,11 @@
+Cada mes es un periodo: abierto, calculado o cerrado. Octubre ya está cerrado; entremos a noviembre.
+<break time="1.5s" />
+La grilla de novedades funciona como una hoja de cálculo: faltas, horas extra, bonos y adelantos. Registramos cuatro horas extra, y la fila se guarda sola.
+<break time="2.0s" />
+Calculamos. Antes, el sistema revisa que no falten tasas ni parámetros; si falta algo, lo explica y no calcula nada a medias. Aparece el neto de cada trabajador y el total del mes.
+<break time="1.5s" />
+En el detalle están los ingresos, los aportes del trabajador, otros descuentos y los aportes del empleador. Con las flechas pasamos al siguiente.
+<break time="2.5s" />
+Revisada la planilla, el administrador la cierra, y ya nadie puede modificarla. Para corregir algo, solo él la reabre, indicando el motivo.
+<break time="2.5s" />
+Por último, calculamos todas las empresas a la vez. Se procesa en segundo plano, con el avance de cada una, y las que tienen problemas se informan sin detener a las demás.

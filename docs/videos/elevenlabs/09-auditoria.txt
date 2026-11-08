@@ -1,0 +1,5 @@
+Todo cambio queda registrado: quién lo hizo, cuándo, y qué valores cambiaron.
+<break time="1.0s" />
+Aquí están las acciones de los videos anteriores. Al abrir una fila se ve el detalle, como el motivo de la reapertura.
+<break time="1.0s" />
+Se puede filtrar por empresa, acción, usuario y fechas. Y nadie puede editar ni borrar este registro.

@@ -1,0 +1,11 @@
+Serialo Planillas se instala en el servidor del estudio contable o de la empresa. No hay registro público: el administrador crea cada usuario, que ingresa con su correo y su contraseña.
+<break time="1.5s" />
+También puede entrar con una llave de acceso, y activar el doble factor.
+<break time="1.0s" />
+A la izquierda están los módulos. Los marcados como «pronto» llegan en las próximas semanas.
+<break time="1.5s" />
+Arriba está la empresa activa: todo lo que ves pertenece a ella. Un estudio contable cambia de empresa con un clic.
+<break time="2.0s" />
+Para entrar a la configuración de seguridad, el sistema vuelve a pedir la contraseña.
+<break time="2.0s" />
+Desde aquí, cada usuario cambia su contraseña, activa el doble factor y registra sus llaves de acceso. Así se entra al sistema de forma segura.

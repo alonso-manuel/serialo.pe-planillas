@@ -1,0 +1,7 @@
+Hay dos roles. El administrador ve todas las empresas y configura el sistema; el asistente trabaja solo con las empresas que se le asignan.
+<break time="1.0s" />
+Creamos un usuario. La contraseña la escribe el administrador, o el sistema le sugiere una segura.
+<break time="1.5s" />
+Lo hacemos asistente y le asignamos dos empresas: solo verá esas.
+<break time="2.0s" />
+Los usuarios no se borran: se desactivan, para que la auditoría siempre sepa quién hizo cada cambio.

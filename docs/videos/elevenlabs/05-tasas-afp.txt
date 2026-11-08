@@ -1,0 +1,7 @@
+Cada mes, la ese be ese publica el aporte, la prima de seguro, las comisiones y la remuneración máxima asegurable de cada a efe pe.
+<break time="0.8s" />
+Diciembre aparece como faltante, y sin esas tasas no se puede calcular a los trabajadores de a efe pe.
+<break time="1.0s" />
+Si no cambiaron, se copian del mes anterior y se guardan.
+<break time="1.5s" />
+También se pueden cargar desde Excel.
