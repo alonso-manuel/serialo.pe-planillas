@@ -1,0 +1,161 @@
+<!doctype html>
+<html lang="es">
+    <head>
+        <meta charset="utf-8" />
+        <style>
+            * {
+                box-sizing: border-box;
+                margin: 0;
+            }
+            html,
+            body {
+                width: 1080px;
+                height: 1920px;
+                overflow: hidden;
+                font-family: 'Segoe UI', system-ui, sans-serif;
+            }
+            body {
+                background:
+                    radial-gradient(
+                        1200px 900px at 80% -10%,
+                        #3b82f6 0%,
+                        transparent 60%
+                    ),
+                    radial-gradient(
+                        900px 900px at -10% 110%,
+                        #1e40af 0%,
+                        transparent 60%
+                    ),
+                    #0b1530;
+                color: #fff;
+                position: relative;
+            }
+            .marca {
+                position: absolute;
+                top: 120px;
+                left: 80px;
+                display: flex;
+                align-items: center;
+                gap: 18px;
+                font-size: 34px;
+                font-weight: 600;
+            }
+            .logo {
+                width: 72px;
+                height: 72px;
+                border-radius: 18px;
+                background: #fff;
+                color: #1d4ed8;
+                display: grid;
+                place-items: center;
+                font-weight: 800;
+                font-size: 38px;
+            }
+            .chip {
+                position: absolute;
+                top: 250px;
+                left: 80px;
+                background: rgba(255, 255, 255, 0.14);
+                border: 1px solid rgba(255, 255, 255, 0.25);
+                padding: 12px 26px;
+                border-radius: 999px;
+                font-size: 30px;
+                font-weight: 600;
+            }
+            h1 {
+                position: absolute;
+                top: 340px;
+                left: 80px;
+                right: 80px;
+                font-size: 118px;
+                line-height: 1;
+                letter-spacing: -0.03em;
+                font-weight: 800;
+            }
+            h1 span {
+                color: #93c5fd;
+            }
+            .sub {
+                position: absolute;
+                top: 640px;
+                left: 80px;
+                right: 120px;
+                font-size: 40px;
+                line-height: 1.35;
+                color: #dbeafe;
+            }
+            .captura {
+                position: absolute;
+                top: 860px;
+                left: 60px;
+                width: 960px;
+                height: 400px;
+                border-radius: 26px;
+                overflow: hidden;
+                background: #fff url('mini-grilla.png') no-repeat;
+                background-size: 1280px 760px;
+                background-position: -262px -280px;
+                box-shadow: 0 40px 90px rgba(0, 0, 0, 0.45);
+                transform: rotate(-2.5deg);
+                border: 6px solid rgba(255, 255, 255, 0.9);
+            }
+            .neto {
+                position: absolute;
+                top: 1215px;
+                right: 50px;
+                background: #16a34a;
+                color: #fff;
+                font-size: 38px;
+                font-weight: 700;
+                padding: 18px 30px;
+                border-radius: 20px;
+                box-shadow: 0 20px 40px rgba(0, 0, 0, 0.35);
+                transform: rotate(2deg);
+            }
+            .tags {
+                position: absolute;
+                top: 1400px;
+                left: 80px;
+                right: 160px;
+                display: flex;
+                flex-wrap: wrap;
+                gap: 16px;
+            }
+            .tags b {
+                background: rgba(255, 255, 255, 0.12);
+                border: 1px solid rgba(255, 255, 255, 0.22);
+                padding: 12px 22px;
+                border-radius: 14px;
+                font-size: 30px;
+                font-weight: 600;
+            }
+            .serie {
+                position: absolute;
+                top: 1610px;
+                left: 80px;
+                font-size: 34px;
+                color: #bfdbfe;
+                font-weight: 600;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="marca">
+            <div class="logo">S</div>
+            Serialo.pe
+        </div>
+        <div class="chip">Hecho en Perú · para contadores y empresas</div>
+        <h1>Tu planilla,<br /><span>sin Excel.</span></h1>
+        <p class="sub">
+            Calcula, revisa y cierra la planilla de todas tus empresas en un
+            solo sistema.
+        </p>
+        <div class="captura"></div>
+        <div class="neto">✔ Planilla calculada</div>
+        <div class="tags">
+            <b>ONP · AFP</b><b>EsSalud · SIS</b><b>Multiempresa</b
+            ><b>Auditoría</b>
+        </div>
+        <p class="serie">Serie demo · el sistema módulo por módulo ▶</p>
+    </body>
+</html>
