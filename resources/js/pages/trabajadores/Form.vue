@@ -90,6 +90,7 @@ const form = useForm({
     seguro_salud: t?.seguro_salud ?? props.catalogos.seguro_por_defecto,
     cuenta_sueldo: t?.cuenta_sueldo ?? '',
     cuenta_cts: t?.cuenta_cts ?? '',
+    entidad_cts: t?.entidad_cts ?? '',
 });
 
 /* ---------- Pestañas y errores ---------- */
@@ -120,7 +121,7 @@ const PESTANAS = {
         'tipo_comision_afp',
         'seguro_salud',
     ],
-    cuentas: ['cuenta_sueldo', 'cuenta_cts'],
+    cuentas: ['cuenta_sueldo', 'cuenta_cts', 'entidad_cts'],
 } as const;
 
 type Pestana = keyof typeof PESTANAS | 'historial';
@@ -759,6 +760,28 @@ function eliminar(): void {
                             class="font-mono"
                         />
                         <InputError :message="form.errors.cuenta_cts" />
+                    </div>
+                    <div class="grid gap-2 sm:col-start-2">
+                        <Label for="entidad_cts"
+                            >Entidad de la cuenta CTS</Label
+                        >
+                        <Select v-model="form.entidad_cts">
+                            <SelectTrigger id="entidad_cts" class="w-full">
+                                <SelectValue
+                                    placeholder="Elige el banco o caja"
+                                />
+                            </SelectTrigger>
+                            <SelectContent>
+                                <SelectItem
+                                    v-for="e in catalogos.entidades_cts"
+                                    :key="e.value"
+                                    :value="e.value"
+                                >
+                                    {{ e.label }}
+                                </SelectItem>
+                            </SelectContent>
+                        </Select>
+                        <InputError :message="form.errors.entidad_cts" />
                     </div>
                 </TabsContent>
 

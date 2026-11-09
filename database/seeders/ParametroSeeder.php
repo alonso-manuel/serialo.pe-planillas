@@ -24,6 +24,8 @@ class ParametroSeeder extends Seeder
             [C::TasaBonificacionExtraordinaria, '0.09', '2015-07-01', 'Ley 30334'],
             [C::FactorGratificacionPequena, '0.50', '2013-07-01', 'Ley 30056 (D.S. 013-2013-PRODUCE) — VERIFICAR'],
             [C::FactorGratificacionMicro, '0.00', '2013-07-01', 'Ley 30056 (D.S. 013-2013-PRODUCE) — VERIFICAR'],
+            [C::FactorCtsPequena, '0.50', '2013-07-01', 'Ley 30056 (D.S. 013-2013-PRODUCE) — VERIFICAR'],
+            [C::FactorCtsMicro, '0.00', '2013-07-01', 'Ley 30056 (D.S. 013-2013-PRODUCE) — VERIFICAR'],
         ];
     }
 

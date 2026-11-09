@@ -23,6 +23,8 @@ enum ClaveParametro: string
     case TasaBonificacionExtraordinaria = 'tasa_bonif_extra'; // ej. 0.09 (Ley 30334)
     case FactorGratificacionPequena = 'factor_grati_pequena';  // ej. 0.50 (REMYPE pequeña empresa)
     case FactorGratificacionMicro = 'factor_grati_micro';      // ej. 0.00 (REMYPE microempresa)
+    case FactorCtsPequena = 'factor_cts_pequena';              // ej. 0.50 (15 remuneraciones diarias por año)
+    case FactorCtsMicro = 'factor_cts_micro';                  // ej. 0.00 (no aplica)
 
     public function etiqueta(): string
     {
@@ -38,6 +40,8 @@ enum ClaveParametro: string
             self::TasaBonificacionExtraordinaria => 'Bonificación extraordinaria (gratificación)',
             self::FactorGratificacionPequena => 'Gratificación en pequeña empresa',
             self::FactorGratificacionMicro => 'Gratificación en microempresa',
+            self::FactorCtsPequena => 'CTS en pequeña empresa',
+            self::FactorCtsMicro => 'CTS en microempresa',
         };
     }
 
@@ -55,6 +59,8 @@ enum ClaveParametro: string
             self::TasaBonificacionExtraordinaria => 'Porcentaje de la gratificación que se paga como bonificación (igual al aporte a EsSalud).',
             self::FactorGratificacionPequena => 'Proporción de la gratificación del régimen general que corresponde en pequeña empresa.',
             self::FactorGratificacionMicro => 'Proporción de la gratificación del régimen general que corresponde en microempresa.',
+            self::FactorCtsPequena => 'Proporción de la CTS del régimen general que corresponde en pequeña empresa.',
+            self::FactorCtsMicro => 'Proporción de la CTS del régimen general que corresponde en microempresa.',
         };
     }
 

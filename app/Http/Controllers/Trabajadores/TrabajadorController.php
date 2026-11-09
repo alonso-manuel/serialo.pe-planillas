@@ -13,6 +13,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Trabajadores\GuardarTrabajadorRequest;
 use App\Models\Afp;
 use App\Models\Empresa;
+use App\Models\EntidadFinanciera;
 use App\Models\Establecimiento;
 use App\Models\Parametro;
 use App\Models\Trabajador;
@@ -140,6 +141,7 @@ class TrabajadorController extends Controller
                 'seguro_salud' => $trabajador->seguro_salud->value,
                 'cuenta_sueldo' => $trabajador->cuenta_sueldo,
                 'cuenta_cts' => $trabajador->cuenta_cts,
+                'entidad_cts' => $trabajador->entidad_cts,
                 'nombre_completo' => $trabajador->nombre_completo,
                 'cesado' => $trabajador->estaCesado(),
                 'cese' => $trabajador->fecha_cese === null ? null : [
@@ -232,6 +234,8 @@ class TrabajadorController extends Controller
             'permite_sis' => $empresa->regimen_laboral === RegimenLaboral::Microempresa,
             'rmv' => $rmv,
             'consulta_dni' => app(ConsultaDni::class)->disponible(),
+            'entidades_cts' => EntidadFinanciera::query()->where('activo', true)->orderBy('nombre')->get()
+                ->map(fn (EntidadFinanciera $e) => ['value' => $e->codigo, 'label' => $e->nombre])->values()->all(),
         ];
     }
 }

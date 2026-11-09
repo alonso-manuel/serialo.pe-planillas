@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Auditoria\AuditoriaController;
+use App\Http\Controllers\Beneficios\CtsController;
 use App\Http\Controllers\Conceptos\ConceptoController;
 use App\Http\Controllers\Conceptos\EstadoConceptoController;
 use App\Http\Controllers\EmpresaActivaController;
@@ -54,6 +55,16 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::post('periodos/{periodo}/boletas/correo', [EnvioBoletaController::class, 'store'])->name('periodos.boletas.correo');
         Route::post('periodos/{periodo}/lineas/{linea}/boleta/correo', [EnvioBoletaController::class, 'reenviar'])
             ->scopeBindings()->name('periodos.lineas.boleta.correo');
+
+        // CTS de la empresa activa (mayo / noviembre)
+        Route::get('cts', [CtsController::class, 'index'])->name('cts.index');
+        Route::post('cts/calcular', [CtsController::class, 'calcular'])->name('cts.calcular');
+        Route::post('cts/{liquidacion}/cerrar', [CtsController::class, 'cerrar'])->name('cts.cerrar');
+        Route::post('cts/{liquidacion}/reabrir', [CtsController::class, 'reabrir'])->name('cts.reabrir');
+        Route::get('cts/{liquidacion}/constancias/pdf', [CtsController::class, 'constanciasPdf'])->name('cts.constancias.pdf');
+        Route::get('cts/{liquidacion}/constancias/zip', [CtsController::class, 'constanciasZip'])->name('cts.constancias.zip');
+        Route::get('cts/{liquidacion}/constancias/{linea}', [CtsController::class, 'constancia'])
+            ->scopeBindings()->name('cts.constancia');
 
         Route::get('trabajadores/importar', [ImportacionTrabajadoresController::class, 'index'])->name('trabajadores.importar');
         Route::get('trabajadores/importar/plantilla', [ImportacionTrabajadoresController::class, 'plantilla'])->name('trabajadores.importar.plantilla');

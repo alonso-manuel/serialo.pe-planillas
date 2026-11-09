@@ -29,6 +29,7 @@ class AuditoriaController extends Controller
         'tasa_afp' => 'Tasa AFP',
         'concepto' => 'Concepto',
         'periodo' => 'Periodo',
+        'liquidacion_cts' => 'CTS',
     ];
 
     public function index(Request $request): Response

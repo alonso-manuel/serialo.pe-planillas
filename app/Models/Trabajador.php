@@ -44,6 +44,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property MotivoCese|null $motivo_cese
  * @property string|null $cuenta_sueldo
  * @property string|null $cuenta_cts
+ * @property string|null $entidad_cts código de entidades_financieras
  * @property string|null $email
  * @property string|null $telefono
  * @property-read string $nombre_completo
@@ -60,7 +61,7 @@ class Trabajador extends Model
         'apellido_paterno', 'apellido_materno', 'nombres', 'fecha_nacimiento', 'sexo',
         'cargo', 'fecha_ingreso', 'fecha_cese', 'motivo_cese', 'tipo_contrato',
         'remuneracion_basica', 'asignacion_familiar', 'sistema_pension', 'afp_id',
-        'cuspp', 'tipo_comision_afp', 'seguro_salud', 'cuenta_sueldo', 'cuenta_cts',
+        'cuspp', 'tipo_comision_afp', 'seguro_salud', 'cuenta_sueldo', 'cuenta_cts', 'entidad_cts',
         'email', 'telefono',
     ];
 

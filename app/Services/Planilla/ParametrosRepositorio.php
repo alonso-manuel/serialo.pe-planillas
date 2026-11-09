@@ -2,12 +2,14 @@
 
 namespace App\Services\Planilla;
 
+use App\Domain\Planilla\ParametrosCts;
 use App\Domain\Planilla\ParametrosGratificacion;
 use App\Domain\Planilla\ParametrosPeriodo;
 use App\Domain\Planilla\TasaAfpPeriodo;
 use App\Enums\ClaveParametro as C;
 use App\Enums\RegimenLaboral;
 use App\Enums\TipoComisionAfp;
+use App\Models\Empresa;
 use App\Models\Parametro;
 use App\Models\Periodo;
 use App\Models\TasaAfp;
@@ -33,8 +35,16 @@ class ParametrosRepositorio
 
     public function gratificacion(Periodo $periodo): ParametrosGratificacion
     {
-        $fecha = $periodo->ultimoDia()->toDateString();
-        $regimen = $periodo->empresa->regimen_laboral ?? RegimenLaboral::General;
+        /** @var Empresa $empresa */
+        $empresa = $periodo->empresa;
+
+        return $this->gratificacionPara($empresa, $periodo->ultimoDia()->toDateString());
+    }
+
+    /** Parámetros de la gratificación de una empresa vigentes en una fecha (Y-m-d). */
+    public function gratificacionPara(Empresa $empresa, string $fecha): ParametrosGratificacion
+    {
+        $regimen = $empresa->regimen_laboral;
 
         return new ParametrosGratificacion(
             rmv: Parametro::vigente(C::Rmv, $fecha),
@@ -46,6 +56,21 @@ class ParametrosRepositorio
                 RegimenLaboral::Microempresa => Parametro::vigente(C::FactorGratificacionMicro, $fecha),
             },
             tasaBonificacion: Parametro::vigente(C::TasaBonificacionExtraordinaria, $fecha),
+        );
+    }
+
+    /** Parámetros de la CTS de una empresa vigentes al cierre del periodo computable (Y-m-d). */
+    public function cts(Empresa $empresa, string $fecha): ParametrosCts
+    {
+        return new ParametrosCts(
+            rmv: Parametro::vigente(C::Rmv, $fecha),
+            porcentajeAsignacionFamiliar: Parametro::vigente(C::PorcentajeAsignacionFamiliar, $fecha),
+            // Régimen general: CTS completa (D.S. 001-97-TR). REMYPE: proporción con vigencia.
+            factorRegimen: match ($empresa->regimen_laboral) {
+                RegimenLaboral::General => '1',
+                RegimenLaboral::PequenaEmpresa => Parametro::vigente(C::FactorCtsPequena, $fecha),
+                RegimenLaboral::Microempresa => Parametro::vigente(C::FactorCtsMicro, $fecha),
+            },
         );
     }
 

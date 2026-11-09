@@ -5,6 +5,7 @@ namespace App\Providers;
 use App\Models\Concepto;
 use App\Models\Empresa;
 use App\Models\Establecimiento;
+use App\Models\LiquidacionCts;
 use App\Models\Novedad;
 use App\Models\Parametro;
 use App\Models\Periodo;
@@ -95,6 +96,7 @@ class AppServiceProvider extends ServiceProvider
             'tasa_afp' => TasaAfp::class,
             'concepto' => Concepto::class,
             'periodo' => Periodo::class,
+            'liquidacion_cts' => LiquidacionCts::class,
         ]);
     }
 

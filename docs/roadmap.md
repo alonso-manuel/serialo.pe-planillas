@@ -58,7 +58,7 @@ Marca `[x]` al terminar (o usa `/actualizar-roadmap`). Cada tarea: código + tes
 
 ### Semana 6 (14–18 dic) · Beneficios y reportes
 
-- [ ] CTS mayo/noviembre + constancia de depósito PDF
+- [x] CTS mayo/noviembre + constancia de depósito PDF
 - [ ] Vacaciones: récord, saldos, goce (afecta planilla)
 - [ ] Reportes: planilla, resumen, centralización, costo laboral (Excel y PDF)
 - [ ] Panel del estudio: estado de cada empresa en el mes (abierto / calculado / cerrado / exportado)

@@ -20,6 +20,7 @@ import { dashboard } from '@/routes';
 import { index as afpnet } from '@/routes/afpnet';
 import { index as auditoria } from '@/routes/auditoria';
 import { index as conceptos } from '@/routes/conceptos';
+import { index as cts } from '@/routes/cts';
 import { index as empresas } from '@/routes/empresas';
 import { index as parametros } from '@/routes/parametros';
 import { index as periodos } from '@/routes/periodos';
@@ -54,7 +55,7 @@ export const gruposNav: GrupoNav[] = [
         title: 'Beneficios',
         items: [
             { title: 'Gratificaciones', icon: Gift },
-            { title: 'CTS', icon: PiggyBank },
+            { title: 'CTS', href: cts(), icon: PiggyBank },
             { title: 'Vacaciones', icon: TreePalm },
         ],
     },

@@ -110,12 +110,26 @@ Se agrega sola al calcular la planilla de **julio** y **diciembre** (conceptos d
   gratificación trunca en la liquidación de beneficios (v1.1).
 - Códigos PLAME: 0406 gratificación, 0312 bonificación extraordinaria ⚠ verificar en tabla 22.
 
-## CTS (semana 6) — D.S. 001-97-TR
+## CTS (semana 6) — D.S. 001-97-TR y D.S. 004-97-TR
 
-- Depósitos: mayo (periodo noviembre–abril) y noviembre (mayo–octubre), hasta el día 15.
-- Remuneración computable = básico + asignación familiar + 1/6 de la última gratificación + promedio de variables.
-- Monto = computable / 12 × meses completos + computable / 360 × días del mes incompleto.
-- Pequeña empresa: la mitad. Microempresa: no aplica.
+Implementado en `App\Domain\Planilla\CalculadoraCts` (motor puro) y `App\Services\Planilla\LiquidacionesCts`.
+Pantalla **Beneficios → CTS** (por empresa activa): calcular, cerrar/reabrir (admin, auditado) y constancias PDF.
+
+- Depósitos: **mayo** (periodo noviembre del año anterior – abril) y **noviembre** (mayo – octubre), hasta el día 15. Solo soles.
+- Entran los trabajadores con vínculo al cierre del periodo. Quien cesó antes la cobra en su liquidación de beneficios (v1.1).
+- **Tiempo computable**: desde el inicio del periodo o el ingreso, en mes comercial de 30 días (ingreso el 10 → 21 días ese mes).
+- **Se descuentan** por día: faltas injustificadas, licencias sin goce y los días de **subsidio por enfermedad que pasen de 60**
+  en el periodo; el subsidio por **maternidad** se computa completo ⚠.
+- **Remuneración computable** = básico + asignación familiar + **1/6 de la gratificación** del periodo (diciembre para mayo,
+  julio para noviembre) + promedio de horas extra (suma / 6, si las hubo en 3 meses o más) ⚠.
+    - La gratificación se toma de la planilla calculada de ese mes (0406). Si no hay planilla, se **estima** con el motor de
+      gratificación (meses completos, sin faltas) y se avisa.
+- **Monto** = computable / 360 × días computables (= /12 por mes + /360 por día). Redondeo a 2 decimales al final.
+- **Régimen**: general 100 %; pequeña empresa `factor_cts_pequena` = 0.50; microempresa `factor_cts_micro` = 0.00 ⚠.
+  En pequeña empresa la gratificación también es la mitad, así que el sexto es menor.
+- Meses del periodo sin planilla en el sistema: se cuentan completos, sin descuentos ni variables, y se avisa.
+- **Constancia de depósito** (art. 29): una por trabajador con periodo, tiempo, remuneración computable desglosada,
+  monto en cifras y letras, entidad y cuenta CTS. Lleva «BORRADOR» mientras la liquidación no está cerrada.
 
 ## Vacaciones (semana 6)
 
@@ -136,6 +150,7 @@ Proyección anual de rentas − 7 UIT; tramos 8 % / 14 % / 17 % / 20 % / 30 %; r
 - [ ] `codigo_sunat` de cada AFP (tabla paramétrica T-Registro).
 - [ ] Asignación familiar en REMYPE y prorrateo por faltas.
 - [ ] Redondeo de horas extra: ¿por hora o por total? (hoy: por total).
+- [ ] CTS: tope de 60 días de subsidio por enfermedad, maternidad completa, 1/6 de la gratificación estimada si no hay planilla, factor REMYPE 50 % / 0 %.
 - [ ] Licencia sin goce: descuenta días pagados y reduce la gratificación como las faltas (1/180 por día).
 - [ ] PLAME: códigos de la tabla 21 (07 faltas, 21/22 subsidios), jornada de 8 h diarias en el .jor, montos en cero omitidos en el .rem.
 - [ ] Gratificación: diciembre como mes completo, faltas 1/180 por día, variables solo HE (≥ 3 meses), factor REMYPE (50 % / 0 %), meses sin planilla asumidos completos, faltas de diciembre excluidas.
