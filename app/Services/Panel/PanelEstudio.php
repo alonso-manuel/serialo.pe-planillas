@@ -5,6 +5,7 @@ namespace App\Services\Panel;
 use App\Domain\Planilla\PeriodoVacacional;
 use App\Enums\EstadoPeriodo;
 use App\Enums\RegimenLaboral;
+use App\Enums\TipoConcepto;
 use App\Models\Afp;
 use App\Models\Empresa;
 use App\Models\EnvioBoleta;
@@ -18,6 +19,7 @@ use App\Models\User;
 use App\Services\Empresas\EmpresaActiva;
 use App\Services\Planilla\VacacionesTrabajador;
 use Brick\Math\BigDecimal;
+use Brick\Math\RoundingMode;
 use Carbon\CarbonImmutable;
 
 /**
@@ -100,7 +102,126 @@ class PanelEstudio
             ],
             'empresas' => $filas->all(),
             'alertas' => $this->alertas($usuario, $empresas->all(), $periodos->all(), $anio, $mes),
+            'serie' => $this->serie($ids->all(), $anio, $mes),
+            'composicion' => $this->composicion($periodoIds->all()),
+            'avance' => [
+                'con_periodo' => $filas->filter(fn (array $f) => $f['periodo'] !== null)->count(),
+                'calculadas' => $filas->filter(fn (array $f) => $f['periodo'] !== null && $f['periodo']['neto'] !== null && ! $f['periodo']['desactualizado'])->count(),
+                'cerradas' => $cerradas,
+                'plame' => $filas->filter(fn (array $f) => $f['plame'] !== null)->count(),
+                'afpnet' => $filas->filter(fn (array $f) => $f['afpnet'] !== null)->count(),
+                'boletas' => $filas->filter(fn (array $f) => $f['boletas'] !== null && $f['boletas']['con_correo'] > 0 && $f['boletas']['enviadas'] >= $f['boletas']['con_correo'])->count(),
+            ],
+            'movimiento' => $this->movimiento($ids->all(), $anio, $mes),
         ];
+    }
+
+    /**
+     * Últimos 12 meses hasta el elegido, sumando las líneas calculadas de todas las empresas visibles.
+     * Un mes sin planilla calculada va con montos null (hueco en el gráfico, no cero).
+     *
+     * @param  array<int, int>  $empresaIds
+     * @return list<array{anio: int, mes: int, etiqueta: string, costo: string|null, neto: string|null, aportes: string|null, trabajadores: int}>
+     */
+    private function serie(array $empresaIds, int $anio, int $mes): array
+    {
+        $fin = CarbonImmutable::create($anio, $mes, 1);
+        $inicio = $fin->subMonths(11);
+
+        $filas = PlanillaLinea::query()
+            ->join('periodos', 'periodos.id', '=', 'planilla_lineas.periodo_id')
+            ->whereIn('periodos.empresa_id', $empresaIds)
+            ->whereNotNull('planilla_lineas.calculado_en')
+            ->whereRaw('(periodos.anio * 100 + periodos.mes) between ? and ?', [
+                $inicio->year * 100 + $inicio->month, $fin->year * 100 + $fin->month,
+            ])
+            ->groupBy('periodos.anio', 'periodos.mes')
+            ->selectRaw('periodos.anio, periodos.mes, count(*) as trabajadores,
+                sum(planilla_lineas.total_ingresos) as ingresos,
+                sum(planilla_lineas.total_aportes_empleador) as aportes,
+                sum(planilla_lineas.neto_pagar) as neto')
+            ->toBase()->get()
+            ->keyBy(fn (object $f) => ((int) $f->anio) * 100 + (int) $f->mes);
+
+        $serie = [];
+        for ($m = $inicio; $m <= $fin; $m = $m->addMonth()) {
+            $f = $filas->get($m->year * 100 + $m->month);
+            $aportes = $f === null ? null : $this->monto($f->aportes);
+
+            $serie[] = [
+                'anio' => $m->year,
+                'mes' => $m->month,
+                'etiqueta' => mb_substr(Periodo::MESES[$m->month], 0, 3).' '.substr((string) $m->year, 2),
+                'costo' => $f === null ? null : (string) $this->monto($f->ingresos)->plus((string) $aportes),
+                'neto' => $f === null ? null : (string) $this->monto($f->neto),
+                'aportes' => $aportes === null ? null : (string) $aportes,
+                'trabajadores' => $f === null ? 0 : (int) $f->trabajadores,
+            ];
+        }
+
+        return $serie;
+    }
+
+    /**
+     * Cómo se reparte el costo laboral del mes: lo que recibe el trabajador, lo que se le retiene
+     * para su pensión, renta y otros descuentos, y lo que aporta el empleador.
+     *
+     * @param  array<int, int>  $periodoIds
+     * @return array{neto: string, pensiones: string, descuentos: string, aportes: string, total: string}
+     */
+    private function composicion(array $periodoIds): array
+    {
+        $totales = PlanillaLinea::query()->whereIn('periodo_id', $periodoIds)->whereNotNull('calculado_en')
+            ->selectRaw('sum(neto_pagar) as neto, sum(total_aportes_empleador) as aportes')
+            ->toBase()->first();
+        $porTipo = PlanillaLinea::query()->whereIn('planilla_lineas.periodo_id', $periodoIds)
+            ->whereNotNull('planilla_lineas.calculado_en')
+            ->join('planilla_conceptos', 'planilla_conceptos.planilla_linea_id', '=', 'planilla_lineas.id')
+            ->join('conceptos', 'conceptos.id', '=', 'planilla_conceptos.concepto_id')
+            ->whereIn('conceptos.tipo', [TipoConcepto::AporteTrabajador->value, TipoConcepto::DescuentoTrabajador->value])
+            ->groupBy('conceptos.tipo')
+            ->selectRaw('conceptos.tipo, sum(planilla_conceptos.monto_pagado) as total')
+            ->toBase()->pluck('total', 'tipo');
+
+        $neto = $this->monto($totales->neto ?? null);
+        $pensiones = $this->monto($porTipo[TipoConcepto::AporteTrabajador->value] ?? null);
+        $descuentos = $this->monto($porTipo[TipoConcepto::DescuentoTrabajador->value] ?? null);
+        $aportes = $this->monto($totales->aportes ?? null);
+
+        return [
+            'neto' => (string) $neto,
+            'pensiones' => (string) $pensiones,
+            'descuentos' => (string) $descuentos,
+            'aportes' => (string) $aportes,
+            'total' => (string) $neto->plus($pensiones)->plus($descuentos)->plus($aportes),
+        ];
+    }
+
+    /**
+     * Altas y bajas del mes y trabajadores vigentes al cierre del mes, en las empresas visibles.
+     *
+     * @param  array<int, int>  $empresaIds
+     * @return array{altas: int, bajas: int, vigentes: int}
+     */
+    private function movimiento(array $empresaIds, int $anio, int $mes): array
+    {
+        $inicio = CarbonImmutable::create($anio, $mes, 1);
+        $fin = $inicio->endOfMonth();
+        $base = fn () => Trabajador::query()->whereIn('empresa_id', $empresaIds);
+
+        return [
+            'altas' => $base()->whereBetween('fecha_ingreso', [$inicio->toDateString(), $fin->toDateString()])->count(),
+            'bajas' => $base()->whereBetween('fecha_cese', [$inicio->toDateString(), $fin->toDateString()])->count(),
+            'vigentes' => $base()->whereDate('fecha_ingreso', '<=', $fin->toDateString())
+                ->where(fn ($q) => $q->whereNull('fecha_cese')->orWhereDate('fecha_cese', '>', $fin->toDateString()))
+                ->count(),
+        ];
+    }
+
+    /** Suma de la BD (decimal en MySQL; en SQLite puede venir como número) a monto con 2 decimales. */
+    private function monto(mixed $valor): BigDecimal
+    {
+        return BigDecimal::of(is_numeric($valor) ? (string) $valor : '0')->toScale(2, RoundingMode::HalfUp);
     }
 
     /**

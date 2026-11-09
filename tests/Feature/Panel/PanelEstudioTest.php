@@ -82,6 +82,44 @@ class PanelEstudioTest extends TestCase
     }
 
     #[Test]
+    public function arma_la_serie_de_12_meses_la_composicion_y_el_avance(): void
+    {
+        $periodo = $this->periodoCerrado($this->alfa);
+        Exportacion::registrar(Exportacion::PLAME, $periodo, ['x.rem' => 'contenido'], $this->asistente);
+
+        // Otra empresa (no visible) con planilla en el mismo mes: no suma.
+        $ajena = Empresa::factory()->create();
+        $p = Periodo::factory()->for($ajena)->create(['anio' => 2026, 'mes' => 11]);
+        $t = Trabajador::factory()->for($ajena)->create(['fecha_ingreso' => '2026-11-03', 'sistema_pension' => 'onp', 'afp_id' => null]);
+        $p->lineas()->create(['trabajador_id' => $t->id, 'dias_laborados' => 30, 'calculado_en' => now(), 'neto_pagar' => '9999.00']);
+
+        $this->actingAs($this->asistente)->get(route('dashboard'))
+            ->assertInertia(fn (Assert $page) => $page
+                ->has('serie', 12)
+                ->where('serie.0.etiqueta', 'Dic 25')
+                ->where('serie.0.neto', null)
+                ->where('serie.11.etiqueta', 'Nov 26')
+                ->where('serie.11.neto', '1305.00')
+                ->where('serie.11.aportes', '135.00')
+                ->where('serie.11.costo', '1635.00')
+                ->where('serie.11.trabajadores', 1)
+                // 1500 de sueldo: 1305 neto + 195 ONP; EsSalud 135 a cargo del empleador.
+                ->where('composicion.neto', '1305.00')
+                ->where('composicion.pensiones', '195.00')
+                ->where('composicion.descuentos', '0.00')
+                ->where('composicion.aportes', '135.00')
+                ->where('composicion.total', '1635.00')
+                ->where('avance.con_periodo', 1)
+                ->where('avance.calculadas', 1)
+                ->where('avance.cerradas', 1)
+                ->where('avance.plame', 1)
+                ->where('avance.afpnet', 0)
+                ->where('avance.boletas', 1)
+                ->where('movimiento.altas', 0)
+                ->where('movimiento.vigentes', 1));
+    }
+
+    #[Test]
     public function el_asistente_solo_ve_sus_empresas(): void
     {
         Empresa::factory()->create(['razon_social' => 'Ajena S.A.']);
