@@ -19,9 +19,11 @@ import {
 import { dashboard } from '@/routes';
 import { index as afpnet } from '@/routes/afpnet';
 import { index as auditoria } from '@/routes/auditoria';
+import { index as boletas } from '@/routes/boletas';
 import { index as conceptos } from '@/routes/conceptos';
 import { index as cts } from '@/routes/cts';
 import { index as empresas } from '@/routes/empresas';
+import { index as gratificaciones } from '@/routes/gratificaciones';
 import { index as parametros } from '@/routes/parametros';
 import { index as periodos } from '@/routes/periodos';
 import { index as plame } from '@/routes/plame';
@@ -50,13 +52,13 @@ export const gruposNav: GrupoNav[] = [
         title: 'Planilla',
         items: [
             { title: 'Periodos', href: periodos(), icon: CalendarDays },
-            { title: 'Boletas', icon: FileText },
+            { title: 'Boletas', href: boletas(), icon: FileText },
         ],
     },
     {
         title: 'Beneficios',
         items: [
-            { title: 'Gratificaciones', icon: Gift },
+            { title: 'Gratificaciones', href: gratificaciones(), icon: Gift },
             { title: 'CTS', href: cts(), icon: PiggyBank },
             { title: 'Vacaciones', href: vacaciones(), icon: TreePalm },
         ],

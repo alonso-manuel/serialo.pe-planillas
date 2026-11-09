@@ -18,6 +18,7 @@ use App\Http\Controllers\Periodos\CierrePeriodoController;
 use App\Http\Controllers\Periodos\EnvioBoletaController;
 use App\Http\Controllers\Periodos\LineaPlanillaController;
 use App\Http\Controllers\Periodos\PeriodoController;
+use App\Http\Controllers\Periodos\ResumenBoletasController;
 use App\Http\Controllers\Reportes\ReporteController;
 use App\Http\Controllers\Sunat\AfpnetController;
 use App\Http\Controllers\Sunat\PlameController;
@@ -58,6 +59,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::post('periodos/{periodo}/boletas/correo', [EnvioBoletaController::class, 'store'])->name('periodos.boletas.correo');
         Route::post('periodos/{periodo}/lineas/{linea}/boleta/correo', [EnvioBoletaController::class, 'reenviar'])
             ->scopeBindings()->name('periodos.lineas.boleta.correo');
+
+        // Accesos del menú: boletas y gratificaciones de la empresa activa
+        Route::get('boletas', [ResumenBoletasController::class, 'boletas'])->name('boletas.index');
+        Route::get('gratificaciones', [ResumenBoletasController::class, 'gratificaciones'])->name('gratificaciones.index');
 
         // Reportes de la planilla de la empresa activa
         Route::get('reportes', [ReporteController::class, 'index'])->name('reportes.index');
