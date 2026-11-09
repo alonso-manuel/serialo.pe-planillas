@@ -6,6 +6,7 @@ use App\Domain\Planilla\MontoEnLetras;
 use App\Enums\EstadoPeriodo;
 use App\Models\Periodo;
 use App\Models\PlanillaLinea;
+use App\Services\Empresas\LogoEmpresa;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Dompdf\Adapter\CPDF;
 use Illuminate\Support\Collection;
@@ -150,6 +151,7 @@ class BoletaPago
 
         return [
             'empresa' => $periodo->empresa,
+            'logo' => app(LogoEmpresa::class)->dataUri($periodo->empresa),
             'periodo' => $periodo,
             'borrador' => $periodo->estado !== EstadoPeriodo::Cerrado,
             'boletas' => $boletas,

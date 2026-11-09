@@ -65,7 +65,7 @@ Marca `[x]` al terminar (o usa `/actualizar-roadmap`). Cada tarea: código + tes
 
 ### Semana 7 (21–30 dic) · Producto vendible
 
-- [ ] Configuración de la empresa: logo (boletas y reportes) — pedido el 09/11
+- [x] Configuración de la empresa: logo (boletas y reportes) — pedido el 09/11
 - [ ] Instalador web
 - [ ] Licencia firmada (Ed25519) + límites por plan + modo solo lectura
 - [ ] Actualizador desde el panel

@@ -33,6 +33,8 @@ export type EmpresaEditable = EmpresaResumen & {
     seguro_salud: SeguroSalud;
     representante_legal: string | null;
     activo: boolean;
+    /** Versión del logo (null si no tiene). */
+    logo: string | null;
 };
 
 export type EstablecimientoFila = {

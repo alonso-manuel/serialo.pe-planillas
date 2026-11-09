@@ -54,6 +54,7 @@
         <table>
             <tr>
                 <td>
+                    @if (!empty($logo))<img src="{{ $logo }}" alt="" style="max-height: 46px; max-width: 160px; margin-bottom: 4px;"><br>@endif
                     <div class="empresa">{{ $empresa->razon_social }}</div>
                     <div class="suave">RUC {{ $empresa->ruc }}</div>
                     @if ($empresa->direccion)<div class="suave">{{ $empresa->direccion }}</div>@endif

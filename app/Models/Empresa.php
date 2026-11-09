@@ -19,6 +19,8 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property RegimenLaboral $regimen_laboral
  * @property SeguroSalud $seguro_salud
  * @property bool $activo
+ * @property string|null $direccion
+ * @property string|null $logo_path ruta del logo en el disco privado (PNG reducido)
  */
 class Empresa extends Model
 {
@@ -27,7 +29,7 @@ class Empresa extends Model
 
     protected $fillable = [
         'ruc', 'razon_social', 'nombre_comercial', 'direccion', 'ubigeo',
-        'regimen_laboral', 'seguro_salud', 'representante_legal', 'activo',
+        'regimen_laboral', 'seguro_salud', 'representante_legal', 'logo_path', 'activo',
     ];
 
     /** @return array<string, string> */

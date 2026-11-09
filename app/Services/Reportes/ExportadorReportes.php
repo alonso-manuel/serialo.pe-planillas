@@ -4,6 +4,7 @@ namespace App\Services\Reportes;
 
 use App\Enums\EstadoPeriodo;
 use App\Models\Periodo;
+use App\Services\Empresas\LogoEmpresa;
 use Barryvdh\DomPDF\Facade\Pdf;
 use OpenSpout\Common\Entity\Cell;
 use OpenSpout\Common\Entity\Row;
@@ -72,6 +73,7 @@ class ExportadorReportes
             'reporte' => $reporte,
             'periodo' => $periodo,
             'empresa' => $periodo->empresa,
+            'logo' => app(LogoEmpresa::class)->dataUri($periodo->empresa),
             'borrador' => $periodo->estado !== EstadoPeriodo::Cerrado,
         ])->setPaper('a4', 'landscape')->output();
     }

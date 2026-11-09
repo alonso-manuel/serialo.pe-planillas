@@ -102,6 +102,8 @@ class EmpresaController extends Controller
                 'seguro_salud' => $empresa->seguro_salud->value,
                 'representante_legal' => $empresa->representante_legal,
                 'activo' => $empresa->activo,
+                // Versión en la URL para que el navegador no muestre un logo anterior en caché.
+                'logo' => $empresa->logo_path !== null ? md5($empresa->logo_path) : null,
             ],
             'establecimientos' => $empresa->establecimientos()
                 ->withCount('trabajadores')

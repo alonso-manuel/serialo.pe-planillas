@@ -10,6 +10,7 @@ use App\Http\Controllers\Empresas\ConsultaRucController;
 use App\Http\Controllers\Empresas\EmpresaController;
 use App\Http\Controllers\Empresas\EstablecimientoController;
 use App\Http\Controllers\Empresas\EstadoEmpresaController;
+use App\Http\Controllers\Empresas\LogoEmpresaController;
 use App\Http\Controllers\PanelController;
 use App\Http\Controllers\Parametros\ParametroController;
 use App\Http\Controllers\Periodos\BoletaController;
@@ -122,6 +123,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
         ->middleware('throttle:20,1')->name('empresas.consulta-ruc');
     Route::resource('empresas', EmpresaController::class)->except(['show', 'destroy']);
     Route::patch('empresas/{empresa}/estado', [EstadoEmpresaController::class, 'update'])->name('empresas.estado');
+    Route::get('empresas/{empresa}/logo', [LogoEmpresaController::class, 'show'])->name('empresas.logo.show');
+    Route::post('empresas/{empresa}/logo', [LogoEmpresaController::class, 'store'])->name('empresas.logo.store');
+    Route::delete('empresas/{empresa}/logo', [LogoEmpresaController::class, 'destroy'])->name('empresas.logo.destroy');
     Route::scopeBindings()->group(function () {
         Route::post('empresas/{empresa}/establecimientos', [EstablecimientoController::class, 'store'])
             ->name('empresas.establecimientos.store');

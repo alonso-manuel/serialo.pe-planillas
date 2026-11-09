@@ -3,6 +3,7 @@ import { Head, Link, useForm } from '@inertiajs/vue3';
 import { CircleAlert, Search } from '@lucide/vue';
 import { computed, ref, watch } from 'vue';
 import Establecimientos from '@/components/empresas/Establecimientos.vue';
+import LogoEmpresa from '@/components/empresas/LogoEmpresa.vue';
 import Heading from '@/components/Heading.vue';
 import InputError from '@/components/InputError.vue';
 import { Button } from '@/components/ui/button';
@@ -302,6 +303,12 @@ function guardar(): void {
                 </Button>
             </div>
         </form>
+
+        <LogoEmpresa
+            v-if="empresa"
+            :empresa-id="empresa.id"
+            :logo="empresa.logo"
+        />
 
         <Establecimientos
             v-if="empresa"

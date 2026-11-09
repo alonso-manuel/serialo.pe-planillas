@@ -5,6 +5,7 @@ namespace App\Services\Planilla;
 use App\Models\EntidadFinanciera;
 use App\Models\LiquidacionCts;
 use App\Models\LiquidacionCtsLinea;
+use App\Services\Empresas\LogoEmpresa;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
@@ -25,6 +26,7 @@ class ConstanciaCts
         return Pdf::loadView('pdf.constancia-cts', [
             'liquidacion' => $liquidacion,
             'empresa' => $liquidacion->empresa,
+            'logo' => app(LogoEmpresa::class)->dataUri($liquidacion->empresa),
             'lineas' => $lineas->each(fn (LiquidacionCtsLinea $l) => $l->loadMissing('trabajador')),
             'entidades' => $entidades,
             'borrador' => ! $liquidacion->estaCerrada(),
