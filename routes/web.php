@@ -17,6 +17,7 @@ use App\Http\Controllers\Periodos\CierrePeriodoController;
 use App\Http\Controllers\Periodos\EnvioBoletaController;
 use App\Http\Controllers\Periodos\LineaPlanillaController;
 use App\Http\Controllers\Periodos\PeriodoController;
+use App\Http\Controllers\Reportes\ReporteController;
 use App\Http\Controllers\Sunat\AfpnetController;
 use App\Http\Controllers\Sunat\PlameController;
 use App\Http\Controllers\TasasAfp\ImportacionTasasAfpController;
@@ -56,6 +57,13 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::post('periodos/{periodo}/boletas/correo', [EnvioBoletaController::class, 'store'])->name('periodos.boletas.correo');
         Route::post('periodos/{periodo}/lineas/{linea}/boleta/correo', [EnvioBoletaController::class, 'reenviar'])
             ->scopeBindings()->name('periodos.lineas.boleta.correo');
+
+        // Reportes de la planilla de la empresa activa
+        Route::get('reportes', [ReporteController::class, 'index'])->name('reportes.index');
+        Route::get('reportes/{periodo}/{tipo}/{formato}', [ReporteController::class, 'descargar'])
+            ->whereIn('tipo', ['planilla', 'resumen', 'centralizacion', 'costo'])
+            ->whereIn('formato', ['xlsx', 'pdf'])
+            ->name('reportes.descargar');
 
         // Vacaciones de la empresa activa
         Route::get('vacaciones', [VacacionesController::class, 'index'])->name('vacaciones.index');

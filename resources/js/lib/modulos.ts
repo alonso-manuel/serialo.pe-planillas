@@ -25,6 +25,7 @@ import { index as empresas } from '@/routes/empresas';
 import { index as parametros } from '@/routes/parametros';
 import { index as periodos } from '@/routes/periodos';
 import { index as plame } from '@/routes/plame';
+import { index as reportes } from '@/routes/reportes';
 import { index as tasasAfp } from '@/routes/tasas-afp';
 import { index as trabajadores } from '@/routes/trabajadores';
 import { index as usuarios } from '@/routes/usuarios';
@@ -69,7 +70,7 @@ export const gruposNav: GrupoNav[] = [
     },
     {
         title: 'Reportes',
-        items: [{ title: 'Reportes', icon: ChartColumn }],
+        items: [{ title: 'Reportes', href: reportes(), icon: ChartColumn }],
     },
     {
         title: 'Administración',

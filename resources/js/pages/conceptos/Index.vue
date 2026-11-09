@@ -78,6 +78,8 @@ const form = useForm({
     afecto_onp: false,
     afecto_afp: false,
     afecto_quinta: false,
+    cuenta_cargo: '',
+    cuenta_abono: '',
 });
 
 /** Tipo según el código (misma regla que el servidor). */
@@ -123,6 +125,8 @@ function editar(c: ConceptoFila): void {
     form.afecto_onp = c.afecto_onp;
     form.afecto_afp = c.afecto_afp;
     form.afecto_quinta = c.afecto_quinta;
+    form.cuenta_cargo = c.cuenta_cargo ?? '';
+    form.cuenta_abono = c.cuenta_abono ?? '';
     abierto.value = true;
 }
 
@@ -408,6 +412,48 @@ function confirmarEliminacion(): void {
                         Aplica a los cálculos nuevos y a los periodos abiertos
                         que se recalculen; los periodos cerrados no cambian.
                     </p>
+                </fieldset>
+                <fieldset class="grid gap-3">
+                    <legend class="mb-2 text-sm font-medium">
+                        Cuentas contables
+                        <span
+                            class="ml-1 text-xs font-normal text-muted-foreground"
+                            >(PCGE, para la centralización)</span
+                        >
+                    </legend>
+                    <div class="grid grid-cols-2 gap-3">
+                        <div class="grid gap-1.5">
+                            <Label for="cuenta_cargo" class="text-xs"
+                                >Cargo (gasto)</Label
+                            >
+                            <Input
+                                id="cuenta_cargo"
+                                v-model="form.cuenta_cargo"
+                                inputmode="numeric"
+                                maxlength="8"
+                                class="font-mono"
+                                placeholder="6211"
+                            />
+                        </div>
+                        <div class="grid gap-1.5">
+                            <Label for="cuenta_abono" class="text-xs"
+                                >Abono (por pagar)</Label
+                            >
+                            <Input
+                                id="cuenta_abono"
+                                v-model="form.cuenta_abono"
+                                inputmode="numeric"
+                                maxlength="8"
+                                class="font-mono"
+                                placeholder="4032"
+                            />
+                        </div>
+                    </div>
+                    <InputError
+                        :message="
+                            form.errors.cuenta_cargo || form.errors.cuenta_abono
+                        "
+                    />
                 </fieldset>
             </form>
 

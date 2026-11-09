@@ -32,6 +32,8 @@ class GuardarConceptoRequest extends FormRequest
     {
         $reglas = [
             'nombre' => ['required', 'string', 'max:255'],
+            'cuenta_cargo' => ['nullable', 'regex:/^\d{2,8}$/'],
+            'cuenta_abono' => ['nullable', 'regex:/^\d{2,8}$/'],
         ];
 
         foreach (Concepto::AFECTACIONES as $campo) {
@@ -96,11 +98,15 @@ class GuardarConceptoRequest extends FormRequest
      */
     public function messages(): array
     {
-        return ['codigo_plame.unique' => 'Ese código ya está registrado.'];
+        return [
+            'codigo_plame.unique' => 'Ese código ya está registrado.',
+            'cuenta_cargo.regex' => 'La cuenta contable tiene de 2 a 8 dígitos.',
+            'cuenta_abono.regex' => 'La cuenta contable tiene de 2 a 8 dígitos.',
+        ];
     }
 
     /**
-     * @return array{nombre: string, afecto_essalud: bool, afecto_onp: bool, afecto_afp: bool, afecto_quinta: bool}
+     * @return array{nombre: string, afecto_essalud: bool, afecto_onp: bool, afecto_afp: bool, afecto_quinta: bool, cuenta_cargo: string|null, cuenta_abono: string|null}
      */
     public function datos(): array
     {
@@ -110,6 +116,8 @@ class GuardarConceptoRequest extends FormRequest
             'afecto_onp' => $this->boolean('afecto_onp'),
             'afecto_afp' => $this->boolean('afecto_afp'),
             'afecto_quinta' => $this->boolean('afecto_quinta'),
+            'cuenta_cargo' => $this->filled('cuenta_cargo') ? $this->string('cuenta_cargo')->trim()->toString() : null,
+            'cuenta_abono' => $this->filled('cuenta_abono') ? $this->string('cuenta_abono')->trim()->toString() : null,
         ];
     }
 

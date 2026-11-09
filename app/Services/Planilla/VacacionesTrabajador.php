@@ -173,7 +173,8 @@ class VacacionesTrabajador
             ->dividedBy(6, 2, RoundingMode::HalfUp);
     }
 
-    private function diasDerecho(Empresa $empresa, DateTimeImmutable $fecha): int
+    /** Días de vacaciones por año según el régimen de la empresa, vigentes en una fecha. */
+    public function diasDerecho(Empresa $empresa, DateTimeImmutable $fecha): int
     {
         $clave = match ($empresa->regimen_laboral) {
             RegimenLaboral::General => C::DiasVacacionesGeneral,

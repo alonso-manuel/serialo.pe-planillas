@@ -13,6 +13,8 @@ export type ConceptoFila = {
     afecto_onp: boolean;
     afecto_afp: boolean;
     afecto_quinta: boolean;
+    cuenta_cargo: string | null;
+    cuenta_abono: string | null;
     sistema: boolean;
     activo: boolean;
     usado: boolean;

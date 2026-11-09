@@ -40,6 +40,8 @@ class GestionConceptos
                     'afecto_onp' => $c->afecto_onp,
                     'afecto_afp' => $c->afecto_afp,
                     'afecto_quinta' => $c->afecto_quinta,
+                    'cuenta_cargo' => $c->cuenta_cargo,
+                    'cuenta_abono' => $c->cuenta_abono,
                     'sistema' => $c->sistema,
                     'activo' => $c->activo,
                     'usado' => (bool) $c->getAttribute('novedades_exists') || (bool) $c->getAttribute('resultados_exists'),
@@ -50,7 +52,7 @@ class GestionConceptos
     }
 
     /**
-     * @param  array{nombre: string, afecto_essalud: bool, afecto_onp: bool, afecto_afp: bool, afecto_quinta: bool}  $datos
+     * @param  array{nombre: string, afecto_essalud: bool, afecto_onp: bool, afecto_afp: bool, afecto_quinta: bool, cuenta_cargo?: string|null, cuenta_abono?: string|null}  $datos
      */
     public function crear(string $codigo, array $datos): Concepto
     {
@@ -61,19 +63,24 @@ class GestionConceptos
             'codigo_plame' => $codigo,
             'tipo' => $tipo,
             ...$this->conAfectaciones($tipo, $datos),
+            'cuenta_cargo' => $datos['cuenta_cargo'] ?? null,
+            'cuenta_abono' => $datos['cuenta_abono'] ?? null,
             'sistema' => false,
             'activo' => true,
         ]);
     }
 
     /**
-     * @param  array{nombre: string, afecto_essalud: bool, afecto_onp: bool, afecto_afp: bool, afecto_quinta: bool}  $datos
+     * @param  array{nombre: string, afecto_essalud: bool, afecto_onp: bool, afecto_afp: bool, afecto_quinta: bool, cuenta_cargo?: string|null, cuenta_abono?: string|null}  $datos
      */
     public function actualizar(Concepto $concepto, array $datos): Concepto
     {
+        $cuentas = ['cuenta_cargo' => $datos['cuenta_cargo'] ?? null, 'cuenta_abono' => $datos['cuenta_abono'] ?? null];
+
+        // En los de sistema solo cambian el nombre y las cuentas contables (las afectaciones son fijas).
         $concepto->update($concepto->sistema
-            ? ['nombre' => $datos['nombre']]
-            : $this->conAfectaciones($concepto->tipo, $datos));
+            ? ['nombre' => $datos['nombre'], ...$cuentas]
+            : [...$this->conAfectaciones($concepto->tipo, $datos), ...$cuentas]);
 
         return $concepto;
     }
@@ -107,7 +114,7 @@ class GestionConceptos
     /**
      * Las afectaciones solo tienen sentido en ingresos; los descuentos se guardan sin ellas.
      *
-     * @param  array{nombre: string, afecto_essalud: bool, afecto_onp: bool, afecto_afp: bool, afecto_quinta: bool}  $datos
+     * @param  array{nombre: string, afecto_essalud: bool, afecto_onp: bool, afecto_afp: bool, afecto_quinta: bool, cuenta_cargo?: string|null, cuenta_abono?: string|null}  $datos
      * @return array{nombre: string, afecto_essalud: bool, afecto_onp: bool, afecto_afp: bool, afecto_quinta: bool}
      */
     private function conAfectaciones(TipoConcepto $tipo, array $datos): array

@@ -167,6 +167,7 @@ Proyección anual de rentas − 7 UIT; tramos 8 % / 14 % / 17 % / 20 % / 30 %; r
 - [ ] `codigo_sunat` de cada AFP (tabla paramétrica T-Registro).
 - [ ] Asignación familiar en REMYPE y prorrateo por faltas.
 - [ ] Redondeo de horas extra: ¿por hora o por total? (hoy: por total).
+- [ ] Reportes: cuentas PCGE propuestas por concepto (6211, 6214, 6215, 6221, 6271, 4031, 4032, 4170, 1411, 4111…) y provisiones mensuales del costo laboral (gratificación 1/6, CTS 1/12, vacaciones 1/12 sobre básico + asignación).
 - [ ] Vacaciones: margen de 40 días no efectivos para el aviso de récord; remuneración vacacional con promedio de horas extra; mes completo = 30 días.
 - [ ] CTS: tope de 60 días de subsidio por enfermedad, maternidad completa, 1/6 de la gratificación estimada si no hay planilla, factor REMYPE 50 % / 0 %.
 - [ ] Licencia sin goce: descuenta días pagados y reduce la gratificación como las faltas (1/180 por día).

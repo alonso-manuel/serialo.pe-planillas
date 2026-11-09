@@ -16,6 +16,8 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property bool $afecto_onp
  * @property bool $afecto_afp
  * @property bool $afecto_quinta
+ * @property string|null $cuenta_cargo cuenta contable del gasto (PCGE)
+ * @property string|null $cuenta_abono cuenta contable del pasivo/activo (PCGE)
  * @property bool $sistema
  * @property bool $activo
  */
@@ -25,7 +27,7 @@ class Concepto extends Model
 
     protected $fillable = [
         'codigo_plame', 'nombre', 'tipo', 'afecto_essalud', 'afecto_onp',
-        'afecto_afp', 'afecto_quinta', 'sistema', 'activo',
+        'afecto_afp', 'afecto_quinta', 'cuenta_cargo', 'cuenta_abono', 'sistema', 'activo',
     ];
 
     /** @return array<string, string> */

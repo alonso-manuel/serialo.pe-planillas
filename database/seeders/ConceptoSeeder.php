@@ -13,6 +13,21 @@ use Illuminate\Database\Seeder;
  */
 class ConceptoSeeder extends Seeder
 {
+    /**
+     * Cuentas del PCGE para la centralización: código => [cargo, abono]. ⚠ Propuesta: cada estudio la ajusta.
+     * (La misma lista carga la migración add_cuentas_contables_to_conceptos en instalaciones existentes.)
+     */
+    public const CUENTAS = [
+        '0121' => ['6211', null], '0105' => ['6211', null], '0106' => ['6211', null],
+        '0118' => ['6215', null], '0201' => ['6221', null],
+        '0406' => ['6214', null], '0312' => ['6214', null], '0313' => ['6214', null],
+        '0904' => ['6291', null], '0909' => ['625', null],
+        '0601' => [null, '4170'], '0606' => [null, '4170'], '0608' => [null, '4170'],
+        '0607' => [null, '4032'], '0605' => [null, '40173'],
+        '0701' => [null, '1411'],
+        '0804' => ['6271', '4031'], '0811' => ['6271', '4039'],
+    ];
+
     public function run(): void
     {
         //  código, nombre, tipo, essalud, onp, afp, quinta, sistema
@@ -45,6 +60,8 @@ class ConceptoSeeder extends Seeder
                 'afecto_onp' => (bool) $onp,
                 'afecto_afp' => (bool) $afp,
                 'afecto_quinta' => (bool) $quinta,
+                'cuenta_cargo' => self::CUENTAS[$codigo][0] ?? null,
+                'cuenta_abono' => self::CUENTAS[$codigo][1] ?? null,
                 'sistema' => (bool) $sistema,
                 'activo' => true,
             ]);
