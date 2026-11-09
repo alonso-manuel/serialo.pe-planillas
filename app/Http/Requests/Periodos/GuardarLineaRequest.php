@@ -4,9 +4,11 @@ namespace App\Http\Requests\Periodos;
 
 use App\Models\Periodo;
 use App\Models\PlanillaLinea;
+use App\Models\TipoSuspension;
 use App\Services\Planilla\NovedadesPlanilla;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 use Illuminate\Validation\Validator;
 
 /** Una fila de la grilla de novedades: faltas, subsidios, horas extra y montos por concepto. */
@@ -26,6 +28,7 @@ class GuardarLineaRequest extends FormRequest
             'horas_extra_35' => $this->filled('horas_extra_35') ? str_replace(',', '.', (string) $this->input('horas_extra_35')) : '0',
             'dias_no_laborados' => $this->filled('dias_no_laborados') ? $this->input('dias_no_laborados') : 0,
             'dias_subsidiados' => $this->filled('dias_subsidiados') ? $this->input('dias_subsidiados') : 0,
+            'tipo_subsidio' => $this->filled('tipo_subsidio') ? (string) $this->input('tipo_subsidio') : null,
             'novedades' => collect((array) $this->input('novedades', []))
                 ->map(fn ($m) => $m === null ? null : str_replace(',', '.', trim((string) $m)))
                 ->all(),
@@ -40,6 +43,7 @@ class GuardarLineaRequest extends FormRequest
         return [
             'dias_no_laborados' => ['required', 'integer', 'between:0,30'],
             'dias_subsidiados' => ['required', 'integer', 'between:0,30'],
+            'tipo_subsidio' => ['nullable', Rule::exists('tipos_suspension', 'codigo')->where('uso', TipoSuspension::USO_SUBSIDIO)->where('activo', true)],
             'horas_extra_25' => ['required', 'regex:/^\d{1,3}(\.\d{1,2})?$/'],
             'horas_extra_35' => ['required', 'regex:/^\d{1,3}(\.\d{1,2})?$/'],
             'novedades' => ['array'],
@@ -105,13 +109,14 @@ class GuardarLineaRequest extends FormRequest
     }
 
     /**
-     * @return array{dias_no_laborados: int, dias_subsidiados: int, horas_extra_25: string, horas_extra_35: string, novedades: array<int, string|null>}
+     * @return array{dias_no_laborados: int, dias_subsidiados: int, tipo_subsidio: string|null, horas_extra_25: string, horas_extra_35: string, novedades: array<int, string|null>}
      */
     public function datos(): array
     {
         return [
             'dias_no_laborados' => (int) $this->input('dias_no_laborados'),
             'dias_subsidiados' => (int) $this->input('dias_subsidiados'),
+            'tipo_subsidio' => $this->filled('tipo_subsidio') ? (string) $this->input('tipo_subsidio') : null,
             'horas_extra_25' => (string) $this->input('horas_extra_25'),
             'horas_extra_35' => (string) $this->input('horas_extra_35'),
             'novedades' => collect((array) $this->input('novedades', []))

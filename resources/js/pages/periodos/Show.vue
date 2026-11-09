@@ -49,6 +49,7 @@ import type {
     CierrePeriodo,
     DetalleGratificacion,
     EnviosBoletas,
+    TipoSubsidio,
     ConceptoNovedad,
     EstadoPeriodo as Estado,
     LineaPeriodo,
@@ -64,6 +65,7 @@ const props = defineProps<{
     cierre: CierrePeriodo;
     gratificacion: DetalleGratificacion | null;
     envios: EnviosBoletas;
+    tipos_subsidio: TipoSubsidio[];
 }>();
 
 const page = usePage();
@@ -321,6 +323,7 @@ function eliminar(): void {
             :lineas="lineas"
             :columnas="columnas"
             :conceptos="conceptos"
+            :tipos-subsidio="tipos_subsidio"
             :editable="periodo.puede_editar"
             @estado="(e) => (estado = e)"
         />

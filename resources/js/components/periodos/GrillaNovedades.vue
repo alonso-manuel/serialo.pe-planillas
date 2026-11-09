@@ -13,13 +13,19 @@ import {
     DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { show as verLinea, update } from '@/routes/periodos/lineas';
-import type { ConceptoNovedad, EstadoPeriodo, LineaPeriodo } from '@/types';
+import type {
+    ConceptoNovedad,
+    EstadoPeriodo,
+    LineaPeriodo,
+    TipoSubsidio,
+} from '@/types';
 
 const props = defineProps<{
     periodoId: number;
     lineas: LineaPeriodo[];
     columnas: number[];
     conceptos: ConceptoNovedad[];
+    tiposSubsidio: TipoSubsidio[];
     editable: boolean;
 }>();
 
@@ -59,6 +65,7 @@ type Fila = {
     linea: LineaPeriodo;
     valores: Record<Campo, string>;
     montos: Record<number, string>;
+    tipoSubsidio: string;
     estado: EstadoFila;
     errores: Record<string, string>;
     mensaje: string | null;
@@ -81,6 +88,7 @@ function crearFila(l: LineaPeriodo): Fila {
         montos: Object.fromEntries(
             Object.entries(l.novedades).map(([id, m]) => [Number(id), m]),
         ),
+        tipoSubsidio: l.tipo_subsidio ?? '21',
         estado: 'guardado',
         errores: {},
         mensaje: null,
@@ -140,7 +148,11 @@ async function guardar(fila: Fila): Promise<void> {
                     'X-XSRF-TOKEN': xsrf(),
                     'X-Requested-With': 'XMLHttpRequest',
                 },
-                body: JSON.stringify({ ...fila.valores, novedades }),
+                body: JSON.stringify({
+                    ...fila.valores,
+                    tipo_subsidio: fila.tipoSubsidio,
+                    novedades,
+                }),
             },
         );
         const datos = await respuesta.json();
@@ -166,6 +178,7 @@ async function guardar(fila: Fila): Promise<void> {
         }
 
         fila.linea.dias_laborados = datos.dias_laborados;
+        fila.linea.tipo_subsidio = datos.tipo_subsidio;
         fila.linea.dias_mes = datos.dias_mes;
         fila.montos = Object.fromEntries(
             Object.entries(datos.novedades as Record<string, string>).map(
@@ -475,6 +488,43 @@ const COLUMNAS_FIJAS: { campo: Campo; titulo: string; ancho: string }[] = [
                                 @keydown.down="mover($event, i, j)"
                                 @keydown.up="mover($event, i, j)"
                             />
+                            <select
+                                v-if="
+                                    c.campo === 'dias_subsidiados' &&
+                                    /^[1-9]\d*$/.test(
+                                        fila.valores.dias_subsidiados,
+                                    )
+                                "
+                                v-model="fila.tipoSubsidio"
+                                :disabled="!editable"
+                                class="mt-0.5 h-6 w-full rounded border border-input bg-background px-1 text-[11px] text-muted-foreground"
+                                :class="{
+                                    'border-red-400!':
+                                        fila.errores.tipo_subsidio,
+                                }"
+                                :title="
+                                    fila.errores.tipo_subsidio ??
+                                    tiposSubsidio.find(
+                                        (t) => t.codigo === fila.tipoSubsidio,
+                                    )?.descripcion
+                                "
+                                :aria-label="`Tipo de subsidio de ${fila.linea.nombre}`"
+                                @focus="alEnfocar(i)"
+                                @change="marcarCambio(fila)"
+                            >
+                                <option
+                                    v-for="t in tiposSubsidio"
+                                    :key="t.codigo"
+                                    :value="t.codigo"
+                                >
+                                    {{ t.codigo }} ·
+                                    {{
+                                        t.codigo === '22'
+                                            ? 'Maternidad'
+                                            : 'Incapacidad'
+                                    }}
+                                </option>
+                            </select>
                         </td>
 
                         <td

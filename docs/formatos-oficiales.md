@@ -8,13 +8,13 @@
 Nombre de archivo: `0601` + `AAAA` + `MM` + `RUC` + `.extensión` → `060120261020000000001.rem`
 (`NombreArchivoPlame::para`). Campos separados por `|` y la línea termina en `|`. Fin de línea CRLF ⚠ (verificar si el aplicativo exige CRLF).
 
-| Archivo         | Contenido                               | Formato de línea                                                        | Estado                            |
-| --------------- | --------------------------------------- | ----------------------------------------------------------------------- | --------------------------------- |
-| `.rem`          | Remuneraciones por concepto             | `tipoDoc\|numDoc\|codConcepto\|montoDevengado\|montoPagado\|`           | ✔ verificado con exportación real |
-| `.jor`          | Jornada                                 | `tipoDoc\|numDoc\|horasOrd\|minOrd\|horasSobretiempo\|minSobretiempo\|` | ✔ verificado con exportación real |
-| `.snl`          | Días subsidiados y no laborados         | `tipoDoc\|numDoc\|tipoSuspension\|dias\|`                               | ⚠ verificar                       |
-| `.toc`          | Otras condiciones (régimen, SCTR, etc.) | ⚠ ver guía PLAME                                                        | pendiente                         |
-| `.4ta` / `.ps4` | Cuarta categoría (v1.1)                 | ⚠                                                                       | pendiente                         |
+| Archivo         | Contenido                                 | Formato de línea                                                        | Estado                                    |
+| --------------- | ----------------------------------------- | ----------------------------------------------------------------------- | ----------------------------------------- |
+| `.rem`          | Remuneraciones por concepto               | `tipoDoc\|numDoc\|codConcepto\|montoDevengado\|montoPagado\|`           | ✔ verificado con exportación real         |
+| `.jor`          | Jornada                                   | `tipoDoc\|numDoc\|horasOrd\|minOrd\|horasSobretiempo\|minSobretiempo\|` | ✔ verificado con exportación real         |
+| `.snl`          | Días subsidiados y no laborados (est. 15) | `tipoDoc\|numDoc\|tipoSuspension\|dias\|`                               | estructura confirmada; ⚠ códigos tabla 21 |
+| `.toc`          | Otras condiciones (est. 26)               | `tipoDoc\|numDoc\|aseguraTuPension\|masVida\|fdsa\|domiciliado\|`       | ✔ anexo SUNAT 223-2017                    |
+| `.4ta` / `.ps4` | Cuarta categoría (v1.1)                   | ⚠                                                                       | pendiente                                 |
 
 Ejemplos (`.rem`):
 
@@ -24,9 +24,22 @@ Ejemplos (`.rem`):
 ```
 
 Tipos de documento (tabla 3): `01` DNI, `04` carné de extranjería, `07` pasaporte ⚠ verificar lista completa.
-Tipos de suspensión `.snl` (tabla 21): faltas, licencias, subsidios por enfermedad/maternidad ⚠ cargar como catálogo.
+Tipos de suspensión `.snl` (tabla 21): catálogo `tipos_suspension` (cargado en la migración). La columna `uso` indica
+el código de las faltas (`07` S.P. Falta no justificada) y los elegibles para días subsidiados (`21` incapacidad temporal,
+`22` maternidad; se elige por trabajador en la grilla). ⚠ Verificar códigos contra la tabla 21 vigente.
 
-Fuente: "Guía de importación de archivos PLAME" y tablas paramétricas publicadas por SUNAT (descargar la versión vigente y guardarla fuera del repo; solo se versionan los catálogos ya transcritos como seeders).
+Contenido que genera `App\Services\Sunat\ExportacionPlame` (solo periodos **cerrados**):
+
+- `.rem`: todos los conceptos calculados (ingresos, aportes y descuentos), devengado = pagado. Los montos en cero no se declaran ⚠.
+- `.jor`: horas ordinarias = días laborados × 8 ⚠ (jornada de 48 h); sobretiempo = HE 25 % + HE 35 % en horas y minutos.
+- `.snl`: faltas (07) y días subsidiados (21/22) solo de quien los tiene. Si nadie tiene, el archivo no se genera.
+- `.toc`: una línea por trabajador con Asegura tu Pensión = 0 (SUNAT lo recaudó hasta mayo 2017), +Vida = 0,
+  FDSA vacío (solo artistas, tipo 56, y tipo 98) y Domiciliado = 1.
+
+Pantalla **Archivos oficiales → PLAME**: zip de una empresa o de todas las visibles (una carpeta `RUC Razón social/` por empresa).
+Cada descarga queda en `exportaciones` con nombre, tamaño y SHA-256 de cada archivo.
+
+Fuentes: anexo SUNAT 223-2017 (estructura 26, `.toc`), "Guía de importación de archivos PLAME" y tablas paramétricas publicadas por SUNAT (descargar la versión vigente y guardarla fuera del repo; solo se versionan los catálogos ya transcritos como seeders).
 
 ## AFPnet (semana 5)
 

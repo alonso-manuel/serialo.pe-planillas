@@ -135,4 +135,5 @@ Proyección anual de rentas − 7 UIT; tramos 8 % / 14 % / 17 % / 20 % / 30 %; r
 - [ ] `codigo_sunat` de cada AFP (tabla paramétrica T-Registro).
 - [ ] Asignación familiar en REMYPE y prorrateo por faltas.
 - [ ] Redondeo de horas extra: ¿por hora o por total? (hoy: por total).
+- [ ] PLAME: códigos de la tabla 21 (07 faltas, 21/22 subsidios), jornada de 8 h diarias en el .jor, montos en cero omitidos en el .rem.
 - [ ] Gratificación: diciembre como mes completo, faltas 1/180 por día, variables solo HE (≥ 3 meses), factor REMYPE (50 % / 0 %), meses sin planilla asumidos completos, faltas de diciembre excluidas.

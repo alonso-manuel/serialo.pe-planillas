@@ -22,6 +22,7 @@ import { index as conceptos } from '@/routes/conceptos';
 import { index as empresas } from '@/routes/empresas';
 import { index as parametros } from '@/routes/parametros';
 import { index as periodos } from '@/routes/periodos';
+import { index as plame } from '@/routes/plame';
 import { index as tasasAfp } from '@/routes/tasas-afp';
 import { index as trabajadores } from '@/routes/trabajadores';
 import { index as usuarios } from '@/routes/usuarios';
@@ -59,7 +60,7 @@ export const gruposNav: GrupoNav[] = [
     {
         title: 'Archivos oficiales',
         items: [
-            { title: 'PLAME', icon: FileUp },
+            { title: 'PLAME', href: plame(), icon: FileUp },
             { title: 'AFPnet', icon: Landmark },
         ],
     },

@@ -15,6 +15,7 @@ use App\Http\Controllers\Periodos\CierrePeriodoController;
 use App\Http\Controllers\Periodos\EnvioBoletaController;
 use App\Http\Controllers\Periodos\LineaPlanillaController;
 use App\Http\Controllers\Periodos\PeriodoController;
+use App\Http\Controllers\Sunat\PlameController;
 use App\Http\Controllers\TasasAfp\ImportacionTasasAfpController;
 use App\Http\Controllers\TasasAfp\TasaAfpController;
 use App\Http\Controllers\Trabajadores\CambioTrabajadorController;
@@ -71,6 +72,11 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::resource('trabajadores', TrabajadorController::class)
             ->except(['show'])->parameters(['trabajadores' => 'trabajador']);
     });
+
+    // Archivos oficiales de las empresas visibles del usuario
+    Route::get('plame', [PlameController::class, 'index'])->name('plame.index');
+    Route::get('plame/zip', [PlameController::class, 'todas'])->name('plame.todas');
+    Route::get('plame/periodos/{periodo}/zip', [PlameController::class, 'periodo'])->name('plame.periodo');
 
     // Cálculo de todas las empresas visibles del usuario (en cola)
     Route::post('calculos', [CalculoController::class, 'iniciar'])->name('calculos.store');

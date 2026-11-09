@@ -21,6 +21,9 @@ use Illuminate\Support\Facades\DB;
  */
 class NovedadesPlanilla
 {
+    /** Tipo de la tabla 21 que se asume si hay días subsidiados sin tipo elegido (incapacidad temporal). */
+    public const SUBSIDIO_POR_DEFECTO = '21';
+
     /** Días del mes que le corresponden al trabajador (mes comercial de 30). */
     public function diasDelMes(PlanillaLinea $linea, Periodo $periodo): int
     {
@@ -50,7 +53,7 @@ class NovedadesPlanilla
     }
 
     /**
-     * @param  array{dias_no_laborados: int, dias_subsidiados: int, horas_extra_25: string, horas_extra_35: string, novedades: array<int, string|null>}  $datos
+     * @param  array{dias_no_laborados: int, dias_subsidiados: int, tipo_subsidio: string|null, horas_extra_25: string, horas_extra_35: string, novedades: array<int, string|null>}  $datos
      */
     public function guardarLinea(Periodo $periodo, PlanillaLinea $linea, array $datos): PlanillaLinea
     {
@@ -60,6 +63,8 @@ class NovedadesPlanilla
             $linea->update([
                 'dias_no_laborados' => $datos['dias_no_laborados'],
                 'dias_subsidiados' => $datos['dias_subsidiados'],
+                // Sin días subsidiados no hay tipo; con días y sin tipo elegido, incapacidad temporal (21).
+                'tipo_subsidio' => $datos['dias_subsidiados'] > 0 ? ($datos['tipo_subsidio'] ?? self::SUBSIDIO_POR_DEFECTO) : null,
                 'dias_laborados' => max(0, $diasMes - $datos['dias_no_laborados'] - $datos['dias_subsidiados']),
                 'horas_extra_25' => $datos['horas_extra_25'],
                 'horas_extra_35' => $datos['horas_extra_35'],
@@ -102,6 +107,7 @@ class NovedadesPlanilla
             'dias_mes' => $this->diasDelMes($linea, $periodo),
             'dias_no_laborados' => $linea->dias_no_laborados,
             'dias_subsidiados' => $linea->dias_subsidiados,
+            'tipo_subsidio' => $linea->tipo_subsidio,
             'dias_laborados' => $linea->dias_laborados,
             'horas_extra_25' => $linea->horas_extra_25,
             'horas_extra_35' => $linea->horas_extra_35,

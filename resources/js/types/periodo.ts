@@ -34,11 +34,16 @@ export type LineaPeriodo = {
     dias_mes: number;
     dias_no_laborados: number;
     dias_subsidiados: number;
+    /** Tabla 21: 21 incapacidad temporal, 22 maternidad (null si no hay días subsidiados). */
+    tipo_subsidio: string | null;
     horas_extra_25: string;
     horas_extra_35: string;
     /** concepto_id => monto */
     novedades: Record<string, string>;
 };
+
+/** Tipo de suspensión (tabla 21) elegible para los días subsidiados. */
+export type TipoSubsidio = { codigo: string; descripcion: string };
 
 /** Concepto que se puede ingresar como novedad en la grilla. */
 export type ConceptoNovedad = {

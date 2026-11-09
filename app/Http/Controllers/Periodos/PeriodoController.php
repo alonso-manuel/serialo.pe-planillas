@@ -9,6 +9,7 @@ use App\Models\Empresa;
 use App\Models\Novedad;
 use App\Models\Periodo;
 use App\Models\PlanillaLinea;
+use App\Models\TipoSuspension;
 use App\Models\User;
 use App\Services\Empresas\EmpresaActiva;
 use App\Services\Planilla\CierrePeriodo;
@@ -141,6 +142,7 @@ class PeriodoController extends Controller
                 ->orderBy('concepto_id')
                 ->pluck('concepto_id')
                 ->all(),
+            'tipos_subsidio' => TipoSuspension::query()->subsidios()->get(['codigo', 'descripcion'])->toArray(),
             'conceptos' => $this->novedades->conceptosDisponibles()
                 ->map(fn (Concepto $c) => [
                     'id' => $c->id,
