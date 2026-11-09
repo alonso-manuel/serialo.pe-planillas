@@ -2,6 +2,7 @@
 
 namespace App\Services\Planilla;
 
+use App\Domain\Planilla\CalculadoraGratificacion;
 use App\Domain\Planilla\CalculadoraPlanilla;
 use App\Enums\ClaveParametro;
 use App\Enums\SistemaPension;
@@ -38,6 +39,15 @@ class VerificadorCalculo
         CalculadoraPlanilla::ONP, CalculadoraPlanilla::ESSALUD, CalculadoraPlanilla::SIS,
     ];
 
+    /** Además, en julio y diciembre (gratificación). */
+    private const PARAMETROS_GRATIFICACION = [
+        ClaveParametro::TasaBonificacionExtraordinaria,
+        ClaveParametro::FactorGratificacionPequena,
+        ClaveParametro::FactorGratificacionMicro,
+    ];
+
+    private const CONCEPTOS_GRATIFICACION = [CalculadoraGratificacion::GRATIFICACION, CalculadoraGratificacion::BONIFICACION];
+
     public function __construct(private readonly HistorialTrabajador $historial) {}
 
     /** @return list<string> */
@@ -52,7 +62,9 @@ class VerificadorCalculo
             return ['No hay trabajadores en este periodo.'];
         }
 
-        foreach (self::PARAMETROS as $clave) {
+        $gratificacion = in_array($periodo->mes, [7, 12], true);
+
+        foreach ([...self::PARAMETROS, ...($gratificacion ? self::PARAMETROS_GRATIFICACION : [])] as $clave) {
             try {
                 Parametro::vigente($clave, $fecha->toDateString());
             } catch (\RuntimeException) {
@@ -60,8 +72,9 @@ class VerificadorCalculo
             }
         }
 
-        $existentes = Concepto::query()->whereIn('codigo_plame', self::CONCEPTOS_SISTEMA)->pluck('codigo_plame')->all();
-        foreach (array_diff(self::CONCEPTOS_SISTEMA, $existentes) as $codigo) {
+        $requeridos = [...self::CONCEPTOS_SISTEMA, ...($gratificacion ? self::CONCEPTOS_GRATIFICACION : [])];
+        $existentes = Concepto::query()->whereIn('codigo_plame', $requeridos)->pluck('codigo_plame')->all();
+        foreach (array_diff($requeridos, $existentes) as $codigo) {
             $problemas[] = "Falta el concepto de sistema {$codigo} en la tabla de conceptos.";
         }
 

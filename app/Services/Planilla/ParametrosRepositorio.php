@@ -2,9 +2,11 @@
 
 namespace App\Services\Planilla;
 
+use App\Domain\Planilla\ParametrosGratificacion;
 use App\Domain\Planilla\ParametrosPeriodo;
 use App\Domain\Planilla\TasaAfpPeriodo;
 use App\Enums\ClaveParametro as C;
+use App\Enums\RegimenLaboral;
 use App\Enums\TipoComisionAfp;
 use App\Models\Parametro;
 use App\Models\Periodo;
@@ -26,6 +28,24 @@ class ParametrosRepositorio
             porcentajeAsignacionFamiliar: Parametro::vigente(C::PorcentajeAsignacionFamiliar, $fecha),
             sobretasaHoraExtra25: Parametro::vigente(C::SobretasaHoraExtra25, $fecha),
             sobretasaHoraExtra35: Parametro::vigente(C::SobretasaHoraExtra35, $fecha),
+        );
+    }
+
+    public function gratificacion(Periodo $periodo): ParametrosGratificacion
+    {
+        $fecha = $periodo->ultimoDia()->toDateString();
+        $regimen = $periodo->empresa->regimen_laboral ?? RegimenLaboral::General;
+
+        return new ParametrosGratificacion(
+            rmv: Parametro::vigente(C::Rmv, $fecha),
+            porcentajeAsignacionFamiliar: Parametro::vigente(C::PorcentajeAsignacionFamiliar, $fecha),
+            // Régimen general: la gratificación completa (Ley 27735). REMYPE: proporción con vigencia.
+            factorRegimen: match ($regimen) {
+                RegimenLaboral::General => '1',
+                RegimenLaboral::PequenaEmpresa => Parametro::vigente(C::FactorGratificacionPequena, $fecha),
+                RegimenLaboral::Microempresa => Parametro::vigente(C::FactorGratificacionMicro, $fecha),
+            },
+            tasaBonificacion: Parametro::vigente(C::TasaBonificacionExtraordinaria, $fecha),
         );
     }
 

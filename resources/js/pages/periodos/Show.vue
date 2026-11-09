@@ -11,6 +11,7 @@ import {
 } from '@lucide/vue';
 import { computed, ref } from 'vue';
 import EstadoPeriodo from '@/components/periodos/EstadoPeriodo.vue';
+import GratificacionPeriodo from '@/components/periodos/GratificacionPeriodo.vue';
 import GrillaNovedades from '@/components/periodos/GrillaNovedades.vue';
 import Heading from '@/components/Heading.vue';
 import { Button } from '@/components/ui/button';
@@ -39,6 +40,7 @@ import { index as parametros } from '@/routes/parametros';
 import { index as tasasAfp } from '@/routes/tasas-afp';
 import type {
     CierrePeriodo,
+    DetalleGratificacion,
     ConceptoNovedad,
     EstadoPeriodo as Estado,
     LineaPeriodo,
@@ -52,6 +54,7 @@ const props = defineProps<{
     conceptos: ConceptoNovedad[];
     problemas: string[];
     cierre: CierrePeriodo;
+    gratificacion: DetalleGratificacion | null;
 }>();
 
 const page = usePage();
@@ -283,6 +286,12 @@ function eliminar(): void {
             :conceptos="conceptos"
             :editable="periodo.puede_editar"
             @estado="(e) => (estado = e)"
+        />
+
+        <GratificacionPeriodo
+            v-if="gratificacion"
+            :detalle="gratificacion"
+            :mes="periodo.etiqueta"
         />
     </div>
 

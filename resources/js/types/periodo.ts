@@ -136,3 +136,25 @@ export type CierrePeriodo = {
     anterior_sin_cerrar: string | null;
     posteriores_cerrados: string[];
 };
+
+/** Gratificación de julio/diciembre por trabajador (detalle para revisar). */
+export type FilaGratificacion =
+    | { linea_id: number; nombre: string; cesado: true }
+    | {
+          linea_id: number;
+          nombre: string;
+          cesado: false;
+          meses: number;
+          faltas: number;
+          meses_variables: number;
+          promedio_variables: string;
+          computable: string;
+          gratificacion: string;
+          bonificacion: string;
+          sin_planilla: string[];
+      };
+
+export type DetalleGratificacion = {
+    error: string | null;
+    filas: FilaGratificacion[];
+};

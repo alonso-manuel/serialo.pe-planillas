@@ -83,13 +83,31 @@ Test: `CalculadoraPlanillaTest::caso_real_microempresa_afp_con_sis`. **No modifi
 
 ## Gratificaciones (semana 4) — Ley 27735 y Ley 30334
 
+Implementado en `App\Domain\Planilla\CalculadoraGratificacion` (motor puro) y `App\Services\Planilla\GratificacionPeriodo`.
+Se agrega sola al calcular la planilla de **julio** y **diciembre** (conceptos de sistema 0406 y 0312).
+
 - Semestres: enero–junio (se paga en julio, hasta el 15) y julio–diciembre (diciembre, hasta el 15).
-- Monto = remuneración computable × meses completos laborados / 6. Meses incompletos no cuentan.
-- Remuneración computable = básico + asignación familiar + promedio de conceptos variables (HE, comisiones) si se percibieron en al menos 3 meses del semestre ⚠.
-- Faltas injustificadas reducen proporcionalmente ⚠ (confirmar fórmula: 1/180 por día).
-- **Bonificación extraordinaria** = gratificación × 9 % (EsSalud) o 6.75 % (EPS).
-- La gratificación y la bonificación **no** están afectas a ONP, AFP ni EsSalud; sí a quinta categoría.
-- Códigos PLAME: 0406 gratificación, 0312/0313 bonificación extraordinaria ⚠ verificar en tabla 22.
+- **Meses computables**: meses calendario completos del semestre. El mes de ingreso cuenta solo si se ingresó el día 1.
+  **Diciembre cuenta** como mes completo si el trabajador está en planilla (se paga antes de que termine) ⚠.
+- **Remuneración computable** = básico + asignación familiar + promedio de variables.
+  Variables = **horas extra** (0105, 0106) ⚠ comisiones y otros variables quedan para después.
+  El promedio (suma del semestre / 6) entra solo si hubo variables en **3 meses o más** del semestre.
+  Se usan el básico y la asignación vigentes en el mes de pago (historial del trabajador).
+- **Gratificación** = computable × meses / 6 − computable / 180 × días de falta injustificada ⚠ (1/180 por día).
+  Los días subsidiados cuentan como laborados (Ley 27735, art. 6). Nunca es negativa.
+- **Régimen**: general 100 %; pequeña empresa y microempresa según parámetros con vigencia
+  (`factor_grati_pequena` = 0.50, `factor_grati_micro` = 0.00) ⚠ verificar.
+- **Bonificación extraordinaria** = gratificación × `tasa_bonif_extra` (9 %, igual al aporte a EsSalud).
+  ⚠ EPS (6.75 %) no está implementado: el sistema solo maneja EsSalud y SIS.
+- Redondeo: la gratificación se redondea a 2 decimales y la bonificación se calcula sobre ese monto redondeado.
+- La gratificación y la bonificación **no** están afectas a ONP, AFP ni EsSalud; sí a quinta categoría (v1.1).
+- **Meses sin planilla en el sistema** (cliente que empezó a mitad del semestre): se cuentan completos según
+  las fechas, sin faltas ni horas extra, y se avisa en la pantalla del periodo ⚠.
+- Datos del semestre: faltas y horas extra de las planillas de los meses anteriores al de pago. En diciembre,
+  las faltas y horas extra del propio diciembre no entran (aún no se conocen al día 15) ⚠.
+- **Cese** antes del día 15 del mes de pago: no recibe gratificación en la planilla; se paga como
+  gratificación trunca en la liquidación de beneficios (v1.1).
+- Códigos PLAME: 0406 gratificación, 0312 bonificación extraordinaria ⚠ verificar en tabla 22.
 
 ## CTS (semana 6) — D.S. 001-97-TR
 
@@ -117,3 +135,4 @@ Proyección anual de rentas − 7 UIT; tramos 8 % / 14 % / 17 % / 20 % / 30 %; r
 - [ ] `codigo_sunat` de cada AFP (tabla paramétrica T-Registro).
 - [ ] Asignación familiar en REMYPE y prorrateo por faltas.
 - [ ] Redondeo de horas extra: ¿por hora o por total? (hoy: por total).
+- [ ] Gratificación: diciembre como mes completo, faltas 1/180 por día, variables solo HE (≥ 3 meses), factor REMYPE (50 % / 0 %), meses sin planilla asumidos completos, faltas de diciembre excluidas.

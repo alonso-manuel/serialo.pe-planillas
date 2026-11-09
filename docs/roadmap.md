@@ -45,7 +45,7 @@ Marca `[x]` al terminar (o usa `/actualizar-roadmap`). Cada tarea: código + tes
 
 ### Semana 4 (30 nov – 4 dic) · Gratificación de diciembre + boletas
 
-- [ ] Gratificación jul/dic + bonificación extraordinaria (reglas en `reglas-calculo.md`) con tests
+- [x] Gratificación jul/dic + bonificación extraordinaria (reglas en `reglas-calculo.md`) con tests
 - [ ] Boleta de pago PDF (diseño propio), lote por empresa, zip
 - [ ] Envío de boletas por correo (cola)
 

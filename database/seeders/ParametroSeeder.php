@@ -12,6 +12,21 @@ use Illuminate\Database\Seeder;
  */
 class ParametroSeeder extends Seeder
 {
+    /**
+     * Parámetros de la gratificación (semana 4). También los inserta la migración
+     * `add_parametros_gratificacion` en instalaciones existentes.
+     *
+     * @return list<array{0: C, 1: string, 2: string, 3: string}>
+     */
+    public static function gratificacion(): array
+    {
+        return [
+            [C::TasaBonificacionExtraordinaria, '0.09', '2015-07-01', 'Ley 30334'],
+            [C::FactorGratificacionPequena, '0.50', '2013-07-01', 'Ley 30056 (D.S. 013-2013-PRODUCE) — VERIFICAR'],
+            [C::FactorGratificacionMicro, '0.00', '2013-07-01', 'Ley 30056 (D.S. 013-2013-PRODUCE) — VERIFICAR'],
+        ];
+    }
+
     public function run(): void
     {
         $filas = [
@@ -23,6 +38,7 @@ class ParametroSeeder extends Seeder
             [C::PorcentajeAsignacionFamiliar, '0.10', '1988-01-01', 'Ley 25129'],
             [C::SobretasaHoraExtra25, '0.25', '2002-01-01', 'D.S. 007-2002-TR'],
             [C::SobretasaHoraExtra35, '0.35', '2002-01-01', 'D.S. 007-2002-TR'],
+            ...self::gratificacion(),
         ];
 
         foreach ($filas as [$clave, $valor, $desde, $base]) {

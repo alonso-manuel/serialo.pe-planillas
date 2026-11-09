@@ -2,10 +2,12 @@
 
 namespace App\Services\Planilla;
 
+use App\Domain\Planilla\CalculadoraGratificacion;
 use App\Domain\Planilla\CalculadoraPlanilla;
 use App\Domain\Planilla\DatosTrabajador;
 use App\Domain\Planilla\EntradaPlanilla;
 use App\Domain\Planilla\IngresoAdicional;
+use App\Domain\Planilla\ResultadoGratificacion;
 use App\Enums\EstadoPeriodo;
 use App\Enums\TipoConcepto;
 use App\Models\Concepto;
@@ -26,6 +28,7 @@ class CalcularPlanillaPeriodo
         private readonly ParametrosRepositorio $parametros,
         private readonly HistorialTrabajador $historial,
         private readonly VerificadorCalculo $verificador,
+        private readonly GratificacionPeriodo $gratificacion,
     ) {}
 
     /**
@@ -51,11 +54,12 @@ class CalcularPlanillaPeriodo
 
         DB::transaction(function () use ($periodo, $parametros, $conceptos) {
             $periodo->load('lineas.trabajador', 'lineas.novedades.concepto');
+            $gratificaciones = $this->gratificacion->calcular($periodo);
 
             foreach ($periodo->lineas as $linea) {
                 $resultado = $this->calculadora->calcular(
                     $this->datosTrabajador($linea, $periodo),
-                    $this->entrada($linea),
+                    $this->entrada($linea, $gratificaciones[$linea->id] ?? null),
                     $parametros,
                 );
 
@@ -103,9 +107,16 @@ class CalcularPlanillaPeriodo
         );
     }
 
-    private function entrada(PlanillaLinea $linea): EntradaPlanilla
+    private function entrada(PlanillaLinea $linea, ?ResultadoGratificacion $gratificacion): EntradaPlanilla
     {
         $ingresos = [];
+
+        // Gratificación y bonificación extraordinaria: no afectas a pensión ni a EsSalud.
+        if ($gratificacion?->corresponde()) {
+            $ingresos[CalculadoraGratificacion::GRATIFICACION] = new IngresoAdicional($gratificacion->gratificacion, false, false);
+            $ingresos[CalculadoraGratificacion::BONIFICACION] = new IngresoAdicional($gratificacion->bonificacion, false, false);
+        }
+
         $descuentos = [];
         foreach ($linea->novedades as $novedad) {
             $c = $novedad->concepto;

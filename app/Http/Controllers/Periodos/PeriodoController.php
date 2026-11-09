@@ -12,6 +12,7 @@ use App\Models\PlanillaLinea;
 use App\Models\User;
 use App\Services\Empresas\EmpresaActiva;
 use App\Services\Planilla\CierrePeriodo;
+use App\Services\Planilla\GratificacionPeriodo;
 use App\Services\Planilla\NovedadesPlanilla;
 use App\Services\Planilla\PeriodosPlanilla;
 use Illuminate\Http\RedirectResponse;
@@ -28,6 +29,7 @@ class PeriodoController extends Controller
         private readonly EmpresaActiva $empresaActiva,
         private readonly NovedadesPlanilla $novedades,
         private readonly CierrePeriodo $cierre,
+        private readonly GratificacionPeriodo $gratificacion,
     ) {}
 
     public function index(Request $request): Response
@@ -128,6 +130,7 @@ class PeriodoController extends Controller
                 ...$this->cierre->avisos($periodo),
             ],
             'lineas' => $lineas,
+            'gratificacion' => $this->gratificacion($periodo, $lineas->pluck('nombre', 'id')->all()),
             'problemas' => $request->session()->get('problemas_calculo', []),
             'columnas' => Novedad::query()
                 ->whereIn('planilla_linea_id', $lineas->pluck('id'))
@@ -178,6 +181,47 @@ class PeriodoController extends Controller
 
             return back();
         }
+    }
+
+    /**
+     * Detalle de la gratificación (solo julio y diciembre) para revisarla antes de calcular.
+     *
+     * @param  array<int, string>  $nombres  linea_id => nombre del trabajador
+     * @return array{error: string|null, filas: list<array<string, mixed>>}|null
+     */
+    private function gratificacion(Periodo $periodo, array $nombres): ?array
+    {
+        if (! $this->gratificacion->aplica($periodo)) {
+            return null;
+        }
+
+        try {
+            $resultados = $this->gratificacion->calcular($periodo);
+        } catch (\RuntimeException $e) {
+            return ['error' => 'No se puede calcular la gratificación: '.$e->getMessage(), 'filas' => []];
+        }
+
+        $filas = [];
+        foreach ($nombres as $id => $nombre) {
+            $r = $resultados[$id] ?? null;
+            $filas[] = $r === null
+                ? ['linea_id' => $id, 'nombre' => $nombre, 'cesado' => true]
+                : [
+                    'linea_id' => $id,
+                    'nombre' => $nombre,
+                    'cesado' => false,
+                    'meses' => $r->mesesComputables,
+                    'faltas' => $r->diasFalta,
+                    'meses_variables' => $r->mesesConVariables,
+                    'promedio_variables' => $r->promedioVariables,
+                    'computable' => $r->remuneracionComputable,
+                    'gratificacion' => $r->gratificacion,
+                    'bonificacion' => $r->bonificacion,
+                    'sin_planilla' => array_map(fn (int $m) => Periodo::MESES[$m], $r->mesesSinPlanilla),
+                ];
+        }
+
+        return ['error' => null, 'filas' => $filas];
     }
 
     private function empresa(Request $request): Empresa

@@ -20,6 +20,9 @@ enum ClaveParametro: string
     case PorcentajeAsignacionFamiliar = 'pct_asig_fam'; // ej. 0.10 de la RMV
     case SobretasaHoraExtra25 = 'sobretasa_he_25';      // ej. 0.25 (primeras 2 horas)
     case SobretasaHoraExtra35 = 'sobretasa_he_35';      // ej. 0.35 (horas siguientes)
+    case TasaBonificacionExtraordinaria = 'tasa_bonif_extra'; // ej. 0.09 (Ley 30334)
+    case FactorGratificacionPequena = 'factor_grati_pequena';  // ej. 0.50 (REMYPE pequeña empresa)
+    case FactorGratificacionMicro = 'factor_grati_micro';      // ej. 0.00 (REMYPE microempresa)
 
     public function etiqueta(): string
     {
@@ -32,6 +35,9 @@ enum ClaveParametro: string
             self::PorcentajeAsignacionFamiliar => 'Asignación familiar',
             self::SobretasaHoraExtra25 => 'Sobretasa horas extra (primeras 2 h)',
             self::SobretasaHoraExtra35 => 'Sobretasa horas extra (desde la 3.ª h)',
+            self::TasaBonificacionExtraordinaria => 'Bonificación extraordinaria (gratificación)',
+            self::FactorGratificacionPequena => 'Gratificación en pequeña empresa',
+            self::FactorGratificacionMicro => 'Gratificación en microempresa',
         };
     }
 
@@ -46,6 +52,9 @@ enum ClaveParametro: string
             self::PorcentajeAsignacionFamiliar => 'Porcentaje de la RMV para trabajadores con hijos.',
             self::SobretasaHoraExtra25 => 'Recargo sobre el valor hora para las dos primeras horas extra.',
             self::SobretasaHoraExtra35 => 'Recargo sobre el valor hora a partir de la tercera hora extra.',
+            self::TasaBonificacionExtraordinaria => 'Porcentaje de la gratificación que se paga como bonificación (igual al aporte a EsSalud).',
+            self::FactorGratificacionPequena => 'Proporción de la gratificación del régimen general que corresponde en pequeña empresa.',
+            self::FactorGratificacionMicro => 'Proporción de la gratificación del régimen general que corresponde en microempresa.',
         };
     }
 

@@ -32,7 +32,7 @@ class VigenciasParametros
             ->get()
             ->groupBy(fn (Parametro $p) => $p->clave->value);
 
-        return array_map(function (ClaveParametro $clave) use ($porClave, $hoy) {
+        return array_values(array_map(function (ClaveParametro $clave) use ($porClave, $hoy) {
             /** @var Collection<int, Parametro> $vigencias */
             $vigencias = $porClave->get($clave->value, collect());
 
@@ -51,7 +51,7 @@ class VigenciasParametros
                     'anulable' => $this->esAnulable($p),
                 ])->values()->all(),
             ];
-        }, ClaveParametro::cases());
+        }, ClaveParametro::cases()));
     }
 
     /**
