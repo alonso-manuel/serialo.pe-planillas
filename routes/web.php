@@ -15,6 +15,7 @@ use App\Http\Controllers\Periodos\CierrePeriodoController;
 use App\Http\Controllers\Periodos\EnvioBoletaController;
 use App\Http\Controllers\Periodos\LineaPlanillaController;
 use App\Http\Controllers\Periodos\PeriodoController;
+use App\Http\Controllers\Sunat\AfpnetController;
 use App\Http\Controllers\Sunat\PlameController;
 use App\Http\Controllers\TasasAfp\ImportacionTasasAfpController;
 use App\Http\Controllers\TasasAfp\TasaAfpController;
@@ -77,6 +78,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('plame', [PlameController::class, 'index'])->name('plame.index');
     Route::get('plame/zip', [PlameController::class, 'todas'])->name('plame.todas');
     Route::get('plame/periodos/{periodo}/zip', [PlameController::class, 'periodo'])->name('plame.periodo');
+    Route::get('afpnet', [AfpnetController::class, 'index'])->name('afpnet.index');
+    Route::get('afpnet/zip', [AfpnetController::class, 'todas'])->name('afpnet.todas');
+    Route::get('afpnet/periodos/{periodo}/txt', [AfpnetController::class, 'periodo'])->name('afpnet.periodo');
 
     // Cálculo de todas las empresas visibles del usuario (en cola)
     Route::post('calculos', [CalculoController::class, 'iniciar'])->name('calculos.store');

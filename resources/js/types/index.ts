@@ -9,3 +9,4 @@ export * from './concepto';
 export * from './auditoria';
 export * from './trabajador';
 export * from './periodo';
+export * from './exportacion';

@@ -247,6 +247,12 @@ onBeforeUnmount(() => window.removeEventListener('keydown', alPresionar));
                 </dd>
             </div>
             <div>
+                <dt class="text-xs text-muted-foreground">Licencia sin goce</dt>
+                <dd class="font-medium tabular-nums">
+                    {{ linea.dias_licencia }}
+                </dd>
+            </div>
+            <div>
                 <dt class="text-xs text-muted-foreground">Horas extra 25 %</dt>
                 <dd class="font-medium tabular-nums">
                     {{ linea.horas_extra_25 }}

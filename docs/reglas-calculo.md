@@ -94,7 +94,8 @@ Se agrega sola al calcular la planilla de **julio** y **diciembre** (conceptos d
   El promedio (suma del semestre / 6) entra solo si hubo variables en **3 meses o más** del semestre.
   Se usan el básico y la asignación vigentes en el mes de pago (historial del trabajador).
 - **Gratificación** = computable × meses / 6 − computable / 180 × días de falta injustificada ⚠ (1/180 por día).
-  Los días subsidiados cuentan como laborados (Ley 27735, art. 6). Nunca es negativa.
+  Los días subsidiados cuentan como laborados (Ley 27735, art. 6). Las **licencias sin goce** (suspensión perfecta)
+  se descuentan igual que las faltas ⚠. Nunca es negativa.
 - **Régimen**: general 100 %; pequeña empresa y microempresa según parámetros con vigencia
   (`factor_grati_pequena` = 0.50, `factor_grati_micro` = 0.00) ⚠ verificar.
 - **Bonificación extraordinaria** = gratificación × `tasa_bonif_extra` (9 %, igual al aporte a EsSalud).
@@ -135,5 +136,6 @@ Proyección anual de rentas − 7 UIT; tramos 8 % / 14 % / 17 % / 20 % / 30 %; r
 - [ ] `codigo_sunat` de cada AFP (tabla paramétrica T-Registro).
 - [ ] Asignación familiar en REMYPE y prorrateo por faltas.
 - [ ] Redondeo de horas extra: ¿por hora o por total? (hoy: por total).
+- [ ] Licencia sin goce: descuenta días pagados y reduce la gratificación como las faltas (1/180 por día).
 - [ ] PLAME: códigos de la tabla 21 (07 faltas, 21/22 subsidios), jornada de 8 h diarias en el .jor, montos en cero omitidos en el .rem.
 - [ ] Gratificación: diciembre como mes completo, faltas 1/180 por día, variables solo HE (≥ 3 meses), factor REMYPE (50 % / 0 %), meses sin planilla asumidos completos, faltas de diciembre excluidas.

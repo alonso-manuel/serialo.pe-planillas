@@ -21,6 +21,16 @@ enum TipoDocumento: string
         };
     }
 
+    /** Código del tipo de documento en el archivo de planilla de AFPnet (0 DNI, 1 carné de extranjería, 4 pasaporte). */
+    public function codigoAfpnet(): string
+    {
+        return match ($this) {
+            self::Dni => '0',
+            self::CarneExtranjeria => '1',
+            self::Pasaporte => '4',
+        };
+    }
+
     public function abreviatura(): string
     {
         return match ($this) {

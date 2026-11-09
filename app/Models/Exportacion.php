@@ -27,6 +27,8 @@ class Exportacion extends Model
 
     public const PLAME = 'plame';
 
+    public const AFPNET = 'afpnet';
+
     public const UPDATED_AT = null;
 
     protected $table = 'exportaciones';
@@ -37,6 +39,28 @@ class Exportacion extends Model
     protected function casts(): array
     {
         return ['archivos' => 'array'];
+    }
+
+    /**
+     * Deja constancia de una exportación con el hash SHA-256 de cada archivo.
+     *
+     * @param  array<string, string>  $archivos  nombre => contenido
+     */
+    public static function registrar(string $tipo, Periodo $periodo, array $archivos, User $usuario): self
+    {
+        return self::query()->create([
+            'tipo' => $tipo,
+            'empresa_id' => $periodo->empresa_id,
+            'periodo_id' => $periodo->id,
+            'anio' => $periodo->anio,
+            'mes' => $periodo->mes,
+            'archivos' => array_map(
+                fn (string $nombre, string $contenido) => ['nombre' => $nombre, 'sha256' => hash('sha256', $contenido), 'bytes' => strlen($contenido)],
+                array_keys($archivos),
+                $archivos,
+            ),
+            'user_id' => $usuario->id,
+        ]);
     }
 
     /** @return BelongsTo<User, $this> */

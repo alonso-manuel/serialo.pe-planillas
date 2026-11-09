@@ -59,6 +59,7 @@ class ExportacionPlame
         }
 
         $codigoFalta = TipoSuspension::codigoFalta();
+        $codigoLicencia = TipoSuspension::codigoLicencia();
         $doc = fn (PlanillaLinea $l) => [
             'tipo_documento' => $l->trabajador->tipo_documento->value,
             'numero_documento' => $l->trabajador->numero_documento,
@@ -69,6 +70,7 @@ class ExportacionPlame
             'jor' => $this->jor->generar($lineas->map(fn (PlanillaLinea $l) => [...$doc($l), ...$this->jornada($l)])->all()),
             'snl' => $this->snl->generar($lineas->map(fn (PlanillaLinea $l) => [...$doc($l), 'suspensiones' => [
                 $codigoFalta => $l->dias_no_laborados,
+                $codigoLicencia => $l->dias_licencia,
                 $l->tipo_subsidio ?? NovedadesPlanilla::SUBSIDIO_POR_DEFECTO => $l->dias_subsidiados,
             ]])->all()),
             'toc' => $this->toc->generar($lineas->map($doc)->all()),
@@ -153,19 +155,7 @@ class ExportacionPlame
     /** @param  array<string, string>  $archivos */
     private function registrar(Periodo $periodo, array $archivos, User $usuario): void
     {
-        Exportacion::query()->create([
-            'tipo' => Exportacion::PLAME,
-            'empresa_id' => $periodo->empresa_id,
-            'periodo_id' => $periodo->id,
-            'anio' => $periodo->anio,
-            'mes' => $periodo->mes,
-            'archivos' => array_map(
-                fn (string $nombre, string $contenido) => ['nombre' => $nombre, 'sha256' => hash('sha256', $contenido), 'bytes' => strlen($contenido)],
-                array_keys($archivos),
-                $archivos,
-            ),
-            'user_id' => $usuario->id,
-        ]);
+        Exportacion::registrar(Exportacion::PLAME, $periodo, $archivos, $usuario);
     }
 
     /** @param  array<string, string>  $archivos */

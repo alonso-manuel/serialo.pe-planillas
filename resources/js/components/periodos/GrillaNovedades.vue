@@ -53,6 +53,7 @@ function agregarColumna(id: number): void {
 const CAMPOS = [
     'dias_no_laborados',
     'dias_subsidiados',
+    'dias_licencia',
     'horas_extra_25',
     'horas_extra_35',
 ] as const;
@@ -82,6 +83,7 @@ function crearFila(l: LineaPeriodo): Fila {
             dias_subsidiados: l.dias_subsidiados
                 ? String(l.dias_subsidiados)
                 : '',
+            dias_licencia: l.dias_licencia ? String(l.dias_licencia) : '',
             horas_extra_25: Number(l.horas_extra_25) ? l.horas_extra_25 : '',
             horas_extra_35: Number(l.horas_extra_35) ? l.horas_extra_35 : '',
         },
@@ -110,7 +112,8 @@ function diasPagados(fila: Fila): number {
         0,
         fila.linea.dias_mes -
             n(fila.valores.dias_no_laborados) -
-            n(fila.valores.dias_subsidiados),
+            n(fila.valores.dias_subsidiados) -
+            n(fila.valores.dias_licencia),
     );
 }
 
@@ -295,6 +298,7 @@ const totalDiasPagados = computed(() =>
 const COLUMNAS_FIJAS: { campo: Campo; titulo: string; ancho: string }[] = [
     { campo: 'dias_no_laborados', titulo: 'Faltas', ancho: 'w-20' },
     { campo: 'dias_subsidiados', titulo: 'Subsid.', ancho: 'w-20' },
+    { campo: 'dias_licencia', titulo: 'Lic. s/g', ancho: 'w-20' },
     { campo: 'horas_extra_25', titulo: 'HE 25 %', ancho: 'w-24' },
     { campo: 'horas_extra_35', titulo: 'HE 35 %', ancho: 'w-24' },
 ];
@@ -626,7 +630,10 @@ const COLUMNAS_FIJAS: { campo: Campo; titulo: string; ancho: string }[] = [
                     <tr v-if="filas.length === 0">
                         <td
                             :colspan="
-                                8 + visibles.length + (mostrarNeto ? 1 : 0)
+                                4 +
+                                COLUMNAS_FIJAS.length +
+                                visibles.length +
+                                (mostrarNeto ? 1 : 0)
                             "
                             class="px-4 py-10 text-center text-muted-foreground"
                         >

@@ -122,7 +122,7 @@ class GrillaNovedadesTest extends TestCase
 
         $this->guardar(['dias_no_laborados' => 10, 'dias_subsidiados' => 6], $linea)
             ->assertStatus(422)
-            ->assertJsonValidationErrors(['dias_no_laborados' => 'Faltas y días subsidiados suman 16: no pueden superar los 15 días del mes.']);
+            ->assertJsonValidationErrors(['dias_no_laborados' => 'Faltas, días subsidiados y licencias suman 16: no pueden superar los 15 días del mes.']);
     }
 
     #[Test]

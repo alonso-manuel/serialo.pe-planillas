@@ -17,6 +17,7 @@ import {
     Users,
 } from '@lucide/vue';
 import { dashboard } from '@/routes';
+import { index as afpnet } from '@/routes/afpnet';
 import { index as auditoria } from '@/routes/auditoria';
 import { index as conceptos } from '@/routes/conceptos';
 import { index as empresas } from '@/routes/empresas';
@@ -61,7 +62,7 @@ export const gruposNav: GrupoNav[] = [
         title: 'Archivos oficiales',
         items: [
             { title: 'PLAME', href: plame(), icon: FileUp },
-            { title: 'AFPnet', icon: Landmark },
+            { title: 'AFPnet', href: afpnet(), icon: Landmark },
         ],
     },
     {

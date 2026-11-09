@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Afp extends Model
 {
-    protected $fillable = ['codigo', 'nombre', 'codigo_sunat', 'activo'];
+    protected $fillable = ['codigo', 'nombre', 'codigo_sunat', 'codigo_afpnet', 'activo'];
 
     /** @return HasMany<TasaAfp, $this> */
     public function tasas(): HasMany

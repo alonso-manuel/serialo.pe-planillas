@@ -36,6 +36,8 @@ export type LineaPeriodo = {
     dias_subsidiados: number;
     /** Tabla 21: 21 incapacidad temporal, 22 maternidad (null si no hay días subsidiados). */
     tipo_subsidio: string | null;
+    /** Días de licencia sin goce de haber. */
+    dias_licencia: number;
     horas_extra_25: string;
     horas_extra_35: string;
     /** concepto_id => monto */
@@ -107,6 +109,7 @@ export type DetalleLinea = {
         dias_laborados: number;
         dias_no_laborados: number;
         dias_subsidiados: number;
+        dias_licencia: number;
         horas_extra_25: string;
         horas_extra_35: string;
         calculada: boolean;

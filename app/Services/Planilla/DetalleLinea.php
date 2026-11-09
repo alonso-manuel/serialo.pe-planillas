@@ -96,6 +96,7 @@ class DetalleLinea
                 'dias_laborados' => $linea->dias_laborados,
                 'dias_no_laborados' => $linea->dias_no_laborados,
                 'dias_subsidiados' => $linea->dias_subsidiados,
+                'dias_licencia' => $linea->dias_licencia,
                 'horas_extra_25' => $linea->horas_extra_25,
                 'horas_extra_35' => $linea->horas_extra_35,
                 'calculada' => $calculada,

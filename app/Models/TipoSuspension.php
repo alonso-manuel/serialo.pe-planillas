@@ -11,7 +11,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property int $id
  * @property string $codigo
  * @property string $descripcion
- * @property string|null $uso 'falta' | 'subsidio' | null
+ * @property string|null $uso 'falta' | 'subsidio' | 'licencia' | null
  * @property bool $activo
  */
 class TipoSuspension extends Model
@@ -19,6 +19,8 @@ class TipoSuspension extends Model
     public const USO_FALTA = 'falta';
 
     public const USO_SUBSIDIO = 'subsidio';
+
+    public const USO_LICENCIA = 'licencia';
 
     protected $table = 'tipos_suspension';
 
@@ -33,8 +35,19 @@ class TipoSuspension extends Model
     /** Código de las faltas injustificadas. */
     public static function codigoFalta(): string
     {
-        return (string) (static::query()->where('uso', self::USO_FALTA)->where('activo', true)->value('codigo')
-            ?? throw new \RuntimeException('Falta en la tabla 21 el tipo de suspensión para faltas.'));
+        return self::codigoPara(self::USO_FALTA, 'faltas');
+    }
+
+    /** Código de la licencia sin goce de haber. */
+    public static function codigoLicencia(): string
+    {
+        return self::codigoPara(self::USO_LICENCIA, 'licencias sin goce');
+    }
+
+    private static function codigoPara(string $uso, string $nombre): string
+    {
+        return (string) (static::query()->where('uso', $uso)->where('activo', true)->value('codigo')
+            ?? throw new \RuntimeException("Falta en la tabla 21 el tipo de suspensión para {$nombre}."));
     }
 
     /**

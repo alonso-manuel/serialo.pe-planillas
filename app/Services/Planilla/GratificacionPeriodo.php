@@ -104,7 +104,8 @@ class GratificacionPeriodo
                 ->reduce(fn (BigDecimal $s, PlanillaConcepto $c) => $s->plus($c->monto_pagado), BigDecimal::zero());
 
             $datos[$l->trabajador_id][$l->periodo->mes] = [
-                'faltas' => $l->dias_no_laborados,
+                // Faltas injustificadas y licencias sin goce (suspensión perfecta): no son tiempo computable ⚠.
+                'faltas' => $l->dias_no_laborados + $l->dias_licencia,
                 'variables' => (string) $variables,
             ];
         }

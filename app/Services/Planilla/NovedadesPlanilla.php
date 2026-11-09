@@ -53,7 +53,7 @@ class NovedadesPlanilla
     }
 
     /**
-     * @param  array{dias_no_laborados: int, dias_subsidiados: int, tipo_subsidio: string|null, horas_extra_25: string, horas_extra_35: string, novedades: array<int, string|null>}  $datos
+     * @param  array{dias_no_laborados: int, dias_subsidiados: int, tipo_subsidio: string|null, dias_licencia: int, horas_extra_25: string, horas_extra_35: string, novedades: array<int, string|null>}  $datos
      */
     public function guardarLinea(Periodo $periodo, PlanillaLinea $linea, array $datos): PlanillaLinea
     {
@@ -65,7 +65,8 @@ class NovedadesPlanilla
                 'dias_subsidiados' => $datos['dias_subsidiados'],
                 // Sin días subsidiados no hay tipo; con días y sin tipo elegido, incapacidad temporal (21).
                 'tipo_subsidio' => $datos['dias_subsidiados'] > 0 ? ($datos['tipo_subsidio'] ?? self::SUBSIDIO_POR_DEFECTO) : null,
-                'dias_laborados' => max(0, $diasMes - $datos['dias_no_laborados'] - $datos['dias_subsidiados']),
+                'dias_licencia' => $datos['dias_licencia'],
+                'dias_laborados' => max(0, $diasMes - $datos['dias_no_laborados'] - $datos['dias_subsidiados'] - $datos['dias_licencia']),
                 'horas_extra_25' => $datos['horas_extra_25'],
                 'horas_extra_35' => $datos['horas_extra_35'],
             ]);
@@ -108,6 +109,7 @@ class NovedadesPlanilla
             'dias_no_laborados' => $linea->dias_no_laborados,
             'dias_subsidiados' => $linea->dias_subsidiados,
             'tipo_subsidio' => $linea->tipo_subsidio,
+            'dias_licencia' => $linea->dias_licencia,
             'dias_laborados' => $linea->dias_laborados,
             'horas_extra_25' => $linea->horas_extra_25,
             'horas_extra_35' => $linea->horas_extra_35,

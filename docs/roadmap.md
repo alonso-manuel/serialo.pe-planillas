@@ -52,7 +52,7 @@ Marca `[x]` al terminar (o usa `/actualizar-roadmap`). Cada tarea: código + tes
 ### Semana 5 (7–11 dic) · Archivos oficiales
 
 - [x] PLAME: `.snl`, `.toc` + pantalla de exportación (una o todas las empresas, zip)
-- [ ] AFPnet: archivo por AFP
+- [x] AFPnet: archivo de planilla (TXT, todas las AFP) + licencia sin goce en la grilla
 - [x] Tabla `exportaciones` (historial con hash)
 - [ ] Probar importación real en PLAME y AFPnet con datos ficticios
 

@@ -29,6 +29,7 @@ class GuardarLineaRequest extends FormRequest
             'dias_no_laborados' => $this->filled('dias_no_laborados') ? $this->input('dias_no_laborados') : 0,
             'dias_subsidiados' => $this->filled('dias_subsidiados') ? $this->input('dias_subsidiados') : 0,
             'tipo_subsidio' => $this->filled('tipo_subsidio') ? (string) $this->input('tipo_subsidio') : null,
+            'dias_licencia' => $this->filled('dias_licencia') ? $this->input('dias_licencia') : 0,
             'novedades' => collect((array) $this->input('novedades', []))
                 ->map(fn ($m) => $m === null ? null : str_replace(',', '.', trim((string) $m)))
                 ->all(),
@@ -43,6 +44,7 @@ class GuardarLineaRequest extends FormRequest
         return [
             'dias_no_laborados' => ['required', 'integer', 'between:0,30'],
             'dias_subsidiados' => ['required', 'integer', 'between:0,30'],
+            'dias_licencia' => ['required', 'integer', 'between:0,30'],
             'tipo_subsidio' => ['nullable', Rule::exists('tipos_suspension', 'codigo')->where('uso', TipoSuspension::USO_SUBSIDIO)->where('activo', true)],
             'horas_extra_25' => ['required', 'regex:/^\d{1,3}(\.\d{1,2})?$/'],
             'horas_extra_35' => ['required', 'regex:/^\d{1,3}(\.\d{1,2})?$/'],
@@ -67,16 +69,16 @@ class GuardarLineaRequest extends FormRequest
                     }
                 }
 
-                if ($validator->errors()->hasAny(['dias_no_laborados', 'dias_subsidiados'])) {
+                if ($validator->errors()->hasAny(['dias_no_laborados', 'dias_subsidiados', 'dias_licencia'])) {
                     return;
                 }
 
                 $diasMes = $servicio->diasDelMes($this->linea(), $this->periodo());
-                $suma = (int) $this->input('dias_no_laborados') + (int) $this->input('dias_subsidiados');
+                $suma = (int) $this->input('dias_no_laborados') + (int) $this->input('dias_subsidiados') + (int) $this->input('dias_licencia');
                 if ($suma > $diasMes) {
                     $validator->errors()->add(
                         'dias_no_laborados',
-                        "Faltas y días subsidiados suman {$suma}: no pueden superar los {$diasMes} días del mes.",
+                        "Faltas, días subsidiados y licencias suman {$suma}: no pueden superar los {$diasMes} días del mes.",
                     );
                 }
             },
@@ -109,7 +111,7 @@ class GuardarLineaRequest extends FormRequest
     }
 
     /**
-     * @return array{dias_no_laborados: int, dias_subsidiados: int, tipo_subsidio: string|null, horas_extra_25: string, horas_extra_35: string, novedades: array<int, string|null>}
+     * @return array{dias_no_laborados: int, dias_subsidiados: int, tipo_subsidio: string|null, dias_licencia: int, horas_extra_25: string, horas_extra_35: string, novedades: array<int, string|null>}
      */
     public function datos(): array
     {
@@ -117,6 +119,7 @@ class GuardarLineaRequest extends FormRequest
             'dias_no_laborados' => (int) $this->input('dias_no_laborados'),
             'dias_subsidiados' => (int) $this->input('dias_subsidiados'),
             'tipo_subsidio' => $this->filled('tipo_subsidio') ? (string) $this->input('tipo_subsidio') : null,
+            'dias_licencia' => (int) $this->input('dias_licencia'),
             'horas_extra_25' => (string) $this->input('horas_extra_25'),
             'horas_extra_35' => (string) $this->input('horas_extra_35'),
             'novedades' => collect((array) $this->input('novedades', []))

@@ -17,6 +17,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property int $dias_laborados
  * @property int $dias_no_laborados
  * @property int $dias_subsidiados
+ * @property int $dias_licencia días de licencia sin goce de haber (tabla 21 código 05)
  * @property string|null $tipo_subsidio código de la tabla 21 (21 incapacidad temporal, 22 maternidad)
  * @property string $horas_extra_25
  * @property string $horas_extra_35
@@ -33,7 +34,7 @@ class PlanillaLinea extends Model
     use Auditable;
 
     protected $fillable = [
-        'periodo_id', 'trabajador_id', 'dias_laborados', 'dias_no_laborados', 'dias_subsidiados', 'tipo_subsidio',
+        'periodo_id', 'trabajador_id', 'dias_laborados', 'dias_no_laborados', 'dias_subsidiados', 'tipo_subsidio', 'dias_licencia',
         'horas_ordinarias', 'minutos_ordinarios', 'horas_extra_25', 'horas_extra_35',
         'total_ingresos', 'total_descuentos', 'total_aportes_empleador', 'neto_pagar', 'calculado_en',
     ];
