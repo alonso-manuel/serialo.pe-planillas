@@ -120,6 +120,38 @@ class PanelEstudioTest extends TestCase
     }
 
     #[Test]
+    public function filtra_todo_el_panel_por_una_empresa(): void
+    {
+        $this->periodoCerrado($this->alfa);
+        $this->periodoCerrado($this->beta);
+
+        $this->actingAs($this->asistente)->get(route('dashboard', ['empresa' => $this->beta->id]))
+            ->assertInertia(fn (Assert $page) => $page
+                ->where('empresa_id', $this->beta->id)
+                ->has('opciones_empresas', 2)
+                ->has('empresas', 1)
+                ->where('empresas.0.razon_social', 'Beta Demo S.A.C.')
+                ->where('resumen.empresas', 1)
+                ->where('resumen.neto', '1305.00')
+                ->where('serie.11.neto', '1305.00')
+                ->where('composicion.total', '1635.00')
+                ->where('avance.cerradas', 1)
+                ->where('alertas', fn ($alertas) => collect($alertas)->where('tipo', 'cts')->count() === 1));
+
+        // Sin filtro suma las dos.
+        $this->get(route('dashboard'))
+            ->assertInertia(fn (Assert $page) => $page->where('empresa_id', null)->where('serie.11.neto', '2610.00'));
+    }
+
+    #[Test]
+    public function no_filtra_por_una_empresa_que_el_usuario_no_ve(): void
+    {
+        $ajena = Empresa::factory()->create();
+
+        $this->actingAs($this->asistente)->get(route('dashboard', ['empresa' => $ajena->id]))->assertForbidden();
+    }
+
+    #[Test]
     public function el_asistente_solo_ve_sus_empresas(): void
     {
         Empresa::factory()->create(['razon_social' => 'Ajena S.A.']);

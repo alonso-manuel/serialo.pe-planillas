@@ -34,9 +34,12 @@ class PanelEstudio
     ) {}
 
     /** @return array<string, mixed> */
-    public function datos(User $usuario, int $anio, int $mes): array
+    public function datos(User $usuario, int $anio, int $mes, ?int $empresaId = null): array
     {
-        $empresas = $this->empresaActiva->seleccionables($usuario)->get();
+        $visibles = $this->empresaActiva->seleccionables($usuario)->get();
+        // Filtro opcional por una empresa; solo entre las que el usuario puede ver.
+        $empresas = $empresaId === null ? $visibles : $visibles->where('id', $empresaId)->values();
+        abort_if($empresaId !== null && $empresas->isEmpty(), 403);
         $ids = $empresas->pluck('id');
 
         $periodos = Periodo::query()->whereIn('empresa_id', $ids)->where('anio', $anio)->where('mes', $mes)
@@ -93,6 +96,8 @@ class PanelEstudio
             'anio' => $anio,
             'mes' => $mes,
             'etiqueta' => Periodo::MESES[$mes]." {$anio}",
+            'empresa_id' => $empresaId,
+            'opciones_empresas' => $visibles->map(fn (Empresa $e) => ['id' => $e->id, 'razon_social' => $e->razon_social])->values()->all(),
             'resumen' => [
                 'empresas' => $filas->count(),
                 'cerradas' => $cerradas,
@@ -101,7 +106,7 @@ class PanelEstudio
                 'trabajadores' => $filas->sum(fn (array $f) => $f['periodo']['trabajadores'] ?? 0),
             ],
             'empresas' => $filas->all(),
-            'alertas' => $this->alertas($usuario, $empresas->all(), $periodos->all(), $anio, $mes),
+            'alertas' => $this->alertas($usuario, $empresas->all(), $periodos->all(), $anio, $mes, $empresaId === null ? null : $empresas->first()),
             'serie' => $this->serie($ids->all(), $anio, $mes),
             'composicion' => $this->composicion($periodoIds->all()),
             'avance' => [
@@ -229,7 +234,7 @@ class PanelEstudio
      * @param  array<int, Periodo>  $periodos  empresa_id => periodo del mes
      * @return list<array{tipo: string, nivel: string, mensaje: string, enlace: string|null}>
      */
-    private function alertas(User $usuario, array $empresas, array $periodos, int $anio, int $mes): array
+    private function alertas(User $usuario, array $empresas, array $periodos, int $anio, int $mes, ?Empresa $filtrada = null): array
     {
         $alertas = [];
 
@@ -278,8 +283,9 @@ class PanelEstudio
             }
         }
 
-        // Vacaciones vencidas: solo de la empresa activa (calcularlas para todas haría lenta la pantalla).
-        $activa = $this->empresaActiva->obtener($usuario);
+        // Vacaciones vencidas: solo de la empresa filtrada o, si no hay filtro, de la activa
+        // (calcularlas para todas haría lenta la pantalla).
+        $activa = $filtrada ?? $this->empresaActiva->obtener($usuario);
         if ($activa !== null) {
             $hoy = CarbonImmutable::today();
             $vencidos = Trabajador::query()->deEmpresa($activa->id)

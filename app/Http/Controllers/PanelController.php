@@ -16,6 +16,7 @@ class PanelController extends Controller
         $datos = $request->validate([
             'anio' => ['nullable', 'integer', 'between:2000,2100'],
             'mes' => ['nullable', 'integer', 'between:1,12'],
+            'empresa' => ['nullable', 'integer'],
         ]);
         /** @var User $usuario */
         $usuario = $request->user();
@@ -25,6 +26,7 @@ class PanelController extends Controller
             $usuario,
             (int) ($datos['anio'] ?? now()->year),
             (int) ($datos['mes'] ?? now()->month),
+            isset($datos['empresa']) ? (int) $datos['empresa'] : null,
         ));
     }
 }

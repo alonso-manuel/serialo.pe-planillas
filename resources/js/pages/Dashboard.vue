@@ -23,6 +23,13 @@ import Heading from '@/components/Heading.vue';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from '@/components/ui/select';
 import { aNumero, variacion } from '@/lib/graficos';
 import { gruposNav } from '@/lib/modulos';
 import { formatoMonto, sumarMontos } from '@/lib/montos';
@@ -92,6 +99,9 @@ const props = defineProps<{
         boletas: number;
     };
     movimiento: { altas: number; bajas: number; vigentes: number };
+    /** Empresa filtrada (null = todas las visibles). */
+    empresa_id: number | null;
+    opciones_empresas: { id: number; razon_social: string }[];
 }>();
 
 defineOptions({
@@ -104,12 +114,37 @@ const page = usePage();
 
 const mesElegido = ref(`${props.anio}-${String(props.mes).padStart(2, '0')}`);
 
-function cambiarMes(): void {
+const TODAS = 'todas';
+const empresaElegida = ref(
+    props.empresa_id === null ? TODAS : String(props.empresa_id),
+);
+const filtrada = computed(() => props.empresa_id !== null);
+/** Cierra la frase sin duplicar el punto de «S.A.». */
+const conPunto = (texto: string) => (texto.endsWith('.') ? texto : `${texto}.`);
+const nombreFiltrada = computed(
+    () =>
+        props.opciones_empresas.find((e) => e.id === props.empresa_id)
+            ?.razon_social ?? '',
+);
+
+function filtrar(): void {
     const [anio, mes] = mesElegido.value.split('-').map(Number);
 
-    if (anio && mes) {
-        router.get(dashboard.url(), { anio, mes }, { preserveScroll: true });
+    if (!anio || !mes) {
+        return;
     }
+
+    router.get(
+        dashboard.url(),
+        {
+            anio,
+            mes,
+            ...(empresaElegida.value === TODAS
+                ? {}
+                : { empresa: empresaElegida.value }),
+        },
+        { preserveScroll: true },
+    );
 }
 
 const soles = (v: string) => `S/ ${formatoMonto(v)}`;
@@ -264,9 +299,35 @@ const gruposModulos = computed(() =>
         <div class="flex flex-wrap items-end justify-between gap-4">
             <Heading
                 title="Panel del estudio"
-                :description="`Avance de ${etiqueta} en tus ${resumen.empresas} ${resumen.empresas === 1 ? 'empresa' : 'empresas'}.`"
+                :description="
+                    filtrada
+                        ? `Avance de ${etiqueta} en ${conPunto(nombreFiltrada)}`
+                        : `Avance de ${etiqueta} en tus ${resumen.empresas} ${resumen.empresas === 1 ? 'empresa' : 'empresas'}.`
+                "
             />
             <div class="flex flex-wrap items-end gap-2">
+                <div v-if="opciones_empresas.length > 1" class="grid gap-1.5">
+                    <Label for="empresa">Empresa</Label>
+                    <Select
+                        v-model="empresaElegida"
+                        @update:model-value="filtrar"
+                    >
+                        <SelectTrigger id="empresa" class="w-64 max-w-full">
+                            <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                            <SelectItem :value="TODAS"
+                                >Todas las empresas</SelectItem
+                            >
+                            <SelectItem
+                                v-for="e in opciones_empresas"
+                                :key="e.id"
+                                :value="String(e.id)"
+                                >{{ e.razon_social }}</SelectItem
+                            >
+                        </SelectContent>
+                    </Select>
+                </div>
                 <div class="grid gap-1.5">
                     <Label for="mes">Mes</Label>
                     <Input
@@ -274,7 +335,7 @@ const gruposModulos = computed(() =>
                         v-model="mesElegido"
                         type="month"
                         class="w-48"
-                        @change="cambiarMes"
+                        @change="filtrar"
                     />
                 </div>
                 <Button variant="outline" as-child>
@@ -414,7 +475,10 @@ const gruposModulos = computed(() =>
                         {{ resumen.cerradas }}
                         <span
                             class="text-base font-normal text-muted-foreground"
-                            >de {{ resumen.empresas }} empresas</span
+                            >de {{ resumen.empresas }}
+                            {{
+                                resumen.empresas === 1 ? 'empresa' : 'empresas'
+                            }}</span
                         >
                     </p>
                 </div>
@@ -484,7 +548,12 @@ const gruposModulos = computed(() =>
                 <div class="mb-4">
                     <h2 class="font-medium">Evolución de la planilla</h2>
                     <p class="text-sm text-muted-foreground">
-                        Últimos 12 meses, en soles, sumando todas tus empresas.
+                        Últimos 12 meses, en soles,
+                        {{
+                            filtrada
+                                ? `de ${conPunto(nombreFiltrada)}`
+                                : 'sumando todas tus empresas.'
+                        }}
                     </p>
                 </div>
                 <GraficoLineas
@@ -562,7 +631,10 @@ const gruposModulos = computed(() =>
 
         <!-- Composición y empresas -->
         <div class="grid gap-4 lg:grid-cols-2">
-            <section class="min-w-0 rounded-xl border bg-card p-5">
+            <section
+                class="min-w-0 rounded-xl border bg-card p-5"
+                :class="filtrada ? 'lg:col-span-2' : ''"
+            >
                 <div class="mb-4">
                     <h2 class="font-medium">¿A dónde va el costo laboral?</h2>
                     <p class="text-sm text-muted-foreground">
@@ -585,7 +657,10 @@ const gruposModulos = computed(() =>
                 </p>
             </section>
 
-            <section class="min-w-0 rounded-xl border bg-card p-5">
+            <section
+                v-if="!filtrada"
+                class="min-w-0 rounded-xl border bg-card p-5"
+            >
                 <div class="mb-4">
                     <h2 class="font-medium">Neto por empresa</h2>
                     <p class="text-sm text-muted-foreground">
