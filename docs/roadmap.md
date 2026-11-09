@@ -47,7 +47,7 @@ Marca `[x]` al terminar (o usa `/actualizar-roadmap`). Cada tarea: código + tes
 
 - [x] Gratificación jul/dic + bonificación extraordinaria (reglas en `reglas-calculo.md`) con tests
 - [x] Boleta de pago PDF (diseño propio), lote por empresa, zip
-- [ ] Envío de boletas por correo (cola)
+- [x] Envío de boletas por correo (cola)
 
 ### Semana 5 (7–11 dic) · Archivos oficiales
 

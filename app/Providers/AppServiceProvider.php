@@ -25,11 +25,13 @@ use App\Services\Ruc\ConsultaRucEnCache;
 use App\Services\Ruc\ConsultaRucNinguna;
 use App\Services\Ruc\ConsultaRucOpenRuc;
 use Carbon\CarbonImmutable;
+use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Contracts\Cache\Repository;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Validation\Rules\Password;
 
@@ -76,6 +78,9 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         $this->configureDefaults();
+
+        // Envío de boletas: respeta el límite de correos del hosting (config/planillas.php).
+        RateLimiter::for('correos-boletas', fn () => Limit::perMinute(max(1, (int) config('planillas.correos_por_minuto'))));
 
         // Nombres cortos y estables para auditorias.auditable_type (no dependen del namespace).
         Relation::morphMap([

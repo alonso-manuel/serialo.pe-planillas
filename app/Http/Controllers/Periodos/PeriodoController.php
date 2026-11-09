@@ -12,6 +12,7 @@ use App\Models\PlanillaLinea;
 use App\Models\User;
 use App\Services\Empresas\EmpresaActiva;
 use App\Services\Planilla\CierrePeriodo;
+use App\Services\Planilla\EnvioBoletas;
 use App\Services\Planilla\GratificacionPeriodo;
 use App\Services\Planilla\NovedadesPlanilla;
 use App\Services\Planilla\PeriodosPlanilla;
@@ -30,6 +31,7 @@ class PeriodoController extends Controller
         private readonly NovedadesPlanilla $novedades,
         private readonly CierrePeriodo $cierre,
         private readonly GratificacionPeriodo $gratificacion,
+        private readonly EnvioBoletas $envios,
     ) {}
 
     public function index(Request $request): Response
@@ -130,6 +132,7 @@ class PeriodoController extends Controller
                 ...$this->cierre->avisos($periodo),
             ],
             'lineas' => $lineas,
+            'envios' => $this->envios->resumen($periodo),
             'gratificacion' => $this->gratificacion($periodo, $lineas->pluck('nombre', 'id')->all()),
             'problemas' => $request->session()->get('problemas_calculo', []),
             'columnas' => Novedad::query()

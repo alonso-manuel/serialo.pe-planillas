@@ -15,6 +15,7 @@ Vue (Inertia) ──► Controller (delgado) ──► FormRequest (validación)
 - **Domain** no conoce Laravel. Recibe strings decimales y enums, devuelve `ResultadoPlanilla`.
 - **Services** convierten modelos ⇄ DTOs (`ParametrosRepositorio`, `CalcularPlanillaPeriodo`).
 - **Documentos**: `DetalleLinea` arma el resultado de un trabajador (lo usan la pantalla de detalle y la boleta); `BoletaPago` genera la boleta en PDF (dompdf, una por hoja A4, marca «BORRADOR» si el periodo no está cerrado), el lote en un PDF y el zip con un PDF por trabajador. Montos en letras con `App\Domain\Planilla\MontoEnLetras`; formato de montos sin float con `App\Support\Formato`.
+- **Boletas por correo**: `EnvioBoletas` pone en cola un `EnviarBoletaJob` por trabajador con correo (solo periodos **cerrados**). El PDF va protegido con contraseña = número de documento (`BoletaPago::pdfProtegido`). Límite de envío con el rate limiter `correos-boletas` (`PLANILLAS_CORREOS_POR_MINUTO`, 20 por defecto): al alcanzarlo el job vuelve a la cola sin contar como fallo; un error de correo se reintenta 3 veces. Cada envío deja constancia en `envios_boleta` (correo, estado, error, fecha, usuario).
 - **Empresa activa**: el middleware `empresa.activa` cambia la empresa activa a la del registro de la URL (periodo, trabajador) si el usuario puede verla, para que el menú coincida con lo que se muestra.
 - **Jobs** (cola `database`) para cálculo/exportación en lote de muchas empresas: `CalcularPlanillaEmpresaJob` por empresa, agrupados con `Bus::batch` (`CalculoMasivo`). El avance de cada empresa se guarda en caché (`calculo-masivo:{id}:{empresa}`, 24 h) y la UI lo consulta cada 2 s (`GET /calculos/{id}`). Antes de calcular, `VerificadorCalculo` lista los problemas de datos (parámetros, tasas AFP, conceptos de sistema, AFP sin asignar); si hay alguno, la empresa no se calcula (todo o nada).
 
@@ -153,3 +154,5 @@ Boletas, constancias de CTS y liquidaciones con Blade + dompdf. Una boleta por p
 ## Hosting objetivo
 
 Hosting compartido con cPanel (PHP 8.3, MySQL). Por eso: cola `database` + cron `schedule:run` cada minuto, sin Redis, sin Node en producción (los assets se compilan antes de empaquetar).
+
+Correo (boletas): configurar el SMTP del hosting en `.env` (`MAIL_MAILER=smtp`, `MAIL_HOST`, `MAIL_PORT`, `MAIL_USERNAME`, `MAIL_PASSWORD`, `MAIL_SCHEME`, `MAIL_FROM_ADDRESS`, p. ej. una cuenta `planillas@dominio.pe`) y `PLANILLAS_CORREOS_POR_MINUTO` según el límite del plan. En desarrollo, `MAIL_MAILER=log` guarda los correos en `storage/logs` sin enviarlos.

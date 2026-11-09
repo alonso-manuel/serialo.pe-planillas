@@ -158,3 +158,21 @@ export type DetalleGratificacion = {
     error: string | null;
     filas: FilaGratificacion[];
 };
+
+/** Envío de boletas por correo: estado del periodo y de cada trabajador. */
+export type EnviosBoletas = {
+    puede_enviar: boolean;
+    con_correo: number;
+    sin_correo: string[];
+    enviados: number;
+    pendientes: number;
+    fallidos: number;
+    filas: {
+        linea_id: number;
+        nombre: string;
+        email: string | null;
+        estado: 'pendiente' | 'enviado' | 'fallido' | null;
+        error: string | null;
+        enviado_en: string | null;
+    }[];
+};

@@ -7,6 +7,7 @@ use App\Enums\EstadoPeriodo;
 use App\Models\Periodo;
 use App\Models\PlanillaLinea;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Dompdf\Adapter\CPDF;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 use ZipArchive;
@@ -25,6 +26,26 @@ class BoletaPago
         $this->exigirCalculada($periodo, $linea);
 
         return $this->render($periodo, collect([$linea]));
+    }
+
+    /**
+     * PDF para enviar por correo: protegido con contraseña = número de documento del trabajador (Ley 29733).
+     * Solo permite abrir e imprimir; la contraseña de propietario es aleatoria.
+     */
+    public function pdfProtegido(Periodo $periodo, PlanillaLinea $linea): string
+    {
+        $this->exigirCalculada($periodo, $linea);
+        $linea->loadMissing('trabajador');
+
+        $pdf = Pdf::loadView('pdf.boleta', $this->vista($periodo, collect([$linea])))->setPaper('a4');
+        $pdf->render();
+        $canvas = $pdf->getDomPDF()->getCanvas();
+        if (! $canvas instanceof CPDF) {
+            throw new \RuntimeException('El motor de PDF no permite proteger con contraseña.');
+        }
+        $canvas->get_cpdf()->setEncryption($linea->trabajador->numero_documento, Str::random(32), ['print']);
+
+        return $pdf->output();
     }
 
     /** Un solo PDF con las boletas de todos los trabajadores calculados (para imprimir). */

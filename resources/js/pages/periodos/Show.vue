@@ -13,6 +13,7 @@ import {
 } from '@lucide/vue';
 import { computed, ref } from 'vue';
 import EstadoPeriodo from '@/components/periodos/EstadoPeriodo.vue';
+import EnvioBoletas from '@/components/periodos/EnvioBoletas.vue';
 import GratificacionPeriodo from '@/components/periodos/GratificacionPeriodo.vue';
 import GrillaNovedades from '@/components/periodos/GrillaNovedades.vue';
 import Heading from '@/components/Heading.vue';
@@ -47,6 +48,7 @@ import { index as tasasAfp } from '@/routes/tasas-afp';
 import type {
     CierrePeriodo,
     DetalleGratificacion,
+    EnviosBoletas,
     ConceptoNovedad,
     EstadoPeriodo as Estado,
     LineaPeriodo,
@@ -61,6 +63,7 @@ const props = defineProps<{
     problemas: string[];
     cierre: CierrePeriodo;
     gratificacion: DetalleGratificacion | null;
+    envios: EnviosBoletas;
 }>();
 
 const page = usePage();
@@ -325,6 +328,13 @@ function eliminar(): void {
         <GratificacionPeriodo
             v-if="gratificacion"
             :detalle="gratificacion"
+            :mes="periodo.etiqueta"
+        />
+
+        <EnvioBoletas
+            v-if="envios.filas.length"
+            :envios="envios"
+            :periodo-id="periodo.id"
             :mes="periodo.etiqueta"
         />
     </div>

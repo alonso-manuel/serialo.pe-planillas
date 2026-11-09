@@ -12,6 +12,7 @@ use App\Http\Controllers\Parametros\ParametroController;
 use App\Http\Controllers\Periodos\BoletaController;
 use App\Http\Controllers\Periodos\CalculoController;
 use App\Http\Controllers\Periodos\CierrePeriodoController;
+use App\Http\Controllers\Periodos\EnvioBoletaController;
 use App\Http\Controllers\Periodos\LineaPlanillaController;
 use App\Http\Controllers\Periodos\PeriodoController;
 use App\Http\Controllers\TasasAfp\ImportacionTasasAfpController;
@@ -48,6 +49,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
             ->scopeBindings()->name('periodos.lineas.boleta');
         Route::get('periodos/{periodo}/boletas/pdf', [BoletaController::class, 'lote'])->name('periodos.boletas.pdf');
         Route::get('periodos/{periodo}/boletas/zip', [BoletaController::class, 'zip'])->name('periodos.boletas.zip');
+        Route::post('periodos/{periodo}/boletas/correo', [EnvioBoletaController::class, 'store'])->name('periodos.boletas.correo');
+        Route::post('periodos/{periodo}/lineas/{linea}/boleta/correo', [EnvioBoletaController::class, 'reenviar'])
+            ->scopeBindings()->name('periodos.lineas.boleta.correo');
 
         Route::get('trabajadores/importar', [ImportacionTrabajadoresController::class, 'index'])->name('trabajadores.importar');
         Route::get('trabajadores/importar/plantilla', [ImportacionTrabajadoresController::class, 'plantilla'])->name('trabajadores.importar.plantilla');
