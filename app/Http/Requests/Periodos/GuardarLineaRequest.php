@@ -74,11 +74,14 @@ class GuardarLineaRequest extends FormRequest
                 }
 
                 $diasMes = $servicio->diasDelMes($this->linea(), $this->periodo());
+                $vacaciones = $this->linea()->dias_vacaciones;
                 $suma = (int) $this->input('dias_no_laborados') + (int) $this->input('dias_subsidiados') + (int) $this->input('dias_licencia');
-                if ($suma > $diasMes) {
+                if ($suma + $vacaciones > $diasMes) {
                     $validator->errors()->add(
                         'dias_no_laborados',
-                        "Faltas, días subsidiados y licencias suman {$suma}: no pueden superar los {$diasMes} días del mes.",
+                        $vacaciones > 0
+                            ? "Faltas, días subsidiados y licencias suman {$suma} y hay {$vacaciones} días de vacaciones: no pueden superar los {$diasMes} días del mes."
+                            : "Faltas, días subsidiados y licencias suman {$suma}: no pueden superar los {$diasMes} días del mes.",
                     );
                 }
             },

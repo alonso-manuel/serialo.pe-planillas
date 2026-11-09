@@ -28,6 +28,7 @@ import { index as plame } from '@/routes/plame';
 import { index as tasasAfp } from '@/routes/tasas-afp';
 import { index as trabajadores } from '@/routes/trabajadores';
 import { index as usuarios } from '@/routes/usuarios';
+import { index as vacaciones } from '@/routes/vacaciones';
 import type { GrupoNav } from '@/types';
 
 /**
@@ -56,7 +57,7 @@ export const gruposNav: GrupoNav[] = [
         items: [
             { title: 'Gratificaciones', icon: Gift },
             { title: 'CTS', href: cts(), icon: PiggyBank },
-            { title: 'Vacaciones', icon: TreePalm },
+            { title: 'Vacaciones', href: vacaciones(), icon: TreePalm },
         ],
     },
     {

@@ -120,6 +120,7 @@
                     <td><span class="etq">Faltas</span><span class="val">{{ $l['dias_no_laborados'] }}</span></td>
                     <td><span class="etq">Días subsidiados</span><span class="val">{{ $l['dias_subsidiados'] }}</span></td>
                     <td><span class="etq">Licencia sin goce</span><span class="val">{{ $l['dias_licencia'] }}</span></td>
+                    <td><span class="etq">Vacaciones</span><span class="val">{{ $l['dias_vacaciones'] }}</span></td>
                     <td><span class="etq">Horas extra 25 %</span><span class="val">{{ $l['horas_extra_25'] }}</span></td>
                     <td><span class="etq">Horas extra 35 %</span><span class="val">{{ $l['horas_extra_35'] }}</span></td>
                 </tr>

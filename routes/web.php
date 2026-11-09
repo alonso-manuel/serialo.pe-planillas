@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Auditoria\AuditoriaController;
 use App\Http\Controllers\Beneficios\CtsController;
+use App\Http\Controllers\Beneficios\VacacionesController;
 use App\Http\Controllers\Conceptos\ConceptoController;
 use App\Http\Controllers\Conceptos\EstadoConceptoController;
 use App\Http\Controllers\EmpresaActivaController;
@@ -55,6 +56,11 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::post('periodos/{periodo}/boletas/correo', [EnvioBoletaController::class, 'store'])->name('periodos.boletas.correo');
         Route::post('periodos/{periodo}/lineas/{linea}/boleta/correo', [EnvioBoletaController::class, 'reenviar'])
             ->scopeBindings()->name('periodos.lineas.boleta.correo');
+
+        // Vacaciones de la empresa activa
+        Route::get('vacaciones', [VacacionesController::class, 'index'])->name('vacaciones.index');
+        Route::post('vacaciones/{trabajador}/goces', [VacacionesController::class, 'store'])->name('vacaciones.store');
+        Route::delete('vacaciones/goces/{goce}', [VacacionesController::class, 'destroy'])->name('vacaciones.destroy');
 
         // CTS de la empresa activa (mayo / noviembre)
         Route::get('cts', [CtsController::class, 'index'])->name('cts.index');

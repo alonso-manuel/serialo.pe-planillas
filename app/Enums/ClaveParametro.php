@@ -25,6 +25,9 @@ enum ClaveParametro: string
     case FactorGratificacionMicro = 'factor_grati_micro';      // ej. 0.00 (REMYPE microempresa)
     case FactorCtsPequena = 'factor_cts_pequena';              // ej. 0.50 (15 remuneraciones diarias por año)
     case FactorCtsMicro = 'factor_cts_micro';                  // ej. 0.00 (no aplica)
+    case DiasVacacionesGeneral = 'dias_vac_general';           // 30 días por año (D.Leg. 713)
+    case DiasVacacionesPequena = 'dias_vac_pequena';           // 15 días (REMYPE)
+    case DiasVacacionesMicro = 'dias_vac_micro';               // 15 días (REMYPE)
 
     public function etiqueta(): string
     {
@@ -42,6 +45,9 @@ enum ClaveParametro: string
             self::FactorGratificacionMicro => 'Gratificación en microempresa',
             self::FactorCtsPequena => 'CTS en pequeña empresa',
             self::FactorCtsMicro => 'CTS en microempresa',
+            self::DiasVacacionesGeneral => 'Vacaciones en régimen general',
+            self::DiasVacacionesPequena => 'Vacaciones en pequeña empresa',
+            self::DiasVacacionesMicro => 'Vacaciones en microempresa',
         };
     }
 
@@ -61,14 +67,18 @@ enum ClaveParametro: string
             self::FactorGratificacionMicro => 'Proporción de la gratificación del régimen general que corresponde en microempresa.',
             self::FactorCtsPequena => 'Proporción de la CTS del régimen general que corresponde en pequeña empresa.',
             self::FactorCtsMicro => 'Proporción de la CTS del régimen general que corresponde en microempresa.',
+            self::DiasVacacionesGeneral => 'Días calendario de descanso por cada año completo de servicios.',
+            self::DiasVacacionesPequena => 'Días calendario de descanso por año en pequeña empresa.',
+            self::DiasVacacionesMicro => 'Días calendario de descanso por año en microempresa.',
         };
     }
 
-    /** 'monto' en soles o 'tasa' (fracción guardada, porcentaje en pantalla). */
+    /** 'monto' en soles, 'tasa' (fracción guardada, porcentaje en pantalla) o 'dias' (número entero de días). */
     public function tipo(): string
     {
         return match ($this) {
             self::Rmv, self::Uit, self::AporteSis => 'monto',
+            self::DiasVacacionesGeneral, self::DiasVacacionesPequena, self::DiasVacacionesMicro => 'dias',
             default => 'tasa',
         };
     }
@@ -80,6 +90,10 @@ enum ClaveParametro: string
 
         if ($this->tipo() === 'tasa') {
             return $numero->multipliedBy(100)->toScale(2, RoundingMode::HalfUp).' %';
+        }
+
+        if ($this->tipo() === 'dias') {
+            return $numero->toScale(0, RoundingMode::HalfUp).' días';
         }
 
         $texto = (string) $numero->toScale(2, RoundingMode::HalfUp);

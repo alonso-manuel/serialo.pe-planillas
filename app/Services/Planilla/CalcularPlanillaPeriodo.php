@@ -4,6 +4,7 @@ namespace App\Services\Planilla;
 
 use App\Domain\Planilla\CalculadoraGratificacion;
 use App\Domain\Planilla\CalculadoraPlanilla;
+use App\Domain\Planilla\CalculadoraVacaciones;
 use App\Domain\Planilla\DatosTrabajador;
 use App\Domain\Planilla\EntradaPlanilla;
 use App\Domain\Planilla\IngresoAdicional;
@@ -23,12 +24,16 @@ use Illuminate\Support\Facades\DB;
  */
 class CalcularPlanillaPeriodo
 {
+    /** Tabla 22: remuneración vacacional (⚠ verificar). */
+    public const REMUNERACION_VACACIONAL = '0118';
+
     public function __construct(
         private readonly CalculadoraPlanilla $calculadora,
         private readonly ParametrosRepositorio $parametros,
         private readonly HistorialTrabajador $historial,
         private readonly VerificadorCalculo $verificador,
         private readonly GratificacionPeriodo $gratificacion,
+        private readonly VacacionesTrabajador $vacaciones,
     ) {}
 
     /**
@@ -57,9 +62,10 @@ class CalcularPlanillaPeriodo
             $gratificaciones = $this->gratificacion->calcular($periodo);
 
             foreach ($periodo->lineas as $linea) {
+                $datos = $this->datosTrabajador($linea, $periodo);
                 $resultado = $this->calculadora->calcular(
-                    $this->datosTrabajador($linea, $periodo),
-                    $this->entrada($linea, $gratificaciones[$linea->id] ?? null),
+                    $datos,
+                    $this->entrada($linea, $gratificaciones[$linea->id] ?? null, $this->remuneracionVacacional($linea, $periodo, $datos)),
                     $parametros,
                 );
 
@@ -107,9 +113,24 @@ class CalcularPlanillaPeriodo
         );
     }
 
-    private function entrada(PlanillaLinea $linea, ?ResultadoGratificacion $gratificacion): EntradaPlanilla
+    /** 0118 = (básico + promedio de horas extra) / 30 × días de vacaciones del mes. */
+    private function remuneracionVacacional(PlanillaLinea $linea, Periodo $periodo, DatosTrabajador $datos): ?string
+    {
+        if ($linea->dias_vacaciones <= 0) {
+            return null;
+        }
+
+        return CalculadoraVacaciones::remuneracion($datos->remuneracionBasica, $this->vacaciones->promedioVariables($linea, $periodo), $linea->dias_vacaciones);
+    }
+
+    private function entrada(PlanillaLinea $linea, ?ResultadoGratificacion $gratificacion, ?string $vacacional = null): EntradaPlanilla
     {
         $ingresos = [];
+
+        // Remuneración vacacional: afecta a pensión y EsSalud como el sueldo.
+        if ($vacacional !== null) {
+            $ingresos[self::REMUNERACION_VACACIONAL] = new IngresoAdicional($vacacional, true, true);
+        }
 
         // Gratificación y bonificación extraordinaria: no afectas a pensión ni a EsSalud.
         if ($gratificacion?->corresponde()) {

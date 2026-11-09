@@ -131,11 +131,28 @@ Pantalla **Beneficios → CTS** (por empresa activa): calcular, cerrar/reabrir (
 - **Constancia de depósito** (art. 29): una por trabajador con periodo, tiempo, remuneración computable desglosada,
   monto en cifras y letras, entidad y cuenta CTS. Lleva «BORRADOR» mientras la liquidación no está cerrada.
 
-## Vacaciones (semana 6)
+## Vacaciones (semana 6) — D.Leg. 713 y D.S. 012-92-TR
 
-- Récord: 1 año de servicios con el mínimo de días efectivos ⚠ (260 días en jornada de 6 días / 210 en 5 días).
-- Remuneración vacacional (0118) = remuneración computable; afecta a aportes como la remuneración ordinaria.
-- Vacaciones truncas (en liquidación, v1.1): computable / 12 por mes + /360 por día.
+Implementado en `App\Domain\Planilla\CalculadoraVacaciones` (motor puro) y `App\Services\Planilla\VacacionesTrabajador`.
+Pantalla **Beneficios → Vacaciones** (empresa activa): saldos por año de servicios y registro de goces (auditado).
+
+- **Derecho**: cada año completo de servicios desde el ingreso. Días por régimen como parámetros con vigencia:
+  `dias_vac_general` = 30, `dias_vac_pequena` = 15, `dias_vac_micro` = 15. Se usa el valor vigente al cumplir el año.
+- **Vencimiento**: el descanso debe gozarse dentro del año siguiente; si no, el periodo queda **vencido**
+  (indemnización vacacional: por ahora solo se avisa).
+- **Récord** (art. 10): 260 días de labor efectiva (jornada de 6 días) o 210 (5 días). No son efectivos (art. 12):
+  faltas, licencias sin goce y subsidio por enfermedad que pase de 60 días al año. Como la ficha no registra la jornada,
+  el derecho se genera al cumplir el año y se **avisa** si los días no efectivos del año superan 40 ⚠
+  (≈ 300 días laborables − 260 con 6 días; ≈ 249 − 210 con 5 días).
+- **Goces**: fecha de inicio + días calendario. Se imputan al periodo más antiguo con saldo. No se registran ni borran
+  en meses cuya planilla está cerrada, ni se cruzan entre sí, ni superan el saldo de los años cumplidos.
+- **En la planilla**: los días de cada mes (calendario, tope 30; mes completo = 30) van a la línea como `dias_vacaciones`
+  (columna «Vac.» de solo lectura). El básico se paga por los demás días y los de vacaciones como **0118 remuneración
+  vacacional** = (básico + promedio de horas extra de los 6 meses anteriores, si las hubo en 3 o más) / 30 × días ⚠.
+  Afecta a ONP, AFP y EsSalud como el sueldo. La asignación familiar se paga aparte como cada mes.
+- **PLAME**: `.snl` con el código **23** (S.I. descanso vacacional); el `.jor` no cuenta horas ordinarias de esos días.
+- **Gratificación y CTS**: los días de vacaciones son tiempo computable (no se descuentan).
+- Pendiente: venta de vacaciones (D.Leg. 1405), vacaciones truncas (liquidación, v1.1) e indemnización vacacional.
 
 ## Quinta categoría (v1.1)
 
@@ -150,6 +167,7 @@ Proyección anual de rentas − 7 UIT; tramos 8 % / 14 % / 17 % / 20 % / 30 %; r
 - [ ] `codigo_sunat` de cada AFP (tabla paramétrica T-Registro).
 - [ ] Asignación familiar en REMYPE y prorrateo por faltas.
 - [ ] Redondeo de horas extra: ¿por hora o por total? (hoy: por total).
+- [ ] Vacaciones: margen de 40 días no efectivos para el aviso de récord; remuneración vacacional con promedio de horas extra; mes completo = 30 días.
 - [ ] CTS: tope de 60 días de subsidio por enfermedad, maternidad completa, 1/6 de la gratificación estimada si no hay planilla, factor REMYPE 50 % / 0 %.
 - [ ] Licencia sin goce: descuenta días pagados y reduce la gratificación como las faltas (1/180 por día).
 - [ ] PLAME: códigos de la tabla 21 (07 faltas, 21/22 subsidios), jornada de 8 h diarias en el .jor, montos en cero omitidos en el .rem.

@@ -38,6 +38,8 @@ export type LineaPeriodo = {
     tipo_subsidio: string | null;
     /** Días de licencia sin goce de haber. */
     dias_licencia: number;
+    /** Días de vacaciones del mes (vienen de los goces registrados; solo lectura). */
+    dias_vacaciones: number;
     horas_extra_25: string;
     horas_extra_35: string;
     /** concepto_id => monto */
@@ -110,6 +112,7 @@ export type DetalleLinea = {
         dias_no_laborados: number;
         dias_subsidiados: number;
         dias_licencia: number;
+        dias_vacaciones: number;
         horas_extra_25: string;
         horas_extra_35: string;
         calculada: boolean;

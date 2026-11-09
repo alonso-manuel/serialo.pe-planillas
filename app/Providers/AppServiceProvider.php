@@ -14,6 +14,7 @@ use App\Models\TasaAfp;
 use App\Models\Trabajador;
 use App\Models\TrabajadorHistorial;
 use App\Models\User;
+use App\Models\VacacionGoce;
 use App\Services\Dni\ConsultaDni;
 use App\Services\Dni\ConsultaDniDecolecta;
 use App\Services\Dni\ConsultaDniEnCache;
@@ -97,6 +98,7 @@ class AppServiceProvider extends ServiceProvider
             'concepto' => Concepto::class,
             'periodo' => Periodo::class,
             'liquidacion_cts' => LiquidacionCts::class,
+            'vacacion' => VacacionGoce::class,
         ]);
     }
 

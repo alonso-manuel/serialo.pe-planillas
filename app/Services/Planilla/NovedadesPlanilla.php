@@ -66,7 +66,7 @@ class NovedadesPlanilla
                 // Sin días subsidiados no hay tipo; con días y sin tipo elegido, incapacidad temporal (21).
                 'tipo_subsidio' => $datos['dias_subsidiados'] > 0 ? ($datos['tipo_subsidio'] ?? self::SUBSIDIO_POR_DEFECTO) : null,
                 'dias_licencia' => $datos['dias_licencia'],
-                'dias_laborados' => max(0, $diasMes - $datos['dias_no_laborados'] - $datos['dias_subsidiados'] - $datos['dias_licencia']),
+                'dias_laborados' => max(0, $diasMes - $datos['dias_no_laborados'] - $datos['dias_subsidiados'] - $datos['dias_licencia'] - $linea->dias_vacaciones),
                 'horas_extra_25' => $datos['horas_extra_25'],
                 'horas_extra_35' => $datos['horas_extra_35'],
             ]);
@@ -110,6 +110,7 @@ class NovedadesPlanilla
             'dias_subsidiados' => $linea->dias_subsidiados,
             'tipo_subsidio' => $linea->tipo_subsidio,
             'dias_licencia' => $linea->dias_licencia,
+            'dias_vacaciones' => $linea->dias_vacaciones,
             'dias_laborados' => $linea->dias_laborados,
             'horas_extra_25' => $linea->horas_extra_25,
             'horas_extra_35' => $linea->horas_extra_35,

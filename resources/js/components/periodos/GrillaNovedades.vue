@@ -291,6 +291,10 @@ const totalNeto = computed(() =>
     ),
 );
 
+const totalVacaciones = computed(() =>
+    filas.reduce((s, f) => s + (f.linea.dias_vacaciones ?? 0), 0),
+);
+
 const totalDiasPagados = computed(() =>
     filas.reduce((s, f) => s + diasPagados(f), 0),
 );
@@ -384,6 +388,12 @@ const COLUMNAS_FIJAS: { campo: Campo; titulo: string; ancho: string }[] = [
                             :class="c.ancho"
                         >
                             {{ c.titulo }}
+                        </th>
+                        <th
+                            class="w-14 px-2 py-2 text-right font-medium"
+                            title="Días de vacaciones: se registran en Beneficios → Vacaciones"
+                        >
+                            Vac.
                         </th>
                         <th
                             class="w-20 px-2 py-2 text-right font-medium text-foreground"
@@ -532,6 +542,17 @@ const COLUMNAS_FIJAS: { campo: Campo; titulo: string; ancho: string }[] = [
                         </td>
 
                         <td
+                            class="px-2 py-1.5 text-right text-muted-foreground tabular-nums"
+                            :title="
+                                fila.linea.dias_vacaciones
+                                    ? 'Vacaciones registradas en Beneficios → Vacaciones'
+                                    : undefined
+                            "
+                        >
+                            {{ fila.linea.dias_vacaciones || '' }}
+                        </td>
+
+                        <td
                             class="px-2 py-1.5 text-right font-medium tabular-nums"
                         >
                             {{ diasPagados(fila) }}
@@ -630,7 +651,7 @@ const COLUMNAS_FIJAS: { campo: Campo; titulo: string; ancho: string }[] = [
                     <tr v-if="filas.length === 0">
                         <td
                             :colspan="
-                                4 +
+                                5 +
                                 COLUMNAS_FIJAS.length +
                                 visibles.length +
                                 (mostrarNeto ? 1 : 0)
@@ -661,6 +682,9 @@ const COLUMNAS_FIJAS: { campo: Campo; titulo: string; ancho: string }[] = [
                             class="px-3 py-2 text-right tabular-nums"
                         >
                             {{ totalCampo(c.campo) }}
+                        </td>
+                        <td class="px-2 py-2 text-right tabular-nums">
+                            {{ totalVacaciones || '' }}
                         </td>
                         <td
                             class="px-2 py-2 text-right font-medium tabular-nums"

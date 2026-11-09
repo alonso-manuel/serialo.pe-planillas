@@ -60,6 +60,7 @@ class ExportacionPlame
 
         $codigoFalta = TipoSuspension::codigoFalta();
         $codigoLicencia = TipoSuspension::codigoLicencia();
+        $codigoVacaciones = TipoSuspension::codigoVacaciones();
         $doc = fn (PlanillaLinea $l) => [
             'tipo_documento' => $l->trabajador->tipo_documento->value,
             'numero_documento' => $l->trabajador->numero_documento,
@@ -71,6 +72,7 @@ class ExportacionPlame
             'snl' => $this->snl->generar($lineas->map(fn (PlanillaLinea $l) => [...$doc($l), 'suspensiones' => [
                 $codigoFalta => $l->dias_no_laborados,
                 $codigoLicencia => $l->dias_licencia,
+                $codigoVacaciones => $l->dias_vacaciones,
                 $l->tipo_subsidio ?? NovedadesPlanilla::SUBSIDIO_POR_DEFECTO => $l->dias_subsidiados,
             ]])->all()),
             'toc' => $this->toc->generar($lineas->map($doc)->all()),

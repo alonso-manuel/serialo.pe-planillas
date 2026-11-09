@@ -26,6 +26,9 @@ class ParametroSeeder extends Seeder
             [C::FactorGratificacionMicro, '0.00', '2013-07-01', 'Ley 30056 (D.S. 013-2013-PRODUCE) — VERIFICAR'],
             [C::FactorCtsPequena, '0.50', '2013-07-01', 'Ley 30056 (D.S. 013-2013-PRODUCE) — VERIFICAR'],
             [C::FactorCtsMicro, '0.00', '2013-07-01', 'Ley 30056 (D.S. 013-2013-PRODUCE) — VERIFICAR'],
+            [C::DiasVacacionesGeneral, '30', '1991-11-01', 'D.Leg. 713, art. 10'],
+            [C::DiasVacacionesPequena, '15', '2013-07-01', 'Ley 30056 (D.S. 013-2013-PRODUCE)'],
+            [C::DiasVacacionesMicro, '15', '2013-07-01', 'Ley 30056 (D.S. 013-2013-PRODUCE)'],
         ];
     }
 

@@ -304,7 +304,9 @@ const porVerificar = computed(() =>
                             {{
                                 seleccionada?.tipo === 'tasa'
                                     ? 'Porcentaje'
-                                    : 'Monto'
+                                    : seleccionada?.tipo === 'dias'
+                                      ? 'Días'
+                                      : 'Monto'
                             }}
                         </Label>
                         <div class="relative">
@@ -328,7 +330,9 @@ const porVerificar = computed(() =>
                                 :placeholder="
                                     seleccionada?.tipo === 'tasa'
                                         ? '9.00'
-                                        : '1130.00'
+                                        : seleccionada?.tipo === 'dias'
+                                          ? '30'
+                                          : '1130.00'
                                 "
                                 required
                                 v-focus

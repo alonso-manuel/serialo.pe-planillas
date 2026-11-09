@@ -37,6 +37,7 @@ class VerificadorCalculo
         CalculadoraPlanilla::HORA_EXTRA_25, CalculadoraPlanilla::HORA_EXTRA_35,
         CalculadoraPlanilla::AFP_COMISION, CalculadoraPlanilla::AFP_PRIMA, CalculadoraPlanilla::AFP_APORTE,
         CalculadoraPlanilla::ONP, CalculadoraPlanilla::ESSALUD, CalculadoraPlanilla::SIS,
+        CalcularPlanillaPeriodo::REMUNERACION_VACACIONAL,
     ];
 
     /** Además, en julio y diciembre (gratificación). */

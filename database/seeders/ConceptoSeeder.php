@@ -18,7 +18,7 @@ class ConceptoSeeder extends Seeder
         //  código, nombre, tipo, essalud, onp, afp, quinta, sistema
         $filas = [
             ['0121', 'Remuneración o jornal básico', T::Ingreso, 1, 1, 1, 1, 1],
-            ['0118', 'Remuneración vacacional', T::Ingreso, 1, 1, 1, 1, 0],
+            ['0118', 'Remuneración vacacional', T::Ingreso, 1, 1, 1, 1, 1],
             ['0105', 'Trabajo en sobretiempo (horas extras) 25 %', T::Ingreso, 1, 1, 1, 1, 1],
             ['0106', 'Trabajo en sobretiempo (horas extras) 35 %', T::Ingreso, 1, 1, 1, 1, 1],
             ['0201', 'Asignación familiar', T::Ingreso, 1, 1, 1, 1, 1],

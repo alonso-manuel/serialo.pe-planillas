@@ -22,6 +22,8 @@ class TipoSuspension extends Model
 
     public const USO_LICENCIA = 'licencia';
 
+    public const USO_VACACIONES = 'vacaciones';
+
     protected $table = 'tipos_suspension';
 
     protected $fillable = ['codigo', 'descripcion', 'uso', 'activo'];
@@ -42,6 +44,12 @@ class TipoSuspension extends Model
     public static function codigoLicencia(): string
     {
         return self::codigoPara(self::USO_LICENCIA, 'licencias sin goce');
+    }
+
+    /** Código del descanso vacacional. */
+    public static function codigoVacaciones(): string
+    {
+        return self::codigoPara(self::USO_VACACIONES, 'vacaciones');
     }
 
     private static function codigoPara(string $uso, string $nombre): string

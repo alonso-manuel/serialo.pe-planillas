@@ -140,7 +140,7 @@ class PeriodosPlanilla
 
     private function crearLinea(Periodo $periodo, Trabajador $trabajador): PlanillaLinea
     {
-        return $periodo->lineas()->create([
+        $linea = $periodo->lineas()->create([
             'trabajador_id' => $trabajador->id,
             'dias_laborados' => DiasLaborados::proponer(
                 $trabajador->fecha_ingreso->toDateTimeImmutable(),
@@ -149,6 +149,10 @@ class PeriodosPlanilla
                 $periodo->mes,
             ),
         ]);
+        $linea->setRelation('trabajador', $trabajador);
+        app(VacacionesTrabajador::class)->aplicarALinea($linea, $periodo);
+
+        return $linea;
     }
 
     private function ultimo(Empresa $empresa): ?Periodo
