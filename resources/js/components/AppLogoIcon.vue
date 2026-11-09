@@ -12,18 +12,90 @@ type Props = {
 defineProps<Props>();
 </script>
 
+<!-- Ícono de Serialo.pe (versión simplificada del logo: engranaje y código de barras). Mismo dibujo que public/favicon.svg. -->
 <template>
     <svg
         xmlns="http://www.w3.org/2000/svg"
-        viewBox="0 0 40 42"
+        viewBox="0 0 32 32"
+        role="img"
+        aria-label="Serialo.pe"
         :class="className"
         v-bind="$attrs"
     >
-        <path
-            fill="currentColor"
-            fill-rule="evenodd"
-            clip-rule="evenodd"
-            d="M17.2 5.633 8.6.855 0 5.633v26.51l16.2 9 16.2-9v-8.442l7.6-4.223V9.856l-8.6-4.777-8.6 4.777V18.3l-5.6 3.111V5.633ZM38 18.301l-5.6 3.11v-6.157l5.6-3.11V18.3Zm-1.06-7.856-5.54 3.078-5.54-3.079 5.54-3.078 5.54 3.079ZM24.8 18.3v-6.157l5.6 3.111v6.158L24.8 18.3Zm-1 1.732 5.54 3.078-13.14 7.302-5.54-3.078 13.14-7.3v-.002Zm-16.2 7.89 7.6 4.222V38.3L2 30.966V7.92l5.6 3.111v16.892ZM8.6 9.3 3.06 6.222 8.6 3.143l5.54 3.08L8.6 9.3Zm21.8 15.51-13.2 7.334V38.3l13.2-7.334v-6.156ZM9.6 11.034l5.6-3.11v14.6l-5.6 3.11v-14.6Z"
-        />
+        <rect width="32" height="32" rx="7" fill="#2558a8" />
+        <g fill="#7fcbe8">
+            <rect
+                x="9.4"
+                y="7.6"
+                width="3.2"
+                height="4.4"
+                rx="0.7"
+                transform="rotate(0 11 16)"
+            />
+            <rect
+                x="9.4"
+                y="7.6"
+                width="3.2"
+                height="4.4"
+                rx="0.7"
+                transform="rotate(45 11 16)"
+            />
+            <rect
+                x="9.4"
+                y="7.6"
+                width="3.2"
+                height="4.4"
+                rx="0.7"
+                transform="rotate(90 11 16)"
+            />
+            <rect
+                x="9.4"
+                y="7.6"
+                width="3.2"
+                height="4.4"
+                rx="0.7"
+                transform="rotate(135 11 16)"
+            />
+            <rect
+                x="9.4"
+                y="7.6"
+                width="3.2"
+                height="4.4"
+                rx="0.7"
+                transform="rotate(180 11 16)"
+            />
+            <rect
+                x="9.4"
+                y="7.6"
+                width="3.2"
+                height="4.4"
+                rx="0.7"
+                transform="rotate(225 11 16)"
+            />
+            <rect
+                x="9.4"
+                y="7.6"
+                width="3.2"
+                height="4.4"
+                rx="0.7"
+                transform="rotate(270 11 16)"
+            />
+            <rect
+                x="9.4"
+                y="7.6"
+                width="3.2"
+                height="4.4"
+                rx="0.7"
+                transform="rotate(315 11 16)"
+            />
+            <circle cx="11" cy="16" r="5.4" />
+        </g>
+        <circle cx="11" cy="16" r="2.3" fill="#2558a8" />
+        <g fill="#ffffff">
+            <rect x="20.4" y="9.5" width="1.6" height="13" rx="0.4" />
+            <rect x="23" y="9.5" width="0.9" height="13" rx="0.3" />
+            <rect x="24.8" y="9.5" width="1.9" height="13" rx="0.4" />
+            <rect x="27.5" y="9.5" width="0.9" height="13" rx="0.3" />
+        </g>
     </svg>
 </template>
