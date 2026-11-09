@@ -3,6 +3,8 @@ import { Head, Link, router, useForm, usePage } from '@inertiajs/vue3';
 import {
     Calculator,
     CircleAlert,
+    FileArchive,
+    FileText,
     Lock,
     LockOpen,
     RefreshCw,
@@ -36,6 +38,10 @@ import {
     reabrir,
     sincronizar,
 } from '@/routes/periodos';
+import {
+    pdf as boletasPdf,
+    zip as boletasZip,
+} from '@/routes/periodos/boletas';
 import { index as parametros } from '@/routes/parametros';
 import { index as tasasAfp } from '@/routes/tasas-afp';
 import type {
@@ -167,6 +173,34 @@ function eliminar(): void {
                     :description="periodo.empresa ?? undefined"
                 />
                 <EstadoPeriodo :estado="estado" :etiqueta="ETIQUETAS[estado]" />
+            </div>
+            <div
+                v-if="
+                    estado !== 'abierto' ||
+                    lineas.some((l) => l.neto_pagar !== null)
+                "
+                class="flex flex-wrap gap-2 sm:order-last"
+            >
+                <Button variant="outline" as-child>
+                    <a
+                        :href="boletasPdf.url(periodo.id)"
+                        target="_blank"
+                        rel="noopener"
+                        title="Todas las boletas en un PDF, una por hoja, para imprimir"
+                    >
+                        <FileText />
+                        Boletas PDF
+                    </a>
+                </Button>
+                <Button variant="outline" as-child>
+                    <a
+                        :href="boletasZip.url(periodo.id)"
+                        title="Un PDF por trabajador, en un archivo zip"
+                    >
+                        <FileArchive />
+                        Boletas (zip)
+                    </a>
+                </Button>
             </div>
             <div
                 v-if="

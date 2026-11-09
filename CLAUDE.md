@@ -13,7 +13,7 @@ Lee también: `docs/producto.md` (qué se vende), `docs/roadmap.md` (qué toca a
 - Laravel 13 (starter kit oficial de Vue): Inertia 3, Vue 3 + TypeScript, Tailwind 4, shadcn-vue (reka-ui), Fortify (login, 2FA, passkeys), Wayfinder (rutas tipadas en TS).
 - MySQL 8 en producción (los clientes usan hosting compartido con cPanel). SQLite en memoria para tests.
 - `brick/math` (`BigDecimal`) para TODO cálculo de dinero o tasas.
-- PDF de boletas: `barryvdh/laravel-dompdf` (pendiente de instalar cuando llegue el módulo de boletas).
+- PDF de boletas: `barryvdh/laravel-dompdf` (plantilla Blade en `resources/views/pdf/boleta.blade.php`, servicio `BoletaPago`).
 - Excel: `openspout/openspout` 5.3 (lectura/escritura .xlsx y .csv; usado en tasas AFP y carga masiva).
 - Colas: driver `database` (funciona en hosting compartido con cron).
 

@@ -3,6 +3,7 @@ import { Head, Link, router } from '@inertiajs/vue3';
 import {
     ArrowLeft,
     Calculator,
+    FileText,
     ChevronLeft,
     ChevronRight,
     TriangleAlert,
@@ -13,7 +14,7 @@ import EstadoPeriodo from '@/components/periodos/EstadoPeriodo.vue';
 import { Button } from '@/components/ui/button';
 import { formatoMonto } from '@/lib/montos';
 import { calcular, index, show } from '@/routes/periodos';
-import { show as verLinea } from '@/routes/periodos/lineas';
+import { boleta, show as verLinea } from '@/routes/periodos/lineas';
 import { edit as editarTrabajador } from '@/routes/trabajadores';
 import type { DetalleLinea } from '@/types';
 
@@ -156,6 +157,16 @@ onBeforeUnmount(() => window.removeEventListener('keydown', alPresionar));
                 >
                     <Calculator :class="{ 'animate-pulse': calculando }" />
                     {{ calculando ? 'Calculando…' : 'Calcular planilla' }}
+                </Button>
+                <Button v-if="linea.calculada" variant="outline" as-child>
+                    <a
+                        :href="boleta.url([periodo.id, linea.id])"
+                        target="_blank"
+                        rel="noopener"
+                    >
+                        <FileText />
+                        Boleta PDF
+                    </a>
                 </Button>
             </div>
         </div>

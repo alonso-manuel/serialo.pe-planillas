@@ -46,7 +46,7 @@ Marca `[x]` al terminar (o usa `/actualizar-roadmap`). Cada tarea: código + tes
 ### Semana 4 (30 nov – 4 dic) · Gratificación de diciembre + boletas
 
 - [x] Gratificación jul/dic + bonificación extraordinaria (reglas en `reglas-calculo.md`) con tests
-- [ ] Boleta de pago PDF (diseño propio), lote por empresa, zip
+- [x] Boleta de pago PDF (diseño propio), lote por empresa, zip
 - [ ] Envío de boletas por correo (cola)
 
 ### Semana 5 (7–11 dic) · Archivos oficiales
@@ -65,6 +65,7 @@ Marca `[x]` al terminar (o usa `/actualizar-roadmap`). Cada tarea: código + tes
 
 ### Semana 7 (21–30 dic) · Producto vendible
 
+- [ ] Configuración de la empresa: logo (boletas y reportes) — pedido el 09/11
 - [ ] Instalador web
 - [ ] Licencia firmada (Ed25519) + límites por plan + modo solo lectura
 - [ ] Actualizador desde el panel
