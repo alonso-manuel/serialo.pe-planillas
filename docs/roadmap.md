@@ -61,7 +61,7 @@ Marca `[x]` al terminar (o usa `/actualizar-roadmap`). Cada tarea: código + tes
 - [x] CTS mayo/noviembre + constancia de depósito PDF
 - [x] Vacaciones: récord, saldos, goce (afecta planilla)
 - [x] Reportes: planilla, resumen, centralización, costo laboral (Excel y PDF)
-- [ ] Panel del estudio: estado de cada empresa en el mes (abierto / calculado / cerrado / exportado)
+- [x] Panel del estudio: estado de cada empresa en el mes (abierto / calculado / cerrado / exportado)
 
 ### Semana 7 (21–30 dic) · Producto vendible
 

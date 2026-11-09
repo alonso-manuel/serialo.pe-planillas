@@ -10,6 +10,7 @@ use App\Http\Controllers\Empresas\ConsultaRucController;
 use App\Http\Controllers\Empresas\EmpresaController;
 use App\Http\Controllers\Empresas\EstablecimientoController;
 use App\Http\Controllers\Empresas\EstadoEmpresaController;
+use App\Http\Controllers\PanelController;
 use App\Http\Controllers\Parametros\ParametroController;
 use App\Http\Controllers\Periodos\BoletaController;
 use App\Http\Controllers\Periodos\CalculoController;
@@ -35,7 +36,7 @@ use Illuminate\Support\Facades\Route;
 Route::redirect('/', '/dashboard')->name('home');
 
 Route::middleware(['auth', 'verified'])->group(function () {
-    Route::inertia('dashboard', 'Dashboard')->name('dashboard');
+    Route::get('dashboard', PanelController::class)->name('dashboard');
 
     Route::put('empresa-activa', [EmpresaActivaController::class, 'update'])->name('empresa-activa.update');
 
