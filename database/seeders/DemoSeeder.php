@@ -28,25 +28,15 @@ use Illuminate\Support\Facades\Hash;
  *   (cambiar en cualquier instalación pública).
  * - 3 empresas (micro, pequeña y general) con 5–6 trabajadores cada una.
  * - Mes anterior: calculado y cerrado. Mes actual: abierto con novedades, sin calcular.
+ *
+ * @phpstan-type EmpresaDemo array{ruc: string, razon_social: string, regimen: RegimenLaboral, seguro: SeguroSalud, direccion: string,
+ *     trabajadores: list<array{0: string, 1: string, 2: string, 3: string, 4: string, 5: bool, 6: SistemaPension, 7: TipoContrato}>}
  */
 class DemoSeeder extends Seeder
 {
     public function run(PeriodosPlanilla $periodos, CalcularPlanillaPeriodo $calculo, CierrePeriodo $cierre): void
     {
-        $admin = User::updateOrCreate(['email' => 'demo@serialo.pe'], [
-            'name' => 'Usuario Demo',
-            'password' => Hash::make('demo1234'),
-            'email_verified_at' => now(),
-            'rol' => RolUsuario::Admin,
-            'activo' => true,
-        ]);
-        $asistente = User::updateOrCreate(['email' => 'asistente@serialo.pe'], [
-            'name' => 'Lucía Asistente',
-            'password' => Hash::make('demo1234'),
-            'email_verified_at' => now(),
-            'rol' => RolUsuario::Asistente,
-            'activo' => true,
-        ]);
+        [$admin, $asistente] = $this->usuarios();
 
         $afps = Afp::query()->orderBy('nombre')->pluck('id')->all();
         $dni = 70000001;
@@ -60,7 +50,7 @@ class DemoSeeder extends Seeder
                 'activo' => true,
             ]);
             $empresa->establecimientos()->firstOrCreate(['codigo' => '0000'], ['nombre' => 'Principal']);
-            if ($i < 2) {
+            if ($i < 2 && $asistente !== null) {
                 $asistente->empresas()->syncWithoutDetaching([$empresa->id]);
             }
 
@@ -90,6 +80,31 @@ class DemoSeeder extends Seeder
         }
     }
 
+    /**
+     * Administrador que cierra los periodos y asistente al que se asignan las dos primeras empresas.
+     *
+     * @return array{0: User, 1: User|null}
+     */
+    protected function usuarios(): array
+    {
+        $admin = User::updateOrCreate(['email' => 'demo@serialo.pe'], [
+            'name' => 'Usuario Demo',
+            'password' => Hash::make('demo1234'),
+            'email_verified_at' => now(),
+            'rol' => RolUsuario::Admin,
+            'activo' => true,
+        ]);
+        $asistente = User::updateOrCreate(['email' => 'asistente@serialo.pe'], [
+            'name' => 'Lucía Asistente',
+            'password' => Hash::make('demo1234'),
+            'email_verified_at' => now(),
+            'rol' => RolUsuario::Asistente,
+            'activo' => true,
+        ]);
+
+        return [$admin, $asistente];
+    }
+
     /** Mes anterior calculado y cerrado; mes actual abierto con algunas novedades. */
     private function periodos(Empresa $empresa, User $admin, PeriodosPlanilla $periodos, CalcularPlanillaPeriodo $calculo, CierrePeriodo $cierre): void
     {
@@ -116,10 +131,9 @@ class DemoSeeder extends Seeder
     }
 
     /**
-     * @return list<array{ruc: string, razon_social: string, regimen: RegimenLaboral, seguro: SeguroSalud, direccion: string,
-     *     trabajadores: list<array{0: string, 1: string, 2: string, 3: string, 4: string, 5: bool, 6: SistemaPension, 7: TipoContrato}>}>
+     * @return list<EmpresaDemo>
      */
-    private function empresas(): array
+    protected function empresas(): array
     {
         $onp = SistemaPension::Onp;
         $afp = SistemaPension::Afp;

@@ -6,7 +6,9 @@ use App\Enums\RolUsuario;
 use App\Models\Central\Estudio;
 use App\Models\Empresa;
 use App\Models\Parametro;
+use App\Models\Trabajador;
 use App\Models\User;
+use Database\Seeders\EstudioDemoSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\Concerns\ConEstudios;
@@ -51,6 +53,29 @@ class ComandosEstudiosTest extends TestCase
 
         // La base central no recibe datos del estudio.
         $this->assertSame(0, User::query()->count());
+    }
+
+    #[Test]
+    public function los_datos_de_prueba_quedan_solo_en_su_estudio(): void
+    {
+        $this->activarModoSaas();
+        $espiga = $this->crearEstudio('espiga', 'a@espiga.test');
+        $vacio = $this->crearEstudio('vacio', 'a@vacio.test');
+
+        $espiga->run(function (): void {
+            $datos = app(EstudioDemoSeeder::class);
+            $datos->empresasElegidas = ['espiga', 'sonrisa'];
+            $datos->setContainer(app())->__invoke();
+
+            $this->assertSame(
+                ['Clínica Dental Sonrisa S.A.C.', 'Panificadora La Espiga E.I.R.L.'],
+                Empresa::query()->orderBy('razon_social')->pluck('razon_social')->all(),
+            );
+            $this->assertSame(6, Trabajador::query()->count());
+            $this->assertSame(['a@espiga.test'], User::query()->pluck('email')->all()); // sin usuarios demo
+        });
+
+        $vacio->run(fn () => $this->assertSame(0, Empresa::query()->count()));
     }
 
     #[Test]

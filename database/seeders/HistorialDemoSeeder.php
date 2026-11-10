@@ -2,6 +2,8 @@
 
 namespace Database\Seeders;
 
+use App\Enums\RegimenLaboral;
+use App\Enums\RolUsuario;
 use App\Models\Auditoria;
 use App\Models\Empresa;
 use App\Models\Periodo;
@@ -25,7 +27,9 @@ class HistorialDemoSeeder extends Seeder
 {
     public function run(PeriodosPlanilla $periodos, CalcularPlanillaPeriodo $calculo, CierrePeriodo $cierre): void
     {
-        $admin = User::query()->where('email', 'demo@serialo.pe')->firstOrFail();
+        // El admin del DemoSeeder o, dentro de un estudio de prueba (SaaS), su primer administrador.
+        $admin = User::query()->where('email', 'demo@serialo.pe')->first()
+            ?? User::query()->where('rol', RolUsuario::Admin)->orderBy('id')->firstOrFail();
         $hasta = CarbonImmutable::now()->startOfMonth()->subMonth(); // ya cerrado por el DemoSeeder
 
         Auditoria::sinRegistrar(function () use ($admin, $hasta, $periodos, $calculo, $cierre): void {
@@ -61,7 +65,8 @@ class HistorialDemoSeeder extends Seeder
 
     private function datosDeContacto(): void
     {
-        $empresa = Empresa::query()->where('ruc', '20000000028')->first();
+        $empresa = Empresa::query()->where('ruc', 'like', '200000000%')
+            ->where('regimen_laboral', RegimenLaboral::General)->orderBy('id')->first();
         if ($empresa === null) {
             return;
         }

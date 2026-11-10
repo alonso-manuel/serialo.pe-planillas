@@ -82,6 +82,25 @@ php artisan estudio:crear garcia "Estudio García" admin@garcia.test --clave='Cl
 php artisan serve --port=8002        # http://garcia.localhost:8002
 ```
 
+## Cuentas de prueba
+
+`EstudiosPruebaSeeder` crea cuatro estudios con datos ficticios **distintos** (dos empresas cada uno, sus trabajadores y
+un año de planillas), para comprobar que ninguno ve lo de otro:
+
+```bash
+php artisan db:seed --class=EstudiosPruebaSeeder      # con PLANILLAS_MODO=saas
+```
+
+| Estudio                               | Dirección local              | Usuario             | Empresas                                        |
+| ------------------------------------- | ---------------------------- | ------------------- | ----------------------------------------------- |
+| Estudio Contable García (prueba)      | http://garcia.localhost:8002 | `admin@garcia.test` | Comercial Los Andes · Textiles Misti            |
+| Contadores López & Asociados (prueba) | http://lopez.localhost:8002  | `admin@lopez.test`  | Servicios Huallaga · Agroexportadora Chira      |
+| Asesoría Contable Quispe (prueba)     | http://quispe.localhost:8002 | `admin@quispe.test` | Distribuidora Pacífico · Panificadora La Espiga |
+| Empresa Torres (prueba)               | http://torres.localhost:8002 | `admin@torres.test` | Transportes Ucayali · Clínica Dental Sonrisa    |
+
+Contraseña de todas: `Demo-Serialo-2026!` (`EstudiosPruebaSeeder::CLAVE`). Solo para pruebas: no crearlas en el VPS
+público sin cambiarla. Los datos vienen de `EstudioDemoSeeder` (catálogo de empresas ficticias) e `HistorialDemoSeeder`.
+
 ## Tests
 
 `tests/Concerns/ConEstudios.php` activa el modo SaaS con bases SQLite reales por estudio y simula peticiones como en
