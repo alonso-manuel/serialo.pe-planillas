@@ -78,15 +78,15 @@ Marca `[x]` al terminar (o usa `/actualizar-roadmap`). Cada tarea: código + tes
 - [x] Respaldos automáticos: diario a las 03:00, por estudio en SaaS, 14 días, copia fuera del servidor opcional, pantalla de descarga para el admin y respaldo previo a eliminar una cuenta — ver docs/respaldos.md
 - [x] Guía y scripts para un VPS dedicado (referencia) — ver docs/vps.md
 - [ ] **Al final:** despliegue con Docker en el VPS compartido (dominio `impulso.cfd`: `*.impulso.cfd` y `admin.impulso.cfd`), sin chocar con las otras apps
-- [ ] Actualizador desde el panel (instalaciones únicas)
-- [ ] Script de empaquetado (build de assets, sin dev-dependencies, zip versionado)
+- ~~Actualizador desde el panel (instalaciones únicas)~~ — descartado el 10/11
+- ~~Script de empaquetado (zip versionado)~~ — descartado el 10/11
 
 ### Semana 8 (4–8 ene 2027) · Lanzamiento
 
-- [ ] Piloto con contador: 10 casos reales anonimizados como tests
-- [ ] Correcciones
-- [ ] Demos por estudio desde el panel central (cada interesado recibe su app limpia)
-- [ ] Manual de uso y videos cortos
+- ~~Piloto con contador: 10 casos reales anonimizados como tests~~ — descartado el 10/11
+- ~~Correcciones~~ — descartado el 10/11 (se corrige sobre la marcha)
+- [x] Demos por estudio desde el panel central: ya cubierto por **Nueva cuenta** tipo demo (app limpia, vencimiento y avisos)
+- [x] Manual de uso y videos cortos — ya existen; los que falten se generan cuando se pidan
 - [ ] Etiqueta `v1.0.0`
 
 ## v1.1 — 11 ene → 12 feb 2027
