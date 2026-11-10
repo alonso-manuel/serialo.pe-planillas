@@ -10,9 +10,12 @@ use App\Models\Central\AuditoriaCentral;
 use App\Models\Central\Estudio;
 use App\Models\User;
 use App\Notifications\InvitacionEstudio;
+use App\Services\Respaldo\VolcadoBaseDatos;
 use Carbon\CarbonImmutable;
 use Illuminate\Auth\Passwords\PasswordBrokerManager;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Str;
 use Throwable;
@@ -25,6 +28,11 @@ class GestionEstudios
 {
     /** Subdominios que no pueden ser estudios. */
     public const RESERVADOS = ['www', 'admin', 'app', 'api', 'mail', 'smtp', 'ftp', 'cpanel', 'webmail', 'soporte', 'static', 'assets', 'demo', 'blog', 'panel'];
+
+    /** Carpeta (disco local central) del último respaldo de cada cuenta eliminada. */
+    public const CARPETA_ELIMINADAS = 'respaldos/eliminadas';
+
+    public function __construct(private readonly VolcadoBaseDatos $volcado) {}
 
     /** @return list<mixed> */
     public static function reglasSubdominio(): array
@@ -213,9 +221,32 @@ class GestionEstudios
         $id = $estudio->id;
         $nombre = $estudio->nombre;
 
+        // Último respaldo antes de borrar: si falla, la cuenta no se elimina.
+        $respaldo = $this->volcarA($estudio, Storage::disk('local')->path(self::CARPETA_ELIMINADAS));
+
         $estudio->delete();
         File::deleteDirectory(storage_path('estudio-'.$id));
 
-        AuditoriaCentral::registrar('eliminado', "Cuenta {$nombre}", $id);
+        AuditoriaCentral::registrar('eliminado', "Cuenta {$nombre}", $id, ['respaldo' => basename($respaldo)]);
+    }
+
+    /** Base completa de la cuenta en un .sql.gz temporal (para descargar desde el panel). */
+    public function exportar(Estudio $estudio): string
+    {
+        $ruta = $this->volcarA($estudio, Storage::disk('local')->path('respaldos/exportaciones'));
+
+        AuditoriaCentral::registrar('exportado', "Base de {$estudio->nombre}", $estudio->id, ['archivo' => basename($ruta)]);
+
+        return $ruta;
+    }
+
+    private function volcarA(Estudio $estudio, string $carpeta): string
+    {
+        File::ensureDirectoryExists($carpeta);
+        $ruta = $carpeta.'/'.$estudio->id.'-'.CarbonImmutable::now('America/Lima')->format('Ymd-His').'.sql.gz';
+
+        $estudio->run(fn () => $this->volcado->volcar(DB::connection(), $ruta));
+
+        return $ruta;
     }
 }

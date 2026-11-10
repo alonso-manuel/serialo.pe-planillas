@@ -35,4 +35,16 @@ return [
     */
     'cuenta_remuneraciones_por_pagar' => env('PLANILLAS_CUENTA_REMUNERACIONES', '4111'),
 
+    /*
+    | Respaldos automáticos de la base (php artisan respaldos:crear, cada día a la hora indicada).
+    | dias: cuántos días se conservan (el más reciente nunca se borra).
+    | disco_externo: nombre de un disco de config/filesystems.php para guardar una copia fuera
+    | del servidor (vacío = solo en el servidor). En el VPS se recomienda además rclone (docs/respaldos.md).
+    */
+    'respaldos' => [
+        'dias' => (int) env('PLANILLAS_RESPALDO_DIAS', 14),
+        'hora' => env('PLANILLAS_RESPALDO_HORA', '03:00'),
+        'disco_externo' => env('PLANILLAS_RESPALDO_DISCO'),
+    ],
+
 ];

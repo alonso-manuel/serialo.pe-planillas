@@ -15,8 +15,9 @@ use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
 use Inertia\Inertia;
 use Inertia\Response;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
-/** Cuentas (estudios) del modo SaaS: listado, alta con invitación, suspensión, acceso y eliminación. */
+/** Cuentas (estudios) del modo SaaS: listado, alta con invitación, edición, exportación, suspensión, acceso y eliminación. */
 class CuentaController extends Controller
 {
     public function __construct(private readonly GestionEstudios $gestion) {}
@@ -128,6 +129,14 @@ class CuentaController extends Controller
         ]);
 
         return back();
+    }
+
+    /** Descarga la base completa de la cuenta (.sql.gz): para entregarla al cliente o pasarla a su hosting. */
+    public function exportar(Estudio $estudio): BinaryFileResponse
+    {
+        $ruta = $this->gestion->exportar($estudio);
+
+        return response()->download($ruta, basename($ruta), ['Content-Type' => 'application/gzip'])->deleteFileAfterSend();
     }
 
     public function acceso(Estudio $estudio): RedirectResponse

@@ -50,14 +50,15 @@ Donde el superadmin de Serialo.pe administra las cuentas. Vive en la base centra
 | Nueva cuenta          | Crea la base limpia (catálogos legales) y el administrador, y le **envía un correo con el enlace para crear su contraseña** (24 h). Nadie ve esa contraseña. Si el correo no está configurado, el panel muestra el enlace para entregarlo a mano |
 | Acceso                | Reenvía el enlace (olvidó su contraseña o venció)                                                                                                                                                                                                |
 | Suspender / reactivar | Suspendida: nadie entra, los datos se conservan                                                                                                                                                                                                  |
-| Eliminar              | Borra la cuenta, su base y sus archivos; pide escribir el subdominio                                                                                                                                                                             |
+| Exportar              | Descarga la base completa de la cuenta (`.sql.gz`), p. ej. para pasarla a pago único en su hosting                                                                                                                                               |
+| Eliminar              | Guarda un último respaldo y borra la cuenta, su base y sus archivos; pide escribir el subdominio                                                                                                                                                 |
 | Actividad             | Auditoría central de todo lo anterior (`auditorias_centrales`, inmutable)                                                                                                                                                                        |
 
 Separación: las rutas del panel (`routes/panel.php`, nombres `panel.*`) solo responden en su dominio y las de los estudios
 nunca en el del panel (`SepararPanelYEstudios`). Las sesiones del panel están en `sesiones_panel` (base central). En modo
 `unica` el panel no existe. Las páginas usan rutas relativas (`resources/js/lib/panel.ts`) para no fijar el dominio al compilar.
 
-Pendiente: exportar la base de una cuenta (con los respaldos) y entrar como soporte.
+Respaldos diarios de la central y de cada estudio: ver [respaldos.md](respaldos.md). Pendiente: entrar como soporte.
 
 ## Planes y vencimiento
 
@@ -84,6 +85,9 @@ php artisan estudio:crear garcia "Estudio García" admin@garcia.pe --admin="Ana 
 
 # Después de cada actualización: base central y la de todos los estudios
 php artisan estudios:migrar
+
+# Respaldos (también corre solo cada día a las 03:00)
+php artisan respaldos:crear [--estudio=garcia]
 ```
 
 ⚠ En el VPS **nunca** correr `php artisan migrate` solo: crearía las tablas de planilla en la base central.

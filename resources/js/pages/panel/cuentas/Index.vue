@@ -5,6 +5,7 @@ import {
     Building2,
     CircleCheck,
     Copy,
+    Download,
     ExternalLink,
     KeyRound,
     Pencil,
@@ -244,6 +245,16 @@ function eliminar(): void {
                                         <Pencil />
                                         Editar
                                     </Link>
+                                </Button>
+                                <Button variant="ghost" size="sm" as-child>
+                                    <a
+                                        :href="rutasPanel.exportar(c.id)"
+                                        title="Descargar la base completa de la cuenta (.sql.gz)"
+                                        download
+                                    >
+                                        <Download />
+                                        Exportar
+                                    </a>
                                 </Button>
                                 <Button
                                     variant="ghost"

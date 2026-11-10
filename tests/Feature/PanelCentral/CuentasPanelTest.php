@@ -10,6 +10,7 @@ use App\Models\Central\Superadmin;
 use App\Models\User;
 use App\Notifications\InvitacionEstudio;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Notification;
 use Inertia\Support\SessionKey;
 use Inertia\Testing\AssertableInertia as Assert;
@@ -154,6 +155,7 @@ class CuentasPanelTest extends TestCase
         $this->delete(self::PANEL.'/cuentas/alfa', ['confirmacion' => 'alfa'])->assertRedirect(self::PANEL.'/cuentas');
         $this->assertFalse(Estudio::query()->whereKey('alfa')->exists());
         $this->assertFileDoesNotExist($base);
+        $this->assertCount(1, File::glob(storage_path('app/private/respaldos/eliminadas/alfa-*.sql.gz')) ?: [], 'Antes de eliminar queda un último respaldo.');
 
         $this->get(self::PANEL.'/actividad')->assertOk()
             ->assertInertia(fn (Assert $p) => $p->component('panel/Actividad')->where('registros.0.accion', 'Eliminada'));

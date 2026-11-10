@@ -24,6 +24,7 @@ use App\Http\Controllers\Periodos\LineaPlanillaController;
 use App\Http\Controllers\Periodos\PeriodoController;
 use App\Http\Controllers\Periodos\ResumenBoletasController;
 use App\Http\Controllers\Reportes\ReporteController;
+use App\Http\Controllers\Respaldos\RespaldoController;
 use App\Http\Controllers\Sunat\AfpnetController;
 use App\Http\Controllers\Sunat\PlameController;
 use App\Http\Controllers\TasasAfp\ImportacionTasasAfpController;
@@ -186,6 +187,11 @@ Route::middleware(['auth', 'verified'])->group(function () {
     // Licencia (solo admin; se puede registrar aunque el sistema esté en solo lectura)
     Route::get('licencia', [LicenciaController::class, 'show'])->name('licencia.show');
     Route::put('licencia', [LicenciaController::class, 'update'])->name('licencia.update');
+
+    // Respaldos (solo admin; crear uno se permite aunque el sistema esté en solo lectura)
+    Route::get('respaldos', [RespaldoController::class, 'index'])->name('respaldos.index');
+    Route::post('respaldos', [RespaldoController::class, 'store'])->middleware('throttle:5,1')->name('respaldos.store');
+    Route::get('respaldos/{archivo}', [RespaldoController::class, 'descargar'])->where('archivo', '[A-Za-z0-9.-]+')->name('respaldos.descargar');
 
     // Usuarios (solo admin; nunca se eliminan, se desactivan)
     Route::resource('usuarios', UsuarioController::class)->except(['show', 'destroy']);

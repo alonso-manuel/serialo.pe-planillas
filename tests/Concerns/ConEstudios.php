@@ -41,6 +41,12 @@ trait ConEstudios
             }
             foreach ($this->estudiosDelTest as $id) {
                 File::deleteDirectory(base_path('storage/estudio-'.$id));
+                // Respaldo previo a eliminar y exportaciones del panel (disco local central).
+                foreach (['eliminadas', 'exportaciones'] as $carpeta) {
+                    foreach (File::glob(storage_path("app/private/respaldos/{$carpeta}/{$id}-*.sql.gz")) ?: [] as $archivo) {
+                        @unlink($archivo);
+                    }
+                }
             }
         });
     }

@@ -34,7 +34,7 @@ En cPanel → «Trabajos de cron», una vez por minuto:
 php /ruta/del/sistema/artisan schedule:run >> /dev/null 2>&1
 ```
 
-Procesa la cola: cálculo masivo y envío de boletas por correo. Algunos hostings piden la ruta completa de PHP (`/usr/local/bin/php`).
+Procesa la cola (cálculo masivo y envío de boletas por correo) y el respaldo diario de la base de las 03:00 ([respaldos.md](respaldos.md)). Algunos hostings piden la ruta completa de PHP (`/usr/local/bin/php`).
 
 ## Desarrollo y tests
 

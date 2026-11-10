@@ -20,3 +20,9 @@ Schedule::command('estudios:avisar-vencimientos')
     ->dailyAt('08:00')
     ->timezone('America/Lima')
     ->when(fn () => ModoSistema::saas());
+
+// Respaldo diario de la base (en SaaS: la central y la de cada estudio). Ver docs/respaldos.md.
+Schedule::command('respaldos:crear')
+    ->dailyAt((string) config('planillas.respaldos.hora', '03:00'))
+    ->timezone('America/Lima')
+    ->withoutOverlapping(120);

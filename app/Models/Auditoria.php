@@ -34,6 +34,7 @@ class Auditoria extends Model
         'restaurado' => 'Restaurado',
         'cerrado' => 'Cerrado',
         'reabierto' => 'Reabierto',
+        'descargado' => 'Descargado',
     ];
 
     private static bool $pausada = false;

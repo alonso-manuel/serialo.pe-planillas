@@ -21,6 +21,7 @@ class ModoSoloLectura
         'two-factor.login.store',
         'passkey.*',
         'licencia.update',
+        'respaldos.store',
     ];
 
     public function __construct(private readonly LicenciaActual $licencia) {}

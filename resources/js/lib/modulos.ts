@@ -5,6 +5,7 @@ import {
     FileText,
     FileUp,
     Gift,
+    DatabaseBackup,
     KeyRound,
     Landmark,
     LayoutGrid,
@@ -28,6 +29,7 @@ import { index as empresas } from '@/routes/empresas';
 import { index as gratificaciones } from '@/routes/gratificaciones';
 import { index as liquidaciones } from '@/routes/liquidaciones';
 import { show as licencia } from '@/routes/licencia';
+import { index as respaldos } from '@/routes/respaldos';
 import { index as parametros } from '@/routes/parametros';
 import { index as periodos } from '@/routes/periodos';
 import { index as plame } from '@/routes/plame';
@@ -93,6 +95,7 @@ export const gruposNav: GrupoNav[] = [
             { title: 'Tasas AFP', href: tasasAfp(), icon: Percent },
             { title: 'Conceptos', href: conceptos(), icon: ListChecks },
             { title: 'Auditoría', href: auditoria(), icon: ScrollText },
+            { title: 'Respaldos', href: respaldos(), icon: DatabaseBackup },
             { title: 'Licencia', href: licencia(), icon: KeyRound },
         ],
     },
