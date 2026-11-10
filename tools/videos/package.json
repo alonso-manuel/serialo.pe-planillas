@@ -6,6 +6,7 @@
         "grabar": "node videos.js"
     },
     "devDependencies": {
+        "pdfjs-dist": "4.10.38",
         "playwright": "1.48.2"
     }
 }

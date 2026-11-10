@@ -1,0 +1,9 @@
+Cada mes hay cuatro reportes, en Excel y en pe de efe.
+<break time="0.8s" />
+La planilla del mes, con una fila por trabajador y cada concepto en su columna.
+<break time="0.8s" />
+El resumen, con lo que se paga a la o ene pe, a cada a efe pe, a Es Salud, a SUNAT y a los trabajadores.
+<break time="0.8s" />
+La centralización contable: el asiento del mes con las cuentas del plan contable, donde el debe y el haber cuadran.
+<break time="1.0s" />
+Y el costo laboral por trabajador, con las provisiones de gratificación, ce te ese y vacaciones.

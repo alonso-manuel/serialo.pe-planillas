@@ -1,0 +1,9 @@
+Las boletas de pago se generan solas al calcular la planilla. Mientras el mes no se cierra, salen con la marca «borrador».
+<break time="1.0s" />
+Veamos las de octubre: todas en un solo pe de efe, listas para imprimir, con el logo de la empresa, los días, los ingresos, descuentos, aportes y el neto a pagar.
+<break time="1.5s" />
+También se descargan en un zip, un archivo por trabajador.
+<break time="1.0s" />
+Y se envían por correo: cada boleta va en un pe de efe protegido, cuya clave es el de ene i del trabajador. El envío se hace en segundo plano, respetando el límite de correos del hosting.
+<break time="1.5s" />
+Queda registrada la fecha de cada envío, y se puede reenviar a quien la pida.

@@ -1,6 +1,8 @@
 # Videos de demo — guiones
 
-Diez videos cortos (1280×720, `.webm`, sin audio) que muestran cómo va quedando Serialo Planillas.
+Dieciocho videos cortos (1280×720, `.webm`, sin audio) que muestran cómo va quedando Serialo Planillas, en dos temporadas:
+la **1** (00–09) recorre la base del sistema y la **2** (10–17) los módulos que vinieron después: panel, boletas,
+beneficios, archivos oficiales y reportes.
 Cada video lleva **subtítulos en pantalla** (versión breve de la narración), una **etiqueta de escena** arriba a la derecha
 y un **cursor azul** que marca cada clic. La columna **Narración** es el texto para leer como voz en off si se graba audio
 encima (por ejemplo, con Clipchamp o CapCut), o para acompañar una presentación en vivo.
@@ -19,10 +21,22 @@ Todos los datos son **ficticios** (DNI 7000xxxx, RUC 200000000xx, nombres invent
 | 07  | Trabajadores         | ~1:30    | Admin   | Distribuidora Pacífico S.A. |
 | 08  | Periodos y planilla  | ~1:30    | Admin   | Distribuidora Pacífico S.A. |
 | 09  | Auditoría            | ~0:30    | Admin   | —                           |
+| 10  | Panel del estudio    | ~1:05    | Admin   | — (filtro: Distribuidora)   |
+| 11  | Boletas de pago      | ~1:00    | Admin   | Distribuidora Pacífico S.A. |
+| 12  | Gratificaciones      | ~0:40    | Admin   | Distribuidora Pacífico S.A. |
+| 13  | CTS                  | ~0:50    | Admin   | Distribuidora Pacífico S.A. |
+| 14  | Vacaciones           | ~0:55    | Admin   | Distribuidora Pacífico S.A. |
+| 15  | PLAME                | ~0:45    | Admin   | — (todas las empresas)      |
+| 16  | AFPnet               | ~0:25    | Admin   | — (todas las empresas)      |
+| 17  | Reportes             | ~0:45    | Admin   | Distribuidora Pacífico S.A. |
 
 Orden pensado para contar una historia: primero el **resumen**, luego **cómo se entra**, después la **configuración**
-(empresas, usuarios, parámetros, tasas, conceptos), el **personal**, la **planilla** y al final la **auditoría**, que muestra
-el rastro de todo lo hecho en los videos anteriores.
+(empresas, usuarios, parámetros, tasas, conceptos), el **personal**, la **planilla** y la **auditoría**, que muestra
+el rastro de todo lo hecho en los videos anteriores. La temporada 2 sigue el ciclo del mes: el **panel** para ver qué falta,
+las **boletas**, los **beneficios** (gratificación, CTS, vacaciones), los **archivos para SUNAT y AFP** y los **reportes**.
+
+En la temporada 2, los PDF (boletas, constancias, reportes) y los archivos descargados (zip del PLAME, TXT de AFPnet)
+se muestran dentro del video en un **visor superpuesto**, para que se vea lo que genera cada módulo.
 
 ---
 
@@ -130,6 +144,82 @@ Presentación animada (no es la aplicación). Seis láminas.
 
 ---
 
+# Temporada 2
+
+## 10 · Panel del estudio (~1:05)
+
+| Tiempo    | En pantalla                                                   | Narración                                                                                                                      |
+| --------- | ------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------ |
+| 0:00–0:16 | Indicadores: costo laboral con su variación, cierre del mes   | Al entrar, el panel resume el mes de todas las empresas: el costo laboral, cuánto cambió y cuántas empresas ya cerraron.       |
+| 0:16–0:32 | «Por atender»; gráfico de 12 meses con el detalle de cada mes | Abajo, lo que queda por atender y la evolución de los últimos doce meses. Al pasar el mouse se ve cada mes; también hay tabla. |
+| 0:32–0:42 | ¿A dónde va el costo laboral? · Neto por empresa              | A dónde va cada sol de la planilla, y cuánto se paga en cada empresa.                                                          |
+| 0:42–0:55 | Filtro «Empresa» → Distribuidora Pacífico                     | Con el filtro, el panel muestra una sola empresa, con los mismos indicadores y gráficos.                                       |
+| 0:55–1:05 | Sección «Módulos»                                             | Y al final, el acceso a cada módulo con una breve descripción.                                                                 |
+
+## 11 · Boletas de pago (~1:00)
+
+| Tiempo    | En pantalla                                                     | Narración                                                                                                                    |
+| --------- | --------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------- |
+| 0:00–0:10 | Boletas por mes; noviembre «con marca BORRADOR»                 | Las boletas se generan solas al calcular la planilla. Mientras el mes no se cierra, salen con la marca «borrador».           |
+| 0:10–0:28 | Visor: PDF de octubre (una boleta por página)                   | Las de octubre, todas en un PDF listo para imprimir: logo de la empresa, días, ingresos, descuentos, aportes y neto a pagar. |
+| 0:28–0:33 | Botón «Zip»                                                     | También se descargan en un zip, un archivo por trabajador.                                                                   |
+| 0:33–0:52 | Septiembre → «Enviar boletas por correo» → «Enviar»             | Y se envían por correo, en un PDF protegido con el DNI del trabajador, en segundo plano y respetando el límite del hosting.  |
+| 0:52–1:00 | Estado por trabajador: enviada (con fecha), en cola, «Reenviar» | Queda la fecha de cada envío, y se puede reenviar a quien la pida.                                                           |
+
+## 12 · Gratificaciones (~0:40)
+
+| Tiempo    | En pantalla                                                     | Narración                                                                                                                |
+| --------- | --------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------ |
+| 0:00–0:08 | Resumen: julio 2026 y diciembre 2025                            | La gratificación de julio y diciembre no se calcula aparte: entra sola en la planilla de ese mes.                        |
+| 0:08–0:22 | Planilla de julio: tabla «Gratificación de Julio 2026»          | El detalle por trabajador: meses completos, faltas y remuneración computable. Quien ingresó en julio aún no suma un mes. |
+| 0:22–0:30 | Columna «Bonificación»                                          | La bonificación extraordinaria es el 9 % (o 6.75 % con EPS) y no paga ONP, AFP ni EsSalud.                               |
+| 0:30–0:40 | Detalle del trabajador: conceptos 0406 y 0312 junto a su sueldo | Todo aparece en el detalle del trabajador y en su boleta.                                                                |
+
+## 13 · CTS (~0:50)
+
+| Tiempo    | En pantalla                                              | Narración                                                                                                                      |
+| --------- | -------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------ |
+| 0:00–0:12 | Depósito noviembre 2026; «Recalcular»                    | La CTS se deposita en mayo y noviembre. Se calcula con un clic, con las planillas del semestre y el sexto de la gratificación. |
+| 0:12–0:26 | Total a depositar; tabla por trabajador; aviso de cuenta | Total a depositar y, por trabajador, el tiempo computable y su monto. Si falta la cuenta CTS en la ficha, el sistema lo avisa. |
+| 0:26–0:35 | Visor: constancias de depósito en PDF                    | Las constancias de depósito salen en PDF.                                                                                      |
+| 0:35–0:50 | «Cerrar CTS» → cerrada; botón «Reabrir»                  | Al final se cierra: ya no se recalcula, y solo el administrador puede reabrirla.                                               |
+
+## 14 · Vacaciones (~0:55)
+
+| Tiempo    | En pantalla                                                | Narración                                                                                                                  |
+| --------- | ---------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------- |
+| 0:00–0:12 | Récord por trabajador; «2 periodos vencidos» en rojo       | El récord vacacional de cada trabajador: días ganados, gozados y saldo. En rojo, las vacaciones vencidas sin gozar.        |
+| 0:12–0:18 | Detalle de un trabajador: años de servicio y fecha límite  | El detalle muestra cada año de servicios y su fecha límite.                                                                |
+| 0:18–0:38 | «Registrar»: desde, días, observación; detalle actualizado | Para registrar vacaciones se indica desde qué fecha y cuántos días; se descuentan del periodo más antiguo y el saldo baja. |
+| 0:38–0:55 | Planilla de noviembre: columna «Vac.»; «Calcular planilla» | En la planilla del mes, esos días aparecen solos y se pagan como remuneración vacacional.                                  |
+
+## 15 · PLAME (~0:45)
+
+| Tiempo    | En pantalla                                                        | Narración                                                                                                                       |
+| --------- | ------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------- |
+| 0:00–0:10 | Empresas con octubre cerrado; «Solo se exportan periodos cerrados» | Los archivos para importar en el PDT PLAME de SUNAT, de cada empresa con el mes cerrado: se declara exactamente lo que se pagó. |
+| 0:10–0:28 | Visor: zip con .rem, .jor y .toc                                   | Cada archivo con el nombre que pide SUNAT: el .rem con los conceptos por código de la tabla 22, el .jor con días y horas.       |
+| 0:28–0:45 | «Descargar todas»; historial con la huella SHA-256 de cada archivo | Se descargan los de todas las empresas a la vez, y cada descarga queda registrada con la huella de sus archivos.                |
+
+## 16 · AFPnet (~0:25)
+
+| Tiempo    | En pantalla                                 | Narración                                                                                            |
+| --------- | ------------------------------------------- | ---------------------------------------------------------------------------------------------------- |
+| 0:00–0:18 | Empresas; visor con el TXT de Distribuidora | El archivo que se carga en AFPnet: un afiliado por línea, con su CUSPP y su remuneración asegurable. |
+| 0:18–0:25 | «Descargar todas»                           | Solo de meses cerrados, y de todas las empresas a la vez.                                            |
+
+## 17 · Reportes (~0:45)
+
+| Tiempo    | En pantalla                            | Narración                                                                                            |
+| --------- | -------------------------------------- | ---------------------------------------------------------------------------------------------------- |
+| 0:00–0:05 | Cuatro tarjetas; mes «Octubre 2026»    | Cada mes hay cuatro reportes, en Excel y en PDF.                                                     |
+| 0:05–0:15 | Visor: planilla del mes                | La planilla del mes, con una fila por trabajador y cada concepto en su columna.                      |
+| 0:15–0:24 | Visor: resumen                         | El resumen, con lo que se paga a ONP, a cada AFP, a EsSalud, a SUNAT y a los trabajadores.           |
+| 0:24–0:36 | Visor: centralización contable         | La centralización contable: el asiento del mes con las cuentas del PCGE, donde debe y haber cuadran. |
+| 0:36–0:45 | Tarjeta «Costo laboral», botón «Excel» | Y el costo laboral por trabajador, con las provisiones de gratificación, CTS y vacaciones.           |
+
+---
+
 ## Voz en off con ElevenLabs
 
 Los textos listos para pegar están en [`elevenlabs/`](elevenlabs/), un archivo por video. Son la narración de las tablas
@@ -141,18 +231,20 @@ de arriba, adaptada para voz:
 - **Siglas escritas como se pronuncian**: «o ene pe» (ONP), «a efe pe» (AFP), «u i te» (UIT), «ese be ese» (SBS),
   «de ene i» (DNI), «Es Salud», «cero uno cero siete», «tabla veintidós». Se evitan símbolos (S/, %, códigos) y
   palabras en inglés (passkey → «llave de acceso», 2FA → «doble factor»).
-- **Total: ~6,700 caracteres** para los 10 videos. Revisar el saldo del plan antes de generar.
+- **Total: ~11,000 caracteres** para los 18 videos (temporada 2: ~4,300). Revisar el saldo del plan antes de generar.
+- Siglas nuevas de la temporada 2: «ce te ese» (CTS), «pe de efe» (PDF), «pe de te» (PDT), «e pe ese» (EPS),
+  «ce u ese pe pe» (CUSPP), «a efe pe net» (AFPnet), «punto rem» y «punto jor» (extensiones de archivo).
 
 **Configuración sugerida**
 
-| Opción     | Valor                                                                              |
-| ---------- | ---------------------------------------------------------------------------------- |
-| Modelo     | Eleven Multilingual v2 (respeta las etiquetas `<break>`)                           |
-| Voz        | Una voz en español latinoamericano, tono profesional y cercano; la misma en los 10 |
-| Stability  | ~50 %                                                                              |
-| Similarity | ~75 %                                                                              |
-| Style      | 0 % (más natural y estable para narración)                                         |
-| Velocidad  | 1.0 (si un audio queda largo, 1.05–1.1)                                            |
+| Opción     | Valor                                                                             |
+| ---------- | --------------------------------------------------------------------------------- |
+| Modelo     | Eleven Multilingual v2 (respeta las etiquetas `<break>`)                          |
+| Voz        | Una voz en español latinoamericano, tono profesional y cercano; la misma en todos |
+| Stability  | ~50 %                                                                             |
+| Similarity | ~75 %                                                                             |
+| Style      | 0 % (más natural y estable para narración)                                        |
+| Velocidad  | 1.0 (si un audio queda largo, 1.05–1.1)                                           |
 
 **Montaje** (Clipchamp, incluido en Windows 11, o CapCut)
 
@@ -171,19 +263,27 @@ Los videos se graban de forma automática con Playwright (`tools/videos/`), así
 ```bash
 # 1. Base limpia con datos ficticios y servidor corriendo
 php artisan migrate:fresh --seed
+php artisan db:seed --class=HistorialDemoSeeder   # solo para la temporada 2 (un año de planillas)
 composer dev                      # http://127.0.0.1:8000 (incluye la cola para el cálculo masivo)
 
 # 2. Grabar (la primera vez instala Playwright solo en esa carpeta)
 cd tools/videos
 npm install
 npx playwright install chromium   # si no está descargado
-npm run grabar                    # los 10 videos, en orden
+npm run grabar                    # los 18 videos, en orden
 node videos.js 08-periodos        # o solo uno
 ```
 
 - Los videos quedan en `videos/` (ignorada por git). Con `CAPS=1` además guarda una captura por subtítulo en `videos/caps/` para revisar.
 - Grabarlos **en orden y sobre la base recién sembrada**: cada video crea datos que usan los siguientes (empresa, usuario, conceptos)
   y la auditoría muestra todo lo hecho en ellos.
+- La temporada 2 necesita un año de planillas cerradas (panel de 12 meses, gratificación de julio, CTS, PLAME):
+  `HistorialDemoSeeder` las crea, junto con correos y cuentas CTS ficticias. No llena la auditoría.
+  Los videos 11, 13 y 14 cambian datos (envían boletas, cierran la CTS, registran vacaciones); para repetirlos,
+  volver a sembrar la base.
+- Los meses que se nombran en los recorridos (octubre y noviembre de 2026) son los del momento de la grabación.
+  Si se graba en otro mes, ajustarlos en `videos.js`.
+- El visor de PDF y archivos está en `tools/videos/visor.js` (usa `pdfjs-dist`; Chromium sin ventana no dibuja PDF en el video).
 - Formato `.webm` (se abre en Chrome, Edge, VLC y el Reproductor multimedia de Windows 11). Para `.mp4`, convertir con
   HandBrake o `ffmpeg -i 00-resumen.webm 00-resumen.mp4`.
 - El texto de los subtítulos está en `tools/videos/videos.js`; la presentación del resumen, en `tools/videos/resumen.html`.

@@ -1,0 +1,11 @@
+Al entrar al sistema, el panel resume el mes de todas las empresas del estudio.
+<break time="1.0s" />
+El costo laboral, cuánto cambió frente al mes anterior y su tendencia; cuántas empresas ya cerraron su planilla, y qué queda por atender.
+<break time="1.0s" />
+Más abajo, la evolución de los últimos doce meses. Al pasar el mouse se ve el detalle de cada mes, y también hay vista de tabla.
+<break time="1.0s" />
+Además, a dónde va cada sol de la planilla, y cuánto se paga en cada empresa.
+<break time="1.5s" />
+Con el filtro, el panel muestra una sola empresa, con los mismos indicadores y gráficos.
+<break time="1.5s" />
+Y al final, el acceso a cada módulo con una breve descripción.

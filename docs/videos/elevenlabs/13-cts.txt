@@ -1,0 +1,7 @@
+La ce te ese se deposita en mayo y noviembre. Se elige el depósito y se calcula con un clic, usando las planillas del semestre y la sexta parte de la gratificación.
+<break time="1.0s" />
+Se ve el total a depositar y, por trabajador, el tiempo computable y su monto. Si a alguien le falta la cuenta ce te ese en su ficha, el sistema lo avisa.
+<break time="1.0s" />
+Las constancias de depósito salen en pe de efe.
+<break time="1.0s" />
+Al final se cierra: ya no se recalcula, y solo el administrador puede reabrirla.

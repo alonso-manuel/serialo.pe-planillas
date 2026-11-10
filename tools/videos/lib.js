@@ -1,5 +1,6 @@
 // Utilidades para grabar los videos de demo con Playwright (sin audio: subtítulos + cursor visible).
 const { chromium } = require('playwright');
+const { pdfAImagenes, leerZip, abrirVisor } = require('./visor');
 const fs = require('fs');
 const path = require('path');
 
@@ -65,7 +66,7 @@ async function asegurarCapa(page) {
     await page.evaluate(CAPA).catch(() => {});
 }
 
-function crearDemo(page, nombre = 'video') {
+function crearDemo(page, nombre = 'video', navegador = null) {
     let n = 0;
     const d = {
         page,
@@ -102,6 +103,14 @@ function crearDemo(page, nombre = 'video') {
         async mover(loc) {
             const l = typeof loc === 'string' ? page.locator(loc).first() : loc;
             await l.scrollIntoViewIfNeeded();
+            // Que no quede detrás del subtítulo (franja inferior).
+            const previo = await l.boundingBox();
+            if (previo && previo.y + previo.height > TAM.height - 130) {
+                await l.evaluate((el) =>
+                    el.scrollIntoView({ block: 'center' }),
+                );
+                await espera(300);
+            }
             const b = await l.boundingBox();
             if (!b) return;
             const x = Math.round(b.x + Math.min(b.width / 2, 60));
@@ -137,6 +146,82 @@ function crearDemo(page, nombre = 'video') {
         },
         async desplazar(px, ms = 900) {
             await page.mouse.wheel(0, px);
+            await espera(ms);
+        },
+        /** Señala un enlace a un PDF y lo muestra en el visor (sin abrir pestaña nueva, que no se grabaría). */
+        async verPdf(loc, { titulo, paginas = 2 } = {}) {
+            const l = typeof loc === 'string' ? page.locator(loc).first() : loc;
+            await d.mover(l);
+            await page.evaluate(() => window.__clic && window.__clic());
+            const href = await l.evaluate(
+                (a) => a.closest('a')?.href ?? a.href,
+            );
+            const respuesta = await page.context().request.get(href);
+            const pdf = await respuesta.body();
+            const nombre =
+                titulo ??
+                /filename="?([^";]+)/.exec(
+                    respuesta.headers()['content-disposition'] ?? '',
+                )?.[1] ??
+                'documento.pdf';
+            const { imagenes, total } = await pdfAImagenes(navegador, pdf, {
+                paginas,
+            });
+            await abrirVisor(
+                page,
+                nombre,
+                total === 1 ? '1 página' : `${total} páginas`,
+                { imagenes },
+            );
+            await espera(900);
+        },
+        /** Hace clic en un enlace de descarga y devuelve { nombre, datos }. */
+        async descargar(loc, pausa = 900) {
+            const l = typeof loc === 'string' ? page.locator(loc).first() : loc;
+            await d.mover(l);
+            await page.evaluate(() => window.__clic && window.__clic());
+            const [descarga] = await Promise.all([
+                page.waitForEvent('download'),
+                l.click(),
+            ]);
+            const datos = fs.readFileSync(await descarga.path());
+            await espera(pausa);
+            return { nombre: descarga.suggestedFilename(), datos };
+        },
+        /** Muestra en el visor un archivo descargado (.zip con textos o un texto suelto). */
+        async verArchivo({ nombre, datos }, { codificacion = 'latin1' } = {}) {
+            const archivos = nombre.toLowerCase().endsWith('.zip')
+                ? leerZip(datos).map((a) => ({
+                      nombre: a.nombre,
+                      texto: a.datos.toString(codificacion),
+                  }))
+                : [{ nombre, texto: datos.toString(codificacion) }];
+            const detalle =
+                archivos.length > 1 ? `${archivos.length} archivos` : '';
+            await abrirVisor(page, nombre, detalle, { archivos });
+            await espera(900);
+        },
+        async elegirArchivo(i, ms = 1800) {
+            await page.evaluate(
+                (i) => window.__visorArchivo && window.__visorArchivo(i),
+                i,
+            );
+            await espera(ms);
+        },
+        async desplazarVisor(px, ms = 1200) {
+            await page.evaluate((px) => {
+                const c = document.querySelector('#demo-visor .cuerpo');
+                if (c) c.scrollBy({ top: px, behavior: 'smooth' });
+            }, px);
+            await espera(ms);
+        },
+        async cerrarVisor(ms = 500) {
+            await page.evaluate(() => {
+                const v = document.getElementById('demo-visor');
+                if (!v) return;
+                v.classList.remove('on');
+                setTimeout(() => v.remove(), 350);
+            });
             await espera(ms);
         },
     };
@@ -188,7 +273,7 @@ async function grabar(
     });
     await contexto.addInitScript(CAPA);
     const page = await contexto.newPage();
-    const demo = crearDemo(page, nombre);
+    const demo = crearDemo(page, nombre, navegador);
     const inicio = Date.now();
     try {
         await recorrido(demo);

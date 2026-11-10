@@ -1,0 +1,5 @@
+Estos son los archivos para importar en el pe de te PLAME de SUNAT, de cada empresa con el mes cerrado. Lo que se declara es exactamente lo que se pagó.
+<break time="1.0s" />
+El zip trae cada archivo con el nombre que pide SUNAT. El punto rem lleva los ingresos, descuentos y aportes por código de la tabla veintidós; el punto jor, los días y horas trabajadas.
+<break time="1.0s" />
+Se pueden descargar los de todas las empresas a la vez, y cada descarga queda registrada con la huella digital de sus archivos.

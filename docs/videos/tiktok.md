@@ -99,8 +99,80 @@ Parte 8 👉 sígueme.
 ```text
 ¿Quién cambió el sueldo de este trabajador? 🕵️
 Cada cambio queda registrado: quién, cuándo, desde qué IP, qué valor tenía antes y cuál después. Nadie puede editarlo ni borrarlo.
-Último video de la serie 👉 ¿qué módulo quieres ver después? Déjalo en comentarios.
+Parte 9 👉 se viene la temporada 2: boletas, beneficios y archivos para SUNAT.
 #SerialoPlanillas #planillas #contadoresperu #auditoria #contabilidad #ley29733 #peru
+```
+
+## 10 · Panel del estudio
+
+```text
+Todas tus empresas en una sola pantalla 📊
+Costo laboral del mes y su variación, cuántas empresas ya cerraron, evolución de 12 meses y a dónde va cada sol de la planilla. Con filtro por empresa.
+Temporada 2, parte 10 👉 sígueme.
+#SerialoPlanillas #planillas #contadoresperu #estudiocontable #dashboard #contabilidad #peru
+```
+
+## 11 · Boletas de pago
+
+```text
+Boletas de todo el mes, listas en un clic 🧾
+En PDF para imprimir, en zip una por trabajador, o por correo en PDF protegido con el DNI de cada trabajador. Con el logo de la empresa y registro de cada envío.
+Parte 11 👉 sígueme.
+#SerialoPlanillas #planillas #contadoresperu #boletadepago #rrhh #contabilidad #peru
+```
+
+## 12 · Gratificaciones
+
+```text
+Gratificación de julio sin calcular a mano 🎁
+Entra sola en la planilla de julio y diciembre: meses completos, faltas, remuneración computable y bonificación extraordinaria del 9 % (o 6.75 % con EPS).
+Parte 12 👉 sígueme.
+#SerialoPlanillas #planillas #contadoresperu #gratificacion #ley27735 #rrhh #contabilidad #peru
+```
+
+## 13 · CTS
+
+```text
+CTS de noviembre: calculada y con constancias en minutos 🐷
+Tiempo computable, sexto de gratificación y monto a depositar por trabajador. Avisa si falta la cuenta CTS y genera las constancias de depósito en PDF.
+Parte 13 👉 sígueme.
+#SerialoPlanillas #planillas #contadoresperu #CTS #beneficiossociales #rrhh #contabilidad #peru
+```
+
+## 14 · Vacaciones
+
+```text
+¿Quién tiene vacaciones vencidas? 🏖️ El sistema te lo dice.
+Récord vacacional por trabajador, saldo y fecha límite. Registras las vacaciones y pasan solas a la planilla del mes como remuneración vacacional.
+Parte 14 👉 sígueme.
+#SerialoPlanillas #planillas #contadoresperu #vacaciones #rrhh #recursoshumanos #contabilidad #peru
+```
+
+## 15 · PLAME
+
+```text
+Del sistema al PDT PLAME sin digitar nada 📤
+Archivos .rem, .jor, .snl y .toc con el nombre que pide SUNAT, de una empresa o de todas a la vez. Cada descarga queda registrada con su huella digital.
+Parte 15 👉 sígueme.
+#SerialoPlanillas #planillas #contadoresperu #sunat #plame #pdt0601 #contabilidad #peru
+```
+
+## 16 · AFPnet
+
+```text
+El archivo para pagar en AFPnet, generado solo 🏦
+Cada afiliado con su CUSPP y su remuneración asegurable, en el formato de AFPnet. Solo de meses cerrados, para pagar exactamente lo que se calculó.
+Parte 16 👉 sígueme.
+#SerialoPlanillas #planillas #contadoresperu #AFP #afpnet #pensiones #contabilidad #peru
+```
+
+## 17 · Reportes
+
+```text
+Los 4 reportes que todo contador pide cada mes 📑
+Planilla del mes, resumen de pagos (ONP, AFP, EsSalud, SUNAT), centralización contable con el PCGE y costo laboral con provisiones. En Excel y PDF.
+Parte 17 👉 ¿qué otro reporte necesitas? Déjalo en comentarios.
+#SerialoPlanillas #planillas #contadoresperu #centralizacioncontable #pcge #contabilidad #peru
 ```
 
 ---
@@ -109,6 +181,7 @@ Cada cambio queda registrado: quién, cuándo, desde qué IP, qué valor tenía 
 
 - **Formato:** los videos están en horizontal (16:9). En TikTok se verán con franjas; si se quiere pantalla completa,
   en CapCut usar «Fondo → Desenfocar» o recortar a 9:16 centrado en la zona de trabajo.
-- **Duración:** todos duran menos de 1:30. El 07 y el 08 son los más largos; si bajan la retención, se pueden partir en dos.
-- **Orden:** publicar en orden (00 → 09) y fijar el 00 y el 08 en el perfil.
+- **Duración:** todos duran menos de 1:30 (los de la temporada 2, menos de 1:05). El 07 y el 08 son los más largos; si bajan la retención, se pueden partir en dos.
+- **Orden:** publicar en orden (00 → 17) y fijar el 00, el 08 y el 10 en el perfil. La temporada 2 puede ir a un ritmo
+  de uno por día; conviene publicar el 10 (panel) primero porque muestra el sistema completo.
 - **Voz:** si se agrega narración con ElevenLabs, usar el texto de `guiones.md` (columna «Narración»).

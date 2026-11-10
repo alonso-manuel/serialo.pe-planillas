@@ -126,7 +126,8 @@ onBeforeUnmount(() => {
         >
             <span class="flex items-center gap-1.5">
                 <Check class="size-4 text-green-600" />
-                {{ envios.enviados }} enviadas
+                {{ envios.enviados }}
+                {{ envios.enviados === 1 ? 'enviada' : 'enviadas' }}
             </span>
             <span v-if="envios.pendientes" class="flex items-center gap-1.5">
                 <Spinner class="size-4" />

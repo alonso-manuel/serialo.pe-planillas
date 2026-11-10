@@ -672,6 +672,538 @@ const VIDEOS = {
             );
         },
     ],
+    /* ------------------------------------------------------------------ 10 */
+    '10-panel': [
+        {},
+        async (d) => {
+            const p = d.page;
+            await d.ir('/dashboard?anio=2026&mes=11');
+            await d.escena('Panel del estudio');
+            await d.sub(
+                'Al entrar, el panel resume el mes de todas las empresas del estudio.',
+                3200,
+            );
+            await d.mover(p.getByText('Costo laboral').first());
+            await d.sub(
+                'Costo laboral del mes, cuánto cambió frente al mes anterior y su tendencia.',
+                3200,
+            );
+            await d.mover(p.getByText('Cierre del mes').first());
+            await d.sub(
+                'Cuántas empresas ya cerraron su planilla y qué queda por atender.',
+                3000,
+            );
+            await d.mover(p.getByText('Por atender').first());
+            await d.espera(1200);
+            await d.mover(p.getByText('Evolución de la planilla').first());
+            await d.sub(
+                'La evolución de los últimos 12 meses: costo, neto y aportes.',
+                1000,
+            );
+            const zona = p.locator('rect[tabindex="0"]').first();
+            const caja = await zona.boundingBox();
+            if (caja) {
+                for (const f of [0.15, 0.35, 0.55, 0.75, 0.95]) {
+                    const x = Math.round(caja.x + caja.width * f);
+                    const y = Math.round(caja.y + caja.height * 0.5);
+                    await p.evaluate(([x, y]) => window.__mover(x, y), [x, y]);
+                    await p.mouse.move(x, y, { steps: 12 });
+                    await d.espera(700);
+                }
+            }
+            await d.sub(
+                'Al pasar el mouse se ve el detalle de cada mes. También hay vista de tabla.',
+                2600,
+            );
+            await d.clic(
+                p.getByRole('button', { name: 'Ver tabla' }).first(),
+                2200,
+            );
+            await d.clic(
+                p.getByRole('button', { name: 'Ver gráfico' }).first(),
+                800,
+            );
+            await d.mover(p.getByText('¿A dónde va el costo laboral?').first());
+            await d.sub(
+                'A dónde va cada sol: neto al trabajador, pensiones, descuentos y aportes del empleador.',
+                3600,
+            );
+            await d.mover(p.getByText('Neto por empresa').first());
+            await d.sub('Y cuánto se paga en cada empresa.', 2200);
+            await d.desplazar(-3000, 600);
+            await d.escena('Filtro por empresa');
+            await d.sub(
+                'Con el filtro, el panel muestra una sola empresa.',
+                1200,
+            );
+            await d.elegir('#empresa', /Distribuidora/);
+            await d.espera(1500);
+            await d.sub(
+                'Los mismos indicadores y gráficos, solo de Distribuidora Pacífico.',
+                3000,
+            );
+            await d.desplazar(700, 2000);
+            await d.desplazar(-700, 600);
+            await d.elegir('#empresa', 'Todas las empresas');
+            await d.espera(1000);
+            await d.escena('Módulos');
+            await d.mover(p.getByRole('heading', { name: 'Módulos' }).first());
+            await d.sub(
+                'Al final, el acceso a cada módulo con una breve descripción.',
+                3000,
+            );
+            await d.desplazar(500, 2000);
+        },
+    ],
+
+    /* ------------------------------------------------------------------ 11 */
+    '11-boletas': [
+        { empresa: 'Distribuidora' },
+        async (d) => {
+            const p = d.page;
+            await d.ir('/boletas');
+            await d.escena('Boletas de pago');
+            await d.sub(
+                'Las boletas se generan solas al calcular la planilla de cada mes.',
+                3000,
+            );
+            await d.mover(p.getByText('con marca «BORRADOR»').first());
+            await d.sub(
+                'Mientras el mes no se cierra, salen con la marca «BORRADOR».',
+                2800,
+            );
+            const octubre = p.locator('tr', { hasText: 'Octubre 2026' });
+            await d.sub(
+                'Veamos las de octubre: todas en un solo PDF, listas para imprimir.',
+                1500,
+            );
+            await d.verPdf(octubre.getByRole('link', { name: 'PDF' }), {
+                titulo: 'Boletas de Octubre 2026.pdf',
+            });
+            await d.sub(
+                'Con el logo de la empresa, los días, ingresos, descuentos, aportes y el neto a pagar.',
+                3400,
+            );
+            await d.desplazarVisor(420, 2600);
+            await d.desplazarVisor(700, 2200);
+            await d.cerrarVisor();
+            await d.sub(
+                'También se descargan en un zip, un PDF por trabajador.',
+                2600,
+            );
+            await d.mover(octubre.getByRole('link', { name: 'Zip' }));
+            await d.espera(800);
+            await d.escena('Boletas por correo');
+            const septiembre = p.locator('tr', { hasText: 'Septiembre 2026' });
+            await d.clic(
+                septiembre.getByRole('link', { name: /Enviar/ }),
+                1500,
+            );
+            await d.mover(p.getByText('Boletas por correo').first());
+            await d.sub(
+                'Cada boleta va por correo en un PDF protegido: la clave es el DNI del trabajador.',
+                3400,
+            );
+            await d.clic(
+                p.getByRole('button', { name: 'Enviar boletas por correo' }),
+                1200,
+            );
+            await d.sub(
+                'Se envían en segundo plano, respetando el límite de correos del hosting.',
+                3000,
+            );
+            await d.clic(
+                p.getByRole('dialog').getByRole('button', { name: 'Enviar' }),
+                2500,
+            );
+            await p
+                .waitForSelector('text=/Enviada \\d/', { timeout: 30000 })
+                .catch(() => {});
+            await d.espera(1500);
+            await d.mover(p.getByText(/Enviada \d/).first());
+            await d.sub(
+                'Queda la fecha de cada envío, y se puede reenviar a quien la pida.',
+                3200,
+            );
+            await d.mover(p.getByRole('button', { name: /Reenviar/ }).first());
+            await d.espera(1200);
+        },
+    ],
+
+    /* ------------------------------------------------------------------ 12 */
+    '12-gratificaciones': [
+        { empresa: 'Distribuidora' },
+        async (d) => {
+            const p = d.page;
+            await d.ir('/gratificaciones');
+            await d.escena('Gratificaciones');
+            await d.sub(
+                'La gratificación de julio y diciembre no se calcula aparte: entra sola en la planilla de ese mes.',
+                3800,
+            );
+            await d.sub(
+                'Aquí el resumen: trabajadores, gratificación y bonificación extraordinaria de cada una.',
+                3200,
+            );
+            await d.clic(
+                p
+                    .locator('tr', { hasText: 'Julio 2026' })
+                    .getByRole('link', { name: /Ver detalle/ }),
+                1500,
+            );
+            await d.mover(p.getByText('Gratificación de Julio 2026').first());
+            await d.sub(
+                'En la planilla de julio, el detalle por trabajador: meses completos, faltas y remuneración computable.',
+                3800,
+            );
+            await d.mover(p.locator('tr', { hasText: 'Vargas León' }).last());
+            await d.sub(
+                'Quien ingresó en julio aún no tiene un mes completo: no le corresponde en este semestre.',
+                3400,
+            );
+            await d.mover(p.getByText('Bonificación', { exact: true }).last());
+            await d.sub(
+                'La bonificación extraordinaria es el 9 % (EsSalud) o 6.75 % (EPS). No paga ONP, AFP ni EsSalud.',
+                3800,
+            );
+            await d.desplazar(-2000, 500);
+            await d.clic(
+                p.locator('a', { hasText: /^\s*[\d,]+\.\d{2}\s*$/ }).nth(3),
+                1500,
+            );
+            await d.escena('Detalle por trabajador');
+            await d.sub(
+                'En el detalle del trabajador, la gratificación y la bonificación van junto a su sueldo.',
+                3400,
+            );
+            await d.desplazar(350, 2400);
+            await d.sub(
+                'Y salen en su boleta de julio. En la microempresa no corresponde, y el sistema lo indica.',
+                3200,
+            );
+        },
+    ],
+
+    /* ------------------------------------------------------------------ 13 */
+    '13-cts': [
+        { empresa: 'Distribuidora' },
+        async (d) => {
+            const p = d.page;
+            await d.ir('/cts');
+            await d.escena('CTS');
+            await d.sub(
+                'La CTS se deposita en mayo y noviembre. Se elige el depósito y se calcula con un clic.',
+                3400,
+            );
+            await d.mover('#deposito');
+            await d.mover(p.getByText('periodo computable').first());
+            await d.sub(
+                'Usa las planillas del semestre y la sexta parte de la gratificación pagada en él.',
+                3200,
+            );
+            await d.clic(
+                p.getByRole('button', { name: /Recalcular|Calcular CTS/ }),
+                2500,
+            );
+            await d.mover(p.getByText('Total a depositar').first());
+            await d.sub(
+                'Total a depositar y, por trabajador, el tiempo computable, el sexto de gratificación y la CTS.',
+                3600,
+            );
+            await d.mover(p.getByText(/Falta la entidad/).first());
+            await d.sub(
+                'Si a alguien le falta la entidad o la cuenta CTS en su ficha, el sistema avisa antes de depositar.',
+                3600,
+            );
+            await d.desplazar(-2000, 600);
+            await d.sub(
+                'Las constancias de depósito salen en PDF, una por trabajador.',
+                1500,
+            );
+            await d.verPdf(p.getByRole('link', { name: /Constancias PDF/ }), {
+                titulo: 'Constancias CTS Noviembre 2026.pdf',
+                paginas: 1,
+            });
+            await d.desplazarVisor(400, 2600);
+            await d.cerrarVisor();
+            await d.escena('Cerrar la CTS');
+            await d.sub(
+                'Revisada, se cierra: ya no se recalcula y las constancias salen sin la marca «BORRADOR».',
+                3000,
+            );
+            await d.clic(
+                p.getByRole('button', { name: 'Cerrar CTS' }).first(),
+                1200,
+            );
+            await d.clic(
+                p
+                    .getByRole('dialog')
+                    .getByRole('button', { name: 'Cerrar CTS' }),
+                2200,
+            );
+            await d.sub(
+                'Solo el administrador puede reabrirla, indicando el motivo. Y todo queda en la auditoría.',
+                3200,
+            );
+        },
+    ],
+
+    /* ------------------------------------------------------------------ 14 */
+    '14-vacaciones': [
+        { empresa: 'Distribuidora' },
+        async (d) => {
+            const p = d.page;
+            await d.ir('/vacaciones');
+            await d.escena('Vacaciones');
+            await d.sub(
+                'El récord vacacional de cada trabajador: días ganados, gozados y el saldo.',
+                3200,
+            );
+            await d.mover(p.getByText(/2 periodos vencidos/).first());
+            await d.sub(
+                'En rojo, quien tiene vacaciones vencidas sin gozar: un riesgo de indemnización.',
+                3400,
+            );
+            await d.clic(
+                p.getByRole('button', { name: /Detalle de Huertas/ }),
+                1500,
+            );
+            await d.sub(
+                'El detalle muestra cada año de servicios, lo gozado y la fecha límite.',
+                3200,
+            );
+            await d.clic(
+                p.getByRole('button', { name: /Detalle de Huertas/ }),
+                600,
+            );
+            await d.escena('Registrar vacaciones');
+            const fila = p.locator('tr', { hasText: 'Campos Arce' });
+            await d.clic(fila.getByRole('button', { name: 'Registrar' }), 1000);
+            await d.clic('#fecha_inicio', 200);
+            await p.locator('#fecha_inicio').fill('2026-11-16');
+            await d.escribir('#dias', '15');
+            await d.escribir(
+                '#observacion',
+                'Primera quincena del periodo vencido',
+            );
+            await d.sub(
+                'Se registra desde qué fecha y cuántos días; se descuentan del periodo más antiguo.',
+                3200,
+            );
+            await d.clic(
+                p
+                    .getByRole('dialog')
+                    .getByRole('button', { name: 'Registrar' }),
+                1800,
+            );
+            await d.clic(
+                p.getByRole('button', { name: /Detalle de Campos/ }),
+                1500,
+            );
+            await d.sub(
+                'Listo: el saldo baja y queda el registro de lo gozado.',
+                3000,
+            );
+            await d.escena('En la planilla');
+            await d.ir('/periodos');
+            await d.clic(
+                p.getByRole('link', { name: /Noviembre 2026/ }).first(),
+                1500,
+            );
+            await d.sub(
+                'En la planilla del mes, los días de vacaciones aparecen solos y se pagan como remuneración vacacional.',
+                3600,
+            );
+            await d.clic(
+                p
+                    .getByRole('button', {
+                        name: /Calcular planilla|Recalcular/,
+                    })
+                    .first(),
+                2500,
+            );
+            await d.mover(p.locator('tr', { hasText: 'Campos Arce' }).first());
+            await d.espera(1800);
+        },
+    ],
+
+    /* ------------------------------------------------------------------ 15 */
+    '15-plame': [
+        {},
+        async (d) => {
+            const p = d.page;
+            await d.ir('/plame?anio=2026&mes=10');
+            await d.escena('PLAME');
+            await d.sub(
+                'Los archivos para importar en el PDT PLAME de SUNAT, de cada empresa con el mes cerrado.',
+                3600,
+            );
+            await d.mover(
+                p.getByText(/Solo se exportan los periodos cerrados/).first(),
+            );
+            await d.sub(
+                'Solo se exportan meses cerrados: lo que se declara es exactamente lo que se pagó.',
+                3200,
+            );
+            const fila = p.locator('tr', { hasText: 'Distribuidora Pacífico' });
+            const zip = await d.descargar(
+                fila
+                    .locator('a, button')
+                    .filter({ hasText: /Descargar zip/ })
+                    .first(),
+            );
+            await d.verArchivo(zip);
+            await d.sub(
+                'El zip trae los archivos con el nombre que pide SUNAT: RUC, periodo y tipo.',
+                3200,
+            );
+            await d.sub(
+                '.rem: ingresos, descuentos y aportes de cada trabajador, por código de la tabla 22.',
+                3200,
+            );
+            await d.elegirArchivo(1, 600);
+            await d.sub(
+                '.jor: días y horas trabajadas. .toc: otras condiciones. Si hubo faltas o descanso médico, va también el .snl.',
+                3400,
+            );
+            await d.elegirArchivo(2, 2000);
+            await d.cerrarVisor();
+            await d.sub(
+                'Con «Descargar todas» se bajan las de todas las empresas en un solo zip.',
+                2800,
+            );
+            await d.mover(
+                p
+                    .locator('a, button')
+                    .filter({ hasText: /Descargar todas/ })
+                    .first(),
+            );
+            await d.espera(800);
+            await d.escena('Historial de exportaciones');
+            await d.ir('/plame?anio=2026&mes=10');
+            await d.mover(p.getByText('Historial de exportaciones').first());
+            await d.clic(
+                p
+                    .locator('button[aria-expanded]')
+                    .filter({ hasText: '10/2026' })
+                    .first(),
+                1200,
+            );
+            await d.desplazar(300, 600);
+            await d.sub(
+                'Cada descarga queda registrada con la huella SHA-256 de cada archivo: se sabe exactamente qué se declaró.',
+                4000,
+            );
+        },
+    ],
+
+    /* ------------------------------------------------------------------ 16 */
+    '16-afpnet': [
+        {},
+        async (d) => {
+            const p = d.page;
+            await d.ir('/afpnet?anio=2026&mes=10');
+            await d.escena('AFPnet');
+            await d.sub(
+                'Para pagar a las AFP: el archivo de planilla que se carga en AFPnet.',
+                3000,
+            );
+            await d.sub(
+                'Incluye a cada afiliado con su CUSPP, su remuneración asegurable y su tipo de trabajador.',
+                3400,
+            );
+            const fila = p.locator('tr', { hasText: 'Distribuidora Pacífico' });
+            const txt = await d.descargar(
+                fila
+                    .locator('a, button')
+                    .filter({ hasText: /Descargar TXT/ })
+                    .first(),
+            );
+            await d.verArchivo(txt);
+            await d.sub(
+                'Un afiliado por línea, en el formato de AFPnet. Los de ONP no van en este archivo.',
+                3400,
+            );
+            await d.cerrarVisor();
+            await d.sub(
+                'Igual que en PLAME: solo meses cerrados, todas las empresas a la vez e historial con huella.',
+                3400,
+            );
+            await d.mover(
+                p
+                    .locator('a, button')
+                    .filter({ hasText: /Descargar todas/ })
+                    .first(),
+            );
+            await d.espera(1000);
+        },
+    ],
+
+    /* ------------------------------------------------------------------ 17 */
+    '17-reportes': [
+        { empresa: 'Distribuidora' },
+        async (d) => {
+            const p = d.page;
+            await d.ir('/reportes');
+            await d.escena('Reportes');
+            await d.sub('Cuatro reportes del mes, en Excel y en PDF.', 2400);
+            await d.mover('#periodo');
+            await p.locator('#periodo').selectOption({ label: 'Octubre 2026' });
+            await p.waitForLoadState('networkidle');
+            await d.espera(1000);
+            const tarjeta = (t) =>
+                p.locator('section').filter({
+                    has: p.getByRole('heading', { name: t, exact: true }),
+                });
+            await d.mover(p.getByRole('heading', { name: 'Planilla del mes' }));
+            await d.sub(
+                'La planilla del mes: una fila por trabajador, cada concepto en su columna y los totales.',
+                1500,
+            );
+            await d.verPdf(
+                tarjeta('Planilla del mes').getByRole('link', { name: 'PDF' }),
+                { paginas: 1 },
+            );
+            await d.espera(2600);
+            await d.cerrarVisor();
+            await d.mover(p.getByRole('heading', { name: 'Resumen' }));
+            await d.sub(
+                'El resumen: cuánto se paga a ONP, a cada AFP, a EsSalud, a SUNAT y a los trabajadores.',
+                1500,
+            );
+            await d.verPdf(
+                tarjeta('Resumen').getByRole('link', { name: 'PDF' }),
+                { paginas: 1 },
+            );
+            await d.espera(2400);
+            await d.cerrarVisor();
+            await d.mover(
+                p.getByRole('heading', { name: 'Centralización contable' }),
+            );
+            await d.sub(
+                'La centralización contable: el asiento del mes con las cuentas del PCGE. Debe y haber cuadran.',
+                1500,
+            );
+            await d.verPdf(
+                tarjeta('Centralización contable').getByRole('link', {
+                    name: 'PDF',
+                }),
+                { paginas: 1 },
+            );
+            await d.espera(2200);
+            await d.desplazarVisor(400, 2000);
+            await d.cerrarVisor();
+            await d.mover(p.getByRole('heading', { name: 'Costo laboral' }));
+            await d.sub(
+                'Y el costo laboral por trabajador, con las provisiones de gratificación, CTS y vacaciones.',
+                3400,
+            );
+            await d.mover(
+                tarjeta('Costo laboral').getByRole('link', { name: 'Excel' }),
+            );
+            await d.sub('En Excel, para seguir trabajando los números.', 2200);
+        },
+    ],
 };
 
 void (async () => {

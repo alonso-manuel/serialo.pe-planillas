@@ -1,0 +1,7 @@
+Este es el récord vacacional de cada trabajador: los días ganados, los gozados y el saldo. En rojo, quien tiene vacaciones vencidas sin gozar, que es un riesgo de indemnización.
+<break time="1.0s" />
+El detalle muestra cada año de servicios y su fecha límite.
+<break time="1.0s" />
+Para registrar vacaciones se indica desde qué fecha y cuántos días. Se descuentan del periodo más antiguo, y el saldo baja.
+<break time="1.5s" />
+En la planilla del mes, esos días aparecen solos y se pagan como remuneración vacacional.
