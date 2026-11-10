@@ -5,6 +5,7 @@ namespace App\Providers;
 use App\Models\Concepto;
 use App\Models\Empresa;
 use App\Models\Establecimiento;
+use App\Models\Liquidacion;
 use App\Models\LiquidacionCts;
 use App\Models\Novedad;
 use App\Models\Parametro;
@@ -101,6 +102,7 @@ class AppServiceProvider extends ServiceProvider
             'periodo' => Periodo::class,
             'liquidacion_cts' => LiquidacionCts::class,
             'vacacion' => VacacionGoce::class,
+            'liquidacion' => Liquidacion::class,
         ]);
     }
 

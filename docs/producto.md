@@ -58,7 +58,7 @@ Los límites se leen de la clave de licencia (ver `arquitectura.md`), nunca se e
 | Beneficios | Gratificaciones jul/dic + bonificación extraordinaria                   | 1.0     |
 | Beneficios | CTS may/nov + constancia PDF                                            | 1.0     |
 | Beneficios | Vacaciones: cálculo, saldos, programación                               | 1.0     |
-| Beneficios | Liquidación de beneficios sociales                                      | 1.1     |
+| Beneficios | Liquidación de beneficios sociales                                      | 1.0     |
 | Beneficios | Comisiones; reporte de provisiones                                      | 1.2     |
 | SUNAT/AFP  | PLAME .jor .rem .snl .toc                                               | 1.0     |
 | SUNAT/AFP  | AFPnet                                                                  | 1.0     |

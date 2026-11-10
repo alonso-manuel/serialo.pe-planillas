@@ -179,7 +179,7 @@ class LiquidacionesCts
      * @param  list<array{int, int}>  $meses
      * @return array<int, array<string, array{faltas: int, licencias: int, subsidio_enfermedad: int, variables: string}>>
      */
-    private function datosMeses(Empresa $empresa, array $meses): array
+    public function datosMeses(Empresa $empresa, array $meses): array
     {
         $lineas = PlanillaLinea::query()
             ->whereHas('periodo', function ($q) use ($empresa, $meses) {

@@ -3,6 +3,7 @@
 namespace App\Services\Planilla;
 
 use App\Domain\Planilla\CalculadoraGratificacion;
+use App\Domain\Planilla\CalculadoraLiquidacion;
 use App\Domain\Planilla\CalculadoraPlanilla;
 use App\Domain\Planilla\CalculadoraVacaciones;
 use App\Domain\Planilla\DatosTrabajador;
@@ -12,6 +13,7 @@ use App\Domain\Planilla\ResultadoGratificacion;
 use App\Enums\EstadoPeriodo;
 use App\Enums\TipoConcepto;
 use App\Models\Concepto;
+use App\Models\Liquidacion;
 use App\Models\Periodo;
 use App\Models\PlanillaLinea;
 use App\Services\Trabajadores\HistorialTrabajador;
@@ -34,6 +36,7 @@ class CalcularPlanillaPeriodo
         private readonly VerificadorCalculo $verificador,
         private readonly GratificacionPeriodo $gratificacion,
         private readonly VacacionesTrabajador $vacaciones,
+        private readonly LiquidacionesBeneficios $liquidaciones,
     ) {}
 
     /**
@@ -60,12 +63,13 @@ class CalcularPlanillaPeriodo
         DB::transaction(function () use ($periodo, $parametros, $conceptos) {
             $periodo->load('lineas.trabajador', 'lineas.novedades.concepto');
             $gratificaciones = $this->gratificacion->calcular($periodo);
+            $liquidaciones = $this->liquidaciones->delPeriodo($periodo);
 
             foreach ($periodo->lineas as $linea) {
                 $datos = $this->datosTrabajador($linea, $periodo);
                 $resultado = $this->calculadora->calcular(
                     $datos,
-                    $this->entrada($linea, $gratificaciones[$linea->id] ?? null, $this->remuneracionVacacional($linea, $periodo, $datos)),
+                    $this->entrada($linea, $gratificaciones[$linea->id] ?? null, $this->remuneracionVacacional($linea, $periodo, $datos), $liquidaciones->get($linea->trabajador_id)),
                     $parametros,
                 );
 
@@ -123,7 +127,7 @@ class CalcularPlanillaPeriodo
         return CalculadoraVacaciones::remuneracion($datos->remuneracionBasica, $this->vacaciones->promedioVariables($linea, $periodo), $linea->dias_vacaciones);
     }
 
-    private function entrada(PlanillaLinea $linea, ?ResultadoGratificacion $gratificacion, ?string $vacacional = null): EntradaPlanilla
+    private function entrada(PlanillaLinea $linea, ?ResultadoGratificacion $gratificacion, ?string $vacacional = null, ?Liquidacion $liquidacion = null): EntradaPlanilla
     {
         $ingresos = [];
 
@@ -136,6 +140,18 @@ class CalcularPlanillaPeriodo
         if ($gratificacion?->corresponde()) {
             $ingresos[CalculadoraGratificacion::GRATIFICACION] = new IngresoAdicional($gratificacion->gratificacion, false, false);
             $ingresos[CalculadoraGratificacion::BONIFICACION] = new IngresoAdicional($gratificacion->bonificacion, false, false);
+        }
+
+        // Liquidación de beneficios del cese en este mes: solo las vacaciones son remuneración (afectas).
+        // Si un código ya está (p. ej. 0118 por días gozados del mes), se suma.
+        foreach ($liquidacion?->conceptos() ?? [] as $codigo => $monto) {
+            $previo = $ingresos[$codigo] ?? null;
+            $afecto = in_array($codigo, CalculadoraLiquidacion::AFECTOS, true);
+            $ingresos[$codigo] = new IngresoAdicional(
+                $previo === null ? $monto : (string) BigDecimal::of($previo->monto)->plus($monto)->toScale(2),
+                $afecto,
+                $afecto,
+            );
         }
 
         $descuentos = [];

@@ -26,6 +26,9 @@ final class CalculadoraGratificacion
 
     public const BONIFICACION = '0312';
 
+    /** Día límite de pago en julio y diciembre: quien cesa antes no la cobra en la planilla, sino en su liquidación. */
+    public const DIA_PAGO = 15;
+
     private const MESES_SEMESTRE = 6;
 
     private const DIAS_SEMESTRE = 180;
@@ -51,9 +54,13 @@ final class CalculadoraGratificacion
             if ($e->fechaIngreso > $inicio) {
                 continue; // mes incompleto: no cuenta
             }
+            // Trunca: el mes del cese cuenta solo si cesó el último día; los posteriores no cuentan.
+            if ($e->fechaCese !== null && $e->fechaCese < $inicio->modify('last day of this month')) {
+                break;
+            }
             $meses++;
 
-            if ($mes === $e->mesPago) {
+            if ($mes === $e->mesPago && $e->fechaCese === null) {
                 continue; // diciembre se paga a mitad de mes: se presume completo, sin faltas ni variables
             }
 

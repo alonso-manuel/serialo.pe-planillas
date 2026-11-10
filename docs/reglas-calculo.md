@@ -107,7 +107,7 @@ Se agrega sola al calcular la planilla de **julio** y **diciembre** (conceptos d
 - Datos del semestre: faltas y horas extra de las planillas de los meses anteriores al de pago. En diciembre,
   las faltas y horas extra del propio diciembre no entran (aún no se conocen al día 15) ⚠.
 - **Cese** antes del día 15 del mes de pago: no recibe gratificación en la planilla; se paga como
-  gratificación trunca en la liquidación de beneficios (v1.1).
+  gratificación trunca en la liquidación de beneficios.
 - Códigos PLAME: 0406 gratificación, 0312 bonificación extraordinaria ⚠ verificar en tabla 22.
 
 ## CTS (semana 6) — D.S. 001-97-TR y D.S. 004-97-TR
@@ -116,7 +116,7 @@ Implementado en `App\Domain\Planilla\CalculadoraCts` (motor puro) y `App\Service
 Pantalla **Beneficios → CTS** (por empresa activa): calcular, cerrar/reabrir (admin, auditado) y constancias PDF.
 
 - Depósitos: **mayo** (periodo noviembre del año anterior – abril) y **noviembre** (mayo – octubre), hasta el día 15. Solo soles.
-- Entran los trabajadores con vínculo al cierre del periodo. Quien cesó antes la cobra en su liquidación de beneficios (v1.1).
+- Entran los trabajadores con vínculo al cierre del periodo. Quien cesó antes la cobra en su liquidación de beneficios.
 - **Tiempo computable**: desde el inicio del periodo o el ingreso, en mes comercial de 30 días (ingreso el 10 → 21 días ese mes).
 - **Se descuentan** por día: faltas injustificadas, licencias sin goce y los días de **subsidio por enfermedad que pasen de 60**
   en el periodo; el subsidio por **maternidad** se computa completo ⚠.
@@ -152,7 +152,33 @@ Pantalla **Beneficios → Vacaciones** (empresa activa): saldos por año de serv
   Afecta a ONP, AFP y EsSalud como el sueldo. La asignación familiar se paga aparte como cada mes.
 - **PLAME**: `.snl` con el código **23** (S.I. descanso vacacional); el `.jor` no cuenta horas ordinarias de esos días.
 - **Gratificación y CTS**: los días de vacaciones son tiempo computable (no se descuentan).
-- Pendiente: venta de vacaciones (D.Leg. 1405), vacaciones truncas (liquidación, v1.1) e indemnización vacacional.
+- Pendiente: venta de vacaciones (D.Leg. 1405). Las truncas y la indemnización se pagan en la liquidación.
+
+## Liquidación de beneficios sociales — D.S. 001-97-TR, Ley 27735, D.Leg. 713
+
+Implementado en `App\Domain\Planilla\CalculadoraLiquidacion` (motor puro, reutiliza los de gratificación, CTS y vacaciones
+con la fecha de cese) y `App\Services\Planilla\LiquidacionesBeneficios`. Pantalla **Beneficios → Liquidaciones**.
+
+- **Gratificación trunca** (Ley 27735, art. 7): meses calendario completos del semestre en curso hasta el cese (el mes del
+  cese cuenta solo si cesa el último día), con faltas a 1/180 y bonificación extraordinaria ⚠. Si cesa en **julio antes del
+  día 15**, además la gratificación completa de enero–junio, que no se cobró en la planilla (0406 + 0312).
+- **CTS trunca**: desde el inicio del periodo en curso (1 de mayo o 1 de noviembre) hasta el cese, en mes comercial de 30 días,
+  con los mismos descuentos que la CTS. El periodo anterior lo cubre el depósito de mayo/noviembre (el trabajador tenía
+  vínculo a su cierre). **Sexto**: la gratificación percibida en el periodo (julio en mayo–octubre, diciembre en
+  noviembre–abril); si cesa en julio o diciembre antes del pago, la de esta liquidación; si aún no hubo, cero ⚠.
+- **Vacaciones** (D.Leg. 713): días ganados y no gozados × computable / 30 (0118); si el periodo **venció** sin gozarse,
+  además una **indemnización** por los mismos días (art. 23, 0911, no remunerativa). **Truncas** del año en curso: dozavos y
+  treintavos × días del régimen / 30, con al menos un mes de servicios (D.S. 012-92-TR, art. 22) ⚠.
+  Computable = básico + asignación familiar + promedio de horas extra de los 6 meses previos (si las hubo en 3 o más) ⚠.
+  Un adelanto de vacaciones en el año en curso solo se avisa ⚠.
+- **Régimen**: factores de gratificación y CTS por parámetro (general 1, pequeña 0.5, micro 0); vacaciones 30 / 15 / 15.
+- **Pago**: los conceptos entran solos en la **planilla del mes del cese** (boleta, PLAME, AFPnet). Solo las vacaciones
+  (0118, 0114) son remuneración: afectas a ONP/AFP y EsSalud; gratificación, bonificación, CTS e indemnización no ⚠.
+  Calcular la liquidación deja esa planilla «abierta» para recalcular; con la planilla cerrada no se calcula.
+- **Documentos**: hoja de liquidación (con el pago de la planilla del mes si ya se recalculó), certificado de trabajo y
+  carta a la entidad para liberar la CTS (D.S. 001-97-TR, art. 45). «BORRADOR» mientras no se cierra.
+- Cerrada = inmutable: no se recalcula ni cambia el cese; solo el admin la reabre con motivo (auditado).
+- Pendiente: indemnización por despido arbitrario (1.5 remuneraciones por año, tope 12), comisiones en el promedio.
 
 ## Quinta categoría (v1.1)
 
@@ -172,4 +198,5 @@ Proyección anual de rentas − 7 UIT; tramos 8 % / 14 % / 17 % / 20 % / 30 %; r
 - [ ] CTS: tope de 60 días de subsidio por enfermedad, maternidad completa, 1/6 de la gratificación estimada si no hay planilla, factor REMYPE 50 % / 0 %.
 - [ ] Licencia sin goce: descuenta días pagados y reduce la gratificación como las faltas (1/180 por día).
 - [ ] PLAME: códigos de la tabla 21 (07 faltas, 21/22 subsidios), jornada de 8 h diarias en el .jor, montos en cero omitidos en el .rem.
+- [ ] Liquidación: códigos tabla 22 **0407** (gratificación proporcional), **0313** (bonificación proporcional), **0114** (vacaciones truncas) y **0911** (indemnización vacacional — código supuesto); afectación de las vacaciones no gozadas y truncas; sexto de gratificación de la CTS trunca; computable de vacaciones con asignación familiar; mínimo de un mes para truncas; casos reales para tests.
 - [ ] Gratificación: diciembre como mes completo, faltas 1/180 por día, variables solo HE (≥ 3 meses), factor REMYPE (50 % / 0 %), meses sin planilla asumidos completos, faltas de diciembre excluidas.

@@ -26,5 +26,7 @@ final readonly class EntradaCts
         public bool $asignacionFamiliar,
         public string $gratificacion = '0',
         public array $meses = [],
+        /** Cese (liquidación): el tiempo se computa hasta esa fecha (CTS trunca). */
+        public ?DateTimeImmutable $fechaCese = null,
     ) {}
 }

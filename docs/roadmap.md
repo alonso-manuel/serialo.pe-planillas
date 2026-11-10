@@ -66,6 +66,7 @@ Marca `[x]` al terminar (o usa `/actualizar-roadmap`). Cada tarea: código + tes
 ### Semana 7 (21–30 dic) · Producto vendible
 
 - [x] Configuración de la empresa: logo (boletas y reportes) — pedido el 09/11
+- [x] Liquidación de beneficios sociales: gratificación, CTS y vacaciones truncas, vacaciones no gozadas e indemnización; pago en la planilla del mes del cese; hoja, certificado de trabajo y carta de CTS — adelantada de v1.1 el 10/11
 - [x] Panel con gráficos: costo laboral 12 meses, reparto del costo, neto por empresa, avance del mes, accesos por módulo y filtro por empresa — pedido el 09/11
 - [x] Instalador web (requisitos, código de instalación, base de datos, administrador, cron) — ver docs/instalacion.md
 - [x] Licencia firmada (Ed25519) + límites por plan + modo solo lectura — ver docs/licencias.md
@@ -88,7 +89,7 @@ Marca `[x]` al terminar (o usa `/actualizar-roadmap`). Cada tarea: código + tes
 
 ## v1.1 — 11 ene → 12 feb 2027
 
-Quinta categoría, liquidaciones, T-Registro, cuarta categoría, carga masiva de asistencia, derechohabientes, adelantos y préstamos, documentos laborales.
+Quinta categoría, indemnización por despido arbitrario, T-Registro, cuarta categoría, carga masiva de asistencia, derechohabientes, adelantos y préstamos, documentos laborales.
 Ideas tomadas del análisis de mercado (09/11): conceptos recurrentes y proporcionales por trabajador, EPS y seguro Vida Ley, comparativo entre recálculos de un mismo mes y simulador de costo de contratación.
 
 ## v1.2 — 15 feb → 26 mar 2027

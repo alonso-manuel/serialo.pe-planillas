@@ -31,6 +31,7 @@ class AuditoriaController extends Controller
         'periodo' => 'Periodo',
         'liquidacion_cts' => 'CTS',
         'vacacion' => 'Vacaciones',
+        'liquidacion' => 'Liquidación',
         'licencia' => 'Licencia',
     ];
 

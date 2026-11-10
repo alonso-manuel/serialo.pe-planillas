@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Auditoria\AuditoriaController;
 use App\Http\Controllers\Beneficios\CtsController;
+use App\Http\Controllers\Beneficios\LiquidacionController;
 use App\Http\Controllers\Beneficios\VacacionesController;
 use App\Http\Controllers\Conceptos\ConceptoController;
 use App\Http\Controllers\Conceptos\EstadoConceptoController;
@@ -97,6 +98,15 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::delete('vacaciones/goces/{goce}', [VacacionesController::class, 'destroy'])->name('vacaciones.destroy');
 
         // CTS de la empresa activa (mayo / noviembre)
+        // Liquidación de beneficios sociales al cese (se paga en la planilla del mes del cese)
+        Route::get('liquidaciones', [LiquidacionController::class, 'index'])->name('liquidaciones.index');
+        Route::post('liquidaciones/{trabajador}/calcular', [LiquidacionController::class, 'calcular'])->name('liquidaciones.calcular');
+        Route::post('liquidaciones/{liquidacion}/cerrar', [LiquidacionController::class, 'cerrar'])->name('liquidaciones.cerrar');
+        Route::post('liquidaciones/{liquidacion}/reabrir', [LiquidacionController::class, 'reabrir'])->name('liquidaciones.reabrir');
+        Route::get('liquidaciones/{liquidacion}/pdf', [LiquidacionController::class, 'hoja'])->name('liquidaciones.pdf');
+        Route::get('liquidaciones/{liquidacion}/carta-cts', [LiquidacionController::class, 'cartaCts'])->name('liquidaciones.carta-cts');
+        Route::get('trabajadores/{trabajador}/certificado', [LiquidacionController::class, 'certificado'])->name('trabajadores.certificado');
+
         Route::get('cts', [CtsController::class, 'index'])->name('cts.index');
         Route::post('cts/calcular', [CtsController::class, 'calcular'])->name('cts.calcular');
         Route::post('cts/{liquidacion}/cerrar', [CtsController::class, 'cerrar'])->name('cts.cerrar');

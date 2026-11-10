@@ -208,8 +208,8 @@ class ConceptosTest extends TestCase
         $this->actingAs($this->admin);
 
         $this->get(route('conceptos.index'))
-            ->assertInertia(fn (Assert $page) => $page->where('grupos.0.conceptos.6.codigo_plame', '0304')
-                ->where('grupos.0.conceptos.6.usado', true));
+            ->assertInertia(fn (Assert $page) => $page->where('grupos.0.conceptos', fn ($conceptos) => collect($conceptos)
+                ->firstWhere('codigo_plame', '0304')['usado'] === true));
 
         $this->delete(route('conceptos.destroy', $sinUso))->assertRedirect();
         $this->assertModelMissing($sinUso);

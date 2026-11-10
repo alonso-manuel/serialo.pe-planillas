@@ -57,6 +57,14 @@ final class CalculadoraCts
         $inicioPeriodo = new DateTimeImmutable(sprintf('%04d-%02d-01', $anioIni, $mesIni));
         $finPeriodo = (new DateTimeImmutable(sprintf('%04d-%02d-01', $anioFin, $mesFin)))->modify('last day of this month');
 
+        // CTS trunca: el periodo termina el día del cese.
+        if ($e->fechaCese !== null) {
+            if ($e->fechaCese < $inicioPeriodo) {
+                return ResultadoCts::sinDerecho($inicioPeriodo, $finPeriodo);
+            }
+            $finPeriodo = min($finPeriodo, $e->fechaCese);
+        }
+
         if ($e->fechaIngreso > $finPeriodo) {
             return ResultadoCts::sinDerecho($inicioPeriodo, $finPeriodo);
         }
@@ -76,9 +84,13 @@ final class CalculadoraCts
             if ($e->fechaIngreso > $finMes) {
                 continue;
             }
-            $diasBrutos += $e->fechaIngreso > $inicioMes
-                ? self::DIAS_MES - min((int) $e->fechaIngreso->format('j'), self::DIAS_MES) + 1
-                : self::DIAS_MES;
+            if ($inicioMes > $finPeriodo) {
+                break; // meses posteriores al cese
+            }
+            // Mes comercial de 30 días: desde el ingreso (si fue en el mes) hasta el cese (si fue en el mes).
+            $primerDia = $e->fechaIngreso > $inicioMes ? min((int) $e->fechaIngreso->format('j'), self::DIAS_MES) : 1;
+            $ultimoDia = $finPeriodo < $finMes ? min((int) $finPeriodo->format('j'), self::DIAS_MES) : self::DIAS_MES;
+            $diasBrutos += max(0, $ultimoDia - $primerDia + 1);
 
             $clave = sprintf('%04d-%02d', $anio, $mes);
             $datos = $e->meses[$clave] ?? null;

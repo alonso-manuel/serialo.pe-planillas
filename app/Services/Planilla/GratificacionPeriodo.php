@@ -24,7 +24,7 @@ class GratificacionPeriodo
     private const VARIABLES = [CalculadoraPlanilla::HORA_EXTRA_25, CalculadoraPlanilla::HORA_EXTRA_35];
 
     /** Quien cesa antes de este día del mes de pago no recibe gratificación en la planilla (va a la liquidación). */
-    private const DIA_PAGO = 15;
+    private const DIA_PAGO = CalculadoraGratificacion::DIA_PAGO;
 
     public function __construct(
         private readonly CalculadoraGratificacion $calculadora,

@@ -15,6 +15,7 @@ import {
     SlidersHorizontal,
     TreePalm,
     UserCog,
+    UserMinus,
     Users,
 } from '@lucide/vue';
 import { dashboard } from '@/routes';
@@ -25,6 +26,7 @@ import { index as conceptos } from '@/routes/conceptos';
 import { index as cts } from '@/routes/cts';
 import { index as empresas } from '@/routes/empresas';
 import { index as gratificaciones } from '@/routes/gratificaciones';
+import { index as liquidaciones } from '@/routes/liquidaciones';
 import { show as licencia } from '@/routes/licencia';
 import { index as parametros } from '@/routes/parametros';
 import { index as periodos } from '@/routes/periodos';
@@ -63,6 +65,7 @@ export const gruposNav: GrupoNav[] = [
             { title: 'Gratificaciones', href: gratificaciones(), icon: Gift },
             { title: 'CTS', href: cts(), icon: PiggyBank },
             { title: 'Vacaciones', href: vacaciones(), icon: TreePalm },
+            { title: 'Liquidaciones', href: liquidaciones(), icon: UserMinus },
         ],
     },
     {

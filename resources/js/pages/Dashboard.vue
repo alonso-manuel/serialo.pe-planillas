@@ -272,6 +272,7 @@ const descripciones: Record<string, string> = {
     Gratificaciones: 'Julio y diciembre con bonificación',
     CTS: 'Liquidación y constancias de mayo y noviembre',
     Vacaciones: 'Periodos, saldos y goces',
+    Liquidaciones: 'Beneficios sociales al cese y certificado de trabajo',
     PLAME: 'Archivos .rem, .jor, .snl y .toc',
     AFPnet: 'Archivo de aportes a las AFP',
     Reportes: 'Planilla, resumen, centralización y costo',

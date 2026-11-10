@@ -4,6 +4,7 @@ namespace App\Services\Trabajadores;
 
 use App\Domain\Licencia\Recurso;
 use App\Enums\MotivoCese;
+use App\Models\Liquidacion;
 use App\Models\Periodo;
 use App\Models\Trabajador;
 use App\Services\Licencia\LicenciaActual;
@@ -15,7 +16,7 @@ use Illuminate\Validation\ValidationException;
  * - Puede ser futuro (fin de contrato programado): sigue activo hasta esa fecha.
  * - No puede quedar en una planilla de un mes posterior al cese.
  * - Revertir = error de registro. El reingreso con nuevo periodo laboral llega con T-Registro (v1.1).
- * La liquidación de beneficios sociales es v1.1.
+ * La liquidación de beneficios sociales se calcula en Beneficios → Liquidaciones (LiquidacionesBeneficios).
  */
 class CeseTrabajador
 {
@@ -44,6 +45,7 @@ class CeseTrabajador
             ]);
         }
 
+        $this->descartarLiquidacion($trabajador, 'fecha_cese');
         $trabajador->update(['fecha_cese' => $fecha->toDateString(), 'motivo_cese' => $motivo]);
     }
 
@@ -54,6 +56,21 @@ class CeseTrabajador
             $this->licencia->asegurarCupo(Recurso::Trabajadores);
         }
 
+        $this->descartarLiquidacion($trabajador, 'cese');
         $trabajador->update(['fecha_cese' => null, 'motivo_cese' => null]);
+    }
+
+    /** Con una liquidación cerrada el cese no cambia; una en borrador se descarta (se recalcula con el nuevo cese). */
+    private function descartarLiquidacion(Trabajador $trabajador, string $campo): void
+    {
+        $liquidaciones = Liquidacion::query()->where('trabajador_id', $trabajador->id)->get();
+
+        if ($liquidaciones->contains(fn (Liquidacion $l) => $l->estaCerrada())) {
+            throw ValidationException::withMessages([
+                $campo => 'La liquidación de beneficios está cerrada: reábrela antes de cambiar el cese.',
+            ]);
+        }
+
+        $liquidaciones->each(fn (Liquidacion $l) => $l->delete());
     }
 }

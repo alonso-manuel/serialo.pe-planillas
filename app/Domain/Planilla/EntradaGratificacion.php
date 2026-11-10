@@ -24,5 +24,7 @@ final readonly class EntradaGratificacion
         public string $remuneracionBasica,
         public bool $asignacionFamiliar,
         public array $meses = [],
+        /** Cese (liquidación): solo cuentan los meses completos hasta esa fecha (gratificación trunca). */
+        public ?DateTimeImmutable $fechaCese = null,
     ) {}
 }

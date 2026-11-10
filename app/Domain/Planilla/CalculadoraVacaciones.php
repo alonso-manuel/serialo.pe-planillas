@@ -126,6 +126,43 @@ final class CalculadoraVacaciones
         }, $periodos, $gozados);
     }
 
+    /**
+     * Tiempo del año de servicios en curso al cese (vacaciones truncas, D.Leg. 713 art. 22):
+     * meses completos desde el último aniversario y días restantes.
+     *
+     * @return array{0: int, 1: int} [meses, días]
+     */
+    public static function tiempoTrunco(DateTimeImmutable $desde, DateTimeImmutable $cese): array
+    {
+        if ($cese < $desde) {
+            return [0, 0];
+        }
+
+        $meses = 0;
+        while ($desde->modify('+'.($meses + 1).' months')->modify('-1 day') <= $cese) {
+            $meses++;
+        }
+
+        $resto = $desde->modify("+{$meses} months");
+        $dias = $resto > $cese ? 0 : min((int) $resto->diff($cese)->days + 1, self::DIAS_MES);
+
+        return [$meses, $dias];
+    }
+
+    /**
+     * Vacaciones truncas = remuneración computable × (días del régimen / 30) × (meses / 12 + días / 360).
+     * Es decir, un dozavo por mes y un treintavo de dozavo por día. ⚠ validar con el contador.
+     */
+    public static function montoTrunco(string $computable, int $diasDerecho, int $meses, int $dias): string
+    {
+        return Monto::texto(Monto::redondear(
+            Monto::de($computable)
+                ->multipliedBy($diasDerecho)
+                ->multipliedBy($meses * self::DIAS_MES + $dias)
+                ->dividedBy(self::DIAS_MES * 360, 10, RoundingMode::HalfUp)
+        ));
+    }
+
     /** Remuneración vacacional (0118) = (básico + promedio de variables) / 30 × días. */
     public static function remuneracion(string $basico, string $promedioVariables, int $dias): string
     {
