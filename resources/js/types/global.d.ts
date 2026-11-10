@@ -1,6 +1,7 @@
 import type { Directive } from 'vue';
 import type { Auth } from '@/types/auth';
 import type { EmpresaResumen } from '@/types/empresa';
+import type { AvisoLicencia } from '@/types/licencia';
 
 // Extend ImportMeta interface for Vite...
 declare module 'vite/client' {
@@ -22,6 +23,7 @@ declare module '@inertiajs/core' {
             auth: Auth;
             empresaActiva: EmpresaResumen | null;
             empresas: EmpresaResumen[];
+            avisoLicencia: AvisoLicencia | null;
             sidebarOpen: boolean;
             [key: string]: unknown;
         };

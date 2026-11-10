@@ -136,7 +136,8 @@ Con `DECOLECTA_TOKEN`, el driver `openruc` consulta los RUC 20 en OpenRUC y el r
 - Clave = JSON firmado con **Ed25519** (`sodium_crypto_sign_detached`), en base64:
   `{cliente, plan, max_empresas, max_usuarios, max_trabajadores, dominio, emitida, actualizaciones_hasta}`.
 - La **clave pública** va dentro del sistema; la **privada** solo en la PC de Serialo.pe (generador de licencias aparte, nunca en este repo).
-- Verificación: middleware al iniciar sesión + comando programado diario. Si el dominio no coincide o la firma falla → modo solo lectura (nunca borrar datos).
+- Verificación en cada petición (middleware `ModoSoloLectura`; verificar la firma cuesta microsegundos y así la cola ve al instante una clave nueva).
+  Si el dominio no coincide, la firma falla o terminó la prueba → modo solo lectura (nunca borrar datos). Detalle en [licencias.md](licencias.md).
 - `actualizaciones_hasta` controla si el actualizador puede descargar nuevas versiones.
 
 ## Instalador web (semana 7)

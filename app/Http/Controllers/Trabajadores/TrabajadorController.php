@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Trabajadores;
 
+use App\Domain\Licencia\Recurso;
 use App\Enums\ClaveParametro;
 use App\Enums\MotivoCese;
 use App\Enums\RegimenLaboral;
@@ -20,6 +21,7 @@ use App\Models\Trabajador;
 use App\Models\User;
 use App\Services\Dni\ConsultaDni;
 use App\Services\Empresas\EmpresaActiva;
+use App\Services\Licencia\LicenciaActual;
 use App\Services\Trabajadores\HistorialTrabajador;
 use Carbon\CarbonImmutable;
 use Illuminate\Database\Eloquent\Builder;
@@ -35,6 +37,7 @@ class TrabajadorController extends Controller
     public function __construct(
         private readonly EmpresaActiva $empresaActiva,
         private readonly HistorialTrabajador $historial,
+        private readonly LicenciaActual $licencia,
     ) {}
 
     public function index(Request $request): Response
@@ -102,6 +105,7 @@ class TrabajadorController extends Controller
     public function store(GuardarTrabajadorRequest $request): RedirectResponse
     {
         $empresa = $request->empresa();
+        $this->licencia->asegurarCupo(Recurso::Trabajadores);
         $trabajador = $empresa->trabajadores()->create($request->datos());
 
         Inertia::flash('toast', ['type' => 'success', 'message' => "Trabajador {$trabajador->nombre_completo} registrado."]);

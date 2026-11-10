@@ -2,6 +2,7 @@
 
 namespace App\Services\Instalador;
 
+use Carbon\CarbonImmutable;
 use Illuminate\Support\Str;
 
 /**
@@ -17,6 +18,21 @@ class Instalacion
     public function instalado(): bool
     {
         return (bool) config('instalador.omitir') || is_file($this->ruta(self::MARCA));
+    }
+
+    /** Fecha de instalación (inicio de la prueba sin licencia), o null si no hay marca. */
+    public function instaladoEn(): ?CarbonImmutable
+    {
+        $archivo = $this->ruta(self::MARCA);
+
+        if (! is_file($archivo)) {
+            return null;
+        }
+
+        $datos = json_decode((string) file_get_contents($archivo), true);
+        $fecha = is_array($datos) && is_string($datos['instalado_en'] ?? null) ? $datos['instalado_en'] : null;
+
+        return $fecha === null ? null : CarbonImmutable::parse($fecha);
     }
 
     /** Ruta del código, tal como se le indica al usuario (relativa a la carpeta del sistema). */

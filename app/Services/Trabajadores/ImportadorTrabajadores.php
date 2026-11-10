@@ -2,6 +2,7 @@
 
 namespace App\Services\Trabajadores;
 
+use App\Domain\Licencia\Recurso;
 use App\Enums\ClaveParametro;
 use App\Enums\TipoDocumento;
 use App\Models\Afp;
@@ -9,6 +10,7 @@ use App\Models\Empresa;
 use App\Models\Parametro;
 use App\Models\Trabajador;
 use App\Services\Importacion\LectorHojaCalculo;
+use App\Services\Licencia\LicenciaActual;
 use Brick\Math\BigDecimal;
 use Carbon\CarbonImmutable;
 use Illuminate\Contracts\Session\Session;
@@ -38,6 +40,7 @@ class ImportadorTrabajadores
     public function __construct(
         private readonly LectorHojaCalculo $lector,
         private readonly Session $session,
+        private readonly LicenciaActual $licencia,
     ) {}
 
     /** @return array{validas: int, con_errores: int} */
@@ -82,7 +85,7 @@ class ImportadorTrabajadores
     public function confirmar(Empresa $empresaActiva): array
     {
         /** @var array{empresa_id: int, filas: list<array<string, mixed>>}|null $datos */
-        $datos = $this->session->pull(self::CLAVE_SESION);
+        $datos = $this->session->get(self::CLAVE_SESION);
 
         if ($datos === null) {
             return ['creados' => 0, 'omitidos' => 0];
@@ -93,6 +96,10 @@ class ImportadorTrabajadores
         }
 
         $validas = array_values(array_filter($datos['filas'], fn (array $f) => $f['errores'] === []));
+
+        // Antes de consumir la vista previa: si no alcanza el cupo, se puede corregir el archivo y reintentar.
+        $this->licencia->asegurarCupo(Recurso::Trabajadores, count($validas));
+        $this->session->forget(self::CLAVE_SESION);
         $creados = 0;
 
         DB::transaction(function () use ($validas, $empresaActiva, &$creados) {

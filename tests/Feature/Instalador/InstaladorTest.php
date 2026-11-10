@@ -2,7 +2,9 @@
 
 namespace Tests\Feature\Instalador;
 
+use App\Domain\Licencia\ClaveLicencia;
 use App\Enums\RolUsuario;
+use App\Models\Auditoria;
 use App\Models\Empresa;
 use App\Models\Parametro;
 use App\Models\User;
@@ -20,6 +22,8 @@ class InstaladorTest extends TestCase
 {
     private string $dir;
 
+    private string $privada;
+
     protected function setUp(): void
     {
         parent::setUp();
@@ -28,6 +32,10 @@ class InstaladorTest extends TestCase
         File::ensureDirectoryExists($this->dir);
         config(['instalador.omitir' => false, 'instalador.directorio' => $this->dir]);
         $this->app->useEnvironmentPath($this->dir);
+
+        $par = sodium_crypto_sign_keypair();
+        $this->privada = base64_encode(sodium_crypto_sign_secretkey($par));
+        config(['licencia.clave_publica' => base64_encode(sodium_crypto_sign_publickey($par)), 'licencia.archivo' => $this->dir.'/licencia.txt']);
 
         // El servidor de CI puede no tener todas las extensiones del hosting.
         $this->app->instance(Requisitos::class, new class extends Requisitos
@@ -167,6 +175,57 @@ class InstaladorTest extends TestCase
 
         // Desde ahora el instalador ya no existe.
         $this->get(route('instalar.inicio'))->assertNotFound();
+
+        // Sin clave: empieza la prueba.
+        $this->assertFileDoesNotExist($this->dir.'/licencia.txt');
+    }
+
+    /** @return array<string, string> */
+    private function sistema(array $cambios = []): array
+    {
+        return [
+            'sistema' => 'Planillas', 'url' => 'https://planillas.ejemplo.test',
+            'admin_nombre' => 'Admin', 'admin_correo' => 'admin@ejemplo.test',
+            'admin_clave' => 'Clave-Segura-2026!', 'admin_clave_confirmation' => 'Clave-Segura-2026!',
+            ...$cambios,
+        ];
+    }
+
+    private function clave(string $dominio): string
+    {
+        return ClaveLicencia::firmar([
+            'cliente' => 'Estudio Ejemplo S.A.C.', 'plan' => 'Estudio', 'max_empresas' => 40, 'max_usuarios' => 3,
+            'max_trabajadores' => null, 'dominio' => $dominio, 'emitida' => '2026-11-09', 'actualizaciones_hasta' => '2027-11-09',
+        ], $this->privada);
+    }
+
+    #[Test]
+    public function instala_con_la_licencia_y_la_deja_registrada(): void
+    {
+        $this->usarSqlite();
+        $this->hastaSistema();
+
+        $this->post(route('instalar.sistema.store'), $this->sistema(['licencia' => $this->clave('planillas.ejemplo.test')]))
+            ->assertOk()->assertSee('Instalación terminada');
+
+        $this->assertStringStartsWith('SERIALO-', (string) file_get_contents($this->dir.'/licencia.txt'));
+        $this->assertSame(1, Auditoria::query()->where('auditable_type', 'licencia')->count());
+    }
+
+    #[Test]
+    public function rechaza_una_licencia_de_otro_dominio_sin_instalar_nada(): void
+    {
+        $this->usarSqlite();
+        $this->hastaSistema();
+
+        $this->post(route('instalar.sistema.store'), $this->sistema(['licencia' => $this->clave('otro-dominio.pe')]))
+            ->assertSessionHasErrors(['licencia' => 'La clave es para otro-dominio.pe, pero la dirección web es planillas.ejemplo.test.']);
+
+        $this->post(route('instalar.sistema.store'), $this->sistema(['licencia' => 'SERIALO-mal.copiada']))
+            ->assertSessionHasErrors('licencia');
+
+        $this->assertFileDoesNotExist($this->dir.'/instalado.json');
+        $this->assertFileDoesNotExist($this->dir.'/licencia.txt');
     }
 
     #[Test]

@@ -62,6 +62,11 @@
             @error('correo_remitente')<div class="error">{{ $message }}</div>@enderror
         </details>
 
+        <label for="licencia">Clave de licencia (opcional)</label>
+        <textarea id="licencia" name="licencia" rows="3" spellcheck="false" autocomplete="off" placeholder="SERIALO-…">{{ old('licencia') }}</textarea>
+        <small class="ayuda">Si la dejas vacía, empiezas una prueba de {{ config('licencia.prueba.dias') }} días; puedes registrarla después en Administración → Licencia.</small>
+        @error('licencia')<div class="error">{{ $message }}</div>@enderror
+
         <label class="casilla">
             <input type="checkbox" name="demo" value="1" @checked(old('demo'))>
             <span>Cargar datos de demostración (empresas y trabajadores ficticios). Solo para probar; no lo marques en una instalación real.</span>

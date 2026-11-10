@@ -281,6 +281,7 @@ const descripciones: Record<string, string> = {
     'Tasas AFP': 'Comisiones y primas de cada mes',
     Conceptos: 'Tabla 22 de SUNAT y cuentas contables',
     Auditoría: 'Quién cambió qué y cuándo',
+    Licencia: 'Plan, límites y clave de licencia',
 };
 
 const gruposModulos = computed(() =>

@@ -19,11 +19,13 @@ use OpenSpout\Common\Entity\Row;
 use OpenSpout\Reader\XLSX\Reader;
 use OpenSpout\Writer\XLSX\Writer;
 use PHPUnit\Framework\Attributes\Test;
+use Tests\Concerns\ConLicencia;
 use Tests\TestCase;
 
 /** Carga masiva de trabajadores (solo altas) en la empresa activa. Datos ficticios. */
 class ImportacionTrabajadoresTest extends TestCase
 {
+    use ConLicencia;
     use RefreshDatabase;
 
     private const ENCABEZADO = [
@@ -279,5 +281,24 @@ class ImportacionTrabajadoresTest extends TestCase
         $this->actingAs(User::factory()->asistente()->create())
             ->get(route('trabajadores.importar'))
             ->assertRedirect(route('dashboard'));
+    }
+
+    #[Test]
+    public function no_importa_mas_trabajadores_de_los_que_permite_el_plan(): void
+    {
+        $this->activarLicencia(instaladoEn: '2026-11-10', limitesPrueba: ['max_trabajadores' => 2]);
+        Trabajador::factory()->for($this->empresa)->create(); // ya hay 1 activo
+
+        $this->subir($this->csv([$this->fila(), $this->fila(['numero_documento' => '70000002'])]))->assertSessionHasNoErrors();
+
+        $this->post(route('trabajadores.importar.confirmar'))
+            ->assertRedirect(route('trabajadores.importar'))
+            ->assertInertiaFlash('toast.message', 'La prueba permite hasta 2 trabajadores activos y ya tienes 1. Ahora puedes agregar 1 más. Para continuar, registra el cese de alguno o amplía tu plan con Serialo.pe.');
+        $this->assertSame(1, Trabajador::query()->count());
+
+        // La vista previa se conserva: con más cupo se confirma sin volver a subir el archivo.
+        config(['licencia.prueba.max_trabajadores' => 3]);
+        $this->post(route('trabajadores.importar.confirmar'))->assertRedirect(route('trabajadores.index'));
+        $this->assertSame(3, Trabajador::query()->count());
     }
 }

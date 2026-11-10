@@ -2,9 +2,11 @@
 
 namespace App\Services\Trabajadores;
 
+use App\Domain\Licencia\Recurso;
 use App\Enums\MotivoCese;
 use App\Models\Periodo;
 use App\Models\Trabajador;
+use App\Services\Licencia\LicenciaActual;
 use Carbon\CarbonImmutable;
 use Illuminate\Validation\ValidationException;
 
@@ -17,6 +19,8 @@ use Illuminate\Validation\ValidationException;
  */
 class CeseTrabajador
 {
+    public function __construct(private readonly LicenciaActual $licencia) {}
+
     public function registrar(Trabajador $trabajador, CarbonImmutable $fecha, MotivoCese $motivo): void
     {
         if ($fecha->lt($trabajador->fecha_ingreso)) {
@@ -45,6 +49,11 @@ class CeseTrabajador
 
     public function revertir(Trabajador $trabajador): void
     {
+        // Si ya había cesado, revertir lo vuelve a contar como activo.
+        if ($trabajador->estaCesado()) {
+            $this->licencia->asegurarCupo(Recurso::Trabajadores);
+        }
+
         $trabajador->update(['fecha_cese' => null, 'motivo_cese' => null]);
     }
 }

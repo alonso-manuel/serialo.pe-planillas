@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\Instalador;
 
+use App\Domain\Licencia\ClaveLicencia;
+use App\Domain\Licencia\ClaveLicenciaInvalida;
 use App\Http\Controllers\Controller;
 use App\Services\Instalador\ConexionBaseDatos;
 use App\Services\Instalador\Instalacion;
@@ -10,6 +12,7 @@ use App\Services\Instalador\Requisitos;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rules\Password;
+use Illuminate\Validation\ValidationException;
 use Illuminate\View\View;
 use Throwable;
 
@@ -119,11 +122,14 @@ class InstaladorController extends Controller
             'smtp_cifrado' => ['nullable', 'in:tls,ssl'],
             'correo_remitente' => ['nullable', 'email', 'max:255'],
             'demo' => ['nullable', 'boolean'],
+            'licencia' => ['nullable', 'string', 'max:4000'],
         ], [], [
             'sistema' => 'nombre del sistema', 'url' => 'dirección web', 'admin_nombre' => 'nombre',
             'admin_correo' => 'correo', 'admin_clave' => 'contraseña', 'smtp_host' => 'servidor SMTP',
             'smtp_puerto' => 'puerto SMTP', 'smtp_usuario' => 'usuario SMTP', 'correo_remitente' => 'correo remitente',
         ]);
+
+        $licencia = $this->licenciaValida($datos['licencia'] ?? null, $datos['url']);
 
         try {
             $usuario = $instalador->ejecutar($bd, [
@@ -139,7 +145,7 @@ class InstaladorController extends Controller
                 'nombre' => $datos['admin_nombre'],
                 'correo' => $datos['admin_correo'],
                 'clave' => $datos['admin_clave'],
-            ], (bool) ($datos['demo'] ?? false));
+            ], (bool) ($datos['demo'] ?? false), $licencia);
         } catch (Throwable $e) {
             report($e);
 
@@ -157,5 +163,28 @@ class InstaladorController extends Controller
             'cron' => 'php '.base_path('artisan').' schedule:run >> /dev/null 2>&1',
             'login' => rtrim($datos['url'], '/').'/login',
         ]);
+    }
+
+    /** La clave es opcional (sin ella empieza la prueba); si se pega, debe ser válida y para este dominio. */
+    private function licenciaValida(?string $clave, string $url): ?string
+    {
+        if ($clave === null || trim($clave) === '') {
+            return null;
+        }
+
+        try {
+            $licencia = ClaveLicencia::leer($clave, (string) config('licencia.clave_publica'));
+        } catch (ClaveLicenciaInvalida $e) {
+            throw ValidationException::withMessages(['licencia' => $e->getMessage()]);
+        }
+
+        $host = (string) parse_url($url, PHP_URL_HOST);
+        if (! $licencia->permiteDominio($host)) {
+            throw ValidationException::withMessages([
+                'licencia' => "La clave es para {$licencia->dominio}, pero la dirección web es {$host}.",
+            ]);
+        }
+
+        return $clave;
     }
 }

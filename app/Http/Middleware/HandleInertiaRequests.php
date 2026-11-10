@@ -4,6 +4,7 @@ namespace App\Http\Middleware;
 
 use App\Models\Empresa;
 use App\Services\Empresas\EmpresaActiva;
+use App\Services\Licencia\LicenciaActual;
 use Illuminate\Http\Request;
 use Inertia\Middleware;
 
@@ -18,7 +19,10 @@ class HandleInertiaRequests extends Middleware
      */
     protected $rootView = 'app';
 
-    public function __construct(private readonly EmpresaActiva $empresaActiva) {}
+    public function __construct(
+        private readonly EmpresaActiva $empresaActiva,
+        private readonly LicenciaActual $licenciaActual,
+    ) {}
 
     /**
      * Determines the current asset version.
@@ -53,7 +57,29 @@ class HandleInertiaRequests extends Middleware
                 ->get(['id', 'ruc', 'razon_social'])
                 ->map(fn (Empresa $empresa) => $this->resumen($empresa))
                 ->all(),
+            'avisoLicencia' => fn () => $user === null ? null : $this->avisoLicencia($request),
             'sidebarOpen' => ! $request->hasCookie('sidebar_state') || $request->cookie('sidebar_state') === 'true',
+        ];
+    }
+
+    /**
+     * Para la franja de aviso: solo lectura o días de prueba.
+     *
+     * @return array{tipo: string, solo_lectura: bool, mensaje: string, dias_prueba: int|null}|null
+     */
+    private function avisoLicencia(Request $request): ?array
+    {
+        $estado = $this->licenciaActual->estado($request->getHost());
+
+        if (! $estado->soloLectura() && $estado->diasPrueba === null) {
+            return null;
+        }
+
+        return [
+            'tipo' => $estado->tipo->value,
+            'solo_lectura' => $estado->soloLectura(),
+            'mensaje' => $estado->mensaje,
+            'dias_prueba' => $estado->diasPrueba,
         ];
     }
 

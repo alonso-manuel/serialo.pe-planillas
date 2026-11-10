@@ -65,7 +65,7 @@ docs/                          # Documentación del producto (mantenerla al día
 6. **Tests primero en cálculo.** Cada regla nueva entra con un test; los casos de `tests/Unit/Planilla` validados por contador
    nunca se modifican para "hacerlos pasar". Si fallan, el error está en el motor.
 7. **Auditoría.** Crear/editar/borrar empresa, trabajador, novedad, parámetro o cerrar/reabrir periodo registra fila en `auditorias`.
-   También usuarios (alta, edición, rol, empresas asignadas, activación), establecimientos, tasas AFP y conceptos.
+   También usuarios (alta, edición, rol, empresas asignadas, activación), establecimientos, tasas AFP, conceptos y la licencia.
    Se hace con el trait `Auditable` (automático) o `registrarAuditoria()` para acciones especiales.
 8. **Datos reales de clientes nunca entran al repositorio**, ni en seeders, tests, capturas o demos (Ley 29733).
    Para casos de prueba se anonimizan DNI, nombres y RUC; solo quedan los números.

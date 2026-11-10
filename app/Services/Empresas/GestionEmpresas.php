@@ -2,8 +2,10 @@
 
 namespace App\Services\Empresas;
 
+use App\Domain\Licencia\Recurso;
 use App\Models\Empresa;
 use App\Models\Establecimiento;
+use App\Services\Licencia\LicenciaActual;
 use Illuminate\Support\Facades\DB;
 
 /**
@@ -13,11 +15,15 @@ use Illuminate\Support\Facades\DB;
  */
 class GestionEmpresas
 {
+    public function __construct(private readonly LicenciaActual $licencia) {}
+
     /**
      * @param  array<string, mixed>  $datos  validados por GuardarEmpresaRequest
      */
     public function crear(array $datos): Empresa
     {
+        $this->licencia->asegurarCupo(Recurso::Empresas);
+
         return DB::transaction(function () use ($datos) {
             $empresa = Empresa::create([...$datos, 'activo' => true]);
 
@@ -45,6 +51,10 @@ class GestionEmpresas
     /** Activa o desactiva. Devuelve el nuevo estado. */
     public function alternarEstado(Empresa $empresa): bool
     {
+        if (! $empresa->activo) {
+            $this->licencia->asegurarCupo(Recurso::Empresas);
+        }
+
         $empresa->activo = ! $empresa->activo;
         $empresa->save();
 

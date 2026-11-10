@@ -10,3 +10,4 @@ export * from './auditoria';
 export * from './trabajador';
 export * from './periodo';
 export * from './exportacion';
+export * from './licencia';

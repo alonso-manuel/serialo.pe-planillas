@@ -2,9 +2,11 @@
 
 namespace App\Services\Usuarios;
 
+use App\Domain\Licencia\Recurso;
 use App\Enums\RolUsuario;
 use App\Models\Empresa;
 use App\Models\User;
+use App\Services\Licencia\LicenciaActual;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
 
@@ -20,11 +22,15 @@ use Illuminate\Validation\ValidationException;
  */
 class GestionUsuarios
 {
+    public function __construct(private readonly LicenciaActual $licencia) {}
+
     /**
      * @param  array{name: string, email: string, rol: string, password: string, empresas?: array<int, int>}  $datos
      */
     public function crear(array $datos): User
     {
+        $this->licencia->asegurarCupo(Recurso::Usuarios);
+
         return DB::transaction(function () use ($datos) {
             $rol = RolUsuario::from($datos['rol']);
 
@@ -89,6 +95,10 @@ class GestionUsuarios
     {
         if ($usuario->is($actor)) {
             throw new \DomainException('No puedes desactivar tu propia cuenta.');
+        }
+
+        if (! $usuario->activo) {
+            $this->licencia->asegurarCupo(Recurso::Usuarios);
         }
 
         $usuario->activo = ! $usuario->activo;

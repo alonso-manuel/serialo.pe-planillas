@@ -20,6 +20,7 @@ use App\Services\Dni\ConsultaDniDecolecta;
 use App\Services\Dni\ConsultaDniEnCache;
 use App\Services\Dni\ConsultaDniNinguna;
 use App\Services\Empresas\EmpresaActiva;
+use App\Services\Licencia\LicenciaActual;
 use App\Services\Ruc\ConsultaRuc;
 use App\Services\Ruc\ConsultaRucCombinada;
 use App\Services\Ruc\ConsultaRucDecolecta;
@@ -45,6 +46,7 @@ class AppServiceProvider extends ServiceProvider
     public function register(): void
     {
         $this->app->scoped(EmpresaActiva::class);
+        $this->app->scoped(LicenciaActual::class);
 
         // Proveedor de consulta RUC según config('services.ruc.driver'), con caché de 24 h.
         $this->app->bind(ConsultaRuc::class, function (Application $app): ConsultaRuc {

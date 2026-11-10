@@ -5,6 +5,7 @@ namespace App\Services\Instalador;
 use App\Enums\RolUsuario;
 use App\Models\Auditoria;
 use App\Models\User;
+use App\Services\Licencia\LicenciaActual;
 use Database\Seeders\CatalogosSeeder;
 use Database\Seeders\DemoSeeder;
 use Illuminate\Support\Facades\Artisan;
@@ -25,14 +26,16 @@ class InstalarSistema
         private readonly ConexionBaseDatos $conexion,
         private readonly ArchivoEnv $env,
         private readonly Instalacion $instalacion,
+        private readonly LicenciaActual $licencia,
     ) {}
 
     /**
      * @param  DatosBd  $bd
      * @param  DatosSistema  $sistema
      * @param  DatosAdmin  $admin
+     * @param  string|null  $licencia  clave ya verificada; sin ella empieza la prueba
      */
-    public function ejecutar(array $bd, array $sistema, array $admin, bool $demo): User
+    public function ejecutar(array $bd, array $sistema, array $admin, bool $demo, ?string $licencia = null): User
     {
         $this->conexion->configurar($bd);
 
@@ -51,6 +54,10 @@ class InstalarSistema
             'activo' => true,
         ]);
         $usuario->forceFill(['email_verified_at' => now()])->save();
+
+        if ($licencia !== null) {
+            $this->licencia->guardar($licencia, (string) parse_url($sistema['url'], PHP_URL_HOST));
+        }
 
         if ($demo) {
             Auditoria::sinRegistrar(fn () => Artisan::call('db:seed', ['--class' => DemoSeeder::class, '--force' => true]));

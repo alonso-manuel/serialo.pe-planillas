@@ -6,22 +6,25 @@ Guía del instalador web (`/instalar`). Pensado para hosting compartido con cPan
 
 1. Subir y descomprimir el paquete del sistema en el hosting (la carpeta `public/` debe ser la raíz del dominio o subdominio).
 2. En cPanel → «Bases de datos MySQL»: crear una base de datos **vacía** y un usuario con todos los privilegios sobre ella.
-3. En cPanel → «Seleccionar versión de PHP»: PHP 8.3 o superior con las extensiones `pdo_mysql`, `mbstring`, `openssl`, `gd`, `zip`, `dom`, `xml`, `fileinfo`, `ctype`, `tokenizer` y `curl`.
+3. En cPanel → «Seleccionar versión de PHP»: PHP 8.3 o superior con las extensiones `pdo_mysql`, `mbstring`, `openssl`, `gd`, `zip`, `dom`, `xml`, `fileinfo`, `ctype`, `tokenizer`, `curl` y `sodium` (verifica la licencia).
 
 ## Pasos del instalador
 
 Al abrir el dominio, cualquier página lleva a `/instalar`.
 
-| Paso                       | Qué hace                                                                                                                                                                                                                       |
-| -------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| 1. Requisitos              | Revisa PHP, extensiones y permisos de escritura (`storage`, `bootstrap/cache`, `.env`). Pide el **código de instalación** del archivo `storage/app/codigo-instalacion.txt`, que solo puede leer quien tiene acceso al hosting. |
-| 2. Base de datos           | Prueba la conexión antes de seguir. Rechaza una base que ya tenga tablas del sistema.                                                                                                                                          |
-| 3. Sistema y administrador | Nombre del sistema, dirección web, primer administrador (contraseña: 12+ caracteres con mayúsculas, minúsculas, números y símbolos), SMTP opcional y la casilla de datos demo (desmarcada por defecto).                        |
-| 4. Listo                   | Muestra el comando del cron para cPanel.                                                                                                                                                                                       |
+| Paso                       | Qué hace                                                                                                                                                                                                                                                                            |
+| -------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1. Requisitos              | Revisa PHP, extensiones y permisos de escritura (`storage`, `bootstrap/cache`, `.env`). Pide el **código de instalación** del archivo `storage/app/codigo-instalacion.txt`, que solo puede leer quien tiene acceso al hosting.                                                      |
+| 2. Base de datos           | Prueba la conexión antes de seguir. Rechaza una base que ya tenga tablas del sistema.                                                                                                                                                                                               |
+| 3. Sistema y administrador | Nombre del sistema, dirección web, primer administrador (contraseña: 12+ caracteres con mayúsculas, minúsculas, números y símbolos), SMTP opcional, la **clave de licencia** (opcional: sin ella empieza la prueba de 15 días) y la casilla de datos demo (desmarcada por defecto). |
+| 4. Listo                   | Muestra el comando del cron para cPanel.                                                                                                                                                                                                                                            |
 
 Al instalar se ejecutan las migraciones, se cargan los catálogos legales (`CatalogosSeeder`: parámetros, AFP, tasas AFP, conceptos de la tabla 22), se crea el administrador (queda en la auditoría) y se escribe el `.env` definitivo (producción, sesión/caché/cola en base de datos). El `.env` solo se escribe si todo lo anterior salió bien.
 
 Al terminar se crea `storage/app/instalado.json` y se borra el código. Desde ese momento `/instalar` responde 404.
+
+Si se pegó la licencia, queda en `storage/app/licencia.txt` (y en la auditoría). Debe ser para el dominio de la dirección web;
+si no, el instalador lo dice y no instala nada. Ver [licencias.md](licencias.md).
 
 ## Cron (obligatorio)
 

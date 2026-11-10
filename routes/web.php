@@ -12,6 +12,7 @@ use App\Http\Controllers\Empresas\EstablecimientoController;
 use App\Http\Controllers\Empresas\EstadoEmpresaController;
 use App\Http\Controllers\Empresas\LogoEmpresaController;
 use App\Http\Controllers\Instalador\InstaladorController;
+use App\Http\Controllers\Licencia\LicenciaController;
 use App\Http\Controllers\PanelController;
 use App\Http\Controllers\Parametros\ParametroController;
 use App\Http\Controllers\Periodos\BoletaController;
@@ -168,6 +169,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     // Auditoría (solo admin, solo lectura)
     Route::get('auditoria', [AuditoriaController::class, 'index'])->name('auditoria.index');
+
+    // Licencia (solo admin; se puede registrar aunque el sistema esté en solo lectura)
+    Route::get('licencia', [LicenciaController::class, 'show'])->name('licencia.show');
+    Route::put('licencia', [LicenciaController::class, 'update'])->name('licencia.update');
 
     // Usuarios (solo admin; nunca se eliminan, se desactivan)
     Route::resource('usuarios', UsuarioController::class)->except(['show', 'destroy']);

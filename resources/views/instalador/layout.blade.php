@@ -27,8 +27,10 @@
         h2 { font-size: 15px; margin: 24px 0 8px; }
         p.ayuda { color: var(--suave); font-size: 14px; margin: 0 0 16px; }
         label { display: block; font-size: 14px; font-weight: 500; margin: 14px 0 6px; }
-        input[type=text], input[type=email], input[type=password], input[type=number], input[type=url], select { width: 100%; padding: 9px 12px; border: 1px solid #d4d4d4; border-radius: 8px; font: inherit; background: #fff; }
-        input:focus, select:focus { outline: 2px solid var(--celeste); border-color: var(--azul); }
+        input[type=text], input[type=email], input[type=password], input[type=number], input[type=url], select, textarea { width: 100%; padding: 9px 12px; border: 1px solid #d4d4d4; border-radius: 8px; font: inherit; background: #fff; }
+        input:focus, select:focus, textarea:focus { outline: 2px solid var(--celeste); border-color: var(--azul); }
+        textarea { font-family: ui-monospace, SFMono-Regular, Consolas, monospace; font-size: 12px; word-break: break-all; resize: vertical; }
+        small.ayuda { display: block; margin-top: 4px; font-size: 13px; color: var(--suave); }
         .fila { display: grid; grid-template-columns: 1fr 120px; gap: 12px; }
         .fila > div label { margin-top: 14px; }
         .casilla { display: flex; gap: 8px; align-items: flex-start; font-weight: 400; }

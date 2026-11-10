@@ -31,6 +31,7 @@ class AuditoriaController extends Controller
         'periodo' => 'Periodo',
         'liquidacion_cts' => 'CTS',
         'vacacion' => 'Vacaciones',
+        'licencia' => 'Licencia',
     ];
 
     public function index(Request $request): Response
