@@ -70,7 +70,8 @@ Marca `[x]` al terminar (o usa `/actualizar-roadmap`). Cada tarea: código + tes
 - [x] Instalador web (requisitos, código de instalación, base de datos, administrador, cron) — ver docs/instalacion.md
 - [x] Licencia firmada (Ed25519) + límites por plan + modo solo lectura — ver docs/licencias.md
 - [x] Multitenant base (modo SaaS en el VPS): una base por estudio por subdominio, sesión/caché/archivos/cola aislados, comandos `estudio:crear` y `estudios:migrar` — ver docs/multitenant.md
-- [ ] Panel central (`admin.serialo.pe`): estudios y demos, plan, vencimiento, suspender, exportar su base, entrar como soporte
+- [x] Panel central (`admin.serialo.pe`): superadmin con 2FA obligatorio, cuentas (demo/cliente), alta con invitación por correo, suspender, restablecer acceso, eliminar, auditoría central — ver docs/multitenant.md
+- [ ] Panel central: exportar la base de una cuenta y entrar como soporte
 - [ ] Planes SaaS (demo, mensual, pago único alojado): límites y solo lectura reutilizando la licencia; vencimiento de demos con aviso por correo
 - [ ] Respaldos automáticos (por estudio en el VPS, fuera del servidor; y en instalaciones únicas)
 - [ ] Servidor VPS: guía y scripts (Nginx, PHP 8.3, MySQL, Redis, HTTPS comodín `*.serialo.pe`, cron y worker)

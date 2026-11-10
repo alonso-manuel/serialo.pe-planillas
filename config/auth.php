@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Central\Superadmin;
 use App\Models\User;
 
 return [
@@ -42,6 +43,12 @@ return [
             'driver' => 'session',
             'provider' => 'users',
         ],
+
+        // Panel central del modo SaaS (admin.serialo.pe): usuarios de la base central.
+        'superadmin' => [
+            'driver' => 'session',
+            'provider' => 'superadmins',
+        ],
     ],
 
     /*
@@ -65,6 +72,11 @@ return [
         'users' => [
             'driver' => 'eloquent',
             'model' => env('AUTH_MODEL', User::class),
+        ],
+
+        'superadmins' => [
+            'driver' => 'eloquent',
+            'model' => Superadmin::class,
         ],
 
         // 'users' => [
@@ -96,7 +108,7 @@ return [
         'users' => [
             'provider' => 'users',
             'table' => env('AUTH_PASSWORD_RESET_TOKEN_TABLE', 'password_reset_tokens'),
-            'expire' => 60,
+            'expire' => 1440, // 24 h: también es el enlace de invitación a una cuenta nueva (modo SaaS)
             'throttle' => 60,
         ],
     ],

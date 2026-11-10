@@ -43,7 +43,7 @@ class HandleInertiaRequests extends Middleware
      */
     public function share(Request $request): array
     {
-        $user = $request->user();
+        $user = $request->user('web');
 
         return [
             ...parent::share($request),
@@ -57,6 +57,8 @@ class HandleInertiaRequests extends Middleware
                 ->get(['id', 'ruc', 'razon_social'])
                 ->map(fn (Empresa $empresa) => $this->resumen($empresa))
                 ->all(),
+            // Panel central (modo SaaS): el superadmin autenticado.
+            'superadmin' => fn () => $request->user('superadmin')?->only(['name', 'email']),
             'avisoLicencia' => fn () => $user === null ? null : $this->avisoLicencia($request),
             'sidebarOpen' => ! $request->hasCookie('sidebar_state') || $request->cookie('sidebar_state') === 'true',
         ];

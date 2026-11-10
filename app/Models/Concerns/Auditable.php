@@ -97,7 +97,7 @@ trait Auditable
         $request = app()->bound('request') ? request() : null;
 
         Auditoria::create([
-            'user_id' => Auth::id(),
+            'user_id' => Auth::guard('web')->id(), // nunca el superadmin del panel central,
             'empresa_id' => $this->empresaIdAuditoria(),
             'auditable_type' => $this->getMorphClass(),
             'auditable_id' => $this->getKey(),

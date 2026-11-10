@@ -27,7 +27,7 @@ class ModoSoloLectura
 
     public function handle(Request $request, Closure $next): Response
     {
-        if ($request->isMethodSafe() || $request->user() === null || $request->routeIs(...self::PERMITIDAS)) {
+        if ($request->isMethodSafe() || $request->user('web') === null || $request->routeIs(...self::PERMITIDAS)) {
             return $next($request);
         }
 

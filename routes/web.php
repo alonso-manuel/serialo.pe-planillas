@@ -38,6 +38,9 @@ use App\Http\Middleware\AsegurarUsuarioActivo;
 use App\Http\Middleware\HandleInertiaRequests;
 use Illuminate\Support\Facades\Route;
 
+// Panel central del modo SaaS (admin.serialo.pe). Antes que el resto: su «/» tiene prioridad en su dominio.
+require __DIR__.'/panel.php';
+
 // Sistema instalable: no hay página pública; la raíz lleva al panel (o al login).
 Route::redirect('/', '/dashboard')->name('home');
 

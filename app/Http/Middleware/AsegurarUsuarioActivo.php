@@ -16,7 +16,7 @@ class AsegurarUsuarioActivo
 {
     public function handle(Request $request, Closure $next): Response
     {
-        $usuario = $request->user();
+        $usuario = $request->user('web');
 
         if ($usuario instanceof User && ! $usuario->activo) {
             Auth::guard('web')->logout();

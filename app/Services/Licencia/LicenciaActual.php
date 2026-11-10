@@ -153,7 +153,7 @@ class LicenciaActual
         $resumen = fn (?Licencia $l) => $l === null ? null : "{$l->plan} · {$l->cliente} · {$l->dominio} · actualizaciones hasta {$l->actualizacionesHasta}";
 
         Auditoria::create([
-            'user_id' => Auth::id(),
+            'user_id' => Auth::guard('web')->id(),
             'empresa_id' => null,
             'auditable_type' => 'licencia',
             'auditable_id' => 0,

@@ -7,6 +7,7 @@ use App\Http\Middleware\IdentificarEstudio;
 use App\Http\Middleware\ModoInstalador;
 use App\Http\Middleware\ModoSoloLectura;
 use App\Http\Middleware\RequiereEmpresaActiva;
+use App\Http\Middleware\SepararPanelYEstudios;
 use App\Http\Middleware\VerificarSesionEstudio;
 use App\Services\Licencia\LimiteLicenciaExcedido;
 use Illuminate\Foundation\Application;
@@ -35,8 +36,13 @@ return Application::configure(basePath: dirname(__DIR__))
         // todo debe nacer conectado a la base del estudio.
         $middleware->prepend(IdentificarEstudio::class);
 
-        // Antes que la sesión: sin instalar todavía no hay base de datos.
-        $middleware->web(prepend: [ModoInstalador::class]);
+        // Antes que la sesión: sin instalar todavía no hay base de datos. El panel central y los estudios
+        // nunca comparten rutas.
+        $middleware->web(prepend: [ModoInstalador::class, SepararPanelYEstudios::class]);
+
+        // Invitados y usuarios ya autenticados: cada contexto a su propio inicio.
+        $middleware->redirectGuestsTo(fn (Request $request) => $request->routeIs('panel.*') ? route('panel.ingresar') : route('login'));
+        $middleware->redirectUsersTo(fn (Request $request) => $request->routeIs('panel.*') ? route('panel.cuentas.index') : route('dashboard'));
 
         // La sesión de otro estudio se descarta antes de autenticar (modo SaaS).
         $middleware->appendToPriorityList(after: StartSession::class, append: VerificarSesionEstudio::class);

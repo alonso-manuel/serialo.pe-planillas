@@ -36,15 +36,38 @@ Se usa [stancl/tenancy](https://tenancyforlaravel.com) v3 (`config/tenancy.php`)
 Laravel crea el controlador al reunir los middlewares de la ruta, y el login de Fortify ya abre la sesión en ese
 momento; con el middleware solo en el grupo `web`, la sesión nacía conectada a la base central (hay un test de regresión).
 
-Un subdominio desconocido o un dominio central (`serialo.pe`, `admin.serialo.pe`) responde 404, salvo `/up`.
-El panel central llega en la siguiente tarea.
+Un subdominio desconocido o el dominio central (`serialo.pe`) responde 404, salvo `/up`. Una cuenta suspendida muestra
+«Cuenta suspendida» (403) y conserva sus datos.
+
+## Panel central (`admin.serialo.pe`)
+
+Donde el superadmin de Serialo.pe administra las cuentas. Vive en la base central y no es usuario de ningún estudio.
+
+| Función               | Detalle                                                                                                                                                                                                                                          |
+| --------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Ingreso               | Correo y contraseña + **doble factor obligatorio** (aplicación de autenticación). El primer ingreso obliga a configurarlo; 8 códigos de recuperación de un solo uso                                                                              |
+| Cuentas               | Lista con tipo (demo / cliente), estado y vencimiento                                                                                                                                                                                            |
+| Nueva cuenta          | Crea la base limpia (catálogos legales) y el administrador, y le **envía un correo con el enlace para crear su contraseña** (24 h). Nadie ve esa contraseña. Si el correo no está configurado, el panel muestra el enlace para entregarlo a mano |
+| Acceso                | Reenvía el enlace (olvidó su contraseña o venció)                                                                                                                                                                                                |
+| Suspender / reactivar | Suspendida: nadie entra, los datos se conservan                                                                                                                                                                                                  |
+| Eliminar              | Borra la cuenta, su base y sus archivos; pide escribir el subdominio                                                                                                                                                                             |
+| Actividad             | Auditoría central de todo lo anterior (`auditorias_centrales`, inmutable)                                                                                                                                                                        |
+
+Separación: las rutas del panel (`routes/panel.php`, nombres `panel.*`) solo responden en su dominio y las de los estudios
+nunca en el del panel (`SepararPanelYEstudios`). Las sesiones del panel están en `sesiones_panel` (base central). En modo
+`unica` el panel no existe. Las páginas usan rutas relativas (`resources/js/lib/panel.ts`) para no fijar el dominio al compilar.
+
+Pendiente (tareas siguientes): exportar la base de una cuenta (con los respaldos) y el vencimiento automático de demos (con los planes).
 
 ## Comandos (solo en modo `saas`)
 
 ```bash
-# Crear un estudio (cliente o demo): base limpia con catálogos legales + su administrador
-php artisan estudio:crear garcia "Estudio García" admin@garcia.pe --admin="Ana García"
-#   → https://garcia.serialo.pe · contraseña generada (o --clave=...)
+# Una sola vez: el superadmin del panel central (pide la contraseña)
+php artisan superadmin:crear tu-correo@serialo.pe --nombre="Tu nombre"
+
+# Crear un estudio también por terminal (lo mismo que «Nueva cuenta» del panel)
+php artisan estudio:crear garcia "Estudio García" admin@garcia.pe --admin="Ana García" --invitar
+#   --invitar envía el correo; sin él muestra una contraseña generada (o --clave=...). --tipo=demo --vence=AAAA-MM-DD
 
 # Después de cada actualización: base central y la de todos los estudios
 php artisan estudios:migrar
@@ -52,7 +75,7 @@ php artisan estudios:migrar
 
 ⚠ En el VPS **nunca** correr `php artisan migrate` solo: crearía las tablas de planilla en la base central.
 
-Subdominios reservados: `www`, `admin`, `app`, `api`, `mail`, `demo`… (ver `CrearEstudio::RESERVADOS`).
+Subdominios reservados: `www`, `admin`, `app`, `api`, `mail`, `demo`, `panel`… (ver `GestionEstudios::RESERVADOS`).
 
 ## `.env` del VPS
 
@@ -60,6 +83,8 @@ Subdominios reservados: `www`, `admin`, `app`, `api`, `mail`, `demo`… (ver `Cr
 PLANILLAS_MODO=saas
 PLANILLAS_DOMINIOS_CENTRALES=serialo.pe,admin.serialo.pe
 PLANILLAS_PREFIJO_BD=planillas_
+PLANILLAS_DOMINIO_PANEL=admin.serialo.pe
+PLANILLAS_URL_ESTUDIO=https://{estudio}.serialo.pe
 DB_DATABASE=serialo_central        # base central
 DB_USERNAME=...                    # con permiso para CREATE DATABASE
 CACHE_STORE=redis
@@ -79,7 +104,9 @@ mysql -u root -e "CREATE DATABASE serialo_central_prueba"
 export PLANILLAS_MODO=saas DB_DATABASE=serialo_central_prueba CACHE_STORE=array PLANILLAS_PREFIJO_BD=prueba_saas_
 php artisan estudios:migrar
 php artisan estudio:crear garcia "Estudio García" admin@garcia.test --clave='Clave-Segura-2026!'
-php artisan serve --port=8002        # http://garcia.localhost:8002
+export PLANILLAS_DOMINIO_PANEL=admin.localhost PLANILLAS_URL_ESTUDIO='http://{estudio}.localhost:8002' SESSION_DRIVER=database MAIL_MAILER=log
+php artisan superadmin:crear tu-correo@serialo.pe
+php artisan serve --port=8002        # http://garcia.localhost:8002 · panel: http://admin.localhost:8002
 ```
 
 ## Cuentas de prueba

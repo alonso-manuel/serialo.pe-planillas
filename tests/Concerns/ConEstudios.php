@@ -16,7 +16,7 @@ trait ConEstudios
     private string $prefijoEstudios;
 
     /** @var list<string> */
-    private array $estudiosDelTest = [];
+    protected array $estudiosDelTest = [];
 
     protected function activarModoSaas(): void
     {
@@ -27,6 +27,7 @@ trait ConEstudios
             'tenancy.central_domains' => ['localhost'],
             'tenancy.database.central_connection' => config('database.default'),
             'tenancy.database.prefix' => $this->prefijoEstudios,
+            'planillas.url_estudio' => 'http://{estudio}.localhost',
         ]);
 
         $this->artisan('migrate', ['--path' => [database_path('migrations/central')], '--realpath' => true])->assertSuccessful();

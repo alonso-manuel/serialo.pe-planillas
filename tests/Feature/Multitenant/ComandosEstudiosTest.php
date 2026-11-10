@@ -32,7 +32,7 @@ class ComandosEstudiosTest extends TestCase
             '--admin' => 'Ana García', '--clave' => 'Clave-Segura-2026!',
         ])
             ->expectsOutputToContain('Estudio «Estudio García» creado.')
-            ->expectsOutputToContain('https://garcia.localhost')
+            ->expectsOutputToContain('http://garcia.localhost')
             ->assertSuccessful();
 
         $estudio = Estudio::query()->findOrFail('garcia');
