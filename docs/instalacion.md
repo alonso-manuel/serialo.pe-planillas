@@ -12,12 +12,12 @@ Guía del instalador web (`/instalar`). Pensado para hosting compartido con cPan
 
 Al abrir el dominio, cualquier página lleva a `/instalar`.
 
-| Paso | Qué hace |
-| --- | --- |
-| 1. Requisitos | Revisa PHP, extensiones y permisos de escritura (`storage`, `bootstrap/cache`, `.env`). Pide el **código de instalación** del archivo `storage/app/codigo-instalacion.txt`, que solo puede leer quien tiene acceso al hosting. |
-| 2. Base de datos | Prueba la conexión antes de seguir. Rechaza una base que ya tenga tablas del sistema. |
-| 3. Sistema y administrador | Nombre del sistema, dirección web, primer administrador (contraseña: 12+ caracteres con mayúsculas, minúsculas, números y símbolos), SMTP opcional y la casilla de datos demo (desmarcada por defecto). |
-| 4. Listo | Muestra el comando del cron para cPanel. |
+| Paso                       | Qué hace                                                                                                                                                                                                                       |
+| -------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| 1. Requisitos              | Revisa PHP, extensiones y permisos de escritura (`storage`, `bootstrap/cache`, `.env`). Pide el **código de instalación** del archivo `storage/app/codigo-instalacion.txt`, que solo puede leer quien tiene acceso al hosting. |
+| 2. Base de datos           | Prueba la conexión antes de seguir. Rechaza una base que ya tenga tablas del sistema.                                                                                                                                          |
+| 3. Sistema y administrador | Nombre del sistema, dirección web, primer administrador (contraseña: 12+ caracteres con mayúsculas, minúsculas, números y símbolos), SMTP opcional y la casilla de datos demo (desmarcada por defecto).                        |
+| 4. Listo                   | Muestra el comando del cron para cPanel.                                                                                                                                                                                       |
 
 Al instalar se ejecutan las migraciones, se cargan los catálogos legales (`CatalogosSeeder`: parámetros, AFP, tasas AFP, conceptos de la tabla 22), se crea el administrador (queda en la auditoría) y se escribe el `.env` definitivo (producción, sesión/caché/cola en base de datos). El `.env` solo se escribe si todo lo anterior salió bien.
 
