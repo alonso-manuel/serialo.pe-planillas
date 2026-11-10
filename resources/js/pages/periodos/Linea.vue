@@ -8,7 +8,7 @@ import {
     ChevronRight,
     TriangleAlert,
 } from '@lucide/vue';
-import { onBeforeUnmount, onMounted, ref } from 'vue';
+import { computed, onBeforeUnmount, onMounted, ref } from 'vue';
 import BloqueConceptos from '@/components/periodos/BloqueConceptos.vue';
 import EstadoPeriodo from '@/components/periodos/EstadoPeriodo.vue';
 import { Button } from '@/components/ui/button';
@@ -32,6 +32,54 @@ const BLOQUES_DERECHA = [
     'descuentos',
     'aportes_empleador',
 ] as const;
+
+/* ---------- Renta de quinta categoría ---------- */
+const DIVISORES: Record<number, string> = {
+    12: 'Impuesto anual ÷ 12 (enero a marzo)',
+    9: '(Impuesto − retenido ene–mar) ÷ 9',
+    8: '(Impuesto − retenido ene–abr) ÷ 8',
+    5: '(Impuesto − retenido ene–jul) ÷ 5',
+    4: '(Impuesto − retenido ene–ago) ÷ 4',
+    1: 'Impuesto − todo lo retenido (cierre del año)',
+};
+
+const filasQuinta = computed(() => {
+    const q = props.quinta;
+
+    if (!q) {
+        return [];
+    }
+
+    const soles = (v: string) => 'S/ ' + formatoMonto(v);
+
+    return [
+        {
+            etiqueta: 'Renta anual proyectada',
+            valor: soles(q.renta_proyectada),
+        },
+        { etiqueta: 'Deducción', valor: '− ' + soles(q.deduccion) },
+        { etiqueta: 'Renta neta', valor: soles(q.renta_neta) },
+        { etiqueta: 'Impuesto anual', valor: soles(q.impuesto_anual) },
+        {
+            etiqueta: 'Retenciones restadas',
+            valor: soles(q.retenciones_consideradas),
+        },
+        { etiqueta: 'Cálculo', valor: DIVISORES[q.divisor] ?? '' },
+        {
+            etiqueta: 'Retención ordinaria',
+            valor: soles(q.retencion_ordinaria),
+        },
+        {
+            etiqueta: 'Por ingresos extraordinarios',
+            valor: soles(q.retencion_extraordinaria),
+        },
+        {
+            etiqueta: 'Retención del mes (0605)',
+            valor: soles(q.retencion),
+            fuerte: true,
+        },
+    ];
+});
 
 /* ---------- Calcular desde el detalle ---------- */
 const calculando = ref(false);
@@ -344,6 +392,50 @@ onBeforeUnmount(() => window.removeEventListener('keydown', alPresionar));
                             de cálculo puede diferir: EsSalud toma como mínimo
                             la RMV y la prima de seguro AFP tiene tope en la
                             remuneración máxima asegurable.
+                        </p>
+                    </section>
+
+                    <section
+                        v-if="quinta"
+                        class="grid gap-2 rounded-lg border p-4 text-sm"
+                    >
+                        <h2 class="font-medium">Renta de quinta categoría</h2>
+                        <dl class="grid gap-1.5">
+                            <div
+                                v-for="fila in filasQuinta"
+                                :key="fila.etiqueta"
+                                class="flex justify-between gap-4"
+                                :class="
+                                    fila.fuerte
+                                        ? 'border-t pt-1.5 font-medium'
+                                        : ''
+                                "
+                            >
+                                <dt
+                                    :class="
+                                        fila.fuerte
+                                            ? ''
+                                            : 'text-muted-foreground'
+                                    "
+                                >
+                                    {{ fila.etiqueta }}
+                                </dt>
+                                <dd class="tabular-nums">{{ fila.valor }}</dd>
+                            </div>
+                        </dl>
+                        <p
+                            v-if="quinta.saldo_a_favor !== '0.00'"
+                            class="text-xs text-amber-700 dark:text-amber-400"
+                        >
+                            Se retuvo S/
+                            {{ formatoMonto(quinta.saldo_a_favor) }}
+                            de más en el año: el trabajador lo recupera en su
+                            declaración anual.
+                        </p>
+                        <p class="text-xs text-muted-foreground">
+                            Proyección del año menos la deducción en UIT,
+                            impuesto por tramos y retención según el mes (art.
+                            40 del Reglamento de la LIR).
                         </p>
                     </section>
                 </div>

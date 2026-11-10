@@ -182,7 +182,28 @@ con la fecha de cese) y `App\Services\Planilla\LiquidacionesBeneficios`. Pantall
 
 ## Quinta categoría (v1.1)
 
-Proyección anual de rentas − 7 UIT; tramos 8 % / 14 % / 17 % / 20 % / 30 %; retención mensual según el procedimiento del art. 40 del Reglamento de la LIR ⚠ verificar tramos vigentes.
+Retención mensual según el art. 40 del Reglamento de la LIR (`CalculadoraQuinta`, `RetencionQuinta`). Concepto **0605**.
+
+1. **Renta anual** = lo afecto a quinta pagado por la empresa en los meses anteriores del año + certificados de
+   **otros empleadores** (ficha del trabajador → pestaña Quinta) + lo ordinario del mes + **remuneración mensual**
+   (básico completo + asignación familiar) × meses que faltan + **gratificaciones por percibir** (julio y/o diciembre,
+   estimadas: remuneración mensual × meses del semestre desde el ingreso ÷ 6 × factor del régimen × (1 + bonificación)).
+2. **Renta neta** = renta anual − deducción (7 UIT). **Impuesto** por tramos acumulativos (hasta 5 / 20 / 35 / 45 UIT:
+   8 / 14 / 17 / 20 %; exceso 30 %). Deducción, cortes y tasas son parámetros con vigencia.
+3. **Retención ordinaria**: enero–marzo impuesto ÷ 12; abril (− retenido ene–mar) ÷ 9; mayo–julio (− ene–abr) ÷ 8;
+   agosto (− ene–jul) ÷ 5; setiembre–noviembre (− ene–ago) ÷ 4; diciembre impuesto − todo lo retenido.
+4. **Extraordinario** del mes (todo lo afecto que no sea básico, asignación familiar, remuneración vacacional ni
+   gratificación/bonificación: horas extra, bonos, novedades, conceptos de liquidación): se retiene completa la
+   diferencia de impuesto que genera.
+5. **Mes del cese**: sin proyección; se retiene el impuesto sobre lo percibido menos lo retenido (nunca negativo).
+   Diciembre y cese informan el **saldo a favor** (lo retenido de más), que no se devuelve en la planilla.
+6. Las retenciones de otros empleadores se restan como si fueran de meses anteriores.
+7. Si se registra el **0605 como novedad**, se usa ese monto y no se calcula.
+8. El historial es **por empresa** (cada empresa del estudio es un empleador distinto).
+
+El detalle (renta proyectada, impuesto, divisor, retención ordinaria y extraordinaria) se guarda en la línea y se ve en
+el detalle del trabajador en la planilla. No se aplica la deducción adicional de 3 UIT (gastos): va en la declaración
+anual del trabajador.
 
 ## Verificaciones pendientes (lista viva)
 
@@ -199,4 +220,5 @@ Proyección anual de rentas − 7 UIT; tramos 8 % / 14 % / 17 % / 20 % / 30 %; r
 - [ ] Licencia sin goce: descuenta días pagados y reduce la gratificación como las faltas (1/180 por día).
 - [ ] PLAME: códigos de la tabla 21 (07 faltas, 21/22 subsidios), jornada de 8 h diarias en el .jor, montos en cero omitidos en el .rem.
 - [ ] Liquidación: códigos tabla 22 **0407** (gratificación proporcional), **0313** (bonificación proporcional), **0114** (vacaciones truncas) y **0911** (indemnización vacacional — código supuesto); afectación de las vacaciones no gozadas y truncas; sexto de gratificación de la CTS trunca; computable de vacaciones con asignación familiar; mínimo de un mes para truncas; casos reales para tests.
+- [ ] Quinta: clasificación ordinario/extraordinario (horas extra y bonos como extraordinarios), bonificación extraordinaria afecta, indemnización vacacional (0911) y CTS inafectas, cese sin proyección, retenciones de otros empleadores restadas desde abril, estimación de gratificaciones por percibir (tasa 9 % aun con EPS), divisores del art. 40, UIT 2026.
 - [ ] Gratificación: diciembre como mes completo, faltas 1/180 por día, variables solo HE (≥ 3 meses), factor REMYPE (50 % / 0 %), meses sin planilla asumidos completos, faltas de diciembre excluidas.

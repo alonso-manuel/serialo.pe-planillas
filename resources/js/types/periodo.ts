@@ -132,6 +132,7 @@ export type DetalleLinea = {
         pension: string | null;
         quinta: string;
     } | null;
+    quinta: DetalleQuinta | null;
     anterior: number | null;
     siguiente: number | null;
     posicion: number;
@@ -186,4 +187,18 @@ export type EnviosBoletas = {
         error: string | null;
         enviado_en: string | null;
     }[];
+};
+
+/** Cálculo de la retención de renta de quinta categoría del mes (art. 40 del Reglamento de la LIR). */
+export type DetalleQuinta = {
+    renta_proyectada: string;
+    deduccion: string;
+    renta_neta: string;
+    impuesto_anual: string;
+    retenciones_consideradas: string;
+    divisor: number;
+    retencion_ordinaria: string;
+    retencion_extraordinaria: string;
+    retencion: string;
+    saldo_a_favor: string;
 };

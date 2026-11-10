@@ -34,6 +34,7 @@ use App\Http\Controllers\Trabajadores\CambioTrabajadorController;
 use App\Http\Controllers\Trabajadores\CeseTrabajadorController;
 use App\Http\Controllers\Trabajadores\ConsultaDniController;
 use App\Http\Controllers\Trabajadores\ImportacionTrabajadoresController;
+use App\Http\Controllers\Trabajadores\OtroEmpleadorController;
 use App\Http\Controllers\Trabajadores\TrabajadorController;
 use App\Http\Controllers\Usuarios\EstadoUsuarioController;
 use App\Http\Controllers\Usuarios\UsuarioController;
@@ -134,6 +135,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
             ->name('trabajadores.cese.destroy');
         Route::post('trabajadores/{trabajador}/cambios', [CambioTrabajadorController::class, 'store'])
             ->name('trabajadores.cambios.store');
+        Route::post('trabajadores/{trabajador}/otros-empleadores', [OtroEmpleadorController::class, 'store'])
+            ->name('trabajadores.otros-empleadores.store');
+        Route::delete('trabajadores/{trabajador}/otros-empleadores/{renta}', [OtroEmpleadorController::class, 'destroy'])
+            ->name('trabajadores.otros-empleadores.destroy');
         Route::delete('trabajadores/{trabajador}/cambios/{historial}', [CambioTrabajadorController::class, 'destroy'])
             ->name('trabajadores.cambios.destroy');
         Route::resource('trabajadores', TrabajadorController::class)

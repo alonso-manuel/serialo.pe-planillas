@@ -1,4 +1,4 @@
-export type TipoParametro = 'monto' | 'tasa' | 'dias';
+export type TipoParametro = 'monto' | 'tasa' | 'dias' | 'uit';
 
 export type VigenciaParametro = {
     id: number;

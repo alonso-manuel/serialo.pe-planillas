@@ -5,6 +5,7 @@ namespace App\Services\Planilla;
 use App\Domain\Planilla\ParametrosCts;
 use App\Domain\Planilla\ParametrosGratificacion;
 use App\Domain\Planilla\ParametrosPeriodo;
+use App\Domain\Planilla\ParametrosQuinta;
 use App\Domain\Planilla\TasaAfpPeriodo;
 use App\Enums\ClaveParametro as C;
 use App\Enums\RegimenLaboral;
@@ -30,6 +31,25 @@ class ParametrosRepositorio
             porcentajeAsignacionFamiliar: Parametro::vigente(C::PorcentajeAsignacionFamiliar, $fecha),
             sobretasaHoraExtra25: Parametro::vigente(C::SobretasaHoraExtra25, $fecha),
             sobretasaHoraExtra35: Parametro::vigente(C::SobretasaHoraExtra35, $fecha),
+        );
+    }
+
+    /** Renta de quinta categoría vigente al cierre del periodo. */
+    public function quinta(Periodo $periodo): ParametrosQuinta
+    {
+        $fecha = $periodo->ultimoDia()->toDateString();
+        $v = fn (C $clave) => Parametro::vigente($clave, $fecha);
+
+        return new ParametrosQuinta(
+            uit: $v(C::Uit),
+            deduccionUit: $v(C::QuintaDeduccionUit),
+            tramos: [
+                [$v(C::QuintaTramo1Uit), $v(C::QuintaTasa1)],
+                [$v(C::QuintaTramo2Uit), $v(C::QuintaTasa2)],
+                [$v(C::QuintaTramo3Uit), $v(C::QuintaTasa3)],
+                [$v(C::QuintaTramo4Uit), $v(C::QuintaTasa4)],
+                [null, $v(C::QuintaTasa5)],
+            ],
         );
     }
 

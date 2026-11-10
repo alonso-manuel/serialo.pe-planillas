@@ -306,7 +306,9 @@ const porVerificar = computed(() =>
                                     ? 'Porcentaje'
                                     : seleccionada?.tipo === 'dias'
                                       ? 'Días'
-                                      : 'Monto'
+                                      : seleccionada?.tipo === 'uit'
+                                        ? 'Cantidad de UIT'
+                                        : 'Monto'
                             }}
                         </Label>
                         <div class="relative">
@@ -332,7 +334,9 @@ const porVerificar = computed(() =>
                                         ? '9.00'
                                         : seleccionada?.tipo === 'dias'
                                           ? '30'
-                                          : '1130.00'
+                                          : seleccionada?.tipo === 'uit'
+                                            ? '7'
+                                            : '1130.00'
                                 "
                                 required
                                 v-focus
@@ -342,6 +346,12 @@ const porVerificar = computed(() =>
                                 class="pointer-events-none absolute top-1/2 right-3 -translate-y-1/2 text-sm text-muted-foreground"
                             >
                                 %
+                            </span>
+                            <span
+                                v-else-if="seleccionada?.tipo === 'uit'"
+                                class="pointer-events-none absolute top-1/2 right-3 -translate-y-1/2 text-sm text-muted-foreground"
+                            >
+                                UIT
                             </span>
                         </div>
                         <InputError :message="form.errors.valor" />

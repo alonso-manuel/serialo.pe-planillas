@@ -29,6 +29,14 @@ class VerificadorCalculo
         ClaveParametro::PorcentajeAsignacionFamiliar,
         ClaveParametro::SobretasaHoraExtra25,
         ClaveParametro::SobretasaHoraExtra35,
+        // Quinta categoría (cada mes; la proyección usa también la gratificación)
+        ClaveParametro::Uit,
+        ClaveParametro::QuintaDeduccionUit,
+        ClaveParametro::QuintaTramo1Uit, ClaveParametro::QuintaTramo2Uit, ClaveParametro::QuintaTramo3Uit, ClaveParametro::QuintaTramo4Uit,
+        ClaveParametro::QuintaTasa1, ClaveParametro::QuintaTasa2, ClaveParametro::QuintaTasa3, ClaveParametro::QuintaTasa4, ClaveParametro::QuintaTasa5,
+        ClaveParametro::TasaBonificacionExtraordinaria,
+        ClaveParametro::FactorGratificacionPequena,
+        ClaveParametro::FactorGratificacionMicro,
     ];
 
     /** Conceptos que el motor genera y que deben existir en la tabla de conceptos. */
@@ -37,7 +45,7 @@ class VerificadorCalculo
         CalculadoraPlanilla::HORA_EXTRA_25, CalculadoraPlanilla::HORA_EXTRA_35,
         CalculadoraPlanilla::AFP_COMISION, CalculadoraPlanilla::AFP_PRIMA, CalculadoraPlanilla::AFP_APORTE,
         CalculadoraPlanilla::ONP, CalculadoraPlanilla::ESSALUD, CalculadoraPlanilla::SIS,
-        CalcularPlanillaPeriodo::REMUNERACION_VACACIONAL,
+        CalcularPlanillaPeriodo::REMUNERACION_VACACIONAL, RetencionQuinta::CODIGO,
     ];
 
     /** Además, en julio y diciembre (gratificación). */

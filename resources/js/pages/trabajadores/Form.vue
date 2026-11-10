@@ -35,10 +35,12 @@ import {
 } from '@/routes/trabajadores';
 import CeseTrabajador from '@/components/trabajadores/CeseTrabajador.vue';
 import HistorialTrabajador from '@/components/trabajadores/HistorialTrabajador.vue';
+import OtrosEmpleadores from '@/components/trabajadores/OtrosEmpleadores.vue';
 import type {
     CatalogosTrabajador,
     CambioHistorial,
     Opcion,
+    RentaOtroEmpleador,
     TrabajadorEditable,
 } from '@/types';
 
@@ -47,6 +49,7 @@ const props = defineProps<{
     catalogos: CatalogosTrabajador;
     historial?: CambioHistorial[];
     grupos_historial?: Opcion[];
+    otros_empleadores?: RentaOtroEmpleador[];
 }>();
 
 /** Ya figura en planillas: sueldo, cargo, pensión... solo cambian con historial. */
@@ -124,12 +127,12 @@ const PESTANAS = {
     cuentas: ['cuenta_sueldo', 'cuenta_cts', 'entidad_cts'],
 } as const;
 
-type Pestana = keyof typeof PESTANAS | 'historial';
+type Pestana = keyof typeof PESTANAS | 'historial' | 'quinta';
 
 const pestana = ref<Pestana>('personales');
 
 function errores(p: Pestana): number {
-    if (p === 'historial') {
+    if (p === 'historial' || p === 'quinta') {
         return 0;
     }
 
@@ -297,7 +300,9 @@ function eliminar(): void {
                             laborales: 'Laborales',
                             pension: 'Pensión y salud',
                             cuentas: 'Cuentas',
-                            ...(esNuevo ? {} : { historial: 'Historial' }),
+                            ...(esNuevo
+                                ? {}
+                                : { historial: 'Historial', quinta: 'Quinta' }),
                         } as Record<Pestana, string>"
                         :key="clave"
                         :value="clave"
@@ -792,6 +797,14 @@ function eliminar(): void {
                         :historial="historial ?? []"
                         :grupos="grupos_historial ?? []"
                         :catalogos="catalogos"
+                    />
+                </TabsContent>
+
+                <!-- Renta de quinta: otros empleadores -->
+                <TabsContent v-if="trabajador" value="quinta" class="pt-4">
+                    <OtrosEmpleadores
+                        :trabajador="trabajador"
+                        :rentas="otros_empleadores ?? []"
                     />
                 </TabsContent>
             </Tabs>

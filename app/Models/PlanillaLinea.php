@@ -26,6 +26,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property string $total_descuentos
  * @property string $total_aportes_empleador
  * @property string $neto_pagar
+ * @property array<string, string|int>|null $detalle_quinta cálculo de la retención de quinta del mes (ResultadoQuinta::detalle)
  * @property CarbonImmutable|null $calculado_en
  * @property-read Periodo $periodo
  * @property-read Trabajador $trabajador
@@ -37,7 +38,7 @@ class PlanillaLinea extends Model
     protected $fillable = [
         'periodo_id', 'trabajador_id', 'dias_laborados', 'dias_no_laborados', 'dias_subsidiados', 'tipo_subsidio', 'dias_licencia', 'dias_vacaciones',
         'horas_ordinarias', 'minutos_ordinarios', 'horas_extra_25', 'horas_extra_35',
-        'total_ingresos', 'total_descuentos', 'total_aportes_empleador', 'neto_pagar', 'calculado_en',
+        'total_ingresos', 'total_descuentos', 'total_aportes_empleador', 'neto_pagar', 'detalle_quinta', 'calculado_en',
     ];
 
     /** @return array<string, string> */
@@ -50,6 +51,7 @@ class PlanillaLinea extends Model
             'total_descuentos' => 'decimal:2',
             'total_aportes_empleador' => 'decimal:2',
             'neto_pagar' => 'decimal:2',
+            'detalle_quinta' => 'array',
             'calculado_en' => 'datetime',
         ];
     }

@@ -37,6 +37,7 @@ class CalcularPlanillaPeriodo
         private readonly GratificacionPeriodo $gratificacion,
         private readonly VacacionesTrabajador $vacaciones,
         private readonly LiquidacionesBeneficios $liquidaciones,
+        private readonly RetencionQuinta $quinta,
     ) {}
 
     /**
@@ -64,14 +65,23 @@ class CalcularPlanillaPeriodo
             $periodo->load('lineas.trabajador', 'lineas.novedades.concepto');
             $gratificaciones = $this->gratificacion->calcular($periodo);
             $liquidaciones = $this->liquidaciones->delPeriodo($periodo);
+            $this->quinta->preparar($periodo);
 
             foreach ($periodo->lineas as $linea) {
                 $datos = $this->datosTrabajador($linea, $periodo);
-                $resultado = $this->calculadora->calcular(
-                    $datos,
-                    $this->entrada($linea, $gratificaciones[$linea->id] ?? null, $this->remuneracionVacacional($linea, $periodo, $datos), $liquidaciones->get($linea->trabajador_id)),
-                    $parametros,
-                );
+                $entrada = $this->entrada($linea, $gratificaciones[$linea->id] ?? null, $this->remuneracionVacacional($linea, $periodo, $datos), $liquidaciones->get($linea->trabajador_id));
+                $resultado = $this->calculadora->calcular($datos, $entrada, $parametros);
+
+                // Quinta categoría: sobre los ingresos ya calculados; entra como descuento 0605 y se recalcula el neto.
+                // Si el usuario registró el 0605 como novedad, se respeta ese monto.
+                $detalleQuinta = null;
+                if (! array_key_exists(RetencionQuinta::CODIGO, $entrada->descuentos)) {
+                    $quinta = $this->quinta->calcular($linea, $datos, $resultado);
+                    $detalleQuinta = $quinta->detalle();
+                    if (BigDecimal::of($quinta->retencion)->isPositive()) {
+                        $resultado = $this->calculadora->calcular($datos, $this->conDescuento($entrada, RetencionQuinta::CODIGO, $quinta->retencion), $parametros);
+                    }
+                }
 
                 $linea->conceptos()->delete();
                 foreach ($resultado->conceptos() as $codigo => $monto) {
@@ -87,6 +97,7 @@ class CalcularPlanillaPeriodo
                     'total_descuentos' => $resultado->totalDescuentos,
                     'total_aportes_empleador' => $resultado->totalAportesEmpleador,
                     'neto_pagar' => $resultado->netoPagar,
+                    'detalle_quinta' => $detalleQuinta,
                     'calculado_en' => now(),
                 ]);
             }
@@ -101,6 +112,17 @@ class CalcularPlanillaPeriodo
             'trabajadores' => $periodo->lineas()->count(),
             'neto' => (string) $neto->toScale(2),
         ];
+    }
+
+    private function conDescuento(EntradaPlanilla $e, string $codigo, string $monto): EntradaPlanilla
+    {
+        return new EntradaPlanilla(
+            diasLaborados: $e->diasLaborados,
+            horasExtra25: $e->horasExtra25,
+            horasExtra35: $e->horasExtra35,
+            ingresosAdicionales: $e->ingresosAdicionales,
+            descuentos: [...$e->descuentos, $codigo => $monto],
+        );
     }
 
     private function datosTrabajador(PlanillaLinea $linea, Periodo $periodo): DatosTrabajador

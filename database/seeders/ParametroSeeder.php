@@ -32,6 +32,27 @@ class ParametroSeeder extends Seeder
         ];
     }
 
+    /**
+     * Renta de quinta categoría (v1.1). También los inserta la migración `add_quinta_categoria`.
+     *
+     * @return list<array{0: C, 1: string, 2: string, 3: string}>
+     */
+    public static function quinta(): array
+    {
+        return [
+            [C::QuintaDeduccionUit, '7', '2015-01-01', 'LIR, art. 46'],
+            [C::QuintaTramo1Uit, '5', '2015-01-01', 'Ley 30296 (LIR, art. 53)'],
+            [C::QuintaTramo2Uit, '20', '2015-01-01', 'Ley 30296 (LIR, art. 53)'],
+            [C::QuintaTramo3Uit, '35', '2015-01-01', 'Ley 30296 (LIR, art. 53)'],
+            [C::QuintaTramo4Uit, '45', '2015-01-01', 'Ley 30296 (LIR, art. 53)'],
+            [C::QuintaTasa1, '0.08', '2015-01-01', 'Ley 30296 (LIR, art. 53)'],
+            [C::QuintaTasa2, '0.14', '2015-01-01', 'Ley 30296 (LIR, art. 53)'],
+            [C::QuintaTasa3, '0.17', '2015-01-01', 'Ley 30296 (LIR, art. 53)'],
+            [C::QuintaTasa4, '0.20', '2015-01-01', 'Ley 30296 (LIR, art. 53)'],
+            [C::QuintaTasa5, '0.30', '2015-01-01', 'Ley 30296 (LIR, art. 53)'],
+        ];
+    }
+
     public function run(): void
     {
         $filas = [
@@ -44,6 +65,7 @@ class ParametroSeeder extends Seeder
             [C::SobretasaHoraExtra25, '0.25', '2002-01-01', 'D.S. 007-2002-TR'],
             [C::SobretasaHoraExtra35, '0.35', '2002-01-01', 'D.S. 007-2002-TR'],
             ...self::gratificacion(),
+            ...self::quinta(),
         ];
 
         foreach ($filas as [$clave, $valor, $desde, $base]) {

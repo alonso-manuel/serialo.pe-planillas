@@ -91,7 +91,15 @@ Marca `[x]` al terminar (o usa `/actualizar-roadmap`). Cada tarea: código + tes
 
 ## v1.1 — 11 ene → 12 feb 2027
 
-Quinta categoría, indemnización por despido arbitrario, T-Registro, cuarta categoría, carga masiva de asistencia, derechohabientes, adelantos y préstamos, documentos laborales.
+- [x] Quinta categoría: retención mensual (art. 40 del Reglamento de la LIR) con proyección, gratificaciones por percibir, extraordinarios, cese, otros empleadores y detalle en la línea — ver docs/reglas-calculo.md
+- [ ] Indemnización por despido arbitrario
+- [ ] T-Registro
+- [ ] Cuarta categoría
+- [ ] Carga masiva de asistencia
+- [ ] Derechohabientes
+- [ ] Adelantos y préstamos
+- [ ] Documentos laborales
+
 Ideas tomadas del análisis de mercado (09/11): conceptos recurrentes y proporcionales por trabajador, EPS y seguro Vida Ley, comparativo entre recálculos de un mismo mes y simulador de costo de contratación.
 
 ## v1.2 — 15 feb → 26 mar 2027

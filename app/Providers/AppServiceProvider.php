@@ -11,6 +11,7 @@ use App\Models\Novedad;
 use App\Models\Parametro;
 use App\Models\Periodo;
 use App\Models\PlanillaLinea;
+use App\Models\RentaOtroEmpleador;
 use App\Models\TasaAfp;
 use App\Models\Trabajador;
 use App\Models\TrabajadorHistorial;
@@ -103,6 +104,7 @@ class AppServiceProvider extends ServiceProvider
             'liquidacion_cts' => LiquidacionCts::class,
             'vacacion' => VacacionGoce::class,
             'liquidacion' => Liquidacion::class,
+            'renta_otro_empleador' => RentaOtroEmpleador::class,
         ]);
     }
 

@@ -34,7 +34,8 @@ class DetalleLinea
      *     trabajador: array<string, mixed>,
      *     linea: array<string, mixed>,
      *     grupos: array<string, array{titulo: string, conceptos: list<array{codigo: string, nombre: string, monto: string}>, total: string}>,
-     *     afectas: array{essalud: string, pension: string|null, quinta: string}|null
+     *     afectas: array{essalud: string, pension: string|null, quinta: string}|null,
+     *     quinta: array<string, string|int>|null
      * }
      */
     public function datos(Periodo $periodo, PlanillaLinea $linea): array
@@ -119,6 +120,8 @@ class DetalleLinea
                 },
                 'quinta' => $afecta('afecto_quinta'),
             ] : null,
+            // Cómo se calculó la retención de quinta (null si no se calculó o si el 0605 fue manual).
+            'quinta' => $calculada ? $linea->detalle_quinta : null,
         ];
     }
 

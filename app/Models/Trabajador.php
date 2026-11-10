@@ -123,4 +123,10 @@ class Trabajador extends Model
     {
         return trim("{$this->apellido_paterno} {$this->apellido_materno}, {$this->nombres}")." (doc. {$this->numero_documento})";
     }
+
+    /** @return HasMany<RentaOtroEmpleador, $this> */
+    public function rentasOtrosEmpleadores(): HasMany
+    {
+        return $this->hasMany(RentaOtroEmpleador::class);
+    }
 }

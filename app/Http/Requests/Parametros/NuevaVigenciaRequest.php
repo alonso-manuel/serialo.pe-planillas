@@ -54,6 +54,10 @@ class NuevaVigenciaRequest extends FormRequest
                     if (preg_match('/^\d{1,3}(\.\d{1,2})?$/', $valor) !== 1 || BigDecimal::of($valor)->isGreaterThan(100)) {
                         $validator->errors()->add('valor', 'La tasa debe estar entre 0 % y 100 %, con hasta 2 decimales.');
                     }
+                } elseif ($clave->tipo() === 'uit') {
+                    if (preg_match('/^\d{1,3}(\.\d{1,2})?$/', $valor) !== 1 || preg_match('/^0+(\.0+)?$/', $valor) === 1) {
+                        $validator->errors()->add('valor', 'Indica una cantidad de UIT mayor que cero (hasta 2 decimales).');
+                    }
                 } elseif ($clave->tipo() === 'dias') {
                     if (preg_match('/^\d{1,2}$/', $valor) !== 1 || (int) $valor < 1) {
                         $validator->errors()->add('valor', 'Indica un número entero de días (1 a 99).');

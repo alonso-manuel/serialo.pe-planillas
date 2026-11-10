@@ -29,6 +29,18 @@ enum ClaveParametro: string
     case DiasVacacionesPequena = 'dias_vac_pequena';           // 15 días (REMYPE)
     case DiasVacacionesMicro = 'dias_vac_micro';               // 15 días (REMYPE)
 
+    // Renta de quinta categoría (LIR arts. 46 y 53): deducción y tramos en UIT, tasas como fracción.
+    case QuintaDeduccionUit = 'quinta_deduccion_uit';          // 7 UIT
+    case QuintaTramo1Uit = 'quinta_tramo1_uit';                // hasta 5 UIT
+    case QuintaTramo2Uit = 'quinta_tramo2_uit';                // hasta 20 UIT
+    case QuintaTramo3Uit = 'quinta_tramo3_uit';                // hasta 35 UIT
+    case QuintaTramo4Uit = 'quinta_tramo4_uit';                // hasta 45 UIT
+    case QuintaTasa1 = 'quinta_tasa1';                         // 8 %
+    case QuintaTasa2 = 'quinta_tasa2';                         // 14 %
+    case QuintaTasa3 = 'quinta_tasa3';                         // 17 %
+    case QuintaTasa4 = 'quinta_tasa4';                         // 20 %
+    case QuintaTasa5 = 'quinta_tasa5';                         // 30 % (exceso del último tramo)
+
     public function etiqueta(): string
     {
         return match ($this) {
@@ -48,6 +60,16 @@ enum ClaveParametro: string
             self::DiasVacacionesGeneral => 'Vacaciones en régimen general',
             self::DiasVacacionesPequena => 'Vacaciones en pequeña empresa',
             self::DiasVacacionesMicro => 'Vacaciones en microempresa',
+            self::QuintaDeduccionUit => 'Quinta: deducción anual',
+            self::QuintaTramo1Uit => 'Quinta: fin del 1.er tramo',
+            self::QuintaTramo2Uit => 'Quinta: fin del 2.º tramo',
+            self::QuintaTramo3Uit => 'Quinta: fin del 3.er tramo',
+            self::QuintaTramo4Uit => 'Quinta: fin del 4.º tramo',
+            self::QuintaTasa1 => 'Quinta: tasa del 1.er tramo',
+            self::QuintaTasa2 => 'Quinta: tasa del 2.º tramo',
+            self::QuintaTasa3 => 'Quinta: tasa del 3.er tramo',
+            self::QuintaTasa4 => 'Quinta: tasa del 4.º tramo',
+            self::QuintaTasa5 => 'Quinta: tasa del exceso',
         };
     }
 
@@ -70,15 +92,20 @@ enum ClaveParametro: string
             self::DiasVacacionesGeneral => 'Días calendario de descanso por cada año completo de servicios.',
             self::DiasVacacionesPequena => 'Días calendario de descanso por año en pequeña empresa.',
             self::DiasVacacionesMicro => 'Días calendario de descanso por año en microempresa.',
+            self::QuintaDeduccionUit => 'UIT que se restan a la renta anual antes de aplicar los tramos.',
+            self::QuintaTramo1Uit, self::QuintaTramo2Uit, self::QuintaTramo3Uit, self::QuintaTramo4Uit => 'Hasta cuántas UIT de renta neta llega el tramo.',
+            self::QuintaTasa1, self::QuintaTasa2, self::QuintaTasa3, self::QuintaTasa4 => 'Impuesto sobre la parte de la renta neta dentro del tramo.',
+            self::QuintaTasa5 => 'Impuesto sobre la renta neta que excede el último tramo.',
         };
     }
 
-    /** 'monto' en soles, 'tasa' (fracción guardada, porcentaje en pantalla) o 'dias' (número entero de días). */
+    /** 'monto' en soles, 'tasa' (fracción guardada, porcentaje en pantalla), 'dias' (entero) o 'uit' (cantidad de UIT). */
     public function tipo(): string
     {
         return match ($this) {
             self::Rmv, self::Uit, self::AporteSis => 'monto',
             self::DiasVacacionesGeneral, self::DiasVacacionesPequena, self::DiasVacacionesMicro => 'dias',
+            self::QuintaDeduccionUit, self::QuintaTramo1Uit, self::QuintaTramo2Uit, self::QuintaTramo3Uit, self::QuintaTramo4Uit => 'uit',
             default => 'tasa',
         };
     }
@@ -94,6 +121,11 @@ enum ClaveParametro: string
 
         if ($this->tipo() === 'dias') {
             return $numero->toScale(0, RoundingMode::HalfUp).' días';
+        }
+
+        if ($this->tipo() === 'uit') {
+            // 7.00 → «7 UIT», 7.50 → «7.5 UIT»
+            return rtrim(rtrim((string) $numero->toScale(2, RoundingMode::HalfUp), '0'), '.').' UIT';
         }
 
         $texto = (string) $numero->toScale(2, RoundingMode::HalfUp);

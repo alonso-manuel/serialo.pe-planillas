@@ -96,3 +96,13 @@ export type ImportacionTrabajadores = {
     con_errores: number;
     filas: FilaImportadaTrabajador[];
 };
+
+/** Certificado de rentas y retenciones de otro empleador del año (quinta categoría). */
+export type RentaOtroEmpleador = {
+    id: number;
+    anio: number;
+    ruc_empleador: string | null;
+    empleador: string | null;
+    renta: string;
+    retencion: string;
+};

@@ -32,6 +32,7 @@ class AuditoriaController extends Controller
         'liquidacion_cts' => 'CTS',
         'vacacion' => 'Vacaciones',
         'liquidacion' => 'Liquidación',
+        'renta_otro_empleador' => 'Renta de otro empleador',
         'licencia' => 'Licencia',
         'respaldo' => 'Respaldo',
         'soporte' => 'Soporte',

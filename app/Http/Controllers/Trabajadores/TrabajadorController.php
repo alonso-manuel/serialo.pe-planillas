@@ -17,6 +17,7 @@ use App\Models\Empresa;
 use App\Models\EntidadFinanciera;
 use App\Models\Establecimiento;
 use App\Models\Parametro;
+use App\Models\RentaOtroEmpleador;
 use App\Models\Trabajador;
 use App\Models\User;
 use App\Services\Dni\ConsultaDni;
@@ -158,6 +159,11 @@ class TrabajadorController extends Controller
             ],
             'catalogos' => $this->catalogos($empresa),
             'historial' => $this->historial->lineaDeTiempo($trabajador),
+            'otros_empleadores' => $trabajador->rentasOtrosEmpleadores()->orderByDesc('anio')->orderBy('id')->get()
+                ->map(fn (RentaOtroEmpleador $r) => [
+                    'id' => $r->id, 'anio' => $r->anio, 'ruc_empleador' => $r->ruc_empleador, 'empleador' => $r->empleador,
+                    'renta' => $r->renta, 'retencion' => $r->retencion,
+                ])->values()->all(),
             'grupos_historial' => collect(HistorialTrabajador::GRUPOS)
                 ->map(fn (array $g, string $clave) => ['value' => $clave, 'label' => $g[0]])
                 ->values()->all(),

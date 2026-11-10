@@ -227,6 +227,10 @@ return [
         'faltas' => 'faltas',
         'desde' => 'desde',
         'hasta' => 'hasta',
+        'renta' => 'renta',
+        'retencion' => 'retención',
+        'ruc_empleador' => 'RUC del empleador',
+        'empleador' => 'empleador',
     ],
 
 ];
