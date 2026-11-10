@@ -3,6 +3,7 @@
 use App\Http\Middleware\AsegurarUsuarioActivo;
 use App\Http\Middleware\HandleAppearance;
 use App\Http\Middleware\HandleInertiaRequests;
+use App\Http\Middleware\ModoInstalador;
 use App\Http\Middleware\RequiereEmpresaActiva;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
@@ -22,6 +23,9 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->alias([
             'empresa.activa' => RequiereEmpresaActiva::class,
         ]);
+
+        // Antes que la sesión: sin instalar todavía no hay base de datos.
+        $middleware->web(prepend: [ModoInstalador::class]);
 
         $middleware->web(append: [
             AsegurarUsuarioActivo::class,

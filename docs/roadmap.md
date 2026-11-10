@@ -67,7 +67,7 @@ Marca `[x]` al terminar (o usa `/actualizar-roadmap`). Cada tarea: código + tes
 
 - [x] Configuración de la empresa: logo (boletas y reportes) — pedido el 09/11
 - [x] Panel con gráficos: costo laboral 12 meses, reparto del costo, neto por empresa, avance del mes, accesos por módulo y filtro por empresa — pedido el 09/11
-- [ ] Instalador web
+- [x] Instalador web (requisitos, código de instalación, base de datos, administrador, cron) — ver docs/instalacion.md
 - [ ] Licencia firmada (Ed25519) + límites por plan + modo solo lectura
 - [ ] Actualizador desde el panel
 - [ ] Respaldos automáticos

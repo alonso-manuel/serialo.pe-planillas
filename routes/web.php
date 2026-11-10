@@ -11,6 +11,7 @@ use App\Http\Controllers\Empresas\EmpresaController;
 use App\Http\Controllers\Empresas\EstablecimientoController;
 use App\Http\Controllers\Empresas\EstadoEmpresaController;
 use App\Http\Controllers\Empresas\LogoEmpresaController;
+use App\Http\Controllers\Instalador\InstaladorController;
 use App\Http\Controllers\PanelController;
 use App\Http\Controllers\Parametros\ParametroController;
 use App\Http\Controllers\Periodos\BoletaController;
@@ -32,10 +33,24 @@ use App\Http\Controllers\Trabajadores\ImportacionTrabajadoresController;
 use App\Http\Controllers\Trabajadores\TrabajadorController;
 use App\Http\Controllers\Usuarios\EstadoUsuarioController;
 use App\Http\Controllers\Usuarios\UsuarioController;
+use App\Http\Middleware\AsegurarUsuarioActivo;
+use App\Http\Middleware\HandleInertiaRequests;
 use Illuminate\Support\Facades\Route;
 
 // Sistema instalable: no hay página pública; la raíz lleva al panel (o al login).
 Route::redirect('/', '/dashboard')->name('home');
+
+// Instalador web: solo existe mientras el sistema no está instalado (middleware ModoInstalador).
+Route::prefix('instalar')->name('instalar.')
+    ->withoutMiddleware([AsegurarUsuarioActivo::class, HandleInertiaRequests::class])
+    ->controller(InstaladorController::class)->group(function () {
+        Route::get('/', 'inicio')->name('inicio');
+        Route::post('/', 'codigo')->name('codigo');
+        Route::get('base-de-datos', 'baseDatos')->name('base-datos');
+        Route::post('base-de-datos', 'guardarBaseDatos')->name('base-datos.store');
+        Route::get('sistema', 'sistema')->name('sistema');
+        Route::post('sistema', 'instalar')->name('sistema.store');
+    });
 
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('dashboard', PanelController::class)->name('dashboard');
