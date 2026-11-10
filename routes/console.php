@@ -11,9 +11,11 @@ Artisan::command('inspire', function () {
 
 // Hosting compartido (cPanel): sin procesos permanentes. El cron del cliente corre
 // `php artisan schedule:run` cada minuto y aquí se procesa la cola (cálculo masivo, correos).
+// En el VPS la atiende el servicio serialo-cola (PLANILLAS_COLA_PERMANENTE=true).
 Schedule::command('queue:work --stop-when-empty --max-time=50 --tries=1')
     ->everyMinute()
-    ->withoutOverlapping();
+    ->withoutOverlapping()
+    ->skip(fn () => (bool) config('planillas.cola_permanente'));
 
 // Modo SaaS: avisos por correo de demos y planes por vencer o vencidos (no borra nada).
 Schedule::command('estudios:avisar-vencimientos')

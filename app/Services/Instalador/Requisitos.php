@@ -7,7 +7,7 @@ class Requisitos
 {
     public const PHP_MINIMO = '8.3.0';
 
-    private const EXTENSIONES = ['pdo_mysql', 'mbstring', 'openssl', 'gd', 'zip', 'dom', 'xml', 'fileinfo', 'ctype', 'tokenizer', 'curl', 'sodium'];
+    private const EXTENSIONES = ['pdo_mysql', 'mbstring', 'openssl', 'gd', 'zip', 'dom', 'xml', 'fileinfo', 'ctype', 'tokenizer', 'curl', 'sodium', 'zlib'];
 
     /** @return list<array{nombre: string, ok: bool, ayuda: string}> */
     public function revisar(): array

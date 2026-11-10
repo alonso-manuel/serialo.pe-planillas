@@ -1,0 +1,16 @@
+# Trabajador permanente de la cola (cálculo masivo, correos de boletas, invitaciones).
+# Una sola cola para todos los estudios: cada trabajo lleva su tenant_id. instalar.sh reemplaza {DIR}.
+[Unit]
+Description=Serialo Planillas - cola de trabajos
+After=network.target mysql.service redis-server.service
+
+[Service]
+User=www-data
+Group=www-data
+WorkingDirectory={DIR}
+ExecStart=/usr/bin/php {DIR}/artisan queue:work --sleep=3 --tries=1 --max-time=3600 --memory=256
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target

@@ -27,6 +27,12 @@ return [
     | Correos de boletas por minuto. Los hostings compartidos (cPanel) suelen limitar
     | entre 100 y 500 correos por hora; con 20/min un lote de 200 boletas tarda ~10 min.
     */
+    /*
+    | true cuando un proceso permanente atiende la cola (servicio serialo-cola del VPS):
+    | el cron de cada minuto deja de lanzar queue:work.
+    */
+    'cola_permanente' => (bool) env('PLANILLAS_COLA_PERMANENTE', false),
+
     'correos_por_minuto' => (int) env('PLANILLAS_CORREOS_POR_MINUTO', 20),
 
     /*

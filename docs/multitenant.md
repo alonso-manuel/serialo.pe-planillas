@@ -96,6 +96,8 @@ Subdominios reservados: `www`, `admin`, `app`, `api`, `mail`, `demo`, `panel`…
 
 ## `.env` del VPS
 
+Instalación paso a paso y scripts: [vps.md](vps.md). Plantilla completa: `deploy/vps/env.saas.ejemplo`.
+
 ```dotenv
 PLANILLAS_MODO=saas
 PLANILLAS_DOMINIOS_CENTRALES=serialo.pe,admin.serialo.pe

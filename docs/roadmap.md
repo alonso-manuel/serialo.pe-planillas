@@ -76,7 +76,7 @@ Marca `[x]` al terminar (o usa `/actualizar-roadmap`). Cada tarea: código + tes
 - [ ] Panel central: entrar como soporte
 - [x] Planes SaaS: plan y límites por cuenta (plantillas en config), editar desde el panel, vencimiento con solo lectura y avisos por correo (3 días antes y al vencer) — ver docs/multitenant.md
 - [x] Respaldos automáticos: diario a las 03:00, por estudio en SaaS, 14 días, copia fuera del servidor opcional, pantalla de descarga para el admin y respaldo previo a eliminar una cuenta — ver docs/respaldos.md
-- [ ] Servidor VPS: guía y scripts (Nginx, PHP 8.3, MySQL, Redis, HTTPS comodín `*.serialo.pe`, cron y worker)
+- [x] Servidor VPS: guía y scripts (Nginx, PHP 8.3, MySQL, Redis, HTTPS comodín `*.serialo.pe`, cron, cola permanente, actualización con respaldo) — ver docs/vps.md
 - [ ] Actualizador desde el panel (instalaciones únicas)
 - [ ] Script de empaquetado (build de assets, sin dev-dependencies, zip versionado)
 
