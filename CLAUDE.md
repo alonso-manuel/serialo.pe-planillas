@@ -16,6 +16,7 @@ Lee también: `docs/producto.md` (qué se vende), `docs/roadmap.md` (qué toca a
 - PDF de boletas: `barryvdh/laravel-dompdf` (plantilla Blade en `resources/views/pdf/boleta.blade.php`, servicio `BoletaPago`).
 - Excel: `openspout/openspout` 5.3 (lectura/escritura .xlsx y .csv; usado en tasas AFP y carga masiva).
 - Colas: driver `database` (funciona en hosting compartido con cron).
+- Dos modos (`PLANILLAS_MODO`): `unica` (hosting del cliente) y `saas` (VPS, multitenant con `stancl/tenancy`, una base por estudio por subdominio). Ver `docs/multitenant.md`.
 
 ## Comandos
 

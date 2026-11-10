@@ -37,7 +37,8 @@ return [
 
         'database' => [
             'driver' => 'database',
-            'connection' => env('DB_QUEUE_CONNECTION'),
+            // Modo SaaS: la cola vive en la base central (un solo worker); cada trabajo lleva su estudio.
+            'connection' => env('DB_QUEUE_CONNECTION', env('PLANILLAS_MODO') === 'saas' ? env('DB_CONNECTION', 'mysql') : null),
             'table' => env('DB_QUEUE_TABLE', 'jobs'),
             'queue' => env('DB_QUEUE', 'default'),
             'retry_after' => (int) env('DB_QUEUE_RETRY_AFTER', 90),

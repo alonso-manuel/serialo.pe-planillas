@@ -69,15 +69,19 @@ Marca `[x]` al terminar (o usa `/actualizar-roadmap`). Cada tarea: código + tes
 - [x] Panel con gráficos: costo laboral 12 meses, reparto del costo, neto por empresa, avance del mes, accesos por módulo y filtro por empresa — pedido el 09/11
 - [x] Instalador web (requisitos, código de instalación, base de datos, administrador, cron) — ver docs/instalacion.md
 - [x] Licencia firmada (Ed25519) + límites por plan + modo solo lectura — ver docs/licencias.md
-- [ ] Actualizador desde el panel
-- [ ] Respaldos automáticos
+- [x] Multitenant base (modo SaaS en el VPS): una base por estudio por subdominio, sesión/caché/archivos/cola aislados, comandos `estudio:crear` y `estudios:migrar` — ver docs/multitenant.md
+- [ ] Panel central (`admin.serialo.pe`): estudios y demos, plan, vencimiento, suspender, exportar su base, entrar como soporte
+- [ ] Planes SaaS (demo, mensual, pago único alojado): límites y solo lectura reutilizando la licencia; vencimiento de demos con aviso por correo
+- [ ] Respaldos automáticos (por estudio en el VPS, fuera del servidor; y en instalaciones únicas)
+- [ ] Servidor VPS: guía y scripts (Nginx, PHP 8.3, MySQL, Redis, HTTPS comodín `*.serialo.pe`, cron y worker)
+- [ ] Actualizador desde el panel (instalaciones únicas)
 - [ ] Script de empaquetado (build de assets, sin dev-dependencies, zip versionado)
 
 ### Semana 8 (4–8 ene 2027) · Lanzamiento
 
 - [ ] Piloto con contador: 10 casos reales anonimizados como tests
 - [ ] Correcciones
-- [ ] Demo pública `demo.serialo.pe` con reinicio nocturno
+- [ ] Demos por estudio desde el panel central (cada interesado recibe su app limpia)
 - [ ] Manual de uso y videos cortos
 - [ ] Etiqueta `v1.0.0`
 

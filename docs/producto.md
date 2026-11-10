@@ -12,6 +12,17 @@ Este archivo es el resumen que el código necesita.
 
 Problema: hoy trabajan con libros de Excel con macros, un archivo por empresa, copiando datos a mano para el PLAME, un usuario a la vez.
 
+## Modalidades de venta
+
+| Modalidad          | Dónde corre                                             | Cobro                                      |
+| ------------------ | ------------------------------------------------------- | ------------------------------------------ |
+| Pago único         | Hosting del cliente (instalador web + licencia firmada) | Pago único + plan anual de actualizaciones |
+| Pago único alojado | VPS de Serialo.pe (modo SaaS)                           | Pago único + cuota anual de alojamiento    |
+| Mensual            | VPS de Serialo.pe (modo SaaS)                           | Cuota mensual                              |
+| Demo               | VPS de Serialo.pe: cada interesado recibe su app limpia | Gratis, con vencimiento                    |
+
+El modo SaaS es multitenant con una base de datos por estudio ([multitenant.md](multitenant.md)).
+
 ## Licencias (afectan límites en el código)
 
 | Licencia    | Límites                            | Precio                               |

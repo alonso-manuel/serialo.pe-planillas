@@ -8,9 +8,10 @@ return [
     'clave_publica' => 'r6Z60sW3MKK6KJAAbX3SnKaaIk83fD49abqLmINecm8=',
 
     /*
-    | En desarrollo y en tests no se verifica (igual que el instalador); se puede forzar con LICENCIA_OMITIR.
+    | En desarrollo, en tests y en modo SaaS (los límites salen del plan del estudio) no se verifica;
+    | se puede forzar con LICENCIA_OMITIR.
     */
-    'omitir' => (bool) env('LICENCIA_OMITIR', in_array(env('APP_ENV', 'production'), ['local', 'testing'], true)),
+    'omitir' => (bool) env('LICENCIA_OMITIR', in_array(env('APP_ENV', 'production'), ['local', 'testing'], true) || env('PLANILLAS_MODO') === 'saas'),
 
     // Archivo donde queda la clave del cliente (junto a la marca de instalado).
     'archivo' => storage_path('app/licencia.txt'),

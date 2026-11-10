@@ -3,15 +3,18 @@
 use App\Http\Middleware\AsegurarUsuarioActivo;
 use App\Http\Middleware\HandleAppearance;
 use App\Http\Middleware\HandleInertiaRequests;
+use App\Http\Middleware\IdentificarEstudio;
 use App\Http\Middleware\ModoInstalador;
 use App\Http\Middleware\ModoSoloLectura;
 use App\Http\Middleware\RequiereEmpresaActiva;
+use App\Http\Middleware\VerificarSesionEstudio;
 use App\Services\Licencia\LimiteLicenciaExcedido;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
 use Illuminate\Http\Middleware\AddLinkHeadersForPreloadedAssets;
 use Illuminate\Http\Request;
+use Illuminate\Session\Middleware\StartSession;
 use Inertia\Inertia;
 
 return Application::configure(basePath: dirname(__DIR__))
@@ -27,10 +30,19 @@ return Application::configure(basePath: dirname(__DIR__))
             'empresa.activa' => RequiereEmpresaActiva::class,
         ]);
 
+        // Modo SaaS: el estudio se identifica en el middleware GLOBAL, antes del enrutamiento. Laravel crea el
+        // controlador al reunir los middlewares de la ruta y algunos (login de Fortify) ya abren la sesión:
+        // todo debe nacer conectado a la base del estudio.
+        $middleware->prepend(IdentificarEstudio::class);
+
         // Antes que la sesión: sin instalar todavía no hay base de datos.
         $middleware->web(prepend: [ModoInstalador::class]);
 
+        // La sesión de otro estudio se descarta antes de autenticar (modo SaaS).
+        $middleware->appendToPriorityList(after: StartSession::class, append: VerificarSesionEstudio::class);
+
         $middleware->web(append: [
+            VerificarSesionEstudio::class,
             AsegurarUsuarioActivo::class,
             ModoSoloLectura::class,
             HandleAppearance::class,
