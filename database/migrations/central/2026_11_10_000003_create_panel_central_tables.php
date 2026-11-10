@@ -5,7 +5,7 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
 /**
- * Base CENTRAL: panel de Serialo.pe (admin.serialo.pe). El superadmin no es usuario de ningún estudio.
+ * Base CENTRAL: panel de Serialo.pe (admin.impulso.cfd). El superadmin no es usuario de ningún estudio.
  */
 return new class extends Migration
 {

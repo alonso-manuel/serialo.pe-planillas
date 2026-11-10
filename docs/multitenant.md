@@ -8,8 +8,8 @@ El mismo código funciona de dos maneras, según `PLANILLAS_MODO` en el `.env`:
 | `saas`            | VPS de Serialo.pe (demos y plan mensual) | Una app para todos, **una base de datos por estudio**, elegido por subdominio       |
 
 ```
-garcia.serialo.pe ──┐                      ┌── base central: estudios, dominios, cola
-lopez.serialo.pe  ──┼── una sola app ──────┼── planillas_garcia: empresas, trabajadores, periodos…
+garcia.impulso.cfd ──┐                      ┌── base central: estudios, dominios, cola
+lopez.impulso.cfd  ──┼── una sola app ──────┼── planillas_garcia: empresas, trabajadores, periodos…
 demo-perez.…      ──┘                      └── planillas_lopez:  …
 ```
 
@@ -36,10 +36,10 @@ Se usa [stancl/tenancy](https://tenancyforlaravel.com) v3 (`config/tenancy.php`)
 Laravel crea el controlador al reunir los middlewares de la ruta, y el login de Fortify ya abre la sesión en ese
 momento; con el middleware solo en el grupo `web`, la sesión nacía conectada a la base central (hay un test de regresión).
 
-Un subdominio desconocido o el dominio central (`serialo.pe`) responde 404, salvo `/up`. Una cuenta suspendida muestra
+Un subdominio desconocido o el dominio central (`impulso.cfd`) responde 404, salvo `/up`. Una cuenta suspendida muestra
 «Cuenta suspendida» (403) y conserva sus datos.
 
-## Panel central (`admin.serialo.pe`)
+## Panel central (`admin.impulso.cfd`)
 
 Donde el superadmin de Serialo.pe administra las cuentas. Vive en la base central y no es usuario de ningún estudio.
 
@@ -100,10 +100,10 @@ Instalación paso a paso y scripts: [vps.md](vps.md). Plantilla completa: `deplo
 
 ```dotenv
 PLANILLAS_MODO=saas
-PLANILLAS_DOMINIOS_CENTRALES=serialo.pe,admin.serialo.pe
+PLANILLAS_DOMINIOS_CENTRALES=impulso.cfd,admin.impulso.cfd
 PLANILLAS_PREFIJO_BD=planillas_
-PLANILLAS_DOMINIO_PANEL=admin.serialo.pe
-PLANILLAS_URL_ESTUDIO=https://{estudio}.serialo.pe
+PLANILLAS_DOMINIO_PANEL=admin.impulso.cfd
+PLANILLAS_URL_ESTUDIO=https://{estudio}.impulso.cfd
 DB_DATABASE=serialo_central        # base central
 DB_USERNAME=...                    # con permiso para CREATE DATABASE
 CACHE_STORE=redis
@@ -112,7 +112,7 @@ QUEUE_CONNECTION=database
 ```
 
 En modo `saas` el instalador web y la licencia firmada se omiten; los límites salen del plan de cada estudio (ver «Planes y vencimiento»).
-DNS: registro comodín `*.serialo.pe` al VPS y certificado HTTPS comodín.
+DNS: registro comodín `*.impulso.cfd` al VPS y certificado HTTPS comodín.
 
 ## Probar en local
 

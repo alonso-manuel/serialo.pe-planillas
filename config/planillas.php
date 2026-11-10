@@ -9,8 +9,8 @@ return [
     'modo' => env('PLANILLAS_MODO', 'unica'),
 
     // Solo SaaS: dirección de cada estudio y dominio del panel central (superadmin).
-    'url_estudio' => env('PLANILLAS_URL_ESTUDIO', 'https://{estudio}.serialo.pe'),
-    'dominio_panel' => env('PLANILLAS_DOMINIO_PANEL', 'admin.serialo.pe'),
+    'url_estudio' => env('PLANILLAS_URL_ESTUDIO', 'https://{estudio}.impulso.cfd'),
+    'dominio_panel' => env('PLANILLAS_DOMINIO_PANEL', 'admin.impulso.cfd'),
 
     /*
     | Solo SaaS: planes que propone el panel al crear una cuenta (se pueden ajustar por cuenta).

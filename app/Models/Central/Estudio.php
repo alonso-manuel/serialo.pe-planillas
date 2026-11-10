@@ -104,7 +104,7 @@ class Estudio extends Tenant implements TenantWithDatabase
         return $this->estado === EstadoEstudio::Suspendido;
     }
 
-    /** Dirección pública del estudio según config('planillas.url_estudio'): https://garcia.serialo.pe */
+    /** Dirección pública del estudio según config('planillas.url_estudio'): https://garcia.impulso.cfd */
     public function url(string $ruta = ''): string
     {
         return str_replace('{estudio}', $this->id, (string) config('planillas.url_estudio')).$ruta;

@@ -24,7 +24,7 @@ class PlanesTest extends TestCase
 
     protected array $connectionsToTransact = ['sqlite'];
 
-    private const PANEL = 'http://admin.serialo.pe';
+    private const PANEL = 'http://admin.impulso.cfd';
 
     protected function setUp(): void
     {

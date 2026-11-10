@@ -12,7 +12,7 @@ use PragmaRX\Google2FA\Google2FA;
 use Tests\Concerns\ConEstudios;
 use Tests\TestCase;
 
-/** Panel central (admin.serialo.pe): superadmin con doble factor obligatorio. */
+/** Panel central (admin.impulso.cfd): superadmin con doble factor obligatorio. */
 class AccesoPanelTest extends TestCase
 {
     use ConEstudios;
@@ -20,7 +20,7 @@ class AccesoPanelTest extends TestCase
 
     protected array $connectionsToTransact = ['sqlite'];
 
-    private const PANEL = 'http://admin.serialo.pe';
+    private const PANEL = 'http://admin.impulso.cfd';
 
     protected function setUp(): void
     {

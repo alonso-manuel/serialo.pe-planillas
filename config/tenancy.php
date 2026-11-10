@@ -27,7 +27,7 @@ return [
     */
     'central_domains' => array_values(array_filter(array_map('trim', explode(',', (string) env(
         'PLANILLAS_DOMINIOS_CENTRALES',
-        'serialo.pe,admin.serialo.pe,localhost',
+        'impulso.cfd,admin.impulso.cfd,localhost',
     ))))),
 
     /*

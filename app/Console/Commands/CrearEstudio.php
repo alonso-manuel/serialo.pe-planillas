@@ -20,7 +20,7 @@ use Throwable;
 class CrearEstudio extends Command
 {
     protected $signature = 'estudio:crear
-        {subdominio : p. ej. garcia → garcia.serialo.pe}
+        {subdominio : p. ej. garcia → garcia.impulso.cfd}
         {nombre : nombre del estudio o empresa}
         {correo : correo del primer administrador}
         {--admin=Administrador : nombre del administrador}

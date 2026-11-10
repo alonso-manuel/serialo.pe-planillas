@@ -1,13 +1,17 @@
 # VPS (modo SaaS)
 
+> ⚠ **Pendiente de rehacer con Docker** (decidido el 10/11): el VPS ya tiene otras aplicaciones y la instalación
+> directa de abajo (Nginx, PHP, MySQL y Redis en el sistema) podría chocar con ellas. El despliegue se hace al final
+> del roadmap con `docker-compose`, detrás del proxy que ya exista. Lo de abajo sirve de referencia para un VPS dedicado.
+
 Cómo montar Serialo Planillas en el VPS de Serialo.pe para las demos y los clientes de plan mensual. Cada estudio
-entra por su subdominio (`garcia.serialo.pe`) y el superadmin por `admin.serialo.pe` (ver [multitenant.md](multitenant.md)).
+entra por su subdominio (`garcia.impulso.cfd`) y el superadmin por `admin.impulso.cfd` (ver [multitenant.md](multitenant.md)).
 
 Servidor de referencia: Ubuntu 24.04, 4 vCPU, 8 GB de RAM, 100 GB SSD. Alcanza con holgura para decenas de estudios.
 
 | Pieza       | Para qué                                                                      | Archivo                           |
 | ----------- | ----------------------------------------------------------------------------- | --------------------------------- |
-| Nginx       | HTTPS y `*.serialo.pe` → la app                                               | `deploy/vps/nginx.conf`           |
+| Nginx       | HTTPS y `*.impulso.cfd` → la app                                              | `deploy/vps/nginx.conf`           |
 | PHP 8.3-FPM | La aplicación (memoria 512 MB, subidas de 20 MB, opcache, hora de Lima)       | `deploy/vps/instalar.sh`          |
 | MySQL 8     | `serialo_central` + una base `planillas_<estudio>` por cuenta                 | `deploy/vps/instalar.sh`          |
 | Redis       | Caché separada por estudio (el modo SaaS la exige)                            | `deploy/vps/instalar.sh`          |
@@ -18,16 +22,16 @@ Servidor de referencia: Ubuntu 24.04, 4 vCPU, 8 GB de RAM, 100 GB SSD. Alcanza c
 
 ## 1. DNS
 
-En el administrador del dominio `serialo.pe`, un registro **comodín**:
+En el administrador del dominio `impulso.cfd`, un registro **comodín**:
 
 | Tipo | Nombre | Valor      |
 | ---- | ------ | ---------- |
 | A    | `*`    | IP del VPS |
 
-El dominio raíz `serialo.pe` (la web) no cambia: puede seguir en su hosting. `admin.serialo.pe` y cada estudio quedan
+El dominio raíz `impulso.cfd` (la web) no cambia: puede seguir en su hosting. `admin.impulso.cfd` y cada estudio quedan
 cubiertos por el comodín.
 
-⚠ El certificado HTTPS comodín (`*.serialo.pe`) **solo** se obtiene probando que controlas el DNS (reto DNS-01). Los
+⚠ El certificado HTTPS comodín (`*.impulso.cfd`) **solo** se obtiene probando que controlas el DNS (reto DNS-01). Los
 scripts usan **Cloudflare** (gratis; se cambian los nameservers del dominio a Cloudflare y se renueva solo). Con otro
 proveedor sin API habría que renovar a mano cada 90 días.
 
@@ -71,7 +75,7 @@ correr sin romper nada. Otro dominio: `DOMINIO=midominio.pe sudo -E bash …`.
 
 ## 5. Certificado HTTPS comodín
 
-En Cloudflare: **My Profile → API Tokens → Create Token → «Edit zone DNS»**, limitado a la zona `serialo.pe`.
+En Cloudflare: **My Profile → API Tokens → Create Token → «Edit zone DNS»**, limitado a la zona `impulso.cfd`.
 
 ```bash
 install -d -m 700 /root/.secrets
@@ -79,7 +83,7 @@ echo "dns_cloudflare_api_token = EL_TOKEN" > /root/.secrets/cloudflare.ini
 chmod 600 /root/.secrets/cloudflare.ini
 
 certbot certonly --dns-cloudflare --dns-cloudflare-credentials /root/.secrets/cloudflare.ini \
-  -d '*.serialo.pe' --cert-name serialo.pe -m tu-correo@serialo.pe --agree-tos -n \
+  -d '*.impulso.cfd' --cert-name impulso.cfd -m tu-correo@serialo.pe --agree-tos -n \
   --deploy-hook "systemctl reload nginx"
 
 nginx -t && systemctl reload nginx
@@ -98,7 +102,7 @@ sudo -u www-data php artisan optimize
 sudo -u www-data php artisan superadmin:crear tu-correo@serialo.pe --nombre="Tu nombre"
 ```
 
-Entra a `https://admin.serialo.pe`, configura el doble factor y crea la primera cuenta.
+Entra a `https://admin.impulso.cfd`, configura el doble factor y crea la primera cuenta.
 
 ⚠ No correr `EstudiosPruebaSeeder` en el VPS: crea cuentas con una contraseña conocida.
 
@@ -129,9 +133,9 @@ el sitio queda en mantenimiento y el script dice cómo volver a la versión ante
 
 | Qué                   | Cómo                                                                    |
 | --------------------- | ----------------------------------------------------------------------- |
-| Sitio                 | `curl -I https://admin.serialo.pe/up` → 200                             |
+| Sitio                 | `curl -I https://admin.impulso.cfd/up` → 200                            |
 | Cola                  | `systemctl status serialo-cola`                                         |
 | Cron                  | `crontab -u www-data -l` y `sudo -u www-data php artisan schedule:list` |
 | Respaldos             | `ls /var/www/serialo/storage/estudio-*/app/private/respaldos/`          |
 | Errores               | `tail -f /var/www/serialo/storage/logs/laravel-*.log`                   |
-| Subdominio sin cuenta | `https://noexiste.serialo.pe` → 404                                     |
+| Subdominio sin cuenta | `https://noexiste.impulso.cfd` → 404                                    |

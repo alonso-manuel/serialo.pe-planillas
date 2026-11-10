@@ -1,6 +1,6 @@
 /**
  * Rutas del panel central (modo SaaS). Son relativas a propósito: el panel siempre se usa en su propio
- * dominio (admin.serialo.pe en producción, admin.localhost en local) y Wayfinder fijaría el dominio
+ * dominio (admin.impulso.cfd en producción, admin.localhost en local) y Wayfinder fijaría el dominio
  * con el que se compilaron los assets.
  */
 export const rutasPanel = {

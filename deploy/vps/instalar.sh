@@ -4,7 +4,7 @@
 # Es idempotente: si se vuelve a correr no rompe lo ya instalado.
 set -euo pipefail
 
-DOMINIO="${DOMINIO:-serialo.pe}"          # los estudios serán <estudio>.$DOMINIO y el panel admin.$DOMINIO
+DOMINIO="${DOMINIO:-impulso.cfd}"          # los estudios serán <estudio>.$DOMINIO y el panel admin.$DOMINIO
 DIR="${DIR:-/var/www/serialo}"            # carpeta de la aplicación
 REPO="${REPO:-git@github.com:alonso-manuel/serialo.pe-planillas.git}"
 DB_USUARIO="${DB_USUARIO:-serialo}"

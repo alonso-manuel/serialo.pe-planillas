@@ -111,13 +111,13 @@ class RespaldosEstudiosTest extends TestCase
         $alfa->run(fn () => Empresa::factory()->create(['razon_social' => 'Exportable Ficticia S.A.C.']));
 
         $this->nuevaPeticion();
-        $this->get('http://admin.serialo.pe/cuentas/alfa/exportar')->assertRedirect('http://admin.serialo.pe/ingresar');
+        $this->get('http://admin.impulso.cfd/cuentas/alfa/exportar')->assertRedirect('http://admin.impulso.cfd/ingresar');
 
         $s = Superadmin::query()->create(['name' => 'Alonso', 'email' => 'yo@serialo.test', 'password' => 'Clave-Panel-2026!']);
         $s->forceFill(['two_factor_secret' => 'x', 'two_factor_confirmed_at' => now()])->save();
         $this->actingAs($s, 'superadmin');
 
-        $respuesta = $this->get('http://admin.serialo.pe/cuentas/alfa/exportar')->assertOk()->assertDownload('alfa-20261110-030000.sql.gz');
+        $respuesta = $this->get('http://admin.impulso.cfd/cuentas/alfa/exportar')->assertOk()->assertDownload('alfa-20261110-030000.sql.gz');
         $sql = (string) gzdecode((string) file_get_contents($respuesta->baseResponse->getFile()->getPathname()));
         $this->assertStringContainsString('Exportable Ficticia', $sql);
 

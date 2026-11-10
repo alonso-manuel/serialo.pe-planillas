@@ -11,8 +11,8 @@ use Symfony\Component\HttpFoundation\Response;
 
 /**
  * Modo SaaS (middleware global): antes del enrutamiento decide el contexto de la petición.
- * - Dominio del panel (admin.serialo.pe): contexto central, con sus propias sesiones.
- * - Subdominio de un estudio (garcia.serialo.pe): su base; si está suspendido, aviso y nada más.
+ * - Dominio del panel (admin.impulso.cfd): contexto central, con sus propias sesiones.
+ * - Subdominio de un estudio (garcia.impulso.cfd): su base; si está suspendido, aviso y nada más.
  * - Cualquier otro (desconocido o central): 404, salvo /up.
  * En modo «unica» no hace nada.
  */

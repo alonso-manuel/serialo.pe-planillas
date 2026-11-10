@@ -44,7 +44,7 @@ return [
             'provider' => 'users',
         ],
 
-        // Panel central del modo SaaS (admin.serialo.pe): usuarios de la base central.
+        // Panel central del modo SaaS (admin.impulso.cfd): usuarios de la base central.
         'superadmin' => [
             'driver' => 'session',
             'provider' => 'superadmins',

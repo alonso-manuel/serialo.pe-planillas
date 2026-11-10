@@ -6,7 +6,7 @@ use Illuminate\Support\Facades\Schema;
 
 /**
  * Base CENTRAL (solo modo SaaS): un estudio por cliente o demo. Sus datos viven en su propia base.
- * `id` es el subdominio (garcia → garcia.serialo.pe); `data` la usa stancl/tenancy para atributos extra.
+ * `id` es el subdominio (garcia → garcia.impulso.cfd); `data` la usa stancl/tenancy para atributos extra.
  */
 return new class extends Migration
 {
