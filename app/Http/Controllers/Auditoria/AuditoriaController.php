@@ -97,11 +97,8 @@ class AuditoriaController extends Controller
         $filas = [];
 
         foreach ($cambios as $campo => [$antes, $despues]) {
-            $clave = "validation.attributes.{$campo}";
-            $etiqueta = __($clave);
-
             $filas[] = [
-                'campo' => Str::ucfirst($etiqueta === $clave ? str_replace('_', ' ', $campo) : (string) $etiqueta),
+                'campo' => $this->etiqueta((string) $campo),
                 'antes' => $this->valor($antes),
                 'despues' => $this->valor($despues),
             ];
@@ -110,15 +107,59 @@ class AuditoriaController extends Controller
         return $filas;
     }
 
+    private function etiqueta(string $campo): string
+    {
+        $clave = "validation.attributes.{$campo}";
+        $etiqueta = __($clave);
+
+        return Str::ucfirst($etiqueta === $clave ? str_replace('_', ' ', $campo) : (string) $etiqueta);
+    }
+
     private function valor(mixed $valor): string
     {
+        // Columnas JSON (p. ej. el detalle de una liquidación) llegan como texto: se muestran como lista legible.
+        if (is_string($valor) && in_array($valor[0] ?? '', ['{', '['], true)) {
+            $decodificado = json_decode($valor, true);
+            if (is_array($decodificado)) {
+                $valor = $decodificado;
+            }
+        }
+
         return match (true) {
             $valor === null => '—',
             $valor === true => 'Sí',
             $valor === false => 'No',
-            is_array($valor) => $valor === [] ? 'Ninguna' : implode(', ', array_map(fn ($v) => (string) $v, $valor)),
+            is_array($valor) && array_is_list($valor) && array_filter($valor, is_array(...)) === [] => $valor === [] ? 'Ninguna' : implode(', ', array_map(fn ($v) => $this->valor($v), $valor)),
+            is_array($valor) => implode("\n", $this->lineas($valor)) ?: '—',
             default => (string) $valor,
         };
+    }
+
+    /**
+     * {"vacaciones": {"computable": "1243.00"}} → ["Vacaciones › Remuneración computable: 1243.00"]. Omite lo vacío.
+     *
+     * @param  array<mixed>  $datos
+     * @return list<string>
+     */
+    private function lineas(array $datos, string $prefijo = ''): array
+    {
+        $lineas = [];
+
+        foreach ($datos as $clave => $v) {
+            if ($v === null || $v === []) {
+                continue;
+            }
+
+            $nombre = $prefijo.(is_int($clave) ? '#'.($clave + 1) : $this->etiqueta($clave));
+
+            if (is_array($v) && ! (array_is_list($v) && array_filter($v, is_array(...)) === [])) {
+                array_push($lineas, ...$this->lineas($v, $nombre.' › '));
+            } else {
+                $lineas[] = "{$nombre}: {$this->valor($v)}";
+            }
+        }
+
+        return $lineas;
     }
 
     private function fecha(mixed $valor): ?string

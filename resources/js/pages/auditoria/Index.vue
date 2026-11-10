@@ -286,11 +286,13 @@ const COLORES: Record<string, string> = {
                                     {{ c.campo }}
                                 </td>
                                 <td
-                                    class="px-3 py-1.5 break-all text-muted-foreground"
+                                    class="px-3 py-1.5 break-words whitespace-pre-line text-muted-foreground"
                                 >
                                     {{ c.antes }}
                                 </td>
-                                <td class="px-3 py-1.5 break-all">
+                                <td
+                                    class="px-3 py-1.5 break-words whitespace-pre-line"
+                                >
                                     {{ c.despues }}
                                 </td>
                             </tr>

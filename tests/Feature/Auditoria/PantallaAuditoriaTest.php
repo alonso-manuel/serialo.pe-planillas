@@ -91,4 +91,23 @@ class PantallaAuditoriaTest extends TestCase
             ->get(route('auditoria.index'))
             ->assertForbidden();
     }
+
+    #[Test]
+    public function un_campo_json_se_muestra_como_lista_legible_y_no_como_texto_crudo(): void
+    {
+        Auditoria::query()->create([
+            'user_id' => $this->admin->id, 'auditable_type' => 'liquidacion', 'auditable_id' => 1, 'accion' => 'creado',
+            'descripcion' => 'Liquidación de prueba',
+            'cambios' => [
+                'detalle' => [null, '{"gratificacion_pendiente":null,"cts":null,"vacaciones":{"computable":"1243.00","no_gozadas_dias":15,"truncas_meses":6}}'],
+                'avisos' => [null, '["Revisar faltas","Sin CTS pendiente"]'],
+            ],
+        ]);
+
+        $this->actingAs($this->admin)->get(route('auditoria.index'))
+            ->assertInertia(fn (Assert $page) => $page
+                ->where('registros.data.0.cambios.0.campo', 'Detalle')
+                ->where('registros.data.0.cambios.0.despues', "Vacaciones › Remuneración computable: 1243.00\nVacaciones › Días no gozados: 15\nVacaciones › Meses truncos: 6")
+                ->where('registros.data.0.cambios.1.despues', 'Revisar faltas, Sin CTS pendiente'));
+    }
 }
