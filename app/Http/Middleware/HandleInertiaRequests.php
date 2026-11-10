@@ -51,6 +51,7 @@ class HandleInertiaRequests extends Middleware
             'auth' => [
                 'user' => $user,
                 'esAdmin' => $user?->esAdmin() ?? false,
+                'esSoporte' => $user !== null && $user->es_soporte,
             ],
             'empresaActiva' => fn () => $user === null ? null : $this->resumen($this->empresaActiva->obtener($user)),
             'empresas' => fn () => $user === null ? [] : $this->empresaActiva->seleccionables($user)

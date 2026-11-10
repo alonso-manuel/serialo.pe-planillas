@@ -16,8 +16,9 @@ use Illuminate\Validation\ValidationException;
 use Inertia\Inertia;
 use Inertia\Response;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
+use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
 
-/** Cuentas (estudios) del modo SaaS: listado, alta con invitación, edición, exportación, suspensión, acceso y eliminación. */
+/** Cuentas (estudios) del modo SaaS: listado, alta con invitación, edición, exportación, soporte, suspensión, acceso y eliminación. */
 class CuentaController extends Controller
 {
     public function __construct(private readonly GestionEstudios $gestion) {}
@@ -137,6 +138,22 @@ class CuentaController extends Controller
         $ruta = $this->gestion->exportar($estudio);
 
         return response()->download($ruta, basename($ruta), ['Content-Type' => 'application/gzip'])->deleteFileAfterSend();
+    }
+
+    /** Entra al estudio como «Soporte Serialo.pe», solo si su administrador lo autorizó. */
+    public function soporte(Estudio $estudio): SymfonyResponse
+    {
+        $enlace = $this->gestion->enlaceSoporte($estudio);
+
+        if ($enlace === null) {
+            Inertia::flash('toast', ['type' => 'error', 'message' => $estudio->suspendido()
+                ? "{$estudio->nombre} está suspendida."
+                : "{$estudio->nombre} no ha autorizado el acceso de soporte. Pídele al administrador que lo active en Administración → Licencia."]);
+
+            return back();
+        }
+
+        return Inertia::location($enlace);
     }
 
     public function acceso(Estudio $estudio): RedirectResponse

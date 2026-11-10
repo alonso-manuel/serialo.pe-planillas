@@ -34,6 +34,7 @@ class AuditoriaController extends Controller
         'liquidacion' => 'Liquidación',
         'licencia' => 'Licencia',
         'respaldo' => 'Respaldo',
+        'soporte' => 'Soporte',
     ];
 
     public function index(Request $request): Response

@@ -35,6 +35,9 @@ class Auditoria extends Model
         'cerrado' => 'Cerrado',
         'reabierto' => 'Reabierto',
         'descargado' => 'Descargado',
+        'autorizado' => 'Autorizado',
+        'revocado' => 'Retirado',
+        'ingreso' => 'Ingreso',
     ];
 
     private static bool $pausada = false;

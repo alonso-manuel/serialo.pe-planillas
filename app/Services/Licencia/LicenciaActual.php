@@ -139,7 +139,7 @@ class LicenciaActual
     {
         return match ($recurso) {
             Recurso::Empresas => Empresa::query()->where('activo', true)->count(),
-            Recurso::Usuarios => User::query()->where('activo', true)->count(),
+            Recurso::Usuarios => User::query()->where('activo', true)->where('es_soporte', false)->count(),
             Recurso::Trabajadores => Trabajador::query()
                 ->where(fn ($q) => $q->whereNull('fecha_cese')->orWhereDate('fecha_cese', '>', CarbonImmutable::today()))
                 ->count(),

@@ -43,11 +43,11 @@ class FortifyServiceProvider extends ServiceProvider
     {
         Fortify::resetUserPasswordsUsing(ResetUserPassword::class);
 
-        // Igual que el login por defecto, pero un usuario desactivado no entra.
+        // Igual que el login por defecto, pero un usuario desactivado no entra, y el de soporte solo por el enlace del panel.
         Fortify::authenticateUsing(function (Request $request): ?User {
             $usuario = User::query()->where('email', $request->string(Fortify::username())->toString())->first();
 
-            if ($usuario === null || ! Hash::check($request->string('password')->toString(), $usuario->password)) {
+            if ($usuario === null || $usuario->es_soporte || ! Hash::check($request->string('password')->toString(), $usuario->password)) {
                 return null;
             }
 

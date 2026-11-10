@@ -77,6 +77,7 @@ trait ConEstudios
         $this->app['session']->forgetDrivers();
         $this->app->forgetInstance('session.store');
         $this->app['auth']->forgetGuards();
+        $this->app['auth']->shouldUse('web'); // actingAs(..., 'superadmin') deja ese guard por defecto
     }
 
     protected function ingresar(Estudio $estudio, string $correo, string $clave = 'Clave-Segura-2026!'): void

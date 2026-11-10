@@ -25,6 +25,7 @@ use App\Http\Controllers\Periodos\PeriodoController;
 use App\Http\Controllers\Periodos\ResumenBoletasController;
 use App\Http\Controllers\Reportes\ReporteController;
 use App\Http\Controllers\Respaldos\RespaldoController;
+use App\Http\Controllers\Soporte\SoporteController;
 use App\Http\Controllers\Sunat\AfpnetController;
 use App\Http\Controllers\Sunat\PlameController;
 use App\Http\Controllers\TasasAfp\ImportacionTasasAfpController;
@@ -57,6 +58,9 @@ Route::prefix('instalar')->name('instalar.')
         Route::get('sistema', 'sistema')->name('sistema');
         Route::post('sistema', 'instalar')->name('sistema.store');
     });
+
+// Acceso de soporte (modo SaaS): enlace de un solo uso generado en el panel central.
+Route::get('soporte/entrar/{token}', [SoporteController::class, 'entrar'])->middleware('throttle:10,1')->name('soporte.entrar');
 
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('dashboard', PanelController::class)->name('dashboard');
@@ -192,6 +196,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('respaldos', [RespaldoController::class, 'index'])->name('respaldos.index');
     Route::post('respaldos', [RespaldoController::class, 'store'])->middleware('throttle:5,1')->name('respaldos.store');
     Route::get('respaldos/{archivo}', [RespaldoController::class, 'descargar'])->where('archivo', '[A-Za-z0-9.-]+')->name('respaldos.descargar');
+
+    // Acceso de soporte de Serialo.pe (solo admin del estudio, modo SaaS)
+    Route::post('soporte/permiso', [SoporteController::class, 'autorizar'])->name('soporte.autorizar');
+    Route::delete('soporte/permiso', [SoporteController::class, 'revocar'])->name('soporte.revocar');
 
     // Usuarios (solo admin; nunca se eliminan, se desactivan)
     Route::resource('usuarios', UsuarioController::class)->except(['show', 'destroy']);

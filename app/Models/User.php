@@ -23,6 +23,7 @@ use Laravel\Fortify\TwoFactorAuthenticatable;
  * @property string $email
  * @property RolUsuario $rol
  * @property bool $activo
+ * @property bool $es_soporte Usuario «Soporte Serialo.pe» (modo SaaS): no cuenta para el plan ni entra con contraseña
  * @property CarbonImmutable|null $email_verified_at
  * @property string $password
  * @property string|null $two_factor_secret
@@ -62,6 +63,7 @@ class User extends Authenticatable implements MustVerifyEmail, PasskeyUser
             'password' => 'hashed',
             'rol' => RolUsuario::class,
             'activo' => 'boolean',
+            'es_soporte' => 'boolean',
             'two_factor_confirmed_at' => 'datetime',
         ];
     }

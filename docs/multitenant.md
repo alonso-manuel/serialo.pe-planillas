@@ -58,7 +58,23 @@ Separación: las rutas del panel (`routes/panel.php`, nombres `panel.*`) solo re
 nunca en el del panel (`SepararPanelYEstudios`). Las sesiones del panel están en `sesiones_panel` (base central). En modo
 `unica` el panel no existe. Las páginas usan rutas relativas (`resources/js/lib/panel.ts`) para no fijar el dominio al compilar.
 
-Respaldos diarios de la central y de cada estudio: ver [respaldos.md](respaldos.md). Pendiente: entrar como soporte.
+Respaldos diarios de la central y de cada estudio: ver [respaldos.md](respaldos.md).
+
+## Entrar como soporte
+
+Serialo.pe solo entra a un estudio **si su administrador lo autoriza** (Ley 29733: son datos personales de sus trabajadores).
+
+1. El admin del estudio, en **Administración → Licencia → Acceso de soporte**, pulsa **Permitir acceso por 24 horas**
+   (o **Quitar acceso** cuando quiera). Queda en su auditoría (tipo «Soporte»).
+2. En el panel, **Soporte** en la cuenta: si hay permiso, abre el estudio con un enlace de **un solo uso que vale un
+   minuto**; si no, avisa que falta la autorización. Queda en la actividad del panel.
+3. Se entra como el usuario **«Soporte Serialo.pe»** (rol admin, `es_soporte`): ve y edita; todo lo que haga queda en
+   la auditoría a su nombre. Una franja ámbar lo recuerda en cada pantalla.
+4. Ese usuario no aparece en **Usuarios**, no cuenta para el límite del plan y **no puede entrar con contraseña**.
+5. Al vencer o quitarse el permiso, la sesión de soporte se cierra en la siguiente petición.
+
+Código: `App\Services\Soporte\AccesoSoporte`, `SoporteController`, tabla `permisos_soporte`; tests en
+`tests/Feature/Multitenant/SoporteTest.php`. En modo `unica` no existe.
 
 ## Planes y vencimiento
 

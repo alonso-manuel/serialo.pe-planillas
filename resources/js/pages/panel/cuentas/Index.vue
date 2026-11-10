@@ -8,6 +8,7 @@ import {
     Download,
     ExternalLink,
     KeyRound,
+    LifeBuoy,
     Pencil,
     Plus,
     Trash2,
@@ -67,6 +68,11 @@ async function copiar(texto: string): Promise<void> {
 
 function cambiarEstado(c: Cuenta): void {
     router.patch(rutasPanel.estado(c.id), {}, { preserveScroll: true });
+}
+
+/** Abre el estudio como «Soporte Serialo.pe» (solo si su administrador lo autorizó). */
+function entrarSoporte(c: Cuenta): void {
+    router.post(rutasPanel.soporte(c.id), {}, { preserveScroll: true });
 }
 
 function reenviarAcceso(c: Cuenta): void {
@@ -245,6 +251,16 @@ function eliminar(): void {
                                         <Pencil />
                                         Editar
                                     </Link>
+                                </Button>
+                                <Button
+                                    variant="ghost"
+                                    size="sm"
+                                    :disabled="c.estado === 'suspendido'"
+                                    title="Entrar como Soporte Serialo.pe (el estudio debe haberlo autorizado)"
+                                    @click="entrarSoporte(c)"
+                                >
+                                    <LifeBuoy />
+                                    Soporte
                                 </Button>
                                 <Button variant="ghost" size="sm" as-child>
                                     <a

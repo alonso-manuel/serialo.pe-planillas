@@ -28,6 +28,7 @@ class UsuarioController extends Controller
         $estado = in_array($request->query('estado'), ['activos', 'inactivos'], true) ? $request->query('estado') : null;
 
         $usuarios = User::query()
+            ->where('es_soporte', false)
             ->withCount('empresas')
             ->when($buscar !== '', fn (Builder $q) => $q->where(fn (Builder $q) => $q
                 ->where('name', 'like', "%{$buscar}%")

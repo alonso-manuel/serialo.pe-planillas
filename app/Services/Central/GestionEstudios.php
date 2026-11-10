@@ -11,6 +11,7 @@ use App\Models\Central\Estudio;
 use App\Models\User;
 use App\Notifications\InvitacionEstudio;
 use App\Services\Respaldo\VolcadoBaseDatos;
+use App\Services\Soporte\AccesoSoporte;
 use Carbon\CarbonImmutable;
 use Illuminate\Auth\Passwords\PasswordBrokerManager;
 use Illuminate\Support\Facades\DB;
@@ -32,7 +33,10 @@ class GestionEstudios
     /** Carpeta (disco local central) del último respaldo de cada cuenta eliminada. */
     public const CARPETA_ELIMINADAS = 'respaldos/eliminadas';
 
-    public function __construct(private readonly VolcadoBaseDatos $volcado) {}
+    public function __construct(
+        private readonly VolcadoBaseDatos $volcado,
+        private readonly AccesoSoporte $soporte,
+    ) {}
 
     /** @return list<mixed> */
     public static function reglasSubdominio(): array
@@ -115,7 +119,7 @@ class GestionEstudios
     {
         $enlace = $estudio->run(function () use ($estudio): string {
             $admin = User::query()->where('email', $estudio->correo_admin)->first()
-                ?? User::query()->where('rol', RolUsuario::Admin)->orderBy('id')->firstOrFail();
+                ?? User::query()->where('rol', RolUsuario::Admin)->where('es_soporte', false)->orderBy('id')->firstOrFail();
 
             // Broker nuevo: el del contenedor guarda la conexión de la primera base en que se usó.
             $token = (new PasswordBrokerManager(app()))->broker()->createToken($admin);
@@ -228,6 +232,26 @@ class GestionEstudios
         File::deleteDirectory(storage_path('estudio-'.$id));
 
         AuditoriaCentral::registrar('eliminado', "Cuenta {$nombre}", $id, ['respaldo' => basename($respaldo)]);
+    }
+
+    /**
+     * Enlace de un solo uso (un minuto) para entrar al estudio como «Soporte Serialo.pe».
+     * Null si el estudio no autorizó el acceso (o está suspendido).
+     */
+    public function enlaceSoporte(Estudio $estudio): ?string
+    {
+        if ($estudio->suspendido()) {
+            return null;
+        }
+
+        $token = $estudio->run(fn () => $this->soporte->prepararIngreso());
+        if ($token === null) {
+            return null;
+        }
+
+        AuditoriaCentral::registrar('soporte', "Ingreso como soporte a {$estudio->nombre}", $estudio->id);
+
+        return $estudio->url().'/soporte/entrar/'.$token;
     }
 
     /** Base completa de la cuenta en un .sql.gz temporal (para descargar desde el panel). */

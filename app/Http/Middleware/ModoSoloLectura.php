@@ -22,6 +22,7 @@ class ModoSoloLectura
         'passkey.*',
         'licencia.update',
         'respaldos.store',
+        'soporte.*',
     ];
 
     public function __construct(private readonly LicenciaActual $licencia) {}

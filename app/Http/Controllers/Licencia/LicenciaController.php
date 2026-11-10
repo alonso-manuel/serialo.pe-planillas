@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Licencia;
 use App\Domain\Licencia\ClaveLicenciaInvalida;
 use App\Domain\Licencia\Recurso;
 use App\Http\Controllers\Controller;
+use App\Models\PermisoSoporte;
 use App\Models\User;
 use App\Services\Licencia\LicenciaActual;
 use App\Support\ModoSistema;
@@ -53,7 +54,20 @@ class LicenciaController extends Controller
             'dominio_actual' => $request->getHost(),
             // Modo SaaS: el plan lo administra Serialo.pe desde el panel central (no hay clave que registrar).
             'saas' => ModoSistema::saas(),
+            'soporte' => ModoSistema::saas() ? $this->soporte() : null,
         ]);
+    }
+
+    /** @return array{vigente: bool, vence: string|null, autorizado_por: string|null} */
+    private function soporte(): array
+    {
+        $permiso = PermisoSoporte::vigente();
+
+        return [
+            'vigente' => $permiso !== null,
+            'vence' => $permiso?->vence_en->format('d/m/Y H:i'),
+            'autorizado_por' => $permiso?->autorizador?->name,
+        ];
     }
 
     public function update(Request $request): RedirectResponse

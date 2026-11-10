@@ -1,7 +1,13 @@
 <script setup lang="ts">
-import { Head, useForm } from '@inertiajs/vue3';
-import { CircleCheck, Info, KeyRound, TriangleAlert } from '@lucide/vue';
-import { computed } from 'vue';
+import { Head, router, useForm, usePage } from '@inertiajs/vue3';
+import {
+    CircleCheck,
+    Info,
+    KeyRound,
+    LifeBuoy,
+    TriangleAlert,
+} from '@lucide/vue';
+import { computed, ref } from 'vue';
 import Heading from '@/components/Heading.vue';
 import InputError from '@/components/InputError.vue';
 import { Badge } from '@/components/ui/badge';
@@ -9,6 +15,7 @@ import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { Spinner } from '@/components/ui/spinner';
 import { show, update } from '@/routes/licencia';
+import { autorizar, revocar } from '@/routes/soporte';
 import type { DatosLicencia, EstadoLicencia, UsoLicencia } from '@/types';
 
 const props = defineProps<{
@@ -17,6 +24,11 @@ const props = defineProps<{
     uso: UsoLicencia[];
     dominio_actual: string;
     saas: boolean;
+    soporte: {
+        vigente: boolean;
+        vence: string | null;
+        autorizado_por: string | null;
+    } | null;
 }>();
 
 defineOptions({
@@ -26,6 +38,22 @@ defineOptions({
 });
 
 const form = useForm({ clave: '' });
+const page = usePage();
+const procesandoSoporte = ref(false);
+
+function cambiarSoporte(permitir: boolean): void {
+    const opciones = {
+        preserveScroll: true,
+        onStart: () => (procesandoSoporte.value = true),
+        onFinish: () => (procesandoSoporte.value = false),
+    };
+
+    if (permitir) {
+        router.post(autorizar.url(), {}, opciones);
+    } else {
+        router.delete(revocar.url(), opciones);
+    }
+}
 
 function registrar(): void {
     form.put(update.url(), {
@@ -187,6 +215,50 @@ function porcentaje(u: UsoLicencia): number {
             Tu plan lo administra Serialo.pe. Para ampliarlo, renovarlo o
             cambiarlo, comunícate con nosotros.
         </p>
+
+        <section v-if="soporte" class="rounded-lg border">
+            <h2 class="flex items-center gap-2 border-b px-4 py-3 font-medium">
+                <LifeBuoy class="size-4" />
+                Acceso de soporte
+            </h2>
+            <div class="grid gap-3 p-4 text-sm">
+                <p class="text-muted-foreground">
+                    Si necesitas ayuda, permite que Serialo.pe entre a tu cuenta
+                    por 24 horas como «Soporte Serialo.pe». Todo lo que haga
+                    queda en la auditoría y puedes quitar el acceso cuando
+                    quieras.
+                </p>
+                <p
+                    v-if="soporte.vigente"
+                    class="rounded-md border border-amber-200 bg-amber-50 p-3 text-amber-900 dark:border-amber-900 dark:bg-amber-950/40 dark:text-amber-200"
+                >
+                    Acceso permitido hasta el {{ soporte.vence
+                    }}<template v-if="soporte.autorizado_por">
+                        (lo autorizó {{ soporte.autorizado_por }})</template
+                    >.
+                </p>
+                <p v-else class="font-medium">
+                    Serialo.pe no puede entrar a tu cuenta.
+                </p>
+                <div v-if="!page.props.auth.esSoporte">
+                    <Button
+                        v-if="soporte.vigente"
+                        variant="outline"
+                        :disabled="procesandoSoporte"
+                        @click="cambiarSoporte(false)"
+                    >
+                        Quitar acceso
+                    </Button>
+                    <Button
+                        v-else
+                        :disabled="procesandoSoporte"
+                        @click="cambiarSoporte(true)"
+                    >
+                        Permitir acceso por 24 horas
+                    </Button>
+                </div>
+            </div>
+        </section>
 
         <section v-if="!saas" class="rounded-lg border">
             <h2 class="border-b px-4 py-3 font-medium">

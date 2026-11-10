@@ -15,6 +15,7 @@ class ActividadPanelController extends Controller
         'invitado' => 'Enlace de acceso', 'suspendido' => 'Suspendida', 'reactivado' => 'Reactivada',
         'eliminado' => 'Eliminada', 'actualizado' => 'Cuenta editada', 'aviso' => 'Aviso por correo',
         'exportado' => 'Base exportada',
+        'soporte' => 'Entró como soporte',
     ];
 
     public function __invoke(): Response

@@ -13,6 +13,7 @@ export type User = {
 export type Auth = {
     user: User;
     esAdmin: boolean;
+    esSoporte: boolean;
 };
 
 export type Passkey = {
