@@ -13,6 +13,17 @@ return [
     'dominio_panel' => env('PLANILLAS_DOMINIO_PANEL', 'admin.serialo.pe'),
 
     /*
+    | Solo SaaS: planes que propone el panel al crear una cuenta (se pueden ajustar por cuenta).
+    | Límites null = ilimitado. `dias` = vencimiento sugerido (demos).
+    */
+    'planes' => [
+        'demo' => ['nombre' => 'Demo', 'max_empresas' => 40, 'max_usuarios' => 3, 'max_trabajadores' => null, 'dias' => 15],
+        'empresa' => ['nombre' => 'Empresa', 'max_empresas' => 1, 'max_usuarios' => 2, 'max_trabajadores' => 50, 'dias' => null],
+        'estudio' => ['nombre' => 'Estudio', 'max_empresas' => 40, 'max_usuarios' => 3, 'max_trabajadores' => null, 'dias' => null],
+        'estudio_pro' => ['nombre' => 'Estudio Pro', 'max_empresas' => null, 'max_usuarios' => 10, 'max_trabajadores' => null, 'dias' => null],
+    ],
+
+    /*
     | Correos de boletas por minuto. Los hostings compartidos (cPanel) suelen limitar
     | entre 100 y 500 correos por hora; con 20/min un lote de 200 boletas tarda ~10 min.
     */

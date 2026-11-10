@@ -57,7 +57,20 @@ Separación: las rutas del panel (`routes/panel.php`, nombres `panel.*`) solo re
 nunca en el del panel (`SepararPanelYEstudios`). Las sesiones del panel están en `sesiones_panel` (base central). En modo
 `unica` el panel no existe. Las páginas usan rutas relativas (`resources/js/lib/panel.ts`) para no fijar el dominio al compilar.
 
-Pendiente (tareas siguientes): exportar la base de una cuenta (con los respaldos) y el vencimiento automático de demos (con los planes).
+Pendiente: exportar la base de una cuenta (con los respaldos) y entrar como soporte.
+
+## Planes y vencimiento
+
+En modo SaaS no hay clave firmada: cada cuenta tiene en la base central su **plan** (nombre y límites de empresas,
+usuarios y trabajadores activos; vacío = sin límite) y su **vencimiento**. El panel propone las plantillas de
+`config/planillas.php` (`planes`: Demo, Empresa, Estudio, Estudio Pro) y se ajustan por cuenta en **Editar**.
+
+- `LicenciaActual` toma el estado de `Estudio::estadoPlan()`: los mismos límites y el mismo modo solo lectura que la
+  licencia de una instalación única. La pantalla **Licencia** del estudio muestra su plan, sin campo de clave.
+- **Demo vigente**: franja «Demo: quedan N días». **Vencida** (demo o plan): solo lectura, sus datos intactos.
+- **Avisos**: `php artisan estudios:avisar-vencimientos` (programado a las 8:00, hora de Lima) envía un correo al
+  administrador 3 días antes y otro al vencer; uno por estado. Cambiar el vencimiento vuelve a habilitar los avisos.
+- **Nada se borra solo**: el panel marca las cuentas vencidas y el superadmin decide si las elimina.
 
 ## Comandos (solo en modo `saas`)
 
@@ -92,7 +105,7 @@ SESSION_DRIVER=database
 QUEUE_CONNECTION=database
 ```
 
-En modo `saas` el instalador web y la licencia firmada se omiten; los límites vendrán del plan de cada estudio.
+En modo `saas` el instalador web y la licencia firmada se omiten; los límites salen del plan de cada estudio (ver «Planes y vencimiento»).
 DNS: registro comodín `*.serialo.pe` al VPS y certificado HTTPS comodín.
 
 ## Probar en local

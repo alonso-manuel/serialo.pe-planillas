@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Panel;
 use App\Enums\EstadoEstudio;
 use App\Enums\TipoEstudio;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Panel\ActualizarCuentaRequest;
 use App\Http\Requests\Panel\GuardarCuentaRequest;
 use App\Models\Central\Estudio;
 use App\Services\Central\GestionEstudios;
@@ -36,6 +37,8 @@ class CuentaController extends Controller
                 'url' => $e->url(),
                 'tipo' => $e->tipo->value,
                 'tipo_etiqueta' => $e->tipo->etiqueta(),
+                'plan' => $e->plan,
+                'limites' => $this->limites($e->max_empresas, $e->max_usuarios, $e->max_trabajadores),
                 'estado' => $e->estado->value,
                 'estado_etiqueta' => $e->estado->etiqueta(),
                 'correo_admin' => $e->correo_admin,
@@ -52,8 +55,39 @@ class CuentaController extends Controller
     {
         return Inertia::render('panel/cuentas/Create', [
             'url_estudio' => (string) config('planillas.url_estudio'),
-            'vence_demo' => CarbonImmutable::today()->addDays(15)->toDateString(),
+            'vence_demo' => CarbonImmutable::today()->addDays((int) config('planillas.planes.demo.dias', 15))->toDateString(),
+            'planes' => config('planillas.planes'),
         ]);
+    }
+
+    public function edit(Estudio $estudio): Response
+    {
+        return Inertia::render('panel/cuentas/Edit', [
+            'cuenta' => [
+                'id' => $estudio->id,
+                'nombre' => $estudio->nombre,
+                'url' => $estudio->url(),
+                'correo_admin' => $estudio->correo_admin,
+                'tipo' => $estudio->tipo->value,
+                'plan' => $estudio->plan,
+                'max_empresas' => $estudio->max_empresas,
+                'max_usuarios' => $estudio->max_usuarios,
+                'max_trabajadores' => $estudio->max_trabajadores,
+                'vence_en' => $estudio->vence_en?->toDateString(),
+            ],
+            'planes' => config('planillas.planes'),
+        ]);
+    }
+
+    public function update(ActualizarCuentaRequest $request, Estudio $estudio): RedirectResponse
+    {
+        /** @var array{nombre: string, tipo: string, plan: string, max_empresas: int|null, max_usuarios: int|null, max_trabajadores: int|null, vence_en: string|null} $datos */
+        $datos = [...$request->validated(), 'vence_en' => $request->validated('vence_en')];
+        $this->gestion->actualizar($estudio, $datos);
+
+        Inertia::flash('toast', ['type' => 'success', 'message' => "Cuenta {$estudio->nombre} actualizada."]);
+
+        return to_route('panel.cuentas.index');
     }
 
     public function store(GuardarCuentaRequest $request): RedirectResponse
@@ -68,6 +102,12 @@ class CuentaController extends Controller
             nombreAdmin: $datos['nombre_admin'],
             tipo: $tipo,
             venceEn: isset($datos['vence_en']) ? CarbonImmutable::parse($datos['vence_en']) : null,
+            plan: empty($datos['plan']) ? null : [
+                'nombre' => $datos['plan'],
+                'max_empresas' => $datos['max_empresas'] ?? null,
+                'max_usuarios' => $datos['max_usuarios'] ?? null,
+                'max_trabajadores' => $datos['max_trabajadores'] ?? null,
+            ],
         );
 
         $this->avisarInvitacion($estudio, $this->gestion->invitar($estudio), 'creada');
@@ -111,6 +151,14 @@ class CuentaController extends Controller
         Inertia::flash('toast', ['type' => 'success', 'message' => "Se eliminó la cuenta {$nombre} y su base de datos."]);
 
         return to_route('panel.cuentas.index');
+    }
+
+    /** «40 empresas · 3 usuarios · trabajadores sin límite» */
+    private function limites(?int $empresas, ?int $usuarios, ?int $trabajadores): string
+    {
+        $texto = fn (?int $n, string $uno, string $varios) => $n === null ? "{$varios} sin límite" : $n.' '.($n === 1 ? $uno : $varios);
+
+        return implode(' · ', [$texto($empresas, 'empresa', 'empresas'), $texto($usuarios, 'usuario', 'usuarios'), $texto($trabajadores, 'trabajador', 'trabajadores')]);
     }
 
     /** Si el correo no salió, el enlace se muestra en el panel para entregarlo a mano. */

@@ -33,6 +33,8 @@ class GuardarCuentaRequest extends FormRequest
             'nombre_admin' => ['required', 'string', 'max:255'],
             'correo_admin' => ['required', 'email', 'max:255'],
             'tipo' => ['required', Rule::enum(TipoEstudio::class)],
+            ...ActualizarCuentaRequest::reglasPlan(),
+            'plan' => ['nullable', 'string', 'max:40'], // sin plan: la plantilla del tipo (config planillas.planes)
             'vence_en' => ['nullable', 'date_format:Y-m-d', 'after:today', Rule::requiredIf($this->input('tipo') === TipoEstudio::Demo->value)],
         ];
     }

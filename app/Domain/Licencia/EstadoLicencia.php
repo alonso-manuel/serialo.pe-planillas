@@ -61,6 +61,46 @@ final readonly class EstadoLicencia
         return new self(TipoEstadoLicencia::Omitida, 'Verificación de licencia desactivada (desarrollo).');
     }
 
+    /**
+     * Modo SaaS: el estado sale del plan de la cuenta (base central), no de una clave firmada.
+     * Vencida (demo o plan mensual sin renovar) = solo lectura, sin borrar nada. Una demo vigente avisa los días que quedan.
+     */
+    public static function desdePlan(
+        string $cuenta,
+        string $plan,
+        ?int $maxEmpresas,
+        ?int $maxUsuarios,
+        ?int $maxTrabajadores,
+        ?DateTimeImmutable $venceEn,
+        DateTimeImmutable $hoy,
+        bool $esDemo,
+    ): self {
+        $licencia = new Licencia($cuenta, $plan, $maxEmpresas, $maxUsuarios, $maxTrabajadores, '', $hoy->format('Y-m-d'), '9999-12-31');
+        $vence = $venceEn?->format('d/m/Y');
+
+        if ($venceEn !== null && $venceEn->format('Y-m-d') < $hoy->format('Y-m-d')) {
+            return new self(
+                TipoEstadoLicencia::SinLicencia,
+                ($esDemo ? "La demo venció el {$vence}" : "El plan venció el {$vence}")
+                .'. El sistema queda en solo lectura: tus datos siguen intactos. Comunícate con Serialo.pe para continuar.',
+                $licencia,
+            );
+        }
+
+        if ($esDemo && $venceEn !== null) {
+            $restantes = (int) $hoy->setTime(0, 0)->diff($venceEn->setTime(0, 0))->days + 1;
+
+            return new self(
+                TipoEstadoLicencia::Prueba,
+                ($restantes === 1 ? 'Demo: hoy es el último día' : "Demo: quedan {$restantes} días")." (vence el {$vence}).",
+                $licencia,
+                diasPrueba: $restantes,
+            );
+        }
+
+        return new self(TipoEstadoLicencia::Valida, "Plan {$plan} de {$cuenta}".($vence ? ", vigente hasta el {$vence}." : '.'), $licencia);
+    }
+
     /** @param array{dias: int, max_empresas: int|null, max_usuarios: int|null, max_trabajadores: int|null} $prueba */
     private static function prueba(?DateTimeImmutable $instaladoEn, DateTimeImmutable $hoy, array $prueba): self
     {
@@ -100,7 +140,8 @@ final readonly class EstadoLicencia
     public function limite(Recurso $recurso): ?int
     {
         return match ($this->tipo) {
-            TipoEstadoLicencia::Prueba => $this->limitesPrueba[$recurso->campo()] ?? null,
+            // Prueba de una instalación única: límites de prueba. Demo SaaS: los de su plan.
+            TipoEstadoLicencia::Prueba => $this->licencia !== null ? $this->licencia->limite($recurso) : ($this->limitesPrueba[$recurso->campo()] ?? null),
             TipoEstadoLicencia::Omitida => null,
             default => $this->licencia?->limite($recurso),
         };

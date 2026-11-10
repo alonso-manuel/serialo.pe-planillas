@@ -73,7 +73,7 @@ Marca `[x]` al terminar (o usa `/actualizar-roadmap`). Cada tarea: código + tes
 - [x] Multitenant base (modo SaaS en el VPS): una base por estudio por subdominio, sesión/caché/archivos/cola aislados, comandos `estudio:crear` y `estudios:migrar` — ver docs/multitenant.md
 - [x] Panel central (`admin.serialo.pe`): superadmin con 2FA obligatorio, cuentas (demo/cliente), alta con invitación por correo, suspender, restablecer acceso, eliminar, auditoría central — ver docs/multitenant.md
 - [ ] Panel central: exportar la base de una cuenta y entrar como soporte
-- [ ] Planes SaaS (demo, mensual, pago único alojado): límites y solo lectura reutilizando la licencia; vencimiento de demos con aviso por correo
+- [x] Planes SaaS: plan y límites por cuenta (plantillas en config), editar desde el panel, vencimiento con solo lectura y avisos por correo (3 días antes y al vencer) — ver docs/multitenant.md
 - [ ] Respaldos automáticos (por estudio en el VPS, fuera del servidor; y en instalaciones únicas)
 - [ ] Servidor VPS: guía y scripts (Nginx, PHP 8.3, MySQL, Redis, HTTPS comodín `*.serialo.pe`, cron y worker)
 - [ ] Actualizador desde el panel (instalaciones únicas)

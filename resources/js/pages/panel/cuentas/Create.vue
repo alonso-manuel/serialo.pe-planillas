@@ -3,6 +3,8 @@ import { Head, Link, useForm } from '@inertiajs/vue3';
 import { ArrowLeft } from '@lucide/vue';
 import { computed, ref, watch } from 'vue';
 import Heading from '@/components/Heading.vue';
+import CamposPlan from '@/components/panel/CamposPlan.vue';
+import type { PlanPlantilla } from '@/components/panel/CamposPlan.vue';
 import InputError from '@/components/InputError.vue';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -10,7 +12,11 @@ import { Label } from '@/components/ui/label';
 import { Spinner } from '@/components/ui/spinner';
 import { rutasPanel } from '@/lib/panel';
 
-const props = defineProps<{ url_estudio: string; vence_demo: string }>();
+const props = defineProps<{
+    url_estudio: string;
+    vence_demo: string;
+    planes: Record<string, PlanPlantilla>;
+}>();
 
 const form = useForm({
     nombre: '',
@@ -19,6 +25,10 @@ const form = useForm({
     correo_admin: '',
     tipo: 'demo' as 'demo' | 'cliente',
     vence_en: props.vence_demo,
+    plan: props.planes.demo?.nombre ?? 'Demo',
+    max_empresas: props.planes.demo?.max_empresas ?? null,
+    max_usuarios: props.planes.demo?.max_usuarios ?? null,
+    max_trabajadores: props.planes.demo?.max_trabajadores ?? null,
 });
 
 // Sugerencia de subdominio a partir del nombre (sin tildes, minúsculas y guiones).
@@ -34,7 +44,7 @@ watch(
             .replace(/[̀-ͯ]/g, '')
             .toLowerCase()
             .replace(
-                /\b(estudio|contable|contadores|asociados|s\.?a\.?c?|e\.?i\.?r\.?l|s\.?r\.?l|y|de|la|el)\b/g,
+                /\b(estudio|contable|contadores|asociados|prueba|demo|s\.?a\.?c?|e\.?i\.?r\.?l|s\.?r\.?l|y|de|la|el)\b/g,
                 '',
             )
             .replace(/[^a-z0-9]+/g, '-')
@@ -48,6 +58,14 @@ watch(
     (tipo) => {
         form.vence_en =
             tipo === 'demo' ? form.vence_en || props.vence_demo : '';
+        // Plantilla de plan según el tipo (se puede ajustar).
+        const p = props.planes[tipo === 'demo' ? 'demo' : 'estudio'];
+        if (p) {
+            form.plan = p.nombre;
+            form.max_empresas = p.max_empresas;
+            form.max_usuarios = p.max_usuarios;
+            form.max_trabajadores = p.max_trabajadores;
+        }
     },
 );
 
@@ -116,6 +134,8 @@ function crear(): void {
                 </div>
                 <InputError :message="form.errors.tipo" />
             </fieldset>
+
+            <CamposPlan :form="form" :planes="planes" />
 
             <div class="grid gap-2">
                 <Label for="nombre">Nombre del estudio o empresa</Label>

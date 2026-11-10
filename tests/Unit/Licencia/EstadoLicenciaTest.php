@@ -122,6 +122,44 @@ class EstadoLicenciaTest extends TestCase
     }
 
     #[Test]
+    public function saas_demo_vigente_avisa_los_dias_y_usa_los_limites_de_su_plan(): void
+    {
+        $estado = EstadoLicencia::desdePlan('Estudio Ejemplo', 'Demo', 3, 2, null,
+            new DateTimeImmutable('2026-11-25'), new DateTimeImmutable('2026-11-10'), esDemo: true);
+
+        $this->assertSame(TipoEstadoLicencia::Prueba, $estado->tipo);
+        $this->assertFalse($estado->soloLectura());
+        $this->assertSame(16, $estado->diasPrueba); // 10 → 25 de noviembre, ambos incluidos
+        $this->assertSame(3, $estado->limite(Recurso::Empresas));
+        $this->assertNull($estado->limite(Recurso::Trabajadores));
+        $this->assertStringContainsString('quedan 16 días', $estado->mensaje);
+    }
+
+    #[Test]
+    public function saas_vencido_queda_en_solo_lectura(): void
+    {
+        $demo = EstadoLicencia::desdePlan('Estudio Ejemplo', 'Demo', 3, 2, null,
+            new DateTimeImmutable('2026-11-09'), new DateTimeImmutable('2026-11-10'), esDemo: true);
+        $this->assertTrue($demo->soloLectura());
+        $this->assertStringContainsString('La demo venció el 09/11/2026', $demo->mensaje);
+
+        // El último día todavía se trabaja.
+        $this->assertFalse(EstadoLicencia::desdePlan('X', 'Demo', null, null, null,
+            new DateTimeImmutable('2026-11-10'), new DateTimeImmutable('2026-11-10'), true)->soloLectura());
+    }
+
+    #[Test]
+    public function saas_cliente_sin_vencimiento_trabaja_con_su_plan(): void
+    {
+        $estado = EstadoLicencia::desdePlan('Estudio Ejemplo', 'Estudio', 40, 3, null, null, new DateTimeImmutable('2026-11-10'), esDemo: false);
+
+        $this->assertSame(TipoEstadoLicencia::Valida, $estado->tipo);
+        $this->assertNull($estado->diasPrueba);
+        $this->assertSame(40, $estado->limite(Recurso::Empresas));
+        $this->assertSame('Estudio', $estado->licencia?->plan);
+    }
+
+    #[Test]
     public function omitida_no_tiene_limites_ni_bloquea(): void
     {
         $estado = EstadoLicencia::omitida();

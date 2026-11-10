@@ -7,6 +7,7 @@ import {
     Copy,
     ExternalLink,
     KeyRound,
+    Pencil,
     Plus,
     Trash2,
 } from '@lucide/vue';
@@ -35,6 +36,8 @@ type Cuenta = {
     url: string;
     tipo: 'demo' | 'cliente';
     tipo_etiqueta: string;
+    plan: string;
+    limites: string;
     estado: 'activo' | 'suspendido';
     estado_etiqueta: string;
     correo_admin: string | null;
@@ -154,7 +157,7 @@ function eliminar(): void {
                         <th class="px-4 py-2 text-left font-medium">
                             Administrador
                         </th>
-                        <th class="px-4 py-2 text-left font-medium">Tipo</th>
+                        <th class="px-4 py-2 text-left font-medium">Plan</th>
                         <th class="px-4 py-2 text-left font-medium">Estado</th>
                         <th class="px-4 py-2 text-left font-medium">Vence</th>
                         <th class="px-4 py-2 text-left font-medium">Creada</th>
@@ -192,6 +195,12 @@ function eliminar(): void {
                                 "
                                 >{{ c.tipo_etiqueta }}</Badge
                             >
+                            <p class="mt-1 text-xs text-muted-foreground">
+                                <span class="font-medium text-foreground">{{
+                                    c.plan
+                                }}</span>
+                                · {{ c.limites }}
+                            </p>
                         </td>
                         <td class="px-4 py-3">
                             <span
@@ -230,6 +239,12 @@ function eliminar(): void {
                         </td>
                         <td class="px-4 py-3">
                             <div class="flex justify-end gap-1">
+                                <Button variant="ghost" size="sm" as-child>
+                                    <Link :href="rutasPanel.editar(c.id)">
+                                        <Pencil />
+                                        Editar
+                                    </Link>
+                                </Button>
                                 <Button
                                     variant="ghost"
                                     size="sm"

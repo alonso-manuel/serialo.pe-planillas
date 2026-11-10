@@ -13,5 +13,6 @@ export const rutasPanel = {
     estado: (id: string) => `/cuentas/${encodeURIComponent(id)}/estado`,
     acceso: (id: string) => `/cuentas/${encodeURIComponent(id)}/acceso`,
     cuenta: (id: string) => `/cuentas/${encodeURIComponent(id)}`,
+    editar: (id: string) => `/cuentas/${encodeURIComponent(id)}/editar`,
     actividad: '/actividad',
 } as const;

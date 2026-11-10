@@ -34,6 +34,8 @@ Route::domain((string) config('planillas.dominio_panel'))
                 Route::get('cuentas', [CuentaController::class, 'index'])->name('cuentas.index');
                 Route::get('cuentas/nueva', [CuentaController::class, 'create'])->name('cuentas.create');
                 Route::post('cuentas', [CuentaController::class, 'store'])->name('cuentas.store');
+                Route::get('cuentas/{estudio}/editar', [CuentaController::class, 'edit'])->name('cuentas.edit');
+                Route::put('cuentas/{estudio}', [CuentaController::class, 'update'])->name('cuentas.update');
                 Route::patch('cuentas/{estudio}/estado', [CuentaController::class, 'estado'])->name('cuentas.estado');
                 Route::post('cuentas/{estudio}/acceso', [CuentaController::class, 'acceso'])->name('cuentas.acceso');
                 Route::delete('cuentas/{estudio}', [CuentaController::class, 'destroy'])->name('cuentas.destroy');

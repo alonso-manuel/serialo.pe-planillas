@@ -13,7 +13,7 @@ class ActividadPanelController extends Controller
     private const ACCIONES = [
         'ingreso' => 'Ingreso', 'doble_factor' => 'Doble factor', 'creado' => 'Cuenta creada',
         'invitado' => 'Enlace de acceso', 'suspendido' => 'Suspendida', 'reactivado' => 'Reactivada',
-        'eliminado' => 'Eliminada',
+        'eliminado' => 'Eliminada', 'actualizado' => 'Cuenta editada', 'aviso' => 'Aviso por correo',
     ];
 
     public function __invoke(): Response

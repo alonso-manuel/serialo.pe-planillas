@@ -16,6 +16,7 @@ const props = defineProps<{
     licencia: DatosLicencia | null;
     uso: UsoLicencia[];
     dominio_actual: string;
+    saas: boolean;
 }>();
 
 defineOptions({
@@ -179,7 +180,15 @@ function porcentaje(u: UsoLicencia): number {
             </p>
         </section>
 
-        <section class="rounded-lg border">
+        <p
+            v-if="saas"
+            class="rounded-lg border bg-muted/30 p-4 text-sm text-muted-foreground"
+        >
+            Tu plan lo administra Serialo.pe. Para ampliarlo, renovarlo o
+            cambiarlo, comunícate con nosotros.
+        </p>
+
+        <section v-if="!saas" class="rounded-lg border">
             <h2 class="border-b px-4 py-3 font-medium">
                 {{ licencia ? 'Cambiar la clave' : 'Registrar la licencia' }}
             </h2>

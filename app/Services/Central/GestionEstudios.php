@@ -45,6 +45,8 @@ class GestionEstudios
     /**
      * Crea la cuenta: su base (migraciones y catálogos legales) y su administrador con una contraseña
      * aleatoria que nadie conoce (se crea la propia con la invitación) o la indicada.
+     *
+     * @param  array{nombre: string, max_empresas: int|null, max_usuarios: int|null, max_trabajadores: int|null}|null  $plan  null = plantilla del tipo
      */
     public function crear(
         string $subdominio,
@@ -54,8 +56,10 @@ class GestionEstudios
         TipoEstudio $tipo = TipoEstudio::Cliente,
         ?CarbonImmutable $venceEn = null,
         ?string $clave = null,
+        ?array $plan = null,
     ): Estudio {
         $estudio = null;
+        $plan ??= self::planPorDefecto($tipo);
 
         try {
             // Base, migraciones y catálogos legales (carga inicial: sin auditoría, como en el instalador).
@@ -65,6 +69,10 @@ class GestionEstudios
                 'tipo' => $tipo,
                 'vence_en' => $venceEn?->toDateString(),
                 'correo_admin' => Str::lower($correo),
+                'plan' => $plan['nombre'],
+                'max_empresas' => $plan['max_empresas'],
+                'max_usuarios' => $plan['max_usuarios'],
+                'max_trabajadores' => $plan['max_trabajadores'],
             ]));
             $estudio->domains()->create(['domain' => $subdominio]);
 
@@ -85,7 +93,7 @@ class GestionEstudios
         }
 
         AuditoriaCentral::registrar('creado', "Cuenta {$nombre}", $estudio->id, [
-            'tipo' => $tipo->value, 'correo_admin' => Str::lower($correo), 'vence_en' => $venceEn?->toDateString(),
+            'tipo' => $tipo->value, 'plan' => $plan['nombre'], 'correo_admin' => Str::lower($correo), 'vence_en' => $venceEn?->toDateString(),
         ]);
 
         return $estudio;
@@ -128,6 +136,61 @@ class GestionEstudios
         AuditoriaCentral::registrar('invitado', "Enlace de acceso para {$estudio->correo_admin}", $estudio->id);
 
         return $sinCorreo ? $enlace : null;
+    }
+
+    /**
+     * Plantilla de plan (config planillas.planes): demo para las demos, «Estudio» para los clientes.
+     *
+     * @return array{nombre: string, max_empresas: int|null, max_usuarios: int|null, max_trabajadores: int|null}
+     */
+    public static function planPorDefecto(TipoEstudio $tipo): array
+    {
+        /** @var array{nombre: string, max_empresas: int|null, max_usuarios: int|null, max_trabajadores: int|null} $plan */
+        $plan = config('planillas.planes.'.($tipo === TipoEstudio::Demo ? 'demo' : 'estudio'));
+
+        return [
+            'nombre' => $plan['nombre'],
+            'max_empresas' => $plan['max_empresas'],
+            'max_usuarios' => $plan['max_usuarios'],
+            'max_trabajadores' => $plan['max_trabajadores'],
+        ];
+    }
+
+    /**
+     * Cambia nombre, tipo, plan, límites o vencimiento. Si cambia el vencimiento, se vuelve a avisar por correo.
+     *
+     * @param  array{nombre: string, tipo: string, plan: string, max_empresas: int|null, max_usuarios: int|null, max_trabajadores: int|null, vence_en: string|null}  $datos
+     */
+    public function actualizar(Estudio $estudio, array $datos): void
+    {
+        $antes = $estudio->only(['nombre', 'tipo', 'plan', 'max_empresas', 'max_usuarios', 'max_trabajadores', 'vence_en']);
+        $antes['tipo'] = $estudio->tipo->value;
+        $antes['vence_en'] = $estudio->vence_en?->toDateString();
+
+        $estudio->fill([
+            'nombre' => $datos['nombre'],
+            'tipo' => TipoEstudio::from($datos['tipo']),
+            'plan' => $datos['plan'],
+            'max_empresas' => $datos['max_empresas'],
+            'max_usuarios' => $datos['max_usuarios'],
+            'max_trabajadores' => $datos['max_trabajadores'],
+            'vence_en' => $datos['vence_en'],
+        ]);
+        if ($antes['vence_en'] !== $datos['vence_en']) {
+            $estudio->aviso_vencimiento = null;
+        }
+        $estudio->save();
+
+        $cambios = [];
+        foreach ($antes as $campo => $valor) {
+            $nuevo = $datos[$campo];
+            if ((string) $valor !== (string) $nuevo) {
+                $cambios[$campo] = [$valor, $nuevo];
+            }
+        }
+        if ($cambios !== []) {
+            AuditoriaCentral::registrar('actualizado', "Cuenta {$estudio->nombre}", $estudio->id, $cambios);
+        }
     }
 
     public function cambiarEstado(Estudio $estudio, EstadoEstudio $estado): void

@@ -7,6 +7,7 @@ use App\Domain\Licencia\Recurso;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use App\Services\Licencia\LicenciaActual;
+use App\Support\ModoSistema;
 use Carbon\CarbonImmutable;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -35,7 +36,7 @@ class LicenciaController extends Controller
                 'solo_lectura' => $estado->soloLectura(),
                 'dias_prueba' => $estado->diasPrueba,
             ],
-            'licencia' => $licencia === null ? null : [
+            'licencia' => $licencia === null || ModoSistema::saas() ? null : [
                 'cliente' => $licencia->cliente,
                 'plan' => $licencia->plan,
                 'dominio' => $licencia->dominio,
@@ -50,12 +51,15 @@ class LicenciaController extends Controller
                 'limite' => $estado->limite($r),
             ], Recurso::cases()),
             'dominio_actual' => $request->getHost(),
+            // Modo SaaS: el plan lo administra Serialo.pe desde el panel central (no hay clave que registrar).
+            'saas' => ModoSistema::saas(),
         ]);
     }
 
     public function update(Request $request): RedirectResponse
     {
         $this->soloAdmin($request);
+        abort_if(ModoSistema::saas(), 404);
 
         $datos = $request->validate(['clave' => ['required', 'string', 'max:4000']], [], ['clave' => 'clave de licencia']);
 

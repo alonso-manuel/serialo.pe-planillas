@@ -8,10 +8,12 @@ use App\Domain\Licencia\EstadoLicencia;
 use App\Domain\Licencia\Licencia;
 use App\Domain\Licencia\Recurso;
 use App\Models\Auditoria;
+use App\Models\Central\Estudio;
 use App\Models\Empresa;
 use App\Models\Trabajador;
 use App\Models\User;
 use App\Services\Instalador\Instalacion;
+use App\Support\ModoSistema;
 use Carbon\CarbonImmutable;
 use Illuminate\Support\Facades\Auth;
 
@@ -31,6 +33,13 @@ class LicenciaActual
     /** @param string|null $host dominio de la petición; null (cola, comandos) no revisa el dominio */
     public function estado(?string $host = null): EstadoLicencia
     {
+        // Modo SaaS: el plan de la cuenta (base central) reemplaza a la licencia firmada.
+        if (ModoSistema::saas()) {
+            $estudio = tenancy()->initialized ? tenant() : null;
+
+            return $estudio instanceof Estudio ? $estudio->estadoPlan() : EstadoLicencia::omitida();
+        }
+
         if ($this->omitida()) {
             return EstadoLicencia::omitida();
         }
@@ -111,7 +120,11 @@ class LicenciaActual
             return;
         }
 
-        $plan = $estado->licencia !== null ? "Tu licencia {$estado->licencia->plan}" : 'La prueba';
+        $plan = match (true) {
+            $estado->licencia !== null && ModoSistema::saas() => "Tu plan {$estado->licencia->plan}",
+            $estado->licencia !== null => "Tu licencia {$estado->licencia->plan}",
+            default => 'La prueba',
+        };
         $libres = max(0, $limite - $actuales);
         $detalle = $nuevos > 1 && $libres > 0 ? " Ahora puedes agregar {$libres} más." : '';
         $accion = $recurso === Recurso::Trabajadores ? 'registra el cese de alguno' : 'desactiva alguno';
