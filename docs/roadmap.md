@@ -86,7 +86,7 @@ Marca `[x]` al terminar (o usa `/actualizar-roadmap`). Cada tarea: código + tes
 - ~~Piloto con contador: 10 casos reales anonimizados como tests~~ — descartado el 10/11
 - ~~Correcciones~~ — descartado el 10/11 (se corrige sobre la marcha)
 - [x] Demos por estudio desde el panel central: ya cubierto por **Nueva cuenta** tipo demo (app limpia, vencimiento y avisos)
-- [x] Manual de uso y videos cortos — ya existen; los que falten se generan cuando se pidan
+- [x] Manual de uso y videos cortos — `docs/manual-usuario.md`, `docs/manual-desarrollador.md` y `docs/videos/`
 - [ ] Etiqueta `v1.0.0`
 
 ## v1.1 — 11 ene → 12 feb 2027

@@ -5,6 +5,7 @@ Se vende como **licencia instalable** (pago único + plan anual) a **estudios co
 Calcula la planilla mensual de los regímenes general, pequeña y microempresa, beneficios sociales,
 boletas en PDF y genera los archivos oficiales para **PLAME (SUNAT)**, **AFPnet** y **T-Registro**.
 
+Manuales: `docs/manual-usuario.md` y `docs/manual-desarrollador.md`.
 Lee también: `docs/producto.md` (qué se vende), `docs/roadmap.md` (qué toca ahora),
 `docs/reglas-calculo.md` (fórmulas legales) y `docs/convenciones.md` (cómo se escribe el código).
 
