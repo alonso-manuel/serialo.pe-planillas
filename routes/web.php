@@ -29,6 +29,7 @@ use App\Http\Controllers\Respaldos\RespaldoController;
 use App\Http\Controllers\Soporte\SoporteController;
 use App\Http\Controllers\Sunat\AfpnetController;
 use App\Http\Controllers\Sunat\PlameController;
+use App\Http\Controllers\Sunat\TRegistroController;
 use App\Http\Controllers\TasasAfp\ImportacionTasasAfpController;
 use App\Http\Controllers\TasasAfp\TasaAfpController;
 use App\Http\Controllers\Trabajadores\CambioTrabajadorController;
@@ -107,6 +108,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
         // CTS de la empresa activa (mayo / noviembre)
         // Liquidación de beneficios sociales al cese (se paga en la planilla del mes del cese)
         Route::get('liquidaciones', [LiquidacionController::class, 'index'])->name('liquidaciones.index');
+        // T-Registro de la empresa activa
+        Route::get('t-registro', [TRegistroController::class, 'index'])->name('tregistro.index');
+        Route::get('t-registro/zip', [TRegistroController::class, 'zip'])->name('tregistro.zip');
+        Route::get('t-registro/ocupaciones', [TRegistroController::class, 'ocupaciones'])->middleware('throttle:120,1')->name('tregistro.ocupaciones');
         Route::post('liquidaciones/{trabajador}/calcular', [LiquidacionController::class, 'calcular'])->name('liquidaciones.calcular');
         Route::post('liquidaciones/{liquidacion}/cerrar', [LiquidacionController::class, 'cerrar'])->name('liquidaciones.cerrar');
         Route::post('liquidaciones/{liquidacion}/reabrir', [LiquidacionController::class, 'reabrir'])->name('liquidaciones.reabrir');

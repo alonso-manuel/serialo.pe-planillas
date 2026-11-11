@@ -40,6 +40,16 @@ export type TrabajadorEditable = {
     cuenta_sueldo: string | null;
     cuenta_cts: string | null;
     entidad_cts: string | null;
+    categoria_ocupacional: string | null;
+    ocupacion: string | null;
+    ocupacion_nombre: string | null;
+    situacion_educativa: string | null;
+    modalidad_contrato: string | null;
+    situacion_especial: string;
+    discapacidad: boolean;
+    sindicalizado: boolean;
+    nacionalidad: string | null;
+    pais_emisor: string | null;
     nombre_completo: string;
     cesado: boolean;
     cese: {
@@ -57,6 +67,10 @@ export type CatalogosTrabajador = {
     afps: Opcion[];
     tipos_documento: Opcion[];
     tipos_contrato: Opcion[];
+    categorias_ocupacionales: Opcion[];
+    situaciones_educativas: Opcion[];
+    modalidades_contrato: Opcion[];
+    situaciones_especiales: Opcion[];
     tipos_comision: Opcion[];
     motivos_cese: Opcion[];
     entidades_cts: Opcion[];

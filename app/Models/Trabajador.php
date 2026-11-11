@@ -2,9 +2,13 @@
 
 namespace App\Models;
 
+use App\Enums\CategoriaOcupacional;
+use App\Enums\ModalidadContrato;
 use App\Enums\MotivoCese;
 use App\Enums\SeguroSalud;
 use App\Enums\SistemaPension;
+use App\Enums\SituacionEducativa;
+use App\Enums\SituacionEspecial;
 use App\Enums\TipoComisionAfp;
 use App\Enums\TipoContrato;
 use App\Enums\TipoDocumento;
@@ -47,6 +51,15 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property string|null $entidad_cts código de entidades_financieras
  * @property string|null $email
  * @property string|null $telefono
+ * @property CategoriaOcupacional|null $categoria_ocupacional tabla 24 de SUNAT
+ * @property string|null $ocupacion tabla 30 de SUNAT
+ * @property SituacionEducativa|null $situacion_educativa
+ * @property ModalidadContrato|null $modalidad_contrato tabla 12 (plazo fijo)
+ * @property SituacionEspecial $situacion_especial
+ * @property bool $discapacidad
+ * @property bool $sindicalizado
+ * @property string|null $nacionalidad tabla 4 (extranjeros)
+ * @property string|null $pais_emisor tabla 26 (pasaporte)
  * @property-read string $nombre_completo
  */
 class Trabajador extends Model
@@ -63,6 +76,9 @@ class Trabajador extends Model
         'remuneracion_basica', 'asignacion_familiar', 'sistema_pension', 'afp_id',
         'cuspp', 'tipo_comision_afp', 'seguro_salud', 'cuenta_sueldo', 'cuenta_cts', 'entidad_cts',
         'email', 'telefono',
+        // T-Registro
+        'categoria_ocupacional', 'ocupacion', 'situacion_educativa', 'modalidad_contrato', 'situacion_especial',
+        'discapacidad', 'sindicalizado', 'nacionalidad', 'pais_emisor',
     ];
 
     /** @return array<string, string> */
@@ -74,6 +90,12 @@ class Trabajador extends Model
             'fecha_cese' => 'date',
             'remuneracion_basica' => 'decimal:2',
             'asignacion_familiar' => 'boolean',
+            'discapacidad' => 'boolean',
+            'sindicalizado' => 'boolean',
+            'categoria_ocupacional' => CategoriaOcupacional::class,
+            'situacion_educativa' => SituacionEducativa::class,
+            'modalidad_contrato' => ModalidadContrato::class,
+            'situacion_especial' => SituacionEspecial::class,
             'tipo_documento' => TipoDocumento::class,
             'tipo_contrato' => TipoContrato::class,
             'sistema_pension' => SistemaPension::class,

@@ -25,6 +25,7 @@ import {
     SelectValue,
 } from '@/components/ui/select';
 import { Spinner } from '@/components/ui/spinner';
+import { ocupaciones as ocupacionesSunat } from '@/routes/tregistro';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import {
     consultaDni,
@@ -94,6 +95,16 @@ const form = useForm({
     cuenta_sueldo: t?.cuenta_sueldo ?? '',
     cuenta_cts: t?.cuenta_cts ?? '',
     entidad_cts: t?.entidad_cts ?? '',
+    // T-Registro
+    categoria_ocupacional: t?.categoria_ocupacional ?? NINGUNO,
+    ocupacion: t?.ocupacion ?? '',
+    situacion_educativa: t?.situacion_educativa ?? NINGUNO,
+    modalidad_contrato: t?.modalidad_contrato ?? NINGUNO,
+    situacion_especial: t?.situacion_especial ?? '0',
+    discapacidad: t?.discapacidad ?? false,
+    sindicalizado: t?.sindicalizado ?? false,
+    nacionalidad: t?.nacionalidad ?? '',
+    pais_emisor: t?.pais_emisor ?? '',
 });
 
 /* ---------- Pestañas y errores ---------- */
@@ -125,6 +136,17 @@ const PESTANAS = {
         'seguro_salud',
     ],
     cuentas: ['cuenta_sueldo', 'cuenta_cts', 'entidad_cts'],
+    sunat: [
+        'categoria_ocupacional',
+        'ocupacion',
+        'situacion_educativa',
+        'modalidad_contrato',
+        'situacion_especial',
+        'discapacidad',
+        'sindicalizado',
+        'nacionalidad',
+        'pais_emisor',
+    ],
 } as const;
 
 type Pestana = keyof typeof PESTANAS | 'historial' | 'quinta';
@@ -160,6 +182,17 @@ function guardar(): void {
         establecimiento_id:
             d.establecimiento_id === NINGUNO ? null : d.establecimiento_id,
         afp_id: d.afp_id === NINGUNO ? null : d.afp_id,
+        categoria_ocupacional:
+            d.categoria_ocupacional === NINGUNO
+                ? null
+                : d.categoria_ocupacional,
+        situacion_educativa:
+            d.situacion_educativa === NINGUNO ? null : d.situacion_educativa,
+        modalidad_contrato:
+            d.modalidad_contrato === NINGUNO ? null : d.modalidad_contrato,
+        ocupacion: d.ocupacion || null,
+        nacionalidad: d.nacionalidad || null,
+        pais_emisor: d.pais_emisor || null,
     }));
 
     if (props.trabajador) {
@@ -167,6 +200,42 @@ function guardar(): void {
     } else {
         form.post(store.url(), opciones);
     }
+}
+
+/* ---------- Ocupación (tabla 30 de SUNAT) ---------- */
+const ocupacionNombre = ref(t?.ocupacion_nombre ?? '');
+const buscarOcupacion = ref('');
+const ocupaciones = ref<{ codigo: string; nombre: string }[]>([]);
+let temporizadorOcupacion: ReturnType<typeof setTimeout> | undefined;
+
+function alBuscarOcupacion(): void {
+    clearTimeout(temporizadorOcupacion);
+    const q = buscarOcupacion.value.trim();
+
+    if (q.length < 2) {
+        ocupaciones.value = [];
+
+        return;
+    }
+
+    temporizadorOcupacion = setTimeout(async () => {
+        const categoria =
+            form.categoria_ocupacional === NINGUNO
+                ? ''
+                : form.categoria_ocupacional;
+        const r = await fetch(
+            ocupacionesSunat.url({ query: { q, categoria } }),
+            { headers: { Accept: 'application/json' } },
+        );
+        ocupaciones.value = r.ok ? await r.json() : [];
+    }, 250);
+}
+
+function elegirOcupacion(o: { codigo: string; nombre: string }): void {
+    form.ocupacion = o.codigo;
+    ocupacionNombre.value = o.nombre;
+    buscarOcupacion.value = '';
+    ocupaciones.value = [];
 }
 
 /* ---------- Consultar DNI (RENIEC) ---------- */
@@ -300,6 +369,7 @@ function eliminar(): void {
                             laborales: 'Laborales',
                             pension: 'Pensión y salud',
                             cuentas: 'Cuentas',
+                            sunat: 'SUNAT',
                             ...(esNuevo
                                 ? {}
                                 : { historial: 'Historial', quinta: 'Quinta' }),
@@ -788,6 +858,222 @@ function eliminar(): void {
                         </Select>
                         <InputError :message="form.errors.entidad_cts" />
                     </div>
+                </TabsContent>
+
+                <!-- Datos para SUNAT (T-Registro) -->
+                <TabsContent
+                    value="sunat"
+                    class="grid gap-5 pt-4 sm:grid-cols-2"
+                >
+                    <p
+                        class="rounded-md bg-muted/60 p-3 text-xs text-muted-foreground sm:col-span-2"
+                    >
+                        Datos que pide SUNAT para dar de alta al trabajador en
+                        el T-Registro (SUNAT → T-Registro genera los archivos).
+                    </p>
+                    <div class="grid gap-2">
+                        <Label for="categoria_ocupacional"
+                            >Categoría ocupacional</Label
+                        >
+                        <Select v-model="form.categoria_ocupacional">
+                            <SelectTrigger
+                                id="categoria_ocupacional"
+                                class="w-full"
+                                ><SelectValue placeholder="Elige"
+                            /></SelectTrigger>
+                            <SelectContent>
+                                <SelectItem :value="NINGUNO"
+                                    >Sin indicar</SelectItem
+                                >
+                                <SelectItem
+                                    v-for="o in catalogos.categorias_ocupacionales"
+                                    :key="o.value"
+                                    :value="o.value"
+                                >
+                                    {{ o.label }}
+                                </SelectItem>
+                            </SelectContent>
+                        </Select>
+                        <InputError
+                            :message="form.errors.categoria_ocupacional"
+                        />
+                    </div>
+                    <div class="grid gap-2">
+                        <Label for="situacion_educativa"
+                            >Situación educativa</Label
+                        >
+                        <Select v-model="form.situacion_educativa">
+                            <SelectTrigger
+                                id="situacion_educativa"
+                                class="w-full"
+                                ><SelectValue placeholder="Elige"
+                            /></SelectTrigger>
+                            <SelectContent>
+                                <SelectItem :value="NINGUNO"
+                                    >Sin indicar</SelectItem
+                                >
+                                <SelectItem
+                                    v-for="o in catalogos.situaciones_educativas"
+                                    :key="o.value"
+                                    :value="o.value"
+                                >
+                                    {{ o.label }}
+                                </SelectItem>
+                            </SelectContent>
+                        </Select>
+                        <InputError
+                            :message="form.errors.situacion_educativa"
+                        />
+                    </div>
+                    <div class="grid gap-2 sm:col-span-2">
+                        <Label for="buscar_ocupacion"
+                            >Ocupación (tabla 30 de SUNAT)</Label
+                        >
+                        <p v-if="form.ocupacion" class="text-sm">
+                            <span class="font-medium tabular-nums">{{
+                                form.ocupacion
+                            }}</span>
+                            · {{ ocupacionNombre }}
+                            <button
+                                type="button"
+                                class="ml-2 text-xs underline underline-offset-4"
+                                @click="
+                                    form.ocupacion = '';
+                                    ocupacionNombre = '';
+                                "
+                            >
+                                Quitar
+                            </button>
+                        </p>
+                        <Input
+                            id="buscar_ocupacion"
+                            v-model="buscarOcupacion"
+                            placeholder="Busca por nombre (p. ej. contador) o código"
+                            autocomplete="off"
+                            @input="alBuscarOcupacion"
+                        />
+                        <ul
+                            v-if="ocupaciones.length"
+                            class="max-h-56 overflow-y-auto rounded-md border text-sm"
+                        >
+                            <li v-for="o in ocupaciones" :key="o.codigo">
+                                <button
+                                    type="button"
+                                    class="w-full px-3 py-1.5 text-left hover:bg-muted"
+                                    @click="elegirOcupacion(o)"
+                                >
+                                    <span class="tabular-nums">{{
+                                        o.codigo
+                                    }}</span>
+                                    · {{ o.nombre }}
+                                </button>
+                            </li>
+                        </ul>
+                        <InputError :message="form.errors.ocupacion" />
+                    </div>
+                    <div
+                        v-if="form.tipo_contrato === 'plazo_fijo'"
+                        class="grid gap-2"
+                    >
+                        <Label for="modalidad_contrato"
+                            >Modalidad del contrato a plazo fijo</Label
+                        >
+                        <Select v-model="form.modalidad_contrato">
+                            <SelectTrigger
+                                id="modalidad_contrato"
+                                class="w-full"
+                                ><SelectValue placeholder="Elige"
+                            /></SelectTrigger>
+                            <SelectContent>
+                                <SelectItem :value="NINGUNO"
+                                    >Sin indicar</SelectItem
+                                >
+                                <SelectItem
+                                    v-for="o in catalogos.modalidades_contrato"
+                                    :key="o.value"
+                                    :value="o.value"
+                                >
+                                    {{ o.label }}
+                                </SelectItem>
+                            </SelectContent>
+                        </Select>
+                        <InputError :message="form.errors.modalidad_contrato" />
+                    </div>
+                    <div class="grid gap-2">
+                        <Label for="situacion_especial"
+                            >Situación especial</Label
+                        >
+                        <Select v-model="form.situacion_especial">
+                            <SelectTrigger
+                                id="situacion_especial"
+                                class="w-full"
+                                ><SelectValue
+                            /></SelectTrigger>
+                            <SelectContent>
+                                <SelectItem
+                                    v-for="o in catalogos.situaciones_especiales"
+                                    :key="o.value"
+                                    :value="o.value"
+                                >
+                                    {{ o.label }}
+                                </SelectItem>
+                            </SelectContent>
+                        </Select>
+                        <InputError :message="form.errors.situacion_especial" />
+                    </div>
+                    <div
+                        class="flex flex-wrap items-center gap-6 sm:col-span-2"
+                    >
+                        <label class="flex items-center gap-2 text-sm">
+                            <Checkbox
+                                :model-value="form.discapacidad"
+                                @update:model-value="
+                                    (v) => (form.discapacidad = v === true)
+                                "
+                            />
+                            Tiene discapacidad
+                        </label>
+                        <label class="flex items-center gap-2 text-sm">
+                            <Checkbox
+                                :model-value="form.sindicalizado"
+                                @update:model-value="
+                                    (v) => (form.sindicalizado = v === true)
+                                "
+                            />
+                            Sindicalizado
+                        </label>
+                    </div>
+                    <template v-if="form.tipo_documento !== '01'">
+                        <div class="grid gap-2">
+                            <Label for="nacionalidad"
+                                >Nacionalidad (código de la tabla 4)</Label
+                            >
+                            <Input
+                                id="nacionalidad"
+                                v-model="form.nacionalidad"
+                                inputmode="numeric"
+                                maxlength="4"
+                                placeholder="p. ej. 9850 (Venezuela)"
+                            />
+                            <InputError :message="form.errors.nacionalidad" />
+                        </div>
+                        <div
+                            v-if="form.tipo_documento === '07'"
+                            class="grid gap-2"
+                        >
+                            <Label for="pais_emisor"
+                                >País emisor del pasaporte (tabla 26)</Label
+                            >
+                            <Input
+                                id="pais_emisor"
+                                v-model="form.pais_emisor"
+                                inputmode="numeric"
+                                maxlength="3"
+                                placeholder="p. ej. 862 (Venezuela)"
+                            />
+                            <InputError :message="form.errors.pais_emisor" />
+                        </div>
+                    </template>
                 </TabsContent>
 
                 <!-- Historial -->

@@ -93,7 +93,7 @@ Marca `[x]` al terminar (o usa `/actualizar-roadmap`). Cada tarea: código + tes
 
 - [x] Quinta categoría: retención mensual (art. 40 del Reglamento de la LIR) con proyección, gratificaciones por percibir, extraordinarios, cese, otros empleadores y detalle en la línea — ver docs/reglas-calculo.md
 - [x] Indemnización por despido arbitrario en la liquidación: 0501 (indeterminado), 0503 (plazo fijo) y REMYPE; además, la indemnización vacacional corregida de 0911 a 0504 según la Tabla 22 — ver docs/reglas-calculo.md
-- [ ] T-Registro: archivos de altas y bajas (ya están los códigos de motivo de cese y tipo de contrato)
+- [x] T-Registro: altas y bajas en RP_<RUC>.ide/.tra/.per/.est para el PVS, revisión de datos faltantes, ficha del trabajador con los datos de SUNAT y catálogo oficial de ocupaciones — ver docs/formatos-oficiales.md
 - [ ] Derechohabientes (para T-Registro y EsSalud)
 - [ ] Cuarta categoría: recibos por honorarios, retención y PLAME .4ta / .ps4
 - [ ] Asistencia: importar días, horas extra y faltas desde Excel (ya existe la grilla editable de novedades)

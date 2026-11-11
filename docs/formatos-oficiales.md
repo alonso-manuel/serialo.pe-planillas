@@ -74,15 +74,34 @@ Generador: `App\Domain\Afp\GeneradorAfpnet`; servicio: `App\Services\Sunat\Expor
 
 ## T-Registro (v1.1)
 
-Carga masiva por archivos de texto con nombre `RP_` + RUC + `.ide/.tra/.per/.est/...` ⚠ verificar nomenclatura:
+**SUNAT → T-Registro** (empresa activa, rango de fechas): altas = ingreso dentro del rango, bajas = cese dentro del
+rango. Revisa los datos que exige SUNAT por trabajador y genera un zip para validar en el **PVS T-Registro** y subir
+en SOL → T-Registro → Carga masiva. Código: `App\Domain\Sunat\TRegistro\GeneradorTRegistro` (puro) y
+`App\Services\Sunat\ExportacionTRegistro`.
 
-| Archivo | Contenido                                                                   |
-| ------- | --------------------------------------------------------------------------- |
-| `.ide`  | Datos personales del trabajador                                             |
-| `.tra`  | Datos laborales (régimen, tipo de contrato, ocupación, sistema pensionario) |
-| `.per`  | Periodos (alta/baja, categoría, régimen de salud y pensión)                 |
-| `.est`  | Establecimiento donde labora                                                |
-| `.edu`  | Situación educativa                                                         |
+Fuentes: [manual del PVS T-Registro](https://www.sunat.gob.pe/orientacion/pvs/registro/manual/mu-0441-pvs-T-Registro_RM_170_2023_TR.pdf)
+(actualizado al 18/09/2023) y el [Excel de tablas paramétricas](https://orientacion.sunat.gob.pe/node/1444) (09/11/2026).
+
+| Archivo        | Estructura | Contenido                                                                                                                                                                                                               |
+| -------------- | ---------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `RP_<RUC>.ide` | E04 (41)   | Datos personales: documento, nacimiento, nombres, sexo, nacionalidad, celular, correo; dirección vacía (opcional)                                                                                                       |
+| `RP_<RUC>.tra` | E05 (23)   | Régimen laboral (t. 33), situación educativa (t. 9), ocupación (t. 30), discapacidad, CUSPP, contrato (t. 12), sindicalizado, periodicidad, sueldo, situación especial (t. 35), tipo de pago (t. 16), categoría (t. 24) |
+| `RP_<RUC>.per` | E11 (9)    | Alta: periodo laboral, tipo de trabajador (t. 8), régimen de salud (t. 32) y pensionario (t. 11). Baja: periodo laboral con fecha de fin y motivo (t. 17)                                                               |
+| `RP_<RUC>.est` | E17 (5)    | RUC y código del establecimiento donde labora                                                                                                                                                                           |
+
+- Campos separados por «|», un «|» al final de cada línea, sin espacios; un campo que no aplica va vacío («||»).
+  Fechas `dd/mm/aaaa`. Fin de línea CRLF. Texto en **Windows-1252** (tildes y eñes de los nombres) ⚠.
+- Códigos: régimen laboral 01 general / 17 pequeña / 16 micro; tipo de trabajador 19 ejecutivo / 20 obrero / 21
+  empleado (según la categoría ocupacional); régimen de salud 00 EsSalud / 21 SIS; pensionario 02 ONP / 21 Integra /
+  22 Horizonte / 23 Profuturo / 24 Prima / 25 Habitat / 99 sin régimen; contrato 1 indeterminado / 2 tiempo parcial /
+  modalidad de la tabla 12 para plazo fijo; tipo de pago 2 si tiene cuenta de sueldo, 1 efectivo.
+- Datos obligatorios del alta que se revisan antes de generar: fecha de nacimiento, sexo, celular (9 dígitos), correo,
+  categoría, ocupación, situación educativa, modalidad del plazo fijo, nacionalidad (extranjeros), país emisor
+  (pasaporte), código SUNAT de la AFP, establecimiento. Baja: motivo del cese.
+- Catálogo de ocupaciones (tabla 30, 4,644 códigos con su habilitación por categoría) en
+  `database/data/sunat/ocupaciones-tabla30.csv` → tabla `ocupaciones_sunat`.
+- ⚠ Pendiente: dirección (E04 13–41), SCTR, cuenta de abono (`.cta`), estudios (`.edu`), personal en formación y
+  modificaciones de datos (solo altas y bajas por ahora). Verificar en el PVS la baja solo con el periodo laboral.
 
 ## Reglas
 

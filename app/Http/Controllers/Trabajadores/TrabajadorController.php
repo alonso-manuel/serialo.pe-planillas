@@ -3,10 +3,14 @@
 namespace App\Http\Controllers\Trabajadores;
 
 use App\Domain\Licencia\Recurso;
+use App\Enums\CategoriaOcupacional;
 use App\Enums\ClaveParametro;
+use App\Enums\ModalidadContrato;
 use App\Enums\MotivoCese;
 use App\Enums\RegimenLaboral;
 use App\Enums\SistemaPension;
+use App\Enums\SituacionEducativa;
+use App\Enums\SituacionEspecial;
 use App\Enums\TipoComisionAfp;
 use App\Enums\TipoContrato;
 use App\Enums\TipoDocumento;
@@ -28,6 +32,7 @@ use Carbon\CarbonImmutable;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -147,6 +152,17 @@ class TrabajadorController extends Controller
                 'cuenta_sueldo' => $trabajador->cuenta_sueldo,
                 'cuenta_cts' => $trabajador->cuenta_cts,
                 'entidad_cts' => $trabajador->entidad_cts,
+                // T-Registro
+                'categoria_ocupacional' => $trabajador->categoria_ocupacional?->value,
+                'ocupacion' => $trabajador->ocupacion,
+                'ocupacion_nombre' => $trabajador->ocupacion === null ? null : DB::table('ocupaciones_sunat')->where('codigo', $trabajador->ocupacion)->value('nombre'),
+                'situacion_educativa' => $trabajador->situacion_educativa?->value,
+                'modalidad_contrato' => $trabajador->modalidad_contrato?->value,
+                'situacion_especial' => $trabajador->situacion_especial->value,
+                'discapacidad' => $trabajador->discapacidad,
+                'sindicalizado' => $trabajador->sindicalizado,
+                'nacionalidad' => $trabajador->nacionalidad,
+                'pais_emisor' => $trabajador->pais_emisor,
                 'nombre_completo' => $trabajador->nombre_completo,
                 'cesado' => $trabajador->estaCesado(),
                 'cese' => $trabajador->fecha_cese === null ? null : [
@@ -238,6 +254,10 @@ class TrabajadorController extends Controller
                 ->map(fn (Afp $a) => ['value' => (string) $a->id, 'label' => $a->nombre])->values()->all(),
             'tipos_documento' => $opciones(TipoDocumento::cases()),
             'tipos_contrato' => $opciones(TipoContrato::cases()),
+            'categorias_ocupacionales' => $opciones(CategoriaOcupacional::cases()),
+            'situaciones_educativas' => $opciones(SituacionEducativa::cases()),
+            'modalidades_contrato' => $opciones(ModalidadContrato::cases()),
+            'situaciones_especiales' => $opciones(SituacionEspecial::cases()),
             'tipos_comision' => $opciones(TipoComisionAfp::cases()),
             'motivos_cese' => array_map(fn (MotivoCese $m) => ['value' => $m->value, 'label' => "{$m->value} · {$m->etiqueta()}"], MotivoCese::cases()),
             'seguro_por_defecto' => $empresa->seguro_salud->value,

@@ -6,6 +6,7 @@ import {
     FileUp,
     Gift,
     DatabaseBackup,
+    IdCard,
     KeyRound,
     Landmark,
     LayoutGrid,
@@ -33,6 +34,7 @@ import { index as respaldos } from '@/routes/respaldos';
 import { index as parametros } from '@/routes/parametros';
 import { index as periodos } from '@/routes/periodos';
 import { index as plame } from '@/routes/plame';
+import { index as tregistro } from '@/routes/tregistro';
 import { index as reportes } from '@/routes/reportes';
 import { index as tasasAfp } from '@/routes/tasas-afp';
 import { index as trabajadores } from '@/routes/trabajadores';
@@ -75,6 +77,7 @@ export const gruposNav: GrupoNav[] = [
         items: [
             { title: 'PLAME', href: plame(), icon: FileUp },
             { title: 'AFPnet', href: afpnet(), icon: Landmark },
+            { title: 'T-Registro', href: tregistro(), icon: IdCard },
         ],
     },
     {
