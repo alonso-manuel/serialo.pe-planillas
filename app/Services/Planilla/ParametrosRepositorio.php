@@ -50,7 +50,12 @@ class ParametrosRepositorio
     /** Renta de quinta categoría vigente al cierre del periodo. */
     public function quinta(Periodo $periodo): ParametrosQuinta
     {
-        $fecha = $periodo->ultimoDia()->toDateString();
+        return $this->quintaAl($periodo->ultimoDia()->toDateString());
+    }
+
+    /** Renta de quinta categoría vigente en una fecha (Y-m-d), p. ej. el 31/12 del ejercicio. */
+    public function quintaAl(string $fecha): ParametrosQuinta
+    {
         $v = fn (C $clave) => Parametro::vigente($clave, $fecha);
 
         return new ParametrosQuinta(

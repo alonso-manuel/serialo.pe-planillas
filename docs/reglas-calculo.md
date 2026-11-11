@@ -213,6 +213,10 @@ El detalle (renta proyectada, impuesto, divisor, retención ordinaria y extraord
 el detalle del trabajador en la planilla. No se aplica la deducción adicional de 3 UIT (gastos): va en la declaración
 anual del trabajador.
 
+**Certificado de rentas y retenciones** (art. 45 del Reglamento): por ejercicio, con las planillas **cerradas** de la
+empresa: remuneraciones, gratificaciones y otros afectos; renta bruta − deducción; impuesto por tramos; retenciones
+(0605) y la diferencia (saldo o retenido en exceso). Avisa si quedan planillas del año sin cerrar.
+
 ## Cuarta categoría (v1.1)
 
 Retención por comprobante (LIR art. 74): **tasa** (8 %) sobre el monto del recibo por honorarios cuando **supera** el

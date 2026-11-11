@@ -98,7 +98,7 @@ Marca `[x]` al terminar (o usa `/actualizar-roadmap`). Cada tarea: código + tes
 - [x] Cuarta categoría: recibos por honorarios en el periodo, retención del 8 % y PLAME .4ta / .ps4 — ver docs/formatos-oficiales.md
 - [x] Asistencia desde Excel: plantilla con los trabajadores del periodo (faltas, licencias, subsidios y horas extra) e importación todo o nada con la lista de errores
 - [x] Préstamos en cuotas: cronograma, descuento automático 0706 en la planilla del mes, estado de cuenta y aviso de saldo al cese
-- [ ] Certificado anual de rentas y retenciones de quinta (los demás documentos ya existen: boleta, liquidación, certificado de trabajo, carta y constancia de CTS, con firma digital)
+- [x] Certificado anual de rentas y retenciones de quinta (art. 45 del Reglamento de la LIR): por trabajador o de todos en zip, desde la pestaña Quinta, con firma digital
 
 Ideas tomadas del análisis de mercado (09/11): conceptos recurrentes y proporcionales por trabajador, EPS y seguro Vida Ley, comparativo entre recálculos de un mismo mes y simulador de costo de contratación.
 

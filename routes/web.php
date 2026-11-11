@@ -35,6 +35,7 @@ use App\Http\Controllers\Sunat\TRegistroController;
 use App\Http\Controllers\TasasAfp\ImportacionTasasAfpController;
 use App\Http\Controllers\TasasAfp\TasaAfpController;
 use App\Http\Controllers\Trabajadores\CambioTrabajadorController;
+use App\Http\Controllers\Trabajadores\CertificadoQuintaController;
 use App\Http\Controllers\Trabajadores\CeseTrabajadorController;
 use App\Http\Controllers\Trabajadores\ConsultaDniController;
 use App\Http\Controllers\Trabajadores\DerechohabienteController;
@@ -128,6 +129,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('liquidaciones/{liquidacion}/pdf', [LiquidacionController::class, 'hoja'])->name('liquidaciones.pdf');
         Route::get('liquidaciones/{liquidacion}/carta-cts', [LiquidacionController::class, 'cartaCts'])->name('liquidaciones.carta-cts');
         Route::get('trabajadores/{trabajador}/certificado', [LiquidacionController::class, 'certificado'])->name('trabajadores.certificado');
+        Route::get('trabajadores/{trabajador}/certificado-quinta/{anio}', [CertificadoQuintaController::class, 'show'])
+            ->whereNumber('anio')->name('trabajadores.certificado-quinta');
+        Route::get('certificados-quinta/{anio}', [CertificadoQuintaController::class, 'lote'])
+            ->whereNumber('anio')->name('certificados-quinta.lote');
 
         Route::get('cts', [CtsController::class, 'index'])->name('cts.index');
         Route::post('cts/calcular', [CtsController::class, 'calcular'])->name('cts.calcular');

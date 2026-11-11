@@ -75,6 +75,20 @@ final class CalculadoraQuinta
     }
 
     /**
+     * Impuesto anual sobre una renta bruta del ejercicio (para el certificado de rentas y retenciones):
+     * renta bruta − deducción en UIT, por tramos. Devuelve [renta neta, impuesto] con 2 decimales.
+     *
+     * @return array{0: string, 1: string}
+     */
+    public function impuestoDelEjercicio(string $rentaBruta, ParametrosQuinta $p): array
+    {
+        $uit = Monto::de($p->uit);
+        $neta = $this->noNegativo(Monto::de($rentaBruta)->minus($uit->multipliedBy($p->deduccionUit)));
+
+        return [Monto::texto($neta), Monto::texto($this->impuesto($neta, $uit, $p->tramos))];
+    }
+
+    /**
      * Impuesto anual sobre la renta neta, por tramos acumulativos.
      *
      * @param  list<array{0: string|null, 1: string}>  $tramos

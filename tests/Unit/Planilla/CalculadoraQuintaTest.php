@@ -151,6 +151,14 @@ class CalculadoraQuintaTest extends TestCase
         $this->assertSame('17458.13', $r->retencion);
     }
 
+    #[Test]
+    public function impuesto_del_ejercicio_para_el_certificado(): void
+    {
+        // 70,900 − 37,450 = 33,450 → 3,078 (el mismo caso del año completo)
+        $this->assertSame(['33450.00', '3078.00'], (new CalculadoraQuinta)->impuestoDelEjercicio('70900.00', $this->parametros()));
+        $this->assertSame(['0.00', '0.00'], (new CalculadoraQuinta)->impuestoDelEjercicio('20000.00', $this->parametros()));
+    }
+
     /** @param  array<int, ResultadoQuinta>  $anio */
     private function suma(array $anio): string
     {

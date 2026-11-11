@@ -1,12 +1,15 @@
 <script setup lang="ts">
 import { router, useForm } from '@inertiajs/vue3';
-import { Plus, Trash2 } from '@lucide/vue';
+import { FileText, FolderArchive, Plus, Trash2 } from '@lucide/vue';
+import { ref } from 'vue';
 import InputError from '@/components/InputError.vue';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Spinner } from '@/components/ui/spinner';
 import { formatoMonto } from '@/lib/montos';
+import { lote } from '@/routes/certificados-quinta';
+import { certificadoQuinta } from '@/routes/trabajadores';
 import { destroy, store } from '@/routes/trabajadores/otros-empleadores';
 import type { RentaOtroEmpleador, TrabajadorEditable } from '@/types';
 
@@ -35,6 +38,13 @@ function registrar(): void {
     });
 }
 
+const anioActual = new Date().getFullYear();
+const anios = [anioActual, anioActual - 1, anioActual - 2];
+/** En enero–febrero se entrega el del año anterior. */
+const anioCertificado = ref(
+    new Date().getMonth() < 2 ? anioActual - 1 : anioActual,
+);
+
 function quitar(r: RentaOtroEmpleador): void {
     router.delete(
         destroy.url({ trabajador: props.trabajador.id, renta: r.id }),
@@ -47,6 +57,49 @@ function quitar(r: RentaOtroEmpleador): void {
 
 <template>
     <div class="grid gap-6">
+        <section class="grid gap-3 rounded-lg border p-4">
+            <h3 class="font-medium">Certificado de rentas y retenciones</h3>
+            <p class="text-sm text-muted-foreground">
+                Rentas de quinta pagadas por la empresa y retenciones del
+                ejercicio (planillas cerradas). Se entrega cada año y al cese.
+            </p>
+            <div class="flex flex-wrap items-end gap-3">
+                <div class="grid gap-1.5">
+                    <Label for="cq-anio">Ejercicio</Label>
+                    <select
+                        id="cq-anio"
+                        v-model="anioCertificado"
+                        class="h-9 rounded-md border border-input bg-transparent px-3 text-sm"
+                    >
+                        <option v-for="a in anios" :key="a" :value="a">
+                            {{ a }}
+                        </option>
+                    </select>
+                </div>
+                <Button type="button" variant="outline" as-child>
+                    <a
+                        :href="
+                            certificadoQuinta.url({
+                                trabajador: trabajador.id,
+                                anio: anioCertificado,
+                            })
+                        "
+                        target="_blank"
+                        rel="noopener"
+                    >
+                        <FileText />
+                        Certificado de este trabajador
+                    </a>
+                </Button>
+                <Button type="button" variant="ghost" as-child>
+                    <a :href="lote.url(anioCertificado)">
+                        <FolderArchive />
+                        De todos (zip)
+                    </a>
+                </Button>
+            </div>
+        </section>
+
         <p class="text-sm text-muted-foreground">
             Si el trabajador tuvo otro empleador en el año, registra lo que dice
             su <strong>certificado de rentas y retenciones</strong>. Se suma a
