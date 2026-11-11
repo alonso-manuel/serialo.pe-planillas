@@ -101,4 +101,30 @@ class CentrosCostoTest extends TestCase
         $this->assertSame('2000.00', $filas[0]['ingresos']);
         $this->assertContains('Hay trabajadores sin centro de costo: asígnalo en su ficha y vuelve a calcular la planilla.', $reporte['avisos']);
     }
+
+    #[Test]
+    public function el_asiento_separa_los_cargos_por_centro_de_costo_y_cuadra(): void
+    {
+        $ventas = $this->centro('VTA', 'Ventas');
+        $planta = $this->centro('PLT', 'Planta');
+        $datos = ['fecha_ingreso' => '2025-01-01', 'sistema_pension' => 'onp', 'afp_id' => null];
+        $a = Trabajador::factory()->for($this->empresa)->create([...$datos, 'remuneracion_basica' => '2000.00', 'centro_costo_id' => $ventas->id]);
+        $b = Trabajador::factory()->for($this->empresa)->create([...$datos, 'remuneracion_basica' => '1500.00', 'centro_costo_id' => $planta->id]);
+        $periodo = Periodo::factory()->for($this->empresa)->create(['anio' => 2026, 'mes' => 10]);
+        foreach ([$a, $b] as $t) {
+            $periodo->lineas()->create(['trabajador_id' => $t->id, 'dias_laborados' => 30]);
+        }
+        $this->post(route('periodos.calcular', $periodo))->assertSessionHasNoErrors();
+
+        $asiento = app(ReportesPlanilla::class)->generar($periodo->refresh(), 'asiento')['tablas'][0];
+        $sueldos = array_values(array_filter($asiento['filas'], fn (array $f) => $f['cuenta'] === '6211'));
+
+        $this->assertSame([['PLT', '1500.00'], ['VTA', '2000.00']], array_map(fn (array $f) => [$f['centro'], $f['debe']], $sueldos));
+        $this->assertSame($asiento['totales']['debe'], $asiento['totales']['haber'], 'Debe y haber cuadran');
+
+        // La centralización de siempre no separa por centro.
+        $centralizacion = app(ReportesPlanilla::class)->generar($periodo, 'centralizacion')['tablas'][0];
+        $this->assertCount(1, array_filter($centralizacion['filas'], fn (array $f) => $f['cuenta'] === '6211'));
+        $this->assertArrayNotHasKey('centro', $centralizacion['filas'][0]);
+    }
 }

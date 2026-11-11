@@ -35,6 +35,7 @@ class ReportesPlanilla
         'centralizacion' => 'Centralización contable',
         'costo' => 'Costo laboral',
         'centros' => 'Costo por centro de costo',
+        'asiento' => 'Asiento contable por centro de costo',
     ];
 
     public function __construct(
@@ -52,6 +53,7 @@ class ReportesPlanilla
             'planilla' => $this->planilla($lineas),
             'resumen' => $this->resumen($periodo, $lineas),
             'centralizacion' => $this->centralizacion($lineas),
+            'asiento' => $this->centralizacion($lineas, $periodo),
             'costo' => $this->costoLaboral($periodo, $lineas),
             'centros' => $this->costoPorCentro($periodo, $lineas),
             default => throw new \InvalidArgumentException("Reporte desconocido: {$tipo}."),
@@ -216,8 +218,11 @@ class ReportesPlanilla
      * @param  Collection<int, PlanillaLinea>  $lineas
      * @return Reporte
      */
-    private function centralizacion(Collection $lineas): array
+    private function centralizacion(Collection $lineas, ?Periodo $porCentro = null): array
     {
+        // Con periodo: asiento por centro de costo (los cargos se separan por el centro de cada línea).
+        $centros = $porCentro === null ? collect() : CentroCosto::query()->where('empresa_id', $porCentro->empresa_id)->get()->keyBy('id');
+        $centroDe = [];
         /** @var array<string, BigDecimal> $debe */
         $debe = [];
         /** @var array<string, BigDecimal> $haber */
@@ -226,13 +231,18 @@ class ReportesPlanilla
         $glosa = [];
         $sinCuenta = [];
 
-        $mover = function (?string $cuenta, bool $alDebe, BigDecimal $monto, Concepto $c) use (&$debe, &$haber, &$glosa, &$sinCuenta): void {
+        $centroActual = '';
+        $mover = function (?string $cuenta, bool $alDebe, BigDecimal $monto, Concepto $c) use (&$debe, &$haber, &$glosa, &$sinCuenta, &$centroDe, &$centroActual, $porCentro): void {
             if ($monto->isZero()) {
                 return;
             }
             if ($cuenta === null || $cuenta === '') {
                 $sinCuenta[$c->codigo_plame] = "{$c->codigo_plame} {$c->nombre}";
                 $cuenta = '—';
+            }
+            if ($porCentro !== null && $alDebe) {
+                $cuenta .= '|'.$centroActual; // cargo: una fila por cuenta y centro de costo
+                $centroDe[$cuenta] = $centroActual;
             }
             if ($alDebe) {
                 $debe[$cuenta] = ($debe[$cuenta] ?? BigDecimal::zero())->plus($monto);
@@ -245,6 +255,8 @@ class ReportesPlanilla
         $neto = BigDecimal::zero();
         foreach ($lineas as $l) {
             $neto = $neto->plus($l->neto_pagar);
+            $centro = $centros->get((int) $l->centro_costo_id);
+            $centroActual = $centro === null ? '' : $centro->codigo;
             foreach ($l->conceptos as $pc) {
                 $c = $pc->concepto;
                 $monto = BigDecimal::of($pc->monto_pagado);
@@ -268,6 +280,7 @@ class ReportesPlanilla
 
         $columnas = [
             ['clave' => 'cuenta', 'titulo' => 'Cuenta', 'tipo' => 'texto'],
+            ...($porCentro === null ? [] : [['clave' => 'centro', 'titulo' => 'Centro de costo', 'tipo' => 'texto']]),
             ['clave' => 'glosa', 'titulo' => 'Glosa', 'tipo' => 'texto'],
             ['clave' => 'debe', 'titulo' => 'Debe', 'tipo' => 'monto'],
             ['clave' => 'haber', 'titulo' => 'Haber', 'tipo' => 'monto'],
@@ -275,7 +288,8 @@ class ReportesPlanilla
         $filas = [];
         foreach ($cuentas as $cuenta) {
             $filas[] = [
-                'cuenta' => $cuenta,
+                'cuenta' => explode('|', $cuenta)[0],
+                ...($porCentro === null ? [] : ['centro' => $centroDe[$cuenta] ?? '']),
                 'glosa' => implode(', ', $glosa[$cuenta]),
                 'debe' => isset($debe[$cuenta]) ? $this->m($debe[$cuenta]) : null,
                 'haber' => isset($haber[$cuenta]) ? $this->m($haber[$cuenta]) : null,
@@ -283,9 +297,12 @@ class ReportesPlanilla
         }
 
         $avisos = $sinCuenta === [] ? [] : ['Conceptos sin cuenta contable (asígnala en Conceptos): '.implode(', ', $sinCuenta).'.'];
+        if ($porCentro !== null) {
+            $avisos[] = "Asiento del {$porCentro->ultimoDia()->format('d/m/Y')}: los cargos se separan por el centro de costo de cada trabajador en el mes (vacío = sin centro).";
+        }
 
         return [
-            'titulo' => 'Centralización contable',
+            'titulo' => $porCentro === null ? 'Centralización contable' : 'Asiento contable por centro de costo',
             'tablas' => [['titulo' => 'Asiento de planilla', 'columnas' => $columnas, 'filas' => $filas, 'totales' => $this->totales($columnas, $filas, 'cuenta', 'Totales')]],
             'avisos' => $avisos,
         ];
