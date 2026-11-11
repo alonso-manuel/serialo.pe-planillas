@@ -49,6 +49,7 @@ use App\Http\Controllers\Usuarios\EstadoUsuarioController;
 use App\Http\Controllers\Usuarios\UsuarioController;
 use App\Http\Middleware\AsegurarUsuarioActivo;
 use App\Http\Middleware\HandleInertiaRequests;
+use App\Services\Reportes\ReportesPlanilla;
 use Illuminate\Support\Facades\Route;
 
 // Panel central del modo SaaS (admin.serialo.pe). Antes que el resto: su «/» tiene prioridad en su dominio.
@@ -109,7 +110,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         // Reportes de la planilla de la empresa activa
         Route::get('reportes', [ReporteController::class, 'index'])->name('reportes.index');
         Route::get('reportes/{periodo}/{tipo}/{formato}', [ReporteController::class, 'descargar'])
-            ->whereIn('tipo', ['planilla', 'resumen', 'centralizacion', 'costo'])
+            ->whereIn('tipo', array_keys(ReportesPlanilla::TIPOS))
             ->whereIn('formato', ['xlsx', 'pdf'])
             ->name('reportes.descargar');
 

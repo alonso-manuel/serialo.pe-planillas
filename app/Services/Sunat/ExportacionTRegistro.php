@@ -16,6 +16,7 @@ use App\Models\Empresa;
 use App\Models\Establecimiento;
 use App\Models\Trabajador;
 use Carbon\CarbonImmutable;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use RuntimeException;
@@ -34,23 +35,36 @@ class ExportacionTRegistro
     ) {}
 
     /**
+     * Filtra una fecha dentro del rango comparando por día (no por texto): un valor guardado con hora
+     * («2026-11-30 00:00:00», como en SQLite) cuenta en el último día del rango.
+     *
+     * @template TModelo of \Illuminate\Database\Eloquent\Model
+     *
+     * @param  Builder<TModelo>  $consulta
+     * @return Builder<TModelo>
+     */
+    private function enRango(Builder $consulta, string $campo, CarbonImmutable $desde, CarbonImmutable $hasta): Builder
+    {
+        return $consulta->whereDate($campo, '>=', $desde->toDateString())->whereDate($campo, '<=', $hasta->toDateString());
+    }
+
+    /**
      * Derechohabientes con alta o baja dentro del rango (trabajadores de la empresa).
      *
      * @return array{altas: list<Derechohabiente>, bajas: list<Derechohabiente>}
      */
     public function derechohabientes(Empresa $empresa, CarbonImmutable $desde, CarbonImmutable $hasta): array
     {
-        $rango = [$desde->toDateString(), $hasta->toDateString()];
         $base = fn () => Derechohabiente::query()->with('trabajador')
             ->whereHas('trabajador', fn ($q) => $q->where('empresa_id', $empresa->id))
             ->orderBy('apellido_paterno');
 
         $altas = [];
-        foreach ($base()->whereBetween('fecha_alta', $rango)->get() as $d) {
+        foreach ($this->enRango($base(), 'fecha_alta', $desde, $hasta)->get() as $d) {
             $altas[] = $d;
         }
         $bajas = [];
-        foreach ($base()->whereNotNull('fecha_baja')->whereBetween('fecha_baja', $rango)->get() as $d) {
+        foreach ($this->enRango($base()->whereNotNull('fecha_baja'), 'fecha_baja', $desde, $hasta)->get() as $d) {
             $bajas[] = $d;
         }
 
@@ -131,15 +145,13 @@ class ExportacionTRegistro
     public function revisar(Empresa $empresa, CarbonImmutable $desde, CarbonImmutable $hasta): array
     {
         $base = fn () => Trabajador::query()->deEmpresa($empresa->id)->with(['afp', 'establecimiento'])->orderBy('apellido_paterno')->orderBy('nombres');
-        $rango = [$desde->toDateString(), $hasta->toDateString()];
-
         $altas = [];
-        foreach ($base()->whereBetween('fecha_ingreso', $rango)->get() as $t) {
+        foreach ($this->enRango($base(), 'fecha_ingreso', $desde, $hasta)->get() as $t) {
             $altas[] = ['trabajador' => $t, 'problemas' => $this->problemasAlta($t, $empresa)];
         }
 
         $bajas = [];
-        foreach ($base()->whereNotNull('fecha_cese')->whereBetween('fecha_cese', $rango)->get() as $t) {
+        foreach ($this->enRango($base()->whereNotNull('fecha_cese'), 'fecha_cese', $desde, $hasta)->get() as $t) {
             $bajas[] = ['trabajador' => $t, 'problemas' => $this->problemasBaja($t)];
         }
 

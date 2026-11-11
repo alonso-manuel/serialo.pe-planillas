@@ -1,7 +1,10 @@
 <script setup lang="ts">
 import { Head, Link } from '@inertiajs/vue3';
 import {
+    ArrowLeftRight,
+    BookCopy,
     BookOpen,
+    Network,
     FileSpreadsheet,
     FileText,
     Info,
@@ -58,6 +61,18 @@ const DESCRIPCIONES: Record<string, { texto: string; icono: Component }> = {
     costo: {
         texto: 'Por trabajador: remuneración bruta, aportes del empleador y provisiones del mes (gratificación, CTS, vacaciones).',
         icono: Wallet,
+    },
+    centros: {
+        texto: 'El costo laboral del mes agrupado por el centro de costo que tenía cada trabajador.',
+        icono: Network,
+    },
+    asiento: {
+        texto: 'La centralización con los cargos separados por centro de costo y los abonos sin centro. Debe y haber cuadran.',
+        icono: BookCopy,
+    },
+    comparativo: {
+        texto: 'Neto, bruto y costo de cada trabajador frente al mes anterior: variación, altas y bajas.',
+        icono: ArrowLeftRight,
     },
 };
 

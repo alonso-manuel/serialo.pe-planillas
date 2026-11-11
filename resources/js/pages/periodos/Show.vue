@@ -102,6 +102,8 @@ function actualizar(): void {
         {},
         {
             preserveScroll: true,
+            // Se agregan o quitan líneas: la grilla se vuelve a montar con las del servidor.
+            preserveState: false,
             onStart: () => (actualizando.value = true),
             onFinish: () => (actualizando.value = false),
         },

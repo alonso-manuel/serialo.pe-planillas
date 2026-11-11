@@ -30,6 +30,8 @@ function subir(): void {
     form.post(importar.url(props.periodoId), {
         forceFormData: true,
         preserveScroll: true,
+        // Si se importó, la grilla y el estado del periodo se recargan del servidor; con errores, el diálogo sigue abierto.
+        preserveState: 'errors',
         onSuccess: () => {
             abierto.value = false;
             form.reset();

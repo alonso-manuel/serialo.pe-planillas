@@ -100,8 +100,6 @@ class TrabajadorController extends Controller
                 'establecimiento' => $establecimiento,
             ],
             'establecimientos' => $this->establecimientos($empresa),
-            'centros_costo' => $empresa->centrosCosto()->where('activo', true)->get()
-                ->map(fn (CentroCosto $c) => ['value' => (string) $c->id, 'label' => "{$c->codigo} · {$c->nombre}"])->values()->all(),
         ]);
     }
 
@@ -273,6 +271,8 @@ class TrabajadorController extends Controller
         return [
             'empresa' => $empresa->razon_social,
             'establecimientos' => $this->establecimientos($empresa),
+            'centros_costo' => $empresa->centrosCosto()->where('activo', true)->get()
+                ->map(fn (CentroCosto $c) => ['value' => (string) $c->id, 'label' => "{$c->codigo} · {$c->nombre}"])->values()->all(),
             'afps' => Afp::query()->where('activo', true)->orderBy('nombre')->get()
                 ->map(fn (Afp $a) => ['value' => (string) $a->id, 'label' => $a->nombre])->values()->all(),
             'tipos_documento' => $opciones(TipoDocumento::cases()),

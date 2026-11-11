@@ -129,6 +129,18 @@ class TRegistroTest extends TestCase
     }
 
     #[Test]
+    public function el_rango_incluye_altas_y_bajas_de_sus_dias_extremos(): void
+    {
+        Trabajador::factory()->for($this->empresa)->create(['fecha_ingreso' => '2026-11-01', 'fecha_cese' => null]);
+        Trabajador::factory()->for($this->empresa)->create([
+            'fecha_ingreso' => '2025-01-01', 'fecha_cese' => '2026-11-30', 'motivo_cese' => MotivoCese::Renuncia,
+        ]);
+
+        $this->actingAs($this->asistente)->get(route('tregistro.index', ['desde' => '2026-11-01', 'hasta' => '2026-11-30']))
+            ->assertInertia(fn (Assert $p) => $p->has('altas', 1)->has('bajas', 1));
+    }
+
+    #[Test]
     public function solo_ve_a_los_trabajadores_de_su_empresa(): void
     {
         $otra = Empresa::factory()->create();

@@ -12,6 +12,7 @@ use Database\Seeders\ConceptoSeeder;
 use Database\Seeders\ParametroSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Carbon;
+use Inertia\Testing\AssertableInertia as Assert;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 
@@ -57,6 +58,20 @@ class CentrosCostoTest extends TestCase
         $libre = $this->centro('ADM', 'Administración');
         $this->delete(route('empresas.centros-costo.destroy', [$this->empresa, $libre]));
         $this->assertNull(CentroCosto::query()->find($libre->id));
+    }
+
+    #[Test]
+    public function la_ficha_del_trabajador_ofrece_los_centros_activos_de_su_empresa(): void
+    {
+        $ventas = $this->centro('VEN', 'Ventas');
+        $this->centro('ADM', 'Administración')->update(['activo' => false]);
+        CentroCosto::query()->create(['empresa_id' => Empresa::factory()->create()->id, 'codigo' => 'OTR', 'nombre' => 'De otra empresa', 'activo' => true]);
+        $trabajador = Trabajador::factory()->for($this->empresa)->create();
+
+        foreach ([route('trabajadores.create'), route('trabajadores.edit', $trabajador)] as $url) {
+            $this->get($url)->assertOk()->assertInertia(fn (Assert $page) => $page
+                ->where('catalogos.centros_costo', [['value' => (string) $ventas->id, 'label' => 'VEN · Ventas']]));
+        }
     }
 
     #[Test]

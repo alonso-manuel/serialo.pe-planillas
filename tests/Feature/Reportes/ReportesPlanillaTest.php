@@ -137,7 +137,8 @@ class ReportesPlanillaTest extends TestCase
     #[Test]
     public function descarga_en_excel_y_pdf(): void
     {
-        foreach (['planilla', 'resumen', 'centralizacion', 'costo'] as $tipo) {
+        // Todos los reportes del sistema, también los que se agreguen después.
+        foreach (array_keys(ReportesPlanilla::TIPOS) as $tipo) {
             $xlsx = $this->get(route('reportes.descargar', [$this->periodo, $tipo, 'xlsx']))->assertOk();
             $this->assertStringStartsWith('PK', (string) file_get_contents($xlsx->baseResponse->getFile()->getPathname()));
 
