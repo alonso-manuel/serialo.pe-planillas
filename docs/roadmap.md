@@ -96,7 +96,7 @@ Marca `[x]` al terminar (o usa `/actualizar-roadmap`). Cada tarea: código + tes
 - [x] T-Registro: altas y bajas en RP_<RUC>.ide/.tra/.per/.est para el PVS, revisión de datos faltantes, ficha del trabajador con los datos de SUNAT y catálogo oficial de ocupaciones — ver docs/formatos-oficiales.md
 - [x] Derechohabientes: registro en la ficha con las reglas de las tablas 19, 20 y 27, bajas con motivo y archivos RD_ de alta y baja para la carga masiva en SOL — ver docs/formatos-oficiales.md
 - [x] Cuarta categoría: recibos por honorarios en el periodo, retención del 8 % y PLAME .4ta / .ps4 — ver docs/formatos-oficiales.md
-- [ ] Asistencia: importar días, horas extra y faltas desde Excel (ya existe la grilla editable de novedades)
+- [x] Asistencia desde Excel: plantilla con los trabajadores del periodo (faltas, licencias, subsidios y horas extra) e importación todo o nada con la lista de errores
 - [ ] Préstamos en cuotas con descuento automático y estado de cuenta (el adelanto ya existe como novedad 0701)
 - [ ] Certificado anual de rentas y retenciones de quinta (los demás documentos ya existen: boleta, liquidación, certificado de trabajo, carta y constancia de CTS, con firma digital)
 

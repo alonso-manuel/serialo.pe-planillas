@@ -16,6 +16,7 @@ import {
 import { computed, ref } from 'vue';
 import EstadoPeriodo from '@/components/periodos/EstadoPeriodo.vue';
 import EnvioBoletas from '@/components/periodos/EnvioBoletas.vue';
+import ImportarAsistencia from '@/components/periodos/ImportarAsistencia.vue';
 import GratificacionPeriodo from '@/components/periodos/GratificacionPeriodo.vue';
 import GrillaNovedades from '@/components/periodos/GrillaNovedades.vue';
 import Heading from '@/components/Heading.vue';
@@ -209,6 +210,11 @@ function eliminar(): void {
                     Honorarios (4ta)
                 </Link>
             </Button>
+            <ImportarAsistencia
+                v-if="periodo.puede_editar"
+                :periodo-id="periodo.id"
+                :etiqueta="periodo.etiqueta"
+            />
             <div
                 v-if="
                     estado !== 'abierto' ||

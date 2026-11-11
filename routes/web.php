@@ -17,6 +17,7 @@ use App\Http\Controllers\Instalador\InstaladorController;
 use App\Http\Controllers\Licencia\LicenciaController;
 use App\Http\Controllers\PanelController;
 use App\Http\Controllers\Parametros\ParametroController;
+use App\Http\Controllers\Periodos\AsistenciaController;
 use App\Http\Controllers\Periodos\BoletaController;
 use App\Http\Controllers\Periodos\CalculoController;
 use App\Http\Controllers\Periodos\CierrePeriodoController;
@@ -77,6 +78,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::resource('periodos', PeriodoController::class)->only(['index', 'store', 'show', 'destroy']);
         Route::post('periodos/{periodo}/calcular', [CalculoController::class, 'periodo'])->name('periodos.calcular');
         Route::get('periodos/{periodo}/honorarios', [HonorariosController::class, 'index'])->name('periodos.honorarios.index');
+        Route::get('periodos/{periodo}/asistencia/plantilla', [AsistenciaController::class, 'plantilla'])->name('periodos.asistencia.plantilla');
+        Route::post('periodos/{periodo}/asistencia', [AsistenciaController::class, 'importar'])->middleware('throttle:20,1')->name('periodos.asistencia.importar');
         Route::post('periodos/{periodo}/honorarios', [HonorariosController::class, 'store'])->name('periodos.honorarios.store');
         Route::delete('periodos/{periodo}/honorarios/{recibo}', [HonorariosController::class, 'destroy'])->name('periodos.honorarios.destroy');
         Route::post('periodos/{periodo}/cerrar', [CierrePeriodoController::class, 'cerrar'])->name('periodos.cerrar');
