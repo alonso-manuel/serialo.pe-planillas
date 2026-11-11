@@ -106,7 +106,7 @@ Ideas tomadas del análisis de mercado (09/11): conceptos recurrentes y proporci
 
 - [x] Centros de costo: catálogo por empresa, en la ficha con vigencia (historial), foto en cada línea de planilla y reporte «Costo por centro de costo»
 - [ ] Comisiones de ventas (hoy solo existe la comisión de la AFP)
-- [ ] Pagos a bancos: archivo de abono de remuneraciones (BCP, BBVA, Interbank, Scotiabank)
+- [x] Pagos a bancos (genérico): Excel/CSV del periodo con banco, cuenta y neto, efectivo aparte y resumen por banco (los formatos propios de cada banco, cuando se tengan sus especificaciones)
 - [x] Asiento contable por centro de costo (reporte en Excel y PDF): cargos separados por el centro de cada trabajador, abonos sin centro, debe = haber
 - [ ] Validación cruzada con T-Registro (datos de la ficha frente a lo registrado en SUNAT)
 - [x] Reportes analíticos: comparativo con el mes anterior por trabajador (neto, bruto y costo, variación, altas y bajas) y costo por centro de costo; el panel ya tiene el costo de 12 meses y su reparto

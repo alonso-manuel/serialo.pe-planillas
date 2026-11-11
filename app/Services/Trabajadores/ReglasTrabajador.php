@@ -77,6 +77,7 @@ final class ReglasTrabajador
             'cuenta_sueldo' => ['nullable', 'string', 'max:30', 'regex:/^[0-9\- ]+$/'],
             'cuenta_cts' => ['nullable', 'string', 'max:30', 'regex:/^[0-9\- ]+$/'],
             'entidad_cts' => ['nullable', Rule::exists('entidades_financieras', 'codigo')->where('activo', true)],
+            'entidad_sueldo' => ['nullable', Rule::exists('entidades_financieras', 'codigo')->where('activo', true)],
         ];
     }
 
@@ -140,6 +141,7 @@ final class ReglasTrabajador
             'cuenta_sueldo' => 'cuenta de sueldo',
             'cuenta_cts' => 'cuenta CTS',
             'entidad_cts' => 'entidad de la cuenta CTS',
+            'entidad_sueldo' => 'banco de la cuenta de sueldo',
             'categoria_ocupacional' => 'categoría ocupacional',
             'ocupacion' => 'ocupación',
             'situacion_educativa' => 'situación educativa',

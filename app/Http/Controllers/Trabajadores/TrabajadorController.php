@@ -160,6 +160,7 @@ class TrabajadorController extends Controller
                 'cuenta_sueldo' => $trabajador->cuenta_sueldo,
                 'cuenta_cts' => $trabajador->cuenta_cts,
                 'entidad_cts' => $trabajador->entidad_cts,
+                'entidad_sueldo' => $trabajador->entidad_sueldo,
                 // T-Registro
                 'categoria_ocupacional' => $trabajador->categoria_ocupacional?->value,
                 'ocupacion' => $trabajador->ocupacion,

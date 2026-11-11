@@ -102,6 +102,7 @@ const form = useForm({
     cuenta_sueldo: t?.cuenta_sueldo ?? '',
     cuenta_cts: t?.cuenta_cts ?? '',
     entidad_cts: t?.entidad_cts ?? '',
+    entidad_sueldo: t?.entidad_sueldo ?? '',
     // T-Registro
     categoria_ocupacional: t?.categoria_ocupacional ?? NINGUNO,
     ocupacion: t?.ocupacion ?? '',
@@ -143,7 +144,7 @@ const PESTANAS = {
         'tipo_comision_afp',
         'seguro_salud',
     ],
-    cuentas: ['cuenta_sueldo', 'cuenta_cts', 'entidad_cts'],
+    cuentas: ['cuenta_sueldo', 'entidad_sueldo', 'cuenta_cts', 'entidad_cts'],
     sunat: [
         'categoria_ocupacional',
         'ocupacion',
@@ -874,6 +875,28 @@ function eliminar(): void {
                         <InputError :message="form.errors.cuenta_sueldo" />
                     </div>
                     <div class="grid gap-2">
+                        <Label for="entidad_sueldo"
+                            >Banco de la cuenta de sueldo</Label
+                        >
+                        <Select v-model="form.entidad_sueldo">
+                            <SelectTrigger id="entidad_sueldo" class="w-full">
+                                <SelectValue
+                                    placeholder="Elige el banco o caja"
+                                />
+                            </SelectTrigger>
+                            <SelectContent>
+                                <SelectItem
+                                    v-for="e in catalogos.entidades_cts"
+                                    :key="e.value"
+                                    :value="e.value"
+                                >
+                                    {{ e.label }}
+                                </SelectItem>
+                            </SelectContent>
+                        </Select>
+                        <InputError :message="form.errors.entidad_sueldo" />
+                    </div>
+                    <div class="grid gap-2">
                         <Label for="cuenta_cts">Cuenta CTS</Label>
                         <Input
                             id="cuenta_cts"
@@ -883,7 +906,7 @@ function eliminar(): void {
                         />
                         <InputError :message="form.errors.cuenta_cts" />
                     </div>
-                    <div class="grid gap-2 sm:col-start-2">
+                    <div class="grid gap-2">
                         <Label for="entidad_cts"
                             >Entidad de la cuenta CTS</Label
                         >

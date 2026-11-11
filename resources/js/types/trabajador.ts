@@ -41,6 +41,7 @@ export type TrabajadorEditable = {
     cuenta_sueldo: string | null;
     cuenta_cts: string | null;
     entidad_cts: string | null;
+    entidad_sueldo: string | null;
     categoria_ocupacional: string | null;
     ocupacion: string | null;
     ocupacion_nombre: string | null;

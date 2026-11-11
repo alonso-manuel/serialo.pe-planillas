@@ -25,6 +25,7 @@ use App\Http\Controllers\Periodos\CierrePeriodoController;
 use App\Http\Controllers\Periodos\EnvioBoletaController;
 use App\Http\Controllers\Periodos\HonorariosController;
 use App\Http\Controllers\Periodos\LineaPlanillaController;
+use App\Http\Controllers\Periodos\PagoController;
 use App\Http\Controllers\Periodos\PeriodoController;
 use App\Http\Controllers\Periodos\ResumenBoletasController;
 use App\Http\Controllers\Reportes\ReporteController;
@@ -81,6 +82,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::resource('periodos', PeriodoController::class)->only(['index', 'store', 'show', 'destroy']);
         Route::post('periodos/{periodo}/calcular', [CalculoController::class, 'periodo'])->name('periodos.calcular');
         Route::get('periodos/{periodo}/honorarios', [HonorariosController::class, 'index'])->name('periodos.honorarios.index');
+        Route::get('periodos/{periodo}/pagos/{formato}', [PagoController::class, 'descargar'])->whereIn('formato', ['xlsx', 'csv'])->name('periodos.pagos');
         Route::get('periodos/{periodo}/asistencia/plantilla', [AsistenciaController::class, 'plantilla'])->name('periodos.asistencia.plantilla');
         Route::post('periodos/{periodo}/asistencia', [AsistenciaController::class, 'importar'])->middleware('throttle:20,1')->name('periodos.asistencia.importar');
         Route::post('periodos/{periodo}/honorarios', [HonorariosController::class, 'store'])->name('periodos.honorarios.store');

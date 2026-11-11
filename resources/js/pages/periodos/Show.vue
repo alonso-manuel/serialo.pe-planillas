@@ -5,6 +5,7 @@ import {
     CircleAlert,
     FileArchive,
     FileText,
+    Landmark,
     Lock,
     LockOpen,
     ReceiptText,
@@ -47,6 +48,7 @@ import {
     zip as boletasZip,
 } from '@/routes/periodos/boletas';
 import { index as honorarios } from '@/routes/periodos/honorarios';
+import { pagos } from '@/routes/periodos';
 import { index as parametros } from '@/routes/parametros';
 import { index as tasasAfp } from '@/routes/tasas-afp';
 import type {
@@ -240,6 +242,17 @@ function eliminar(): void {
                     >
                         <FileArchive />
                         Boletas (zip)
+                    </a>
+                </Button>
+                <Button variant="outline" as-child>
+                    <a
+                        :href="
+                            pagos.url({ periodo: periodo.id, formato: 'xlsx' })
+                        "
+                        title="Netos a pagar por banco y cuenta, para subirlos con la plantilla del banco (también en CSV)"
+                    >
+                        <Landmark />
+                        Pagos (banco)
                     </a>
                 </Button>
             </div>

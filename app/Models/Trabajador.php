@@ -48,6 +48,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property CarbonImmutable|null $fecha_cese
  * @property MotivoCese|null $motivo_cese
  * @property string|null $cuenta_sueldo
+ * @property string|null $entidad_sueldo banco de la cuenta de sueldo (entidades_financieras)
  * @property string|null $cuenta_cts
  * @property string|null $entidad_cts código de entidades_financieras
  * @property string|null $email
@@ -75,7 +76,7 @@ class Trabajador extends Model
         'apellido_paterno', 'apellido_materno', 'nombres', 'fecha_nacimiento', 'sexo',
         'cargo', 'fecha_ingreso', 'fecha_cese', 'motivo_cese', 'tipo_contrato',
         'remuneracion_basica', 'asignacion_familiar', 'sistema_pension', 'afp_id',
-        'cuspp', 'tipo_comision_afp', 'seguro_salud', 'cuenta_sueldo', 'cuenta_cts', 'entidad_cts',
+        'cuspp', 'tipo_comision_afp', 'seguro_salud', 'cuenta_sueldo', 'entidad_sueldo', 'cuenta_cts', 'entidad_cts',
         'email', 'telefono',
         // T-Registro
         'categoria_ocupacional', 'ocupacion', 'situacion_educativa', 'modalidad_contrato', 'situacion_especial',
