@@ -286,7 +286,7 @@ class HistorialTrabajadorTest extends TestCase
                 ->where('historial.0.cambios.0.antes', 'S/ 1,500.00')
                 ->where('historial.0.cambios.0.despues', 'S/ 1,800.00')
                 ->where('historial.0.anulable', true)
-                ->has('grupos_historial', 6)
+                ->has('grupos_historial', 7) // incluye el centro de costo
             );
     }
 

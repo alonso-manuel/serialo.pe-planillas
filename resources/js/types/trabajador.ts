@@ -27,6 +27,7 @@ export type TrabajadorEditable = {
     email: string | null;
     telefono: string | null;
     establecimiento_id: number | null;
+    centro_costo_id: number | null;
     cargo: string | null;
     fecha_ingreso: string;
     tipo_contrato: string;
@@ -64,6 +65,7 @@ export type TrabajadorEditable = {
 export type CatalogosTrabajador = {
     empresa: string;
     establecimientos: Opcion[];
+    centros_costo: Opcion[];
     afps: Opcion[];
     tipos_documento: Opcion[];
     tipos_contrato: Opcion[];

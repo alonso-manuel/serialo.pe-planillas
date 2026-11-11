@@ -7,6 +7,7 @@ use App\Http\Controllers\Beneficios\VacacionesController;
 use App\Http\Controllers\Conceptos\ConceptoController;
 use App\Http\Controllers\Conceptos\EstadoConceptoController;
 use App\Http\Controllers\EmpresaActivaController;
+use App\Http\Controllers\Empresas\CentroCostoController;
 use App\Http\Controllers\Empresas\ConsultaRucController;
 use App\Http\Controllers\Empresas\EmpresaController;
 use App\Http\Controllers\Empresas\EstablecimientoController;
@@ -194,6 +195,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('empresas/{empresa}/logo', [LogoEmpresaController::class, 'show'])->name('empresas.logo.show');
     Route::post('empresas/{empresa}/logo', [LogoEmpresaController::class, 'store'])->name('empresas.logo.store');
     Route::delete('empresas/{empresa}/logo', [LogoEmpresaController::class, 'destroy'])->name('empresas.logo.destroy');
+    Route::post('empresas/{empresa}/centros-costo', [CentroCostoController::class, 'store'])->name('empresas.centros-costo.store');
+    Route::put('empresas/{empresa}/centros-costo/{centro}', [CentroCostoController::class, 'update'])->name('empresas.centros-costo.update');
+    Route::delete('empresas/{empresa}/centros-costo/{centro}', [CentroCostoController::class, 'destroy'])->name('empresas.centros-costo.destroy');
     Route::post('empresas/{empresa}/firma', [FirmaDigitalController::class, 'store'])->middleware('throttle:10,1')->name('empresas.firma.store');
     Route::delete('empresas/{empresa}/firma', [FirmaDigitalController::class, 'destroy'])->name('empresas.firma.destroy');
     Route::scopeBindings()->group(function () {

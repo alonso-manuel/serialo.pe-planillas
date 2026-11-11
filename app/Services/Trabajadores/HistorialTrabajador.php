@@ -8,6 +8,7 @@ use App\Enums\SistemaPension;
 use App\Enums\TipoComisionAfp;
 use App\Enums\TipoContrato;
 use App\Models\Afp;
+use App\Models\CentroCosto;
 use App\Models\Periodo;
 use App\Models\Trabajador;
 use App\Models\TrabajadorHistorial;
@@ -39,6 +40,7 @@ class HistorialTrabajador
         'pension' => ['Sistema de pensiones', ['sistema_pension', 'afp_id', 'tipo_comision_afp', 'cuspp']],
         'seguro_salud' => ['Seguro de salud', ['seguro_salud']],
         'tipo_contrato' => ['Tipo de contrato', ['tipo_contrato']],
+        'centro_costo' => ['Centro de costo', ['centro_costo_id']],
     ];
 
     /** @return list<string> todos los campos con historial */
@@ -265,6 +267,12 @@ class HistorialTrabajador
     {
         if ($valor === null) {
             return '—';
+        }
+
+        if ($campo === 'centro_costo_id') {
+            $centro = CentroCosto::query()->find((int) $valor);
+
+            return $centro === null ? $valor : "{$centro->codigo} {$centro->nombre}";
         }
 
         if ($campo === 'remuneracion_basica') {

@@ -7,6 +7,7 @@ use App\Enums\SeguroSalud;
 use App\Enums\SistemaPension;
 use App\Enums\TipoConcepto;
 use App\Models\Afp;
+use App\Models\CentroCosto;
 use App\Models\Concepto;
 use App\Models\Empresa;
 use App\Models\Periodo;
@@ -33,6 +34,7 @@ class ReportesPlanilla
         'resumen' => 'Resumen',
         'centralizacion' => 'Centralización contable',
         'costo' => 'Costo laboral',
+        'centros' => 'Costo por centro de costo',
     ];
 
     public function __construct(
@@ -51,6 +53,7 @@ class ReportesPlanilla
             'resumen' => $this->resumen($periodo, $lineas),
             'centralizacion' => $this->centralizacion($lineas),
             'costo' => $this->costoLaboral($periodo, $lineas),
+            'centros' => $this->costoPorCentro($periodo, $lineas),
             default => throw new \InvalidArgumentException("Reporte desconocido: {$tipo}."),
         };
     }
@@ -301,29 +304,7 @@ class ReportesPlanilla
         $cts = $this->parametros->cts($empresa, $fecha->toDateString());
         $diasVacaciones = $this->vacaciones->diasDerecho($empresa, $fecha->toDateTimeImmutable());
 
-        $filas = $lineas->map(function (PlanillaLinea $l) use ($periodo, $grati, $cts, $diasVacaciones) {
-            $t = $this->historial->vistaAl($l->trabajador, $periodo->ultimoDia());
-            $asignacion = $l->conceptos->first(fn (PlanillaConcepto $c) => $c->concepto->codigo_plame === '0201')->monto_pagado ?? '0';
-            $p = ProvisionesMensuales::calcular(
-                (string) $t->remuneracion_basica,
-                (string) $asignacion,
-                $grati->factorRegimen,
-                $t->seguro_salud === SeguroSalud::Essalud ? $grati->tasaBonificacion : '0',
-                $cts->factorRegimen,
-                $diasVacaciones,
-            );
-            $costo = BigDecimal::of($l->total_ingresos)->plus($l->total_aportes_empleador)->plus($p['total']);
-
-            return [
-                'trabajador' => $t->nombre_completo,
-                'ingresos' => $this->m($l->total_ingresos),
-                'empleador' => $this->m($l->total_aportes_empleador),
-                'gratificacion' => $this->m(BigDecimal::of($p['gratificacion'])->plus($p['bonificacion'])),
-                'cts' => $p['cts'],
-                'vacaciones' => $p['vacaciones'],
-                'costo' => $this->m($costo),
-            ];
-        })->all();
+        $filas = array_map(fn (array $f) => array_diff_key($f, ['centro' => true]), $this->costoPorLinea($periodo, $lineas));
 
         $columnas = [
             ['clave' => 'trabajador', 'titulo' => 'Trabajador', 'tipo' => 'texto'],
@@ -337,8 +318,105 @@ class ReportesPlanilla
 
         return [
             'titulo' => 'Costo laboral',
-            'tablas' => [['titulo' => 'Costo laboral del mes', 'columnas' => $columnas, 'filas' => array_values($filas), 'totales' => $this->totales($columnas, $filas, 'trabajador', 'Total')]],
+            'tablas' => [['titulo' => 'Costo laboral del mes', 'columnas' => $columnas, 'filas' => $filas, 'totales' => $this->totales($columnas, $filas, 'trabajador', 'Total')]],
             'avisos' => ['Las provisiones son una estimación mensual según el régimen (gratificación 1/6, CTS 1/12, vacaciones 1/12); no son pagos del mes.'],
+        ];
+    }
+
+    /**
+     * Costo de cada línea (remuneración, aportes del empleador y provisiones), con su centro de costo.
+     *
+     * @param  Collection<int, PlanillaLinea>  $lineas
+     * @return list<array<string, string|int|null>>
+     */
+    private function costoPorLinea(Periodo $periodo, Collection $lineas): array
+    {
+        /** @var Empresa $empresa */
+        $empresa = $periodo->empresa;
+        $fecha = $periodo->ultimoDia();
+        $grati = $this->parametros->gratificacionPara($empresa, $fecha->toDateString());
+        $cts = $this->parametros->cts($empresa, $fecha->toDateString());
+        $diasVacaciones = $this->vacaciones->diasDerecho($empresa, $fecha->toDateTimeImmutable());
+
+        return array_values($lineas->map(function (PlanillaLinea $l) use ($periodo, $grati, $cts, $diasVacaciones) {
+            $t = $this->historial->vistaAl($l->trabajador, $periodo->ultimoDia());
+            $asignacion = $l->conceptos->first(fn (PlanillaConcepto $c) => $c->concepto->codigo_plame === '0201')->monto_pagado ?? '0';
+            $p = ProvisionesMensuales::calcular(
+                (string) $t->remuneracion_basica,
+                (string) $asignacion,
+                $grati->factorRegimen,
+                $t->seguro_salud === SeguroSalud::Essalud ? $grati->tasaBonificacion : '0',
+                $cts->factorRegimen,
+                $diasVacaciones,
+            );
+            $costo = BigDecimal::of($l->total_ingresos)->plus($l->total_aportes_empleador)->plus($p['total']);
+
+            return [
+                'centro' => $l->centro_costo_id,
+                'trabajador' => $t->nombre_completo,
+                'ingresos' => $this->m($l->total_ingresos),
+                'empleador' => $this->m($l->total_aportes_empleador),
+                'gratificacion' => $this->m(BigDecimal::of($p['gratificacion'])->plus($p['bonificacion'])),
+                'cts' => $p['cts'],
+                'vacaciones' => $p['vacaciones'],
+                'costo' => $this->m($costo),
+            ];
+        })->all());
+    }
+
+    /**
+     * Costo laboral agrupado por el centro de costo que tenía cada trabajador en el mes.
+     *
+     * @param  Collection<int, PlanillaLinea>  $lineas
+     * @return Reporte
+     */
+    private function costoPorCentro(Periodo $periodo, Collection $lineas): array
+    {
+        $centros = CentroCosto::query()->where('empresa_id', $periodo->empresa_id)->get()->keyBy('id');
+        $montos = ['ingresos', 'empleador', 'gratificacion', 'cts', 'vacaciones', 'costo'];
+        $grupos = [];
+
+        foreach ($this->costoPorLinea($periodo, $lineas) as $f) {
+            $centro = $centros->get((int) $f['centro']);
+            $clave = $centro === null ? '~' : $centro->codigo;
+            $grupos[$clave] ??= [
+                'centro' => $centro === null ? 'Sin centro de costo' : "{$centro->codigo} · {$centro->nombre}",
+                'trabajadores' => 0,
+                ...array_fill_keys($montos, BigDecimal::zero()),
+            ];
+            $grupos[$clave]['trabajadores']++;
+            foreach ($montos as $m) {
+                $grupos[$clave][$m] = $grupos[$clave][$m]->plus((string) $f[$m]);
+            }
+        }
+        ksort($grupos);
+
+        $filas = array_values(array_map(fn (array $g) => [
+            'centro' => $g['centro'],
+            'trabajadores' => $g['trabajadores'],
+            ...array_map(fn (BigDecimal $v) => $this->m($v), array_intersect_key($g, array_flip($montos))),
+        ], $grupos));
+
+        $columnas = [
+            ['clave' => 'centro', 'titulo' => 'Centro de costo', 'tipo' => 'texto'],
+            ['clave' => 'trabajadores', 'titulo' => 'Trabajadores', 'tipo' => 'numero'],
+            ['clave' => 'ingresos', 'titulo' => 'Remuneración bruta', 'tipo' => 'monto'],
+            ['clave' => 'empleador', 'titulo' => 'Aportes del empleador', 'tipo' => 'monto'],
+            ['clave' => 'gratificacion', 'titulo' => 'Prov. gratificación + bonif.', 'tipo' => 'monto'],
+            ['clave' => 'cts', 'titulo' => 'Prov. CTS', 'tipo' => 'monto'],
+            ['clave' => 'vacaciones', 'titulo' => 'Prov. vacaciones', 'tipo' => 'monto'],
+            ['clave' => 'costo', 'titulo' => 'Costo laboral', 'tipo' => 'monto'],
+        ];
+
+        $avisos = ['Agrupado por el centro de costo vigente en el mes (el de la ficha al calcular la planilla).'];
+        if (isset($grupos['~'])) {
+            $avisos[] = 'Hay trabajadores sin centro de costo: asígnalo en su ficha y vuelve a calcular la planilla.';
+        }
+
+        return [
+            'titulo' => 'Costo por centro de costo',
+            'tablas' => [['titulo' => 'Costo laboral por centro de costo', 'columnas' => $columnas, 'filas' => $filas, 'totales' => $this->totales($columnas, $filas, 'centro', 'Total')]],
+            'avisos' => $avisos,
         ];
     }
 

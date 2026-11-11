@@ -62,6 +62,7 @@ const form = useForm({
     cuspp: '',
     seguro_salud: 'essalud' as string,
     tipo_contrato: 'indeterminado',
+    centro_costo_id: NINGUNO,
 });
 
 function abrir(grupo = 'remuneracion'): void {
@@ -79,6 +80,9 @@ function abrir(grupo = 'remuneracion'): void {
         cuspp: t.cuspp ?? '',
         seguro_salud: t.seguro_salud,
         tipo_contrato: t.tipo_contrato,
+        centro_costo_id: t.centro_costo_id
+            ? String(t.centro_costo_id)
+            : NINGUNO,
     });
     abierto.value = true;
 }
@@ -91,6 +95,8 @@ function guardar(): void {
     form.transform((d) => ({
         ...d,
         afp_id: d.afp_id === NINGUNO ? null : d.afp_id,
+        centro_costo_id:
+            d.centro_costo_id === NINGUNO ? null : d.centro_costo_id,
     })).post(store.url(props.trabajador.id), {
         preserveScroll: true,
         onSuccess: () => (abierto.value = false),
@@ -386,6 +392,28 @@ function anular(): void {
                             </SelectContent>
                         </Select>
                         <InputError :message="form.errors.tipo_contrato" />
+                    </template>
+
+                    <template v-else-if="form.grupo === 'centro_costo'">
+                        <Select v-model="form.centro_costo_id">
+                            <SelectTrigger
+                                class="w-full sm:max-w-xs"
+                                aria-label="Centro de costo"
+                                ><SelectValue
+                            /></SelectTrigger>
+                            <SelectContent>
+                                <SelectItem :value="NINGUNO"
+                                    >Sin centro de costo</SelectItem
+                                >
+                                <SelectItem
+                                    v-for="o in catalogos.centros_costo"
+                                    :key="o.value"
+                                    :value="o.value"
+                                    >{{ o.label }}</SelectItem
+                                >
+                            </SelectContent>
+                        </Select>
+                        <InputError :message="form.errors.centro_costo_id" />
                     </template>
                 </fieldset>
             </form>

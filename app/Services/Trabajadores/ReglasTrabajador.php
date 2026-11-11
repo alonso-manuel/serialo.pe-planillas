@@ -53,6 +53,7 @@ final class ReglasTrabajador
             'pais_emisor' => ['nullable', 'regex:/^\d{3}$/'],      // tabla 26 (pasaporte)
             // Laborales
             'establecimiento_id' => ['nullable', Rule::exists('establecimientos', 'id')->where('empresa_id', $empresa->id)],
+            'centro_costo_id' => ['nullable', Rule::exists('centros_costo', 'id')->where('empresa_id', $empresa->id)->where('activo', true)],
             'cargo' => ['nullable', 'string', 'max:100'],
             // T-Registro (tablas 24, 30, 9, 12 y 35 de SUNAT)
             'categoria_ocupacional' => ['nullable', Rule::enum(CategoriaOcupacional::class)],
@@ -145,6 +146,7 @@ final class ReglasTrabajador
             'modalidad_contrato' => 'modalidad del contrato',
             'situacion_especial' => 'situación especial',
             'pais_emisor' => 'país emisor del documento',
+            'centro_costo_id' => 'centro de costo',
         ];
     }
 

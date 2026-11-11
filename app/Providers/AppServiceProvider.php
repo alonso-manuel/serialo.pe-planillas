@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Models\CentroCosto;
 use App\Models\Concepto;
 use App\Models\Derechohabiente;
 use App\Models\Empresa;
@@ -115,6 +116,7 @@ class AppServiceProvider extends ServiceProvider
             'prestador_servicio' => PrestadorServicio::class,
             'recibo_honorarios' => ReciboHonorarios::class,
             'prestamo' => Prestamo::class,
+            'centro_costo' => CentroCosto::class,
         ]);
     }
 

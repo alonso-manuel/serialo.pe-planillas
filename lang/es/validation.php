@@ -196,6 +196,7 @@ return [
         'grupo' => 'dato',
         'cerrado_por' => 'cerrado por',
         'cerrado_en' => 'cerrado el',
+        'centro_costo_id' => 'centro de costo',
         'trabajador_id' => 'trabajador',
         'gratificacion_pendiente' => 'gratificación pendiente',
         'bonificacion_pendiente' => 'bonificación pendiente',

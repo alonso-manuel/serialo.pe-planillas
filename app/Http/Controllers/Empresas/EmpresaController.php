@@ -6,6 +6,7 @@ use App\Enums\RegimenLaboral;
 use App\Enums\SeguroSalud;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Empresas\GuardarEmpresaRequest;
+use App\Models\CentroCosto;
 use App\Models\Empresa;
 use App\Models\Establecimiento;
 use App\Models\FirmaDigital;
@@ -107,6 +108,9 @@ class EmpresaController extends Controller
                 'logo' => $empresa->logo_path !== null ? md5($empresa->logo_path) : null,
             ],
             'firma' => $this->firma($empresa),
+            'centros_costo' => $empresa->centrosCosto()->withCount('trabajadores')->get()
+                ->map(fn (CentroCosto $c) => ['id' => $c->id, 'codigo' => $c->codigo, 'nombre' => $c->nombre, 'activo' => $c->activo, 'trabajadores' => $c->trabajadores_count])
+                ->values()->all(),
             'establecimientos' => $empresa->establecimientos()
                 ->withCount('trabajadores')
                 ->orderBy('codigo')

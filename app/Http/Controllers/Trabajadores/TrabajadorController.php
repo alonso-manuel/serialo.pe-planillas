@@ -19,6 +19,7 @@ use App\Enums\VinculoFamiliar;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Trabajadores\GuardarTrabajadorRequest;
 use App\Models\Afp;
+use App\Models\CentroCosto;
 use App\Models\Derechohabiente;
 use App\Models\Empresa;
 use App\Models\EntidadFinanciera;
@@ -99,6 +100,8 @@ class TrabajadorController extends Controller
                 'establecimiento' => $establecimiento,
             ],
             'establecimientos' => $this->establecimientos($empresa),
+            'centros_costo' => $empresa->centrosCosto()->where('activo', true)->get()
+                ->map(fn (CentroCosto $c) => ['value' => (string) $c->id, 'label' => "{$c->codigo} · {$c->nombre}"])->values()->all(),
         ]);
     }
 
@@ -143,6 +146,7 @@ class TrabajadorController extends Controller
                 'email' => $trabajador->email,
                 'telefono' => $trabajador->telefono,
                 'establecimiento_id' => $trabajador->establecimiento_id,
+                'centro_costo_id' => $trabajador->centro_costo_id,
                 'cargo' => $trabajador->cargo,
                 'fecha_ingreso' => $trabajador->fecha_ingreso->toDateString(),
                 'tipo_contrato' => $trabajador->tipo_contrato->value,

@@ -89,6 +89,7 @@ const form = useForm({
         ? String(t.establecimiento_id)
         : (props.catalogos.establecimientos[0]?.value ?? NINGUNO),
     cargo: t?.cargo ?? '',
+    centro_costo_id: t?.centro_costo_id ? String(t.centro_costo_id) : NINGUNO,
     fecha_ingreso: t?.fecha_ingreso ?? '',
     tipo_contrato: t?.tipo_contrato ?? 'indeterminado',
     remuneracion_basica: t?.remuneracion_basica ?? '',
@@ -128,6 +129,7 @@ const PESTANAS = {
     ],
     laborales: [
         'establecimiento_id',
+        'centro_costo_id',
         'cargo',
         'fecha_ingreso',
         'tipo_contrato',
@@ -195,6 +197,8 @@ function guardar(): void {
         sexo: d.sexo === NINGUNO ? null : d.sexo,
         establecimiento_id:
             d.establecimiento_id === NINGUNO ? null : d.establecimiento_id,
+        centro_costo_id:
+            d.centro_costo_id === NINGUNO ? null : d.centro_costo_id,
         afp_id: d.afp_id === NINGUNO ? null : d.afp_id,
         categoria_ocupacional:
             d.categoria_ocupacional === NINGUNO
@@ -599,6 +603,30 @@ function eliminar(): void {
                             </SelectContent>
                         </Select>
                         <InputError :message="form.errors.establecimiento_id" />
+                    </div>
+                    <div class="grid gap-2">
+                        <Label for="centro_costo_id">Centro de costo</Label>
+                        <Select
+                            v-model="form.centro_costo_id"
+                            :disabled="bloqueado"
+                        >
+                            <SelectTrigger id="centro_costo_id" class="w-full"
+                                ><SelectValue
+                            /></SelectTrigger>
+                            <SelectContent>
+                                <SelectItem :value="NINGUNO"
+                                    >Sin centro de costo</SelectItem
+                                >
+                                <SelectItem
+                                    v-for="o in catalogos.centros_costo"
+                                    :key="o.value"
+                                    :value="o.value"
+                                >
+                                    {{ o.label }}
+                                </SelectItem>
+                            </SelectContent>
+                        </Select>
+                        <InputError :message="form.errors.centro_costo_id" />
                     </div>
                     <div class="grid gap-2">
                         <Label for="cargo">Cargo</Label>

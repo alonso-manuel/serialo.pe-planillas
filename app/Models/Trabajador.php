@@ -27,6 +27,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property int $id
  * @property int $empresa_id
  * @property int|null $establecimiento_id
+ * @property int|null $centro_costo_id vigente hoy (por mes: ver el historial)
  * @property TipoDocumento $tipo_documento
  * @property string $numero_documento
  * @property string $apellido_paterno
@@ -70,7 +71,7 @@ class Trabajador extends Model
     protected $table = 'trabajadores';
 
     protected $fillable = [
-        'empresa_id', 'establecimiento_id', 'tipo_documento', 'numero_documento',
+        'empresa_id', 'establecimiento_id', 'centro_costo_id', 'tipo_documento', 'numero_documento',
         'apellido_paterno', 'apellido_materno', 'nombres', 'fecha_nacimiento', 'sexo',
         'cargo', 'fecha_ingreso', 'fecha_cese', 'motivo_cese', 'tipo_contrato',
         'remuneracion_basica', 'asignacion_familiar', 'sistema_pension', 'afp_id',
@@ -162,5 +163,11 @@ class Trabajador extends Model
     public function prestamos(): HasMany
     {
         return $this->hasMany(Prestamo::class);
+    }
+
+    /** @return BelongsTo<CentroCosto, $this> */
+    public function centroCosto(): BelongsTo
+    {
+        return $this->belongsTo(CentroCosto::class);
     }
 }

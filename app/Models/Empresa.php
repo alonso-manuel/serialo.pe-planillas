@@ -70,4 +70,10 @@ class Empresa extends Model
     {
         return "{$this->razon_social} (RUC {$this->ruc})";
     }
+
+    /** @return HasMany<CentroCosto, $this> */
+    public function centrosCosto(): HasMany
+    {
+        return $this->hasMany(CentroCosto::class)->orderBy('codigo');
+    }
 }

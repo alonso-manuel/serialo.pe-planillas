@@ -57,6 +57,7 @@ class RegistrarCambioRequest extends FormRequest
             ],
             'seguro_salud' => ['seguro_salud' => ['required', Rule::enum(SeguroSalud::class)]],
             'tipo_contrato' => ['tipo_contrato' => ['required', Rule::enum(TipoContrato::class)]],
+            'centro_costo' => ['centro_costo_id' => ['nullable', Rule::exists('centros_costo', 'id')->where('empresa_id', $this->trabajadorEmpresaId())->where('activo', true)]],
             default => [],
         };
     }
@@ -125,6 +126,7 @@ class RegistrarCambioRequest extends FormRequest
                     'cuspp' => null,
                 ],
             'seguro_salud' => ['seguro_salud' => $this->string('seguro_salud')->toString()],
+            'centro_costo' => ['centro_costo_id' => $this->filled('centro_costo_id') ? (string) $this->integer('centro_costo_id') : null],
             'tipo_contrato' => ['tipo_contrato' => $this->string('tipo_contrato')->toString()],
             default => [],
         };
@@ -134,5 +136,12 @@ class RegistrarCambioRequest extends FormRequest
     {
         /** @var Trabajador */
         return $this->route('trabajador');
+    }
+
+    private function trabajadorEmpresaId(): int
+    {
+        $trabajador = $this->route('trabajador');
+
+        return $trabajador instanceof Trabajador ? $trabajador->empresa_id : 0;
     }
 }

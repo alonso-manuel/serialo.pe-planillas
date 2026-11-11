@@ -99,6 +99,7 @@ class CalcularPlanillaPeriodo
                     'total_descuentos' => $resultado->totalDescuentos,
                     'total_aportes_empleador' => $resultado->totalAportesEmpleador,
                     'neto_pagar' => $resultado->netoPagar,
+                    'centro_costo_id' => $this->historial->vistaAl($linea->trabajador, $periodo->ultimoDia())->centro_costo_id,
                     'detalle_quinta' => $detalleQuinta,
                     'calculado_en' => now(),
                 ]);

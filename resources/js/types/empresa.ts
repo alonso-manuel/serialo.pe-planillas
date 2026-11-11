@@ -68,3 +68,12 @@ export type FirmaDigitalEmpresa = {
     dias_para_vencer: number;
     huella: string;
 };
+
+/** Centro de costo de la empresa. */
+export type CentroCostoFila = {
+    id: number;
+    codigo: string;
+    nombre: string;
+    activo: boolean;
+    trabajadores: number;
+};
