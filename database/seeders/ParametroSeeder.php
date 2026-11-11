@@ -84,6 +84,25 @@ class ParametroSeeder extends Seeder
         ];
     }
 
+    /**
+     * Régimen agrario (v2.0). También los inserta la migración `add_regimen_agrario`.
+     *
+     * @return list<array{0: C, 1: string, 2: string, 3: string}>
+     */
+    public static function agrario(): array
+    {
+        return [
+            [C::TasaEssaludAgrarioMayor, '0.07', '2021-01-01', 'Ley 31110, art. 9 c)'],
+            [C::TasaEssaludAgrarioMayor, '0.08', '2023-01-01', 'Ley 31110, art. 9 c)'],
+            [C::TasaEssaludAgrarioMayor, '0.09', '2025-01-01', 'Ley 31110, art. 9 c)'],
+            [C::TasaEssaludAgrarioMenor, '0.06', '2021-01-01', 'Ley 31110, art. 9 e)'],
+            [C::TasaEssaludAgrarioMenor, '0.09', '2028-01-01', 'Ley 31110, art. 9 e)'],
+            [C::PorcentajeBeta, '0.30', '2021-01-01', 'Ley 31110, art. 3 e); D.S. 005-2021-MIDAGRI, art. 9'],
+            [C::PorcentajeGratificacionAgrario, '0.1666', '2021-01-01', 'Ley 31110, art. 3 c); D.S. 005-2021-MIDAGRI, art. 7.2'],
+            [C::PorcentajeCtsAgrario, '0.0972', '2021-01-01', 'Ley 31110, art. 3 c); D.S. 005-2021-MIDAGRI, art. 7.2'],
+        ];
+    }
+
     public function run(): void
     {
         $filas = [
@@ -99,6 +118,7 @@ class ParametroSeeder extends Seeder
             ...self::quinta(),
             ...self::indemnizacion(),
             ...self::cuarta(),
+            ...self::agrario(),
         ];
 
         foreach ($filas as [$clave, $valor, $desde, $base]) {

@@ -106,8 +106,9 @@ Fuentes: [manual del PVS T-Registro](https://www.sunat.gob.pe/orientacion/pvs/re
 
 - Campos separados por «|», un «|» al final de cada línea, sin espacios; un campo que no aplica va vacío («||»).
   Fechas `dd/mm/aaaa`. Fin de línea CRLF. Texto en **Windows-1252** (tildes y eñes de los nombres) ⚠.
-- Códigos: régimen laboral 01 general / 17 pequeña / 16 micro; tipo de trabajador 19 ejecutivo / 20 obrero / 21
-  empleado (según la categoría ocupacional); régimen de salud 00 EsSalud / 21 SIS; pensionario 02 ONP / 21 Integra /
+- Códigos: régimen laboral 01 general / 17 pequeña / 16 micro / 26 agrario Ley 31110; tipo de trabajador 19 ejecutivo /
+  20 obrero / 21 empleado (según la categoría ocupacional) o 76 agrario Ley 31110; régimen de salud 00 EsSalud / 04
+  EsSalud agrario / 21 SIS; pensionario 02 ONP / 21 Integra /
   22 Horizonte / 23 Profuturo / 24 Prima / 25 Habitat / 99 sin régimen; contrato 1 indeterminado / 2 tiempo parcial /
   modalidad de la tabla 12 para plazo fijo; tipo de pago 2 si tiene cuenta de sueldo, 1 efectivo.
 - Datos obligatorios del alta que se revisan antes de generar: fecha de nacimiento, sexo, celular (9 dígitos), correo,

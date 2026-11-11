@@ -8,7 +8,7 @@ use Brick\Math\BigDecimal;
 use Brick\Math\RoundingMode;
 
 /**
- * Motor de cálculo de la planilla mensual (régimen general y REMYPE).
+ * Motor de cálculo de la planilla mensual (régimen general, REMYPE y agrario).
  *
  * Es una clase PURA: no lee la base de datos ni la hora actual. Todo lo que necesita
  * entra por parámetros, por eso se prueba con tests unitarios sin base de datos.
@@ -50,12 +50,28 @@ final class CalculadoraPlanilla
 
     public const SIS = '0811';
 
+    /** Régimen agrario (Ley 31110): BETA, gratificación y CTS prorrateadas (tabla 22). */
+    public const BETA = '0314';
+
+    public const GRATIFICACION_AGRARIA = '0406';
+
+    public const BONIFICACION_AGRARIA = '0312';
+
+    public const CTS_AGRARIA = '0904';
+
+    /** Remuneración vacacional: entra a la base del prorrateo agrario. */
+    public const REMUNERACION_VACACIONAL = '0118';
+
     private const DIAS_MES = 30;
 
     private const HORAS_DIA = 8;
 
     public function calcular(DatosTrabajador $t, EntradaPlanilla $e, ParametrosPeriodo $p): ResultadoPlanilla
     {
+        $agrario = $t->agrario ? ($p->agrario ?? throw new \InvalidArgumentException('Faltan los parámetros del régimen agrario para el periodo.')) : null;
+        // Días que computan para la BETA y la asignación familiar agraria: laborados y de vacaciones (art. 9.5 y 15.1 del reglamento).
+        $diasComputables = min(self::DIAS_MES, $e->diasLaborados + $e->diasVacaciones);
+
         $ingresos = [];
         $baseAfp = Monto::cero();      // remuneración afecta al sistema de pensiones
         $baseEssalud = Monto::cero();  // remuneración afecta a EsSalud
@@ -68,15 +84,19 @@ final class CalculadoraPlanilla
         );
         $ingresos[self::BASICO] = $basico;
 
-        // 2. Asignación familiar: porcentaje de la RMV (no se prorratea).
+        // 2. Asignación familiar: porcentaje de la RMV (no se prorratea; en el régimen agrario sí, por días).
         $asignacion = Monto::cero();
         if ($t->asignacionFamiliar) {
-            $asignacion = Monto::redondear(Monto::de($p->rmv)->multipliedBy($p->porcentajeAsignacionFamiliar));
+            $asignacion = Monto::de($p->rmv)->multipliedBy($p->porcentajeAsignacionFamiliar);
+            if ($agrario !== null) {
+                $asignacion = $asignacion->multipliedBy($diasComputables)->dividedBy(self::DIAS_MES, 10, RoundingMode::HalfUp);
+            }
+            $asignacion = Monto::redondear($asignacion);
             $ingresos[self::ASIGNACION_FAMILIAR] = $asignacion;
         }
 
-        // 3. Horas extra sobre el valor hora de la remuneración ordinaria.
-        $valorHora = Monto::de($t->remuneracionBasica)->plus($asignacion)
+        // 3. Horas extra sobre el valor hora de la remuneración ordinaria (agrario: sobre la RB, art. 3.j de la Ley 31110).
+        $valorHora = Monto::de($t->remuneracionBasica)->plus($agrario === null ? $asignacion : Monto::cero())
             ->dividedBy(self::DIAS_MES * self::HORAS_DIA, 10, RoundingMode::HalfUp);
 
         $he25 = Monto::de($e->horasExtra25);
@@ -109,6 +129,20 @@ final class CalculadoraPlanilla
             }
         }
 
+        // 4b. Régimen agrario: gratificación, bonificación extraordinaria y CTS prorrateadas (inafectas) y BETA (no remunerativa).
+        if ($agrario !== null) {
+            if ($t->prorrateoAgrario) {
+                $base = $basico->plus(isset($ingresos[self::REMUNERACION_VACACIONAL]) ? $ingresos[self::REMUNERACION_VACACIONAL] : Monto::cero());
+                $gratificacion = Monto::redondear($base->multipliedBy($agrario->porcentajeGratificacion));
+                $this->sumarIngreso($ingresos, self::GRATIFICACION_AGRARIA, $gratificacion);
+                $this->sumarIngreso($ingresos, self::BONIFICACION_AGRARIA, Monto::redondear($gratificacion->multipliedBy($agrario->tasaBonificacion)));
+                $this->sumarIngreso($ingresos, self::CTS_AGRARIA, Monto::redondear($base->multipliedBy($agrario->porcentajeCts)));
+            }
+            $this->sumarIngreso($ingresos, self::BETA, Monto::redondear(
+                Monto::de($p->rmv)->multipliedBy($agrario->porcentajeBeta)->multipliedBy($diasComputables)->dividedBy(self::DIAS_MES, 10, RoundingMode::HalfUp)
+            ));
+        }
+
         // 5. Aportes del trabajador al sistema de pensiones.
         $aportesTrabajador = [];
         if ($t->sistemaPension === SistemaPension::Afp) {
@@ -134,6 +168,9 @@ final class CalculadoraPlanilla
         $aportesEmpleador = [];
         if ($t->seguroSalud === SeguroSalud::Sis) {
             $aportesEmpleador[self::SIS] = Monto::redondear(Monto::de($p->aporteSis));
+        } elseif ($agrario !== null) {
+            // Agrario: tasa según el tamaño del empleador y sin la base mínima de la RMV (tabla 22, código 0804).
+            $aportesEmpleador[self::ESSALUD] = Monto::redondear($baseEssalud->multipliedBy($agrario->tasaEssalud));
         } else {
             $base = BigDecimal::max($baseEssalud, Monto::de($p->rmv));
             $aportesEmpleador[self::ESSALUD] = Monto::redondear($base->multipliedBy($p->tasaEssalud));
@@ -153,6 +190,12 @@ final class CalculadoraPlanilla
             totalAportesEmpleador: Monto::texto($totalEmpleador),
             netoPagar: Monto::texto($totalIngresos->minus($totalDescuentos)),
         );
+    }
+
+    /** @param array<string, BigDecimal> $ingresos */
+    private function sumarIngreso(array &$ingresos, string $codigo, BigDecimal $monto): void
+    {
+        $ingresos[$codigo] = isset($ingresos[$codigo]) ? $ingresos[$codigo]->plus($monto) : $monto;
     }
 
     /** @param array<string, BigDecimal> $montos */

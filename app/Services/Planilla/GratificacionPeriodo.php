@@ -57,6 +57,11 @@ class GratificacionPeriodo
         foreach ($periodo->lineas as $linea) {
             $t = $this->historial->vistaAl($linea->trabajador, $periodo->ultimoDia());
 
+            // Agrario con gratificaciones prorrateadas: ya se pagan cada mes (0406).
+            if ($t->beneficiosProrrateados($periodo->empresa)) {
+                continue;
+            }
+
             if ($t->fecha_cese !== null && $t->fecha_cese->lt($diaPago)) {
                 $resultados[$linea->id] = null;
 

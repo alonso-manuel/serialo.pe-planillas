@@ -101,6 +101,7 @@ class EmpresaController extends Controller
                 'direccion' => $empresa->direccion,
                 'ubigeo' => $empresa->ubigeo,
                 'regimen_laboral' => $empresa->regimen_laboral->value,
+                'essalud_agrario_mayor' => $empresa->essalud_agrario_mayor,
                 'seguro_salud' => $empresa->seguro_salud->value,
                 'representante_legal' => $empresa->representante_legal,
                 'activo' => $empresa->activo,

@@ -224,6 +224,8 @@ class ExportacionTRegistro
         $dni = $t->tipo_documento === TipoDocumento::Dni;
         $fecha = fn (?\DateTimeInterface $d) => $d === null ? '' : $d->format('d/m/Y');
 
+        $agrario = $empresa->regimen_laboral === RegimenLaboral::Agrario;
+
         return new PrestadorTRegistro(
             tipoDocumento: $t->tipo_documento->value,
             numeroDocumento: $t->numero_documento,
@@ -240,6 +242,7 @@ class ExportacionTRegistro
                 RegimenLaboral::General => '01',
                 RegimenLaboral::PequenaEmpresa => '17',
                 RegimenLaboral::Microempresa => '16',
+                RegimenLaboral::Agrario => '26',
             },
             situacionEducativa: (string) $t->situacion_educativa?->value,
             ocupacion: (string) $t->ocupacion,
@@ -255,8 +258,13 @@ class ExportacionTRegistro
             situacionEspecial: $t->situacion_especial->value,
             tipoPago: blank($t->cuenta_sueldo) ? '1' : '2', // tabla 16: efectivo o depósito en cuenta
             categoriaOcupacional: (string) $t->categoria_ocupacional?->value,
-            tipoTrabajador: (string) $t->categoria_ocupacional?->tipoTrabajador(),
-            regimenSalud: $t->seguro_salud === SeguroSalud::Sis ? '21' : '00', // tabla 32
+            // Tabla 8: agrario Ley 31110 = 76. Tabla 32: EsSalud agrario/acuícola = 04.
+            tipoTrabajador: $agrario ? '76' : (string) $t->categoria_ocupacional?->tipoTrabajador(),
+            regimenSalud: match (true) {
+                $t->seguro_salud === SeguroSalud::Sis => '21',
+                $agrario => '04',
+                default => '00',
+            }, // tabla 32
             regimenPensionario: match ($t->sistema_pension) { // tabla 11
                 SistemaPension::Onp => '02',
                 SistemaPension::Afp => (string) $t->afp?->codigo_sunat,

@@ -50,6 +50,8 @@ export type TrabajadorEditable = {
     situacion_especial: string;
     discapacidad: boolean;
     sindicalizado: boolean;
+    /** Agrario: gratificaciones y CTS prorrateadas en la remuneración diaria. */
+    prorrateo_agrario: boolean;
     nacionalidad: string | null;
     pais_emisor: string | null;
     nombre_completo: string;
@@ -81,6 +83,8 @@ export type CatalogosTrabajador = {
     entidades_cts: Opcion[];
     seguro_por_defecto: 'essalud' | 'sis';
     permite_sis: boolean;
+    /** La empresa está en el régimen agrario (Ley 31110). */
+    agrario: boolean;
     rmv: string | null;
     consulta_dni: boolean;
 };

@@ -90,7 +90,7 @@ class LiquidacionesBeneficios
             meses: $datosMeses,
             gratificacionPercibida: $gratiPercibida,
             periodosVacacionales: $this->vacaciones->periodos($trabajador),
-        ), $this->parametrosPara($empresa, $cese));
+        ), $this->parametrosPara($empresa, $cese, $t->beneficiosProrrateados($empresa)));
 
         $avisos = [...$avisos, ...$resultado->avisos];
 
@@ -206,7 +206,8 @@ class LiquidacionesBeneficios
             ->get()->keyBy('trabajador_id');
     }
 
-    public function parametrosPara(Empresa $empresa, CarbonImmutable $cese): ParametrosLiquidacion
+    /** @param  bool  $prorrateados  agrario con gratificaciones y CTS ya pagadas cada mes: no hay truncas */
+    public function parametrosPara(Empresa $empresa, CarbonImmutable $cese, bool $prorrateados = false): ParametrosLiquidacion
     {
         $fecha = $cese->toDateString();
         $grati = $this->parametros->gratificacionPara($empresa, $fecha);
@@ -215,8 +216,8 @@ class LiquidacionesBeneficios
         return new ParametrosLiquidacion(
             rmv: $grati->rmv,
             porcentajeAsignacionFamiliar: $grati->porcentajeAsignacionFamiliar,
-            factorGratificacion: $grati->factorRegimen,
-            factorCts: $cts->factorRegimen,
+            factorGratificacion: $prorrateados ? '0' : $grati->factorRegimen,
+            factorCts: $prorrateados ? '0' : $cts->factorRegimen,
             tasaBonificacion: $grati->tasaBonificacion,
             diasVacaciones: $this->vacaciones->diasDerecho($empresa, $cese->toDateTimeImmutable()),
         );

@@ -81,6 +81,34 @@ Test: `CalculadoraPlanillaTest::caso_real_microempresa_afp_con_sis`. **No modifi
 | Vacaciones          | 30 días                       | 15 días                       | 15 días                                            |
 | Asignación familiar | Sí                            | ⚠ verificar                   | ⚠ verificar (criterio mayoritario: no obligatoria) |
 
+## Régimen agrario (v2.0) — Ley 31110 y D.S. 005-2021-MIDAGRI ⚠ confirmar con contador
+
+Empresa con régimen «agrario». Fuentes: [Ley 31110](https://busquedas.elperuano.pe/dispositivo/NL/1916568-7) y
+[reglamento](https://busquedas.elperuano.pe/dispositivo/NL/1939453-3). Parámetros con vigencia en `parametros`.
+
+- **Prorrateo** (art. 7 y 8 del reglamento): por defecto la remuneración diaria incluye la gratificación (16.66 % de la
+  RB, concepto 0406) y la CTS (9.72 % de la RB, 0904), registradas por separado en la boleta. Base = básico del mes +
+  remuneración vacacional (0118). Si el trabajador pidió por escrito cobrarlas en las fechas legales, se desmarca
+  «Gratificaciones y CTS prorrateadas» en su ficha y recibe la gratificación de julio/diciembre y el depósito CTS como
+  en el régimen general.
+- **Bonificación extraordinaria** (art. 15.2): 9 % de la gratificación (0312), prorrateada junto con ella; la
+  gratificación es inafecta (Ley 30334). La CTS tampoco es remuneración computable para aportes.
+- **BETA** (0314, art. 9): 30 % de la RMV por mes, proporcional a los días computables (laborados + vacaciones); no
+  remunerativa ni pensionable, afecta a quinta según la tabla 22. ⚠ Falta: jornada menor a 4 horas (proporcional a
+  la jornada), suspensiones con goce distintas de las vacaciones, y la opción de pago prorrateado diario.
+- **Asignación familiar** proporcional a los días computables (art. 15.1).
+- **Horas extra** sobre la RB, sin la asignación familiar (art. 3 j de la Ley) ⚠.
+- **EsSalud** (art. 9 de la Ley; art. 57 del reglamento), sin la base mínima de la RMV (tabla 22, código 0804):
+    | Empleador (lo declarado el año anterior)                                 | 2021–2022 | 2023–2024 | 2025–2027 | 2028+ |
+    | ------------------------------------------------------------------------ | --------- | --------- | --------- | ----- |
+    | 100 o más trabajadores agrarios o ventas ≥ 1,700 UIT                     | 7 %       | 8 %       | 9 %       | 9 %   |
+    | Menos de 100 y ventas < 1,700 UIT                                        | 6 %       | 6 %       | 6 %       | 9 %   |
+    | El tamaño es una casilla de la empresa que el estudio revisa cada enero. |
+- **Vacaciones** 30 días; **indemnización por despido** 45 RD por año, tope 360 (como el régimen general).
+- **Liquidación**: sin gratificación ni CTS truncas si se prorrateaban (ya se pagaron cada mes).
+- ⚠ Pendiente: utilidades (5 % / 7.5 % / 10 %), sobretasa nocturna (35 % de la RMV), la RD de la indemnización con
+  gratificación y CTS incluidas, y el promedio semanal de 4 horas para tener derecho a la RD.
+
 ## Gratificaciones (semana 4) — Ley 27735 y Ley 30334
 
 Implementado en `App\Domain\Planilla\CalculadoraGratificacion` (motor puro) y `App\Services\Planilla\GratificacionPeriodo`.

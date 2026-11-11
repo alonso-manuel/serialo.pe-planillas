@@ -170,6 +170,7 @@ class TrabajadorController extends Controller
                 'situacion_especial' => $trabajador->situacion_especial->value,
                 'discapacidad' => $trabajador->discapacidad,
                 'sindicalizado' => $trabajador->sindicalizado,
+                'prorrateo_agrario' => $trabajador->prorrateo_agrario,
                 'nacionalidad' => $trabajador->nacionalidad,
                 'pais_emisor' => $trabajador->pais_emisor,
                 'nombre_completo' => $trabajador->nombre_completo,
@@ -289,6 +290,7 @@ class TrabajadorController extends Controller
             'motivos_cese' => array_map(fn (MotivoCese $m) => ['value' => $m->value, 'label' => "{$m->value} · {$m->etiqueta()}"], MotivoCese::cases()),
             'seguro_por_defecto' => $empresa->seguro_salud->value,
             'permite_sis' => $empresa->regimen_laboral === RegimenLaboral::Microempresa,
+            'agrario' => $empresa->regimen_laboral === RegimenLaboral::Agrario,
             'rmv' => $rmv,
             'consulta_dni' => app(ConsultaDni::class)->disponible(),
             'entidades_cts' => EntidadFinanciera::query()->where('activo', true)->orderBy('nombre')->get()

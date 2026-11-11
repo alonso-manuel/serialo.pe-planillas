@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Enums\CategoriaOcupacional;
 use App\Enums\ModalidadContrato;
 use App\Enums\MotivoCese;
+use App\Enums\RegimenLaboral;
 use App\Enums\SeguroSalud;
 use App\Enums\SistemaPension;
 use App\Enums\SituacionEducativa;
@@ -60,6 +61,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property SituacionEspecial $situacion_especial
  * @property bool $discapacidad
  * @property bool $sindicalizado
+ * @property bool $prorrateo_agrario agrario: gratificaciones y CTS prorrateadas en la remuneración diaria
  * @property string|null $nacionalidad tabla 4 (extranjeros)
  * @property string|null $pais_emisor tabla 26 (pasaporte)
  * @property-read string $nombre_completo
@@ -81,6 +83,7 @@ class Trabajador extends Model
         // T-Registro
         'categoria_ocupacional', 'ocupacion', 'situacion_educativa', 'modalidad_contrato', 'situacion_especial',
         'discapacidad', 'sindicalizado', 'nacionalidad', 'pais_emisor',
+        'prorrateo_agrario',
     ];
 
     /** @return array<string, string> */
@@ -94,6 +97,7 @@ class Trabajador extends Model
             'asignacion_familiar' => 'boolean',
             'discapacidad' => 'boolean',
             'sindicalizado' => 'boolean',
+            'prorrateo_agrario' => 'boolean',
             'categoria_ocupacional' => CategoriaOcupacional::class,
             'situacion_educativa' => SituacionEducativa::class,
             'modalidad_contrato' => ModalidadContrato::class,
@@ -126,6 +130,15 @@ class Trabajador extends Model
     }
 
     /** ¿Tiene cese registrado a la fecha indicada? */
+    /**
+     * Régimen agrario con gratificaciones y CTS prorrateadas en la remuneración diaria (art. 7 del D.S. 005-2021-MIDAGRI):
+     * no recibe gratificación de julio/diciembre, depósito CTS ni sus truncas en la liquidación.
+     */
+    public function beneficiosProrrateados(Empresa $empresa): bool
+    {
+        return $empresa->regimen_laboral === RegimenLaboral::Agrario && $this->prorrateo_agrario;
+    }
+
     public function estaCesado(?CarbonImmutable $fecha = null): bool
     {
         return $this->fecha_cese !== null && $this->fecha_cese->lte($fecha ?? CarbonImmutable::today());

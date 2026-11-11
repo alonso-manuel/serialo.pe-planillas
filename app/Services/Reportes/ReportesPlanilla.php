@@ -358,15 +358,16 @@ class ReportesPlanilla
         $cts = $this->parametros->cts($empresa, $fecha->toDateString());
         $diasVacaciones = $this->vacaciones->diasDerecho($empresa, $fecha->toDateTimeImmutable());
 
-        return array_values($lineas->map(function (PlanillaLinea $l) use ($periodo, $grati, $cts, $diasVacaciones) {
+        return array_values($lineas->map(function (PlanillaLinea $l) use ($periodo, $empresa, $grati, $cts, $diasVacaciones) {
             $t = $this->historial->vistaAl($l->trabajador, $periodo->ultimoDia());
+            $prorrateados = $t->beneficiosProrrateados($empresa); // agrario: ya están en los ingresos del mes
             $asignacion = $l->conceptos->first(fn (PlanillaConcepto $c) => $c->concepto->codigo_plame === '0201')->monto_pagado ?? '0';
             $p = ProvisionesMensuales::calcular(
                 (string) $t->remuneracion_basica,
                 (string) $asignacion,
-                $grati->factorRegimen,
+                $prorrateados ? '0' : $grati->factorRegimen,
                 $t->seguro_salud === SeguroSalud::Essalud ? $grati->tasaBonificacion : '0',
-                $cts->factorRegimen,
+                $prorrateados ? '0' : $cts->factorRegimen,
                 $diasVacaciones,
             );
             $costo = BigDecimal::of($l->total_ingresos)->plus($l->total_aportes_empleador)->plus($p['total']);

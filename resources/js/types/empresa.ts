@@ -5,7 +5,7 @@ export type EmpresaResumen = {
     razon_social: string;
 };
 
-export type RegimenLaboral = 'general' | 'pequena' | 'micro';
+export type RegimenLaboral = 'general' | 'pequena' | 'micro' | 'agrario';
 export type SeguroSalud = 'essalud' | 'sis';
 
 export type Opcion<T extends string = string> = {
@@ -30,6 +30,8 @@ export type EmpresaEditable = EmpresaResumen & {
     direccion: string | null;
     ubigeo: string | null;
     regimen_laboral: RegimenLaboral;
+    /** Agrario: declaró 100 o más trabajadores o ventas ≥ 1,700 UIT el año anterior. */
+    essalud_agrario_mayor: boolean;
     seguro_salud: SeguroSalud;
     representante_legal: string | null;
     activo: boolean;

@@ -17,5 +17,7 @@ final readonly class EntradaPlanilla
         public string $horasExtra35 = '0',
         public array $ingresosAdicionales = [],
         public array $descuentos = [],
+        /** Días de descanso vacacional del mes (computan para la BETA y la asignación familiar agraria). */
+        public int $diasVacaciones = 0,
     ) {}
 }

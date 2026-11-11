@@ -111,6 +111,7 @@ const form = useForm({
     situacion_especial: t?.situacion_especial ?? '0',
     discapacidad: t?.discapacidad ?? false,
     sindicalizado: t?.sindicalizado ?? false,
+    prorrateo_agrario: t?.prorrateo_agrario ?? true,
     nacionalidad: t?.nacionalidad ?? '',
     pais_emisor: t?.pais_emisor ?? '',
 });
@@ -136,6 +137,7 @@ const PESTANAS = {
         'tipo_contrato',
         'remuneracion_basica',
         'asignacion_familiar',
+        'prorrateo_agrario',
     ],
     pension: [
         'sistema_pension',
@@ -708,6 +710,28 @@ function eliminar(): void {
                         />
                         Percibe asignación familiar
                     </label>
+                    <label
+                        v-if="catalogos.agrario"
+                        class="flex items-start gap-2 text-sm sm:col-span-2"
+                    >
+                        <Checkbox
+                            class="mt-0.5"
+                            :model-value="form.prorrateo_agrario"
+                            @update:model-value="
+                                (v) => (form.prorrateo_agrario = v === true)
+                            "
+                        />
+                        <span>
+                            Gratificaciones y CTS prorrateadas en la
+                            remuneración diaria
+                            <span class="block text-xs text-muted-foreground">
+                                Régimen agrario: se pagan cada mes salvo que el
+                                trabajador haya pedido por escrito recibirlas en
+                                julio/diciembre y mayo/noviembre.
+                            </span>
+                        </span>
+                    </label>
+                    <InputError :message="form.errors.prorrateo_agrario" />
                 </TabsContent>
 
                 <!-- Pensión y salud -->

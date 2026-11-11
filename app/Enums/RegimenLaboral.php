@@ -7,6 +7,7 @@ enum RegimenLaboral: string
     case General = 'general';
     case PequenaEmpresa = 'pequena';
     case Microempresa = 'micro';
+    case Agrario = 'agrario'; // Ley 31110
 
     public function etiqueta(): string
     {
@@ -14,6 +15,7 @@ enum RegimenLaboral: string
             self::General => 'Régimen general',
             self::PequenaEmpresa => 'Pequeña empresa (REMYPE)',
             self::Microempresa => 'Microempresa (REMYPE)',
+            self::Agrario => 'Régimen agrario (Ley 31110)',
         };
     }
 }

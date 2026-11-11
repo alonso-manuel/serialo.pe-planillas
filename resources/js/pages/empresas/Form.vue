@@ -9,6 +9,7 @@ import LogoEmpresa from '@/components/empresas/LogoEmpresa.vue';
 import Heading from '@/components/Heading.vue';
 import InputError from '@/components/InputError.vue';
 import { Button } from '@/components/ui/button';
+import { Checkbox } from '@/components/ui/checkbox';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import {
@@ -57,6 +58,7 @@ const form = useForm({
     ubigeo: props.empresa?.ubigeo ?? '',
     regimen_laboral:
         props.empresa?.regimen_laboral ?? ('general' as RegimenLaboral),
+    essalud_agrario_mayor: props.empresa?.essalud_agrario_mayor ?? false,
     seguro_salud: props.empresa?.seguro_salud ?? ('essalud' as SeguroSalud),
     representante_legal: props.empresa?.representante_legal ?? '',
 });
@@ -267,6 +269,27 @@ function guardar(): void {
                         </SelectContent>
                     </Select>
                     <InputError :message="form.errors.regimen_laboral" />
+                    <label
+                        v-if="form.regimen_laboral === 'agrario'"
+                        class="flex items-start gap-2 text-sm"
+                    >
+                        <Checkbox
+                            class="mt-0.5"
+                            :model-value="form.essalud_agrario_mayor"
+                            @update:model-value="
+                                (v) => (form.essalud_agrario_mayor = v === true)
+                            "
+                        />
+                        <span>
+                            El año anterior declaró 100 o más trabajadores
+                            agrarios o ventas de 1,700 UIT o más
+                            <span class="block text-xs text-muted-foreground">
+                                Define la tasa de EsSalud agrario. Revísalo cada
+                                enero.
+                            </span>
+                        </span>
+                    </label>
+                    <InputError :message="form.errors.essalud_agrario_mayor" />
                 </div>
 
                 <div class="grid gap-2">

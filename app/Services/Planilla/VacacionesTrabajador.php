@@ -177,7 +177,7 @@ class VacacionesTrabajador
     public function diasDerecho(Empresa $empresa, DateTimeImmutable $fecha): int
     {
         $clave = match ($empresa->regimen_laboral) {
-            RegimenLaboral::General => C::DiasVacacionesGeneral,
+            RegimenLaboral::General, RegimenLaboral::Agrario => C::DiasVacacionesGeneral, // agrario: 30 días (Ley 31110, art. 3 g)
             RegimenLaboral::PequenaEmpresa => C::DiasVacacionesPequena,
             RegimenLaboral::Microempresa => C::DiasVacacionesMicro,
         };

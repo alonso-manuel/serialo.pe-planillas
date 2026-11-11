@@ -117,6 +117,18 @@ class TRegistroTest extends TestCase
     }
 
     #[Test]
+    public function el_regimen_agrario_usa_sus_codigos_de_las_tablas_8_32_y_33(): void
+    {
+        $this->empresa->update(['regimen_laboral' => 'agrario']);
+        $this->completo(['categoria_ocupacional' => CategoriaOcupacional::Obrero, 'ocupacion' => '961007']);
+
+        $archivos = $this->zip();
+        $this->assertStringStartsWith('01|70000001|604|26|', $archivos['RP_20000000044.tra']); // tabla 33: Ley 31110
+        $this->assertStringContainsString("01|70000001|604|1|2|03/11/2026||76||\r\n", $archivos['RP_20000000044.per']); // tabla 8
+        $this->assertStringContainsString("01|70000001|604|1|3|03/11/2026||04||\r\n", $archivos['RP_20000000044.per']); // tabla 32
+    }
+
+    #[Test]
     public function solo_ve_a_los_trabajadores_de_su_empresa(): void
     {
         $otra = Empresa::factory()->create();

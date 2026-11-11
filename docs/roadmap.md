@@ -114,5 +114,7 @@ Ideas tomadas del análisis de mercado (09/11): conceptos recurrentes y proporci
 ## v2.0 — abr → jun 2027
 
 - [x] Firma digital de boletas y documentos laborales con el certificado de la empresa (PAdES) — adelantada el 10/11, ver docs/firma-digital.md
-- [ ] Regímenes agrario y construcción civil
-- [ ] Portal del trabajador (incluye su conformidad de recepción)
+- [x] Régimen agrario (Ley 31110): gratificaciones y CTS prorrateadas o en las fechas legales por trabajador, BETA, EsSalud agrario por tamaño del empleador y códigos T-Registro
+- [ ] Régimen de construcción civil (pendiente: cifras oficiales del convenio vigente — BUC, movilidad, gratificación, vacaciones, CTS, Conafovicer)
+
+El portal del trabajador se descartó (11/11/2026).

@@ -37,6 +37,7 @@ class GuardarEmpresaRequest extends FormRequest
             'direccion' => ['nullable', 'string', 'max:255'],
             'ubigeo' => ['nullable', 'digits:6'],
             'regimen_laboral' => ['required', Rule::enum(RegimenLaboral::class)],
+            'essalud_agrario_mayor' => ['sometimes', 'boolean'],
             'seguro_salud' => ['required', Rule::enum(SeguroSalud::class)],
             'representante_legal' => ['nullable', 'string', 'max:255'],
         ];

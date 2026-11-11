@@ -54,6 +54,13 @@ enum ClaveParametro: string
     case CuartaTasaRetencion = 'cuarta_tasa';                       // 8 %
     case CuartaMontoMinimo = 'cuarta_monto_minimo';                 // se retiene si el recibo supera S/ 1,500                         // 30 % (exceso del último tramo)
 
+    // Régimen agrario (Ley 31110 y D.S. 005-2021-MIDAGRI)
+    case TasaEssaludAgrarioMayor = 'tasa_essalud_agrario_mayor';     // 100 o más trabajadores o ventas ≥ 1,700 UIT
+    case TasaEssaludAgrarioMenor = 'tasa_essalud_agrario_menor';     // menos de 100 trabajadores y ventas < 1,700 UIT
+    case PorcentajeBeta = 'pct_beta';                                // 30 % de la RMV
+    case PorcentajeGratificacionAgrario = 'pct_grati_agrario';      // 16.66 % de la RB
+    case PorcentajeCtsAgrario = 'pct_cts_agrario';                  // 9.72 % de la RB
+
     public function etiqueta(): string
     {
         return match ($this) {
@@ -92,6 +99,11 @@ enum ClaveParametro: string
             self::IndemnizacionTopeMicro => 'Indemnización por despido: tope (micro)',
             self::CuartaTasaRetencion => 'Cuarta: tasa de retención',
             self::CuartaMontoMinimo => 'Cuarta: monto desde el que se retiene',
+            self::TasaEssaludAgrarioMayor => 'EsSalud agrario (100 o más trabajadores o ventas ≥ 1,700 UIT)',
+            self::TasaEssaludAgrarioMenor => 'EsSalud agrario (menos de 100 trabajadores y ventas < 1,700 UIT)',
+            self::PorcentajeBeta => 'BETA (bonificación especial por trabajo agrario)',
+            self::PorcentajeGratificacionAgrario => 'Agrario: gratificación prorrateada',
+            self::PorcentajeCtsAgrario => 'Agrario: CTS prorrateada',
         };
     }
 
@@ -123,6 +135,10 @@ enum ClaveParametro: string
             self::IndemnizacionDiasMesPlazoFijo => 'Remuneraciones diarias por cada mes que faltaba para el vencimiento del contrato.',
             self::CuartaTasaRetencion => 'Retención sobre el recibo por honorarios.',
             self::CuartaMontoMinimo => 'Se retiene cuando el recibo supera este monto (salvo constancia de suspensión).',
+            self::TasaEssaludAgrarioMayor, self::TasaEssaludAgrarioMenor => 'Aporte del empleador agrario según lo declarado el año anterior; sin base mínima (art. 9 de la Ley 31110).',
+            self::PorcentajeBeta => 'Porcentaje de la RMV por mes completo; no remunerativo, proporcional a los días computables.',
+            self::PorcentajeGratificacionAgrario => 'Proporción mensual de las gratificaciones sobre la remuneración básica.',
+            self::PorcentajeCtsAgrario => 'Proporción mensual de la CTS sobre la remuneración básica.',
         };
     }
 

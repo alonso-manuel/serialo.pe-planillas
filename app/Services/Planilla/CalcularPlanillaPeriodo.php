@@ -11,6 +11,7 @@ use App\Domain\Planilla\EntradaPlanilla;
 use App\Domain\Planilla\IngresoAdicional;
 use App\Domain\Planilla\ResultadoGratificacion;
 use App\Enums\EstadoPeriodo;
+use App\Enums\RegimenLaboral;
 use App\Enums\TipoConcepto;
 use App\Models\Concepto;
 use App\Models\Liquidacion;
@@ -125,6 +126,7 @@ class CalcularPlanillaPeriodo
             horasExtra35: $e->horasExtra35,
             ingresosAdicionales: $e->ingresosAdicionales,
             descuentos: [...$e->descuentos, $codigo => $monto],
+            diasVacaciones: $e->diasVacaciones,
         );
     }
 
@@ -139,6 +141,8 @@ class CalcularPlanillaPeriodo
             sistemaPension: $t->sistema_pension,
             seguroSalud: $t->seguro_salud,
             tasaAfp: $this->parametros->tasaAfp($t, $periodo),
+            agrario: $periodo->empresa?->regimen_laboral === RegimenLaboral::Agrario,
+            prorrateoAgrario: $t->prorrateo_agrario,
         );
     }
 
@@ -200,6 +204,7 @@ class CalcularPlanillaPeriodo
             horasExtra35: (string) $linea->horas_extra_35,
             ingresosAdicionales: $ingresos,
             descuentos: $descuentos,
+            diasVacaciones: $linea->dias_vacaciones,
         );
     }
 }

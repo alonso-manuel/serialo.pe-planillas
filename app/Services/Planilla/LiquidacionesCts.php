@@ -84,6 +84,9 @@ class LiquidacionesCts
 
             foreach ($trabajadores as $trabajador) {
                 $t = $this->historial->vistaAl($trabajador, $fin);
+                if ($t->beneficiosProrrateados($empresa)) {
+                    continue; // agrario: la CTS se paga cada mes con la remuneración diaria (0904)
+                }
                 $avisos = [];
 
                 $grati = $gratificaciones[$trabajador->id] ?? null;

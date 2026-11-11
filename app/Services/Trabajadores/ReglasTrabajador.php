@@ -63,6 +63,7 @@ final class ReglasTrabajador
             'situacion_especial' => ['nullable', Rule::enum(SituacionEspecial::class)],
             'discapacidad' => ['boolean'],
             'sindicalizado' => ['boolean'],
+            'prorrateo_agrario' => ['sometimes', 'boolean'],
             'fecha_ingreso' => ['required', 'date'],
             'tipo_contrato' => ['required', Rule::enum(TipoContrato::class)],
             'remuneracion_basica' => ['required', 'regex:/^\d{1,10}(\.\d{1,2})?$/', 'not_regex:/^0+(\.0+)?$/'],
@@ -164,7 +165,7 @@ final class ReglasTrabajador
         $validados['asignacion_familiar'] = $asignacionFamiliar;
 
         // T-Registro: casillas y valores por defecto; la modalidad solo aplica al plazo fijo.
-        foreach (['discapacidad', 'sindicalizado'] as $casilla) {
+        foreach (['discapacidad', 'sindicalizado', 'prorrateo_agrario'] as $casilla) {
             if (array_key_exists($casilla, $validados)) {
                 $validados[$casilla] = (bool) $validados[$casilla];
             }

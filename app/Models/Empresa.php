@@ -19,6 +19,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property RegimenLaboral $regimen_laboral
  * @property SeguroSalud $seguro_salud
  * @property bool $activo
+ * @property bool $essalud_agrario_mayor agrario: declaró 100 o más trabajadores o ventas ≥ 1,700 UIT el año anterior
  * @property string|null $direccion
  * @property string|null $logo_path ruta del logo en el disco privado (PNG reducido)
  */
@@ -29,7 +30,7 @@ class Empresa extends Model
 
     protected $fillable = [
         'ruc', 'razon_social', 'nombre_comercial', 'direccion', 'ubigeo',
-        'regimen_laboral', 'seguro_salud', 'representante_legal', 'logo_path', 'activo',
+        'regimen_laboral', 'essalud_agrario_mayor', 'seguro_salud', 'representante_legal', 'logo_path', 'activo',
     ];
 
     /** @return array<string, string> */
@@ -39,6 +40,7 @@ class Empresa extends Model
             'regimen_laboral' => RegimenLaboral::class,
             'seguro_salud' => SeguroSalud::class,
             'activo' => 'boolean',
+            'essalud_agrario_mayor' => 'boolean',
         ];
     }
 

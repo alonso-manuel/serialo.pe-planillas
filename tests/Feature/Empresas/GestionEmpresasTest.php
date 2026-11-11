@@ -54,7 +54,7 @@ class GestionEmpresasTest extends TestCase
                 ->has('empresas.data', 2)
                 ->where('empresas.data.0.razon_social', 'Alfa S.A.C.')
                 ->where('empresas.data.0.trabajadores_count', 0)
-                ->has('regimenes', 3)
+                ->has('regimenes', 4)
             );
     }
 
@@ -121,7 +121,7 @@ class GestionEmpresasTest extends TestCase
         $this->post(route('empresas.store'), $this->datos([
             'razon_social' => '',
             'ubigeo' => '15',
-            'regimen_laboral' => 'agrario',
+            'regimen_laboral' => 'inexistente',
         ]))->assertSessionHasErrors(['razon_social', 'ubigeo', 'regimen_laboral']);
     }
 

@@ -13,5 +13,9 @@ final readonly class DatosTrabajador
         public SistemaPension $sistemaPension,
         public SeguroSalud $seguroSalud,
         public ?TasaAfpPeriodo $tasaAfp = null,
+        /** Régimen agrario (Ley 31110). */
+        public bool $agrario = false,
+        /** Agrario: gratificaciones y CTS prorrateadas en la remuneración diaria (salvo opción del trabajador, art. 8 del reglamento). */
+        public bool $prorrateoAgrario = true,
     ) {}
 }

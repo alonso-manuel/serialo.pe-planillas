@@ -2,6 +2,7 @@
 
 namespace App\Services\Planilla;
 
+use App\Domain\Planilla\ParametrosAgrario;
 use App\Domain\Planilla\ParametrosCts;
 use App\Domain\Planilla\ParametrosGratificacion;
 use App\Domain\Planilla\ParametrosIndemnizacion;
@@ -23,6 +24,7 @@ class ParametrosRepositorio
     public function delPeriodo(Periodo $periodo): ParametrosPeriodo
     {
         $fecha = $periodo->ultimoDia()->toDateString();
+        $empresa = $periodo->empresa;
 
         return new ParametrosPeriodo(
             rmv: Parametro::vigente(C::Rmv, $fecha),
@@ -32,6 +34,19 @@ class ParametrosRepositorio
             porcentajeAsignacionFamiliar: Parametro::vigente(C::PorcentajeAsignacionFamiliar, $fecha),
             sobretasaHoraExtra25: Parametro::vigente(C::SobretasaHoraExtra25, $fecha),
             sobretasaHoraExtra35: Parametro::vigente(C::SobretasaHoraExtra35, $fecha),
+            agrario: $empresa?->regimen_laboral === RegimenLaboral::Agrario ? $this->agrario($empresa, $fecha) : null,
+        );
+    }
+
+    /** Régimen agrario: EsSalud según el tamaño del empleador, BETA y proporciones de gratificación y CTS. */
+    public function agrario(Empresa $empresa, string $fecha): ParametrosAgrario
+    {
+        return new ParametrosAgrario(
+            tasaEssalud: Parametro::vigente($empresa->essalud_agrario_mayor ? C::TasaEssaludAgrarioMayor : C::TasaEssaludAgrarioMenor, $fecha),
+            porcentajeBeta: Parametro::vigente(C::PorcentajeBeta, $fecha),
+            porcentajeGratificacion: Parametro::vigente(C::PorcentajeGratificacionAgrario, $fecha),
+            porcentajeCts: Parametro::vigente(C::PorcentajeCtsAgrario, $fecha),
+            tasaBonificacion: Parametro::vigente(C::TasaBonificacionExtraordinaria, $fecha),
         );
     }
 
@@ -41,7 +56,8 @@ class ParametrosRepositorio
         $v = fn (C $clave) => (int) Parametro::vigente($clave, $fecha);
 
         return match ($empresa->regimen_laboral) {
-            RegimenLaboral::General => new ParametrosIndemnizacion($v(C::IndemnizacionDiasAnioGeneral), $v(C::IndemnizacionTopeGeneral), $v(C::IndemnizacionDiasMesPlazoFijo)),
+            // Agrario: 45 RD por año, tope 360 RD (art. 3 h) de la Ley 31110), como el régimen general.
+            RegimenLaboral::General, RegimenLaboral::Agrario => new ParametrosIndemnizacion($v(C::IndemnizacionDiasAnioGeneral), $v(C::IndemnizacionTopeGeneral), $v(C::IndemnizacionDiasMesPlazoFijo)),
             RegimenLaboral::PequenaEmpresa => new ParametrosIndemnizacion($v(C::IndemnizacionDiasAnioPequena), $v(C::IndemnizacionTopePequena), null),
             RegimenLaboral::Microempresa => new ParametrosIndemnizacion($v(C::IndemnizacionDiasAnioMicro), $v(C::IndemnizacionTopeMicro), null),
         };
@@ -89,7 +105,8 @@ class ParametrosRepositorio
             porcentajeAsignacionFamiliar: Parametro::vigente(C::PorcentajeAsignacionFamiliar, $fecha),
             // Régimen general: la gratificación completa (Ley 27735). REMYPE: proporción con vigencia.
             factorRegimen: match ($regimen) {
-                RegimenLaboral::General => '1',
+                // Agrario: cuando no se prorratean, se pagan como en el régimen general (art. 8 del reglamento).
+                RegimenLaboral::General, RegimenLaboral::Agrario => '1',
                 RegimenLaboral::PequenaEmpresa => Parametro::vigente(C::FactorGratificacionPequena, $fecha),
                 RegimenLaboral::Microempresa => Parametro::vigente(C::FactorGratificacionMicro, $fecha),
             },
@@ -105,7 +122,7 @@ class ParametrosRepositorio
             porcentajeAsignacionFamiliar: Parametro::vigente(C::PorcentajeAsignacionFamiliar, $fecha),
             // Régimen general: CTS completa (D.S. 001-97-TR). REMYPE: proporción con vigencia.
             factorRegimen: match ($empresa->regimen_laboral) {
-                RegimenLaboral::General => '1',
+                RegimenLaboral::General, RegimenLaboral::Agrario => '1',
                 RegimenLaboral::PequenaEmpresa => Parametro::vigente(C::FactorCtsPequena, $fecha),
                 RegimenLaboral::Microempresa => Parametro::vigente(C::FactorCtsMicro, $fecha),
             },

@@ -13,5 +13,7 @@ final readonly class ParametrosPeriodo
         public string $porcentajeAsignacionFamiliar,
         public string $sobretasaHoraExtra25,
         public string $sobretasaHoraExtra35,
+        /** Solo empresas del régimen agrario. */
+        public ?ParametrosAgrario $agrario = null,
     ) {}
 }
