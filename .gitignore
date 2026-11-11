@@ -46,3 +46,4 @@ yarn-error.log
 # Videos de demo grabados (pesados; se comparten aparte)
 /videos
 /tools/videos/node_modules
+/tools/manual/node_modules

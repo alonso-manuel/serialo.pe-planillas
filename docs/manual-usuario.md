@@ -1,8 +1,7 @@
 # Serialo Planillas — Manual de usuario
 
 Guía para quienes usan el sistema en el día a día: el **administrador** del estudio contable o de la empresa y sus
-**asistentes**. Explica qué hace cada módulo y en qué orden se trabaja el mes. Para instalar el sistema en un hosting,
-ver [instalacion.md](instalacion.md).
+**asistentes**. Explica qué hace cada módulo y en qué orden se trabaja el mes.
 
 > Los ejemplos usan datos ficticios. Los cálculos siguen la norma vigente, pero cada estudio es responsable de revisar
 > lo que declara. Los puntos que la norma deja abiertos se indican en pantalla y en este manual con ⚠.
@@ -77,12 +76,12 @@ Se hace una sola vez, al empezar. Orden recomendado:
 
 Al editar la empresa aparecen además:
 
-| Sección              | Para qué                                                                                                                                      |
-| -------------------- | --------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Logo**             | Sale en boletas, constancias y reportes PDF.                                                                                                  |
-| **Establecimientos** | Locales o sucursales con su código SUNAT (se usan en T-Registro).                                                                             |
-| **Centros de costo** | Áreas para repartir el costo laboral y el asiento contable (cada trabajador tiene uno, con vigencia).                                         |
-| **Firma digital**    | Certificado `.pfx`/`.p12` del representante legal: firma boletas y documentos de periodos cerrados. Ver [firma-digital.md](firma-digital.md). |
+| Sección              | Para qué                                                                                                                                        |
+| -------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Logo**             | Sale en boletas, constancias y reportes PDF.                                                                                                    |
+| **Establecimientos** | Locales o sucursales con su código SUNAT (se usan en T-Registro).                                                                               |
+| **Centros de costo** | Áreas para repartir el costo laboral y el asiento contable (cada trabajador tiene uno, con vigencia).                                           |
+| **Firma digital**    | Certificado `.pfx`/`.p12` del representante legal: firma boletas y documentos de periodos cerrados. Ver [3.6 Firma digital](#36-firma-digital). |
 
 Las empresas no se eliminan: se **desactivan** y salen del selector, pero su historia se conserva.
 
@@ -119,6 +118,41 @@ AFP, quinta). Los marcados **sistema** los usa el motor de cálculo: solo se les
 
 Para un pago que no está (p. ej. 0107 trabajo en feriado): **Nuevo concepto** → código, nombre y afectaciones. El tipo
 se deduce del código. Un concepto que ya se usó no se elimina: se desactiva.
+
+### 3.6 Firma digital
+
+Cada empresa puede registrar el **certificado digital de su representante legal** (archivo `.pfx` o `.p12`, emitido
+por RENIEC u otra entidad acreditada). Con él, sus documentos laborales salen **firmados digitalmente**: Adobe Reader
+y otros lectores muestran quién firmó y avisan si el archivo se modificó después.
+
+**Registrar el certificado** (solo el administrador): **Administración → Empresas → editar la empresa → Firma digital**.
+
+1. Elija el archivo `.pfx` o `.p12` y escriba su clave.
+2. El sistema lo revisa al momento: que la clave sea correcta y que el certificado esté vigente.
+3. Se muestran el titular, su documento, el emisor y las fechas de vigencia. Desde 30 días antes del vencimiento
+   aparece un aviso para renovarlo.
+4. Para un certificado renovado, cárguelo de nuevo (reemplaza al anterior). **Quitar firma** lo elimina.
+
+El certificado y su clave se guardan cifrados y no vuelven a mostrarse en pantalla.
+
+**Qué documentos se firman**
+
+| Documento                     | Se firma cuando…                 |
+| ----------------------------- | -------------------------------- |
+| Boleta de pago                | El periodo está **cerrado**      |
+| Boleta enviada por correo     | El periodo está cerrado          |
+| Hoja de liquidación           | La liquidación está **cerrada**  |
+| Carta para liberar la CTS     | La liquidación está cerrada      |
+| Certificado de trabajo        | Siempre                          |
+| Constancia de depósito de CTS | La CTS del semestre está cerrada |
+
+- Los borradores no se firman. Sin certificado, o con el certificado vencido, los documentos salen como siempre, con
+  el espacio para la firma a mano.
+- En el recuadro del empleador aparece «Firmado digitalmente por … · DNI … · fecha» solo cuando el PDF va firmado.
+- Las boletas por correo: sin certificado van protegidas con el número de documento del trabajador como contraseña;
+  con certificado van firmadas y sin contraseña.
+- Los reportes no se firman (son de uso interno).
+- ⚠ La firma digital del empleador en la boleta se basa en el D. Leg. 1310; confírmelo con su asesor.
 
 ---
 
@@ -344,12 +378,41 @@ El régimen de **construcción civil** se agregará cuando se confirmen las cifr
 
 ## 12. Administración
 
-| Módulo        | Para qué                                                                                                                                                                                  |
-| ------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Auditoría** | Quién hizo qué, cuándo, desde qué IP y qué valores cambiaron. Filtros por empresa, módulo, acción, usuario y fechas. No se puede editar ni borrar.                                        |
-| **Respaldos** | Copia diaria automática de la base (03:00) y **Crear respaldo ahora**. **Descargue uno cada semana** y guárdelo fuera del servidor. Ver [respaldos.md](respaldos.md).                     |
-| **Licencia**  | Estado de la licencia y uso del plan (empresas, usuarios, trabajadores). Para renovar, **Registrar clave**. Sin licencia válida el sistema queda en solo lectura: nunca se pierden datos. |
-| **Soporte**   | (Servicio en la nube) **Permitir acceso por 24 horas** deja entrar a Serialo.pe para ayudarle; todo lo que haga queda en la auditoría. **Quitar acceso** lo corta al momento.             |
+### 12.1 Auditoría
+
+**Administración → Auditoría.** Quién hizo qué, cuándo, desde qué dirección IP y qué valores cambiaron (antes y
+después). Se filtra por empresa, módulo, acción, usuario y fechas; al abrir una fila se ve el detalle, por ejemplo el
+motivo de una reapertura. El registro no se puede editar ni borrar.
+
+### 12.2 Respaldos
+
+Un respaldo es una copia completa de la base de datos: empresas, trabajadores, planillas, beneficios y auditoría.
+
+| Qué                | Cómo                                                                                           |
+| ------------------ | ---------------------------------------------------------------------------------------------- |
+| Automático         | Todos los días a las 03:00 (hora de Lima)                                                      |
+| Manual             | **Administración → Respaldos → Crear respaldo ahora** (por ejemplo, antes de una carga masiva) |
+| Cuántos se guardan | Los de los últimos 14 días; el más reciente nunca se borra                                     |
+| Descarga           | Botón **Descargar** de cada respaldo en la lista                                               |
+
+- Crear y descargar un respaldo queda en la auditoría.
+- Los respaldos se guardan en el mismo servidor del sistema: protegen de errores (un periodo borrado, una carga
+  equivocada), pero no de perder el servidor. **Descargue uno cada semana** y guárdelo en otro lugar (otra
+  computadora, una nube del estudio).
+- Los logos de las empresas no van en el respaldo; si hiciera falta, se vuelven a subir.
+- Para **restaurar** un respaldo, comuníquese con soporte: reemplaza todos los datos por los de esa fecha.
+
+### 12.3 Licencia
+
+**Administración → Licencia** muestra el estado de la licencia y el uso del plan (empresas, usuarios, trabajadores).
+Para renovar o cambiar de plan, **Registrar clave** con la clave que entrega Serialo.pe. Sin una licencia válida el
+sistema queda en **solo lectura**: se puede consultar y descargar todo, y nunca se pierden datos.
+
+### 12.4 Acceso de soporte (servicio en la nube)
+
+En **Administración → Licencia → Acceso de soporte**, **Permitir acceso por 24 horas** deja entrar al equipo de
+Serialo.pe para ayudarle con un problema. Entra como el usuario «Soporte Serialo.pe» y todo lo que haga queda en la
+auditoría. **Quitar acceso** lo corta al momento; al vencer las 24 horas se corta solo.
 
 ---
 

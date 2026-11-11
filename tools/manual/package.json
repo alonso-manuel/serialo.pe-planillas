@@ -1,0 +1,12 @@
+{
+    "name": "serialo-planillas-manual",
+    "private": true,
+    "description": "Genera docs/manual-usuario.pdf a partir de docs/manual-usuario.md.",
+    "scripts": {
+        "pdf": "node generar-pdf.mjs"
+    },
+    "devDependencies": {
+        "marked": "15.0.12",
+        "playwright": "1.48.2"
+    }
+}

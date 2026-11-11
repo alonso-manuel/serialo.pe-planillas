@@ -20,24 +20,24 @@ no se rompen están en [CLAUDE.md](../CLAUDE.md).
 
 ## 1. Documentos del proyecto
 
-| Documento                                      | Qué responde                                                     |
-| ---------------------------------------------- | ---------------------------------------------------------------- |
-| [CLAUDE.md](../CLAUDE.md)                      | Stack, comandos, reglas que no se rompen, glosario               |
-| [producto.md](producto.md)                     | Qué se vende, a quién, licencias y módulos por versión           |
-| [roadmap.md](roadmap.md)                       | Qué está hecho y qué sigue                                       |
-| [reglas-calculo.md](reglas-calculo.md)         | Fórmulas legales, fuentes y puntos ⚠ por validar con el contador |
-| [formatos-oficiales.md](formatos-oficiales.md) | Formato exacto de PLAME, AFPnet y T-Registro                     |
-| [convenciones.md](convenciones.md)             | Cómo se escribe el código, el checklist multiempresa y los tests |
-| [arquitectura.md](arquitectura.md)             | Capas y decisiones por módulo                                    |
-| [modelo-datos.md](modelo-datos.md)             | Tablas y relaciones                                              |
-| [multitenant.md](multitenant.md)               | Modo SaaS: una base por estudio, panel central, soporte          |
-| [licencias.md](licencias.md)                   | Clave Ed25519, estados, solo lectura y límites del plan          |
-| [instalacion.md](instalacion.md)               | Instalador web en hosting compartido                             |
-| [vps.md](vps.md)                               | Despliegue SaaS en el VPS                                        |
-| [respaldos.md](respaldos.md)                   | Respaldos de la base                                             |
-| [firma-digital.md](firma-digital.md)           | Firma PAdES de documentos                                        |
-| [manual-usuario.md](manual-usuario.md)         | Cómo se usa el sistema (para entender el flujo del usuario)      |
-| [videos/guiones.md](videos/guiones.md)         | Videos de demo grabados con Playwright (`tools/videos/`)         |
+| Documento                                      | Qué responde                                                                                   |
+| ---------------------------------------------- | ---------------------------------------------------------------------------------------------- |
+| [CLAUDE.md](../CLAUDE.md)                      | Stack, comandos, reglas que no se rompen, glosario                                             |
+| [producto.md](producto.md)                     | Qué se vende, a quién, licencias y módulos por versión                                         |
+| [roadmap.md](roadmap.md)                       | Qué está hecho y qué sigue                                                                     |
+| [reglas-calculo.md](reglas-calculo.md)         | Fórmulas legales, fuentes y puntos ⚠ por validar con el contador                               |
+| [formatos-oficiales.md](formatos-oficiales.md) | Formato exacto de PLAME, AFPnet y T-Registro                                                   |
+| [convenciones.md](convenciones.md)             | Cómo se escribe el código, el checklist multiempresa y los tests                               |
+| [arquitectura.md](arquitectura.md)             | Capas y decisiones por módulo                                                                  |
+| [modelo-datos.md](modelo-datos.md)             | Tablas y relaciones                                                                            |
+| [multitenant.md](multitenant.md)               | Modo SaaS: una base por estudio, panel central, soporte                                        |
+| [licencias.md](licencias.md)                   | Clave Ed25519, estados, solo lectura y límites del plan                                        |
+| [instalacion.md](instalacion.md)               | Instalador web en hosting compartido                                                           |
+| [vps.md](vps.md)                               | Despliegue SaaS en el VPS                                                                      |
+| [respaldos.md](respaldos.md)                   | Respaldos de la base                                                                           |
+| [firma-digital.md](firma-digital.md)           | Firma PAdES de documentos                                                                      |
+| [manual-usuario.md](manual-usuario.md)         | Cómo se usa el sistema. Su PDF se regenera con `cd tools/manual && npm install && npm run pdf` |
+| [videos/guiones.md](videos/guiones.md)         | Videos de demo grabados con Playwright (`tools/videos/`)                                       |
 
 > [arquitectura.md](arquitectura.md) tiene secciones de las primeras semanas que ya no aplican: el actualizador
 > automático se descartó y los respaldos usan `VolcadoBaseDatos` propio (no `spatie/laravel-backup`). Ante una
