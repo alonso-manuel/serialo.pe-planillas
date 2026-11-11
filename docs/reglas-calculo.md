@@ -213,6 +213,12 @@ El detalle (renta proyectada, impuesto, divisor, retención ordinaria y extraord
 el detalle del trabajador en la planilla. No se aplica la deducción adicional de 3 UIT (gastos): va en la declaración
 anual del trabajador.
 
+## Cuarta categoría (v1.1)
+
+Retención por comprobante (LIR art. 74): **tasa** (8 %) sobre el monto del recibo por honorarios cuando **supera** el
+monto mínimo (S/ 1,500), salvo que el prestador tenga constancia de suspensión de retenciones del ejercicio del pago.
+Notas de crédito, dietas y otros: sin retención ⚠. Tasa y mínimo con vigencia en Parámetros.
+
 ## Verificaciones pendientes (lista viva)
 
 - [ ] Códigos tabla 22: 0811 (SIS), 0312/0313/0406 (gratificación), 0904 (CTS), 0909 (movilidad).
@@ -228,6 +234,7 @@ anual del trabajador.
 - [ ] Licencia sin goce: descuenta días pagados y reduce la gratificación como las faltas (1/180 por día).
 - [ ] PLAME: códigos de la tabla 21 (07 faltas, 21/22 subsidios), jornada de 8 h diarias en el .jor, montos en cero omitidos en el .rem.
 - [ ] Liquidación: códigos tabla 22 **0407** (gratificación proporcional), **0313** (bonificación proporcional), **0114** (vacaciones truncas) — códigos confirmados con la Tabla 22 de SUNAT (22/09/2026); la indemnización vacacional pasó de 0911 (que es «Participación en las utilidades») a **0504**; afectación de las vacaciones no gozadas y truncas; sexto de gratificación de la CTS trunca; computable de vacaciones con asignación familiar; mínimo de un mes para truncas; casos reales para tests.
+- [ ] Cuarta: tasa 8 % y mínimo S/ 1,500 vigentes; dietas de directorio (retención distinta) y notas de crédito.
 - [ ] Indemnización por despido: remuneración base con promedio de variables, fracciones también en REMYPE, fórmula por año en REMYPE para plazo fijo, periodo de prueba de 3 meses (6 o 12 para confianza/dirección), cuenta PCGE 623.
 - [ ] Quinta: clasificación ordinario/extraordinario (horas extra y bonos como extraordinarios), bonificación extraordinaria afecta, indemnización vacacional (0504) y CTS inafectas, cese sin proyección, retenciones de otros empleadores restadas desde abril, estimación de gratificaciones por percibir (tasa 9 % aun con EPS), divisores del art. 40, UIT 2026.
 - [ ] Gratificación: diciembre como mes completo, faltas 1/180 por día, variables solo HE (≥ 3 meses), factor REMYPE (50 % / 0 %), meses sin planilla asumidos completos, faltas de diciembre excluidas.

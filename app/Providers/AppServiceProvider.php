@@ -13,6 +13,8 @@ use App\Models\Novedad;
 use App\Models\Parametro;
 use App\Models\Periodo;
 use App\Models\PlanillaLinea;
+use App\Models\PrestadorServicio;
+use App\Models\ReciboHonorarios;
 use App\Models\RentaOtroEmpleador;
 use App\Models\TasaAfp;
 use App\Models\Trabajador;
@@ -109,6 +111,8 @@ class AppServiceProvider extends ServiceProvider
             'renta_otro_empleador' => RentaOtroEmpleador::class,
             'firma_digital' => FirmaDigital::class,
             'derechohabiente' => Derechohabiente::class,
+            'prestador_servicio' => PrestadorServicio::class,
+            'recibo_honorarios' => ReciboHonorarios::class,
         ]);
     }
 

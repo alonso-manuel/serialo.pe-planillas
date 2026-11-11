@@ -48,7 +48,11 @@ enum ClaveParametro: string
     case IndemnizacionDiasAnioPequena = 'indem_dias_anio_pequena';   // 20
     case IndemnizacionTopePequena = 'indem_tope_pequena';            // 120
     case IndemnizacionDiasAnioMicro = 'indem_dias_anio_micro';       // 10
-    case IndemnizacionTopeMicro = 'indem_tope_micro';                // 90                         // 30 % (exceso del último tramo)
+    case IndemnizacionTopeMicro = 'indem_tope_micro';                // 90
+
+    // Renta de cuarta categoría (LIR art. 74)
+    case CuartaTasaRetencion = 'cuarta_tasa';                       // 8 %
+    case CuartaMontoMinimo = 'cuarta_monto_minimo';                 // se retiene si el recibo supera S/ 1,500                         // 30 % (exceso del último tramo)
 
     public function etiqueta(): string
     {
@@ -86,6 +90,8 @@ enum ClaveParametro: string
             self::IndemnizacionTopePequena => 'Indemnización por despido: tope (pequeña)',
             self::IndemnizacionDiasAnioMicro => 'Indemnización por despido: días por año (micro)',
             self::IndemnizacionTopeMicro => 'Indemnización por despido: tope (micro)',
+            self::CuartaTasaRetencion => 'Cuarta: tasa de retención',
+            self::CuartaMontoMinimo => 'Cuarta: monto desde el que se retiene',
         };
     }
 
@@ -115,6 +121,8 @@ enum ClaveParametro: string
             self::IndemnizacionDiasAnioGeneral, self::IndemnizacionDiasAnioPequena, self::IndemnizacionDiasAnioMicro => 'Remuneraciones diarias por cada año de servicios (fracciones por dozavos y treintavos).',
             self::IndemnizacionTopeGeneral, self::IndemnizacionTopePequena, self::IndemnizacionTopeMicro => 'Máximo de remuneraciones diarias que se pagan.',
             self::IndemnizacionDiasMesPlazoFijo => 'Remuneraciones diarias por cada mes que faltaba para el vencimiento del contrato.',
+            self::CuartaTasaRetencion => 'Retención sobre el recibo por honorarios.',
+            self::CuartaMontoMinimo => 'Se retiene cuando el recibo supera este monto (salvo constancia de suspensión).',
         };
     }
 
@@ -122,7 +130,7 @@ enum ClaveParametro: string
     public function tipo(): string
     {
         return match ($this) {
-            self::Rmv, self::Uit, self::AporteSis => 'monto',
+            self::Rmv, self::Uit, self::AporteSis, self::CuartaMontoMinimo => 'monto',
             self::DiasVacacionesGeneral, self::DiasVacacionesPequena, self::DiasVacacionesMicro,
             self::IndemnizacionDiasAnioGeneral, self::IndemnizacionTopeGeneral, self::IndemnizacionDiasMesPlazoFijo,
             self::IndemnizacionDiasAnioPequena, self::IndemnizacionTopePequena, self::IndemnizacionDiasAnioMicro, self::IndemnizacionTopeMicro => 'dias',

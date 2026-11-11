@@ -72,6 +72,21 @@ Generador: `App\Domain\Afp\GeneradorAfpnet`; servicio: `App\Services\Sunat\Expor
   `GeneradorAfpnet::nombre()`.
 - Excepciones J/I (pensionado) y P (inicio después del cierre) aún no se generan.
 
+## PLAME: cuarta categoría (v1.1)
+
+**Planilla del periodo → Honorarios (4ta)**: recibos por honorarios pagados en el mes (la fecha de pago define el
+periodo). La retención (8 % si el recibo supera S/ 1,500, salvo constancia de suspensión del año) la calcula
+`CalculadoraCuarta` con parámetros con vigencia. Al exportar el PLAME del periodo se agregan:
+
+| Archivo               | Estructura | Campos                                                                                                                                                                          |
+| --------------------- | ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `0601AAAAMM<RUC>.ps4` | E7 (7)     | tipo doc (06 RUC si es domiciliado) \| número \| ap. paterno \| ap. materno \| nombres \| domiciliado 1/2 \| convenio (t. 25)                                                   |
+| `0601AAAAMM<RUC>.4ta` | E20 (11)   | tipo doc \| número \| comprobante (t. 23: R, N, D, O) \| serie \| número \| monto \| emisión \| pago \| retención 1/0 \| aporte Ley 29903 (3 = no aplica) \| importe del aporte |
+
+- ⚠ Orden de campos reconstruido del Anexo 3 de estructuras (2023) y del anexo de la
+  [R.S. 235-2013/SUNAT](https://ww3.sunat.gob.pe/legislacion/superin/2013/anexo-235-2013.pdf): validar importando en el PLAME.
+- ⚠ Notas de crédito, dietas y otros comprobantes sin retención; la tasa y el mínimo son parámetros por verificar.
+
 ## T-Registro (v1.1)
 
 **SUNAT → T-Registro** (empresa activa, rango de fechas): altas = ingreso dentro del rango, bajas = cese dentro del

@@ -71,6 +71,19 @@ class ParametroSeeder extends Seeder
         ];
     }
 
+    /**
+     * Cuarta categoría (v1.1). También los inserta la migración `create_cuarta_categoria_tables`.
+     *
+     * @return list<array{0: C, 1: string, 2: string, 3: string}>
+     */
+    public static function cuarta(): array
+    {
+        return [
+            [C::CuartaTasaRetencion, '0.08', '2015-01-01', 'LIR, art. 74 (D. Leg. 1258) — VERIFICAR'],
+            [C::CuartaMontoMinimo, '1500.00', '2008-01-01', 'R.S. 013-2007/SUNAT — VERIFICAR'],
+        ];
+    }
+
     public function run(): void
     {
         $filas = [
@@ -85,6 +98,7 @@ class ParametroSeeder extends Seeder
             ...self::gratificacion(),
             ...self::quinta(),
             ...self::indemnizacion(),
+            ...self::cuarta(),
         ];
 
         foreach ($filas as [$clave, $valor, $desde, $base]) {

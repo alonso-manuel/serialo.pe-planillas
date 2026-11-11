@@ -35,6 +35,8 @@ class AuditoriaController extends Controller
         'renta_otro_empleador' => 'Renta de otro empleador',
         'firma_digital' => 'Firma digital',
         'derechohabiente' => 'Derechohabiente',
+        'prestador_servicio' => 'Prestador de servicios',
+        'recibo_honorarios' => 'Recibo por honorarios',
         'licencia' => 'Licencia',
         'respaldo' => 'Respaldo',
         'soporte' => 'Soporte',

@@ -2,6 +2,7 @@
 
 namespace App\Services\Sunat;
 
+use App\Domain\Sunat\Plame\GeneradorCuarta;
 use App\Domain\Sunat\Plame\GeneradorJor;
 use App\Domain\Sunat\Plame\GeneradorRem;
 use App\Domain\Sunat\Plame\GeneradorSnl;
@@ -12,6 +13,7 @@ use App\Models\Exportacion;
 use App\Models\Periodo;
 use App\Models\PlanillaConcepto;
 use App\Models\PlanillaLinea;
+use App\Models\ReciboHonorarios;
 use App\Models\TipoSuspension;
 use App\Models\User;
 use App\Services\Planilla\NovedadesPlanilla;
@@ -35,6 +37,7 @@ class ExportacionPlame
         private readonly GeneradorJor $jor,
         private readonly GeneradorSnl $snl,
         private readonly GeneradorToc $toc,
+        private readonly GeneradorCuarta $cuarta,
     ) {}
 
     /**
@@ -76,6 +79,7 @@ class ExportacionPlame
                 $l->tipo_subsidio ?? NovedadesPlanilla::SUBSIDIO_POR_DEFECTO => $l->dias_subsidiados,
             ]])->all()),
             'toc' => $this->toc->generar($lineas->map($doc)->all()),
+            ...$this->cuarta($periodo),
         ];
 
         $archivos = [];
@@ -86,6 +90,37 @@ class ExportacionPlame
         }
 
         return $archivos;
+    }
+
+    /**
+     * Prestadores de cuarta categoría del periodo (.ps4) y sus comprobantes (.4ta).
+     *
+     * @return array{ps4: string, '4ta': string}
+     */
+    private function cuarta(Periodo $periodo): array
+    {
+        $recibos = $periodo->recibosHonorarios()->with('prestador')->orderBy('fecha_pago')->orderBy('id')->get();
+        $prestador = fn (ReciboHonorarios $r) => ['tipo_documento' => $r->prestador->tipo_documento, 'numero_documento' => $r->prestador->numero_documento];
+
+        return [
+            'ps4' => $this->cuarta->ps4($recibos->unique('prestador_id')->map(fn (ReciboHonorarios $r) => [
+                ...$prestador($r),
+                'apellido_paterno' => $r->prestador->apellido_paterno,
+                'apellido_materno' => (string) $r->prestador->apellido_materno,
+                'nombres' => $r->prestador->nombres,
+                'domiciliado' => $r->prestador->domiciliado,
+            ])->values()->all()),
+            '4ta' => $this->cuarta->cuarta($recibos->map(fn (ReciboHonorarios $r) => [
+                ...$prestador($r),
+                'tipo_comprobante' => $r->tipo_comprobante,
+                'serie' => $r->serie,
+                'numero' => $r->numero,
+                'monto' => (string) $r->monto,
+                'fecha_emision' => $r->fecha_emision->format('d/m/Y'),
+                'fecha_pago' => $r->fecha_pago->format('d/m/Y'),
+                'retiene' => BigDecimal::of((string) $r->retencion)->isPositive(),
+            ])->values()->all()),
+        ];
     }
 
     /** Zip con los archivos de un periodo. Devuelve la ruta temporal (borrarla después de enviarla). */

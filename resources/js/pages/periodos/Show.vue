@@ -7,6 +7,7 @@ import {
     FileText,
     Lock,
     LockOpen,
+    ReceiptText,
     RefreshCw,
     ShieldCheck,
     Trash2,
@@ -44,6 +45,7 @@ import {
     pdf as boletasPdf,
     zip as boletasZip,
 } from '@/routes/periodos/boletas';
+import { index as honorarios } from '@/routes/periodos/honorarios';
 import { index as parametros } from '@/routes/parametros';
 import { index as tasasAfp } from '@/routes/tasas-afp';
 import type {
@@ -198,6 +200,15 @@ function eliminar(): void {
                     }}
                 </span>
             </div>
+            <Button variant="outline" as-child class="sm:order-last">
+                <Link
+                    :href="honorarios(periodo.id)"
+                    title="Recibos por honorarios (cuarta categoría) pagados en el mes"
+                >
+                    <ReceiptText />
+                    Honorarios (4ta)
+                </Link>
+            </Button>
             <div
                 v-if="
                     estado !== 'abierto' ||

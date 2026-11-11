@@ -21,6 +21,7 @@ use App\Http\Controllers\Periodos\BoletaController;
 use App\Http\Controllers\Periodos\CalculoController;
 use App\Http\Controllers\Periodos\CierrePeriodoController;
 use App\Http\Controllers\Periodos\EnvioBoletaController;
+use App\Http\Controllers\Periodos\HonorariosController;
 use App\Http\Controllers\Periodos\LineaPlanillaController;
 use App\Http\Controllers\Periodos\PeriodoController;
 use App\Http\Controllers\Periodos\ResumenBoletasController;
@@ -75,6 +76,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::middleware('empresa.activa')->group(function () {
         Route::resource('periodos', PeriodoController::class)->only(['index', 'store', 'show', 'destroy']);
         Route::post('periodos/{periodo}/calcular', [CalculoController::class, 'periodo'])->name('periodos.calcular');
+        Route::get('periodos/{periodo}/honorarios', [HonorariosController::class, 'index'])->name('periodos.honorarios.index');
+        Route::post('periodos/{periodo}/honorarios', [HonorariosController::class, 'store'])->name('periodos.honorarios.store');
+        Route::delete('periodos/{periodo}/honorarios/{recibo}', [HonorariosController::class, 'destroy'])->name('periodos.honorarios.destroy');
         Route::post('periodos/{periodo}/cerrar', [CierrePeriodoController::class, 'cerrar'])->name('periodos.cerrar');
         Route::post('periodos/{periodo}/reabrir', [CierrePeriodoController::class, 'reabrir'])->name('periodos.reabrir');
         Route::post('periodos/{periodo}/sincronizar', [PeriodoController::class, 'sincronizar'])->name('periodos.sincronizar');

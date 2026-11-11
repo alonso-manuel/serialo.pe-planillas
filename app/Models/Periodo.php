@@ -75,4 +75,10 @@ class Periodo extends Model
     {
         return sprintf('Periodo %02d/%d', $this->mes, $this->anio);
     }
+
+    /** @return HasMany<ReciboHonorarios, $this> */
+    public function recibosHonorarios(): HasMany
+    {
+        return $this->hasMany(ReciboHonorarios::class);
+    }
 }
