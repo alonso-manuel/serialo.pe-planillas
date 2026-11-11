@@ -33,6 +33,7 @@ class AuditoriaController extends Controller
         'vacacion' => 'Vacaciones',
         'liquidacion' => 'Liquidación',
         'renta_otro_empleador' => 'Renta de otro empleador',
+        'firma_digital' => 'Firma digital',
         'licencia' => 'Licencia',
         'respaldo' => 'Respaldo',
         'soporte' => 'Soporte',

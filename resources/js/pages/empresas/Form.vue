@@ -3,6 +3,7 @@ import { Head, Link, useForm } from '@inertiajs/vue3';
 import { CircleAlert, Search } from '@lucide/vue';
 import { computed, ref, watch } from 'vue';
 import Establecimientos from '@/components/empresas/Establecimientos.vue';
+import FirmaDigital from '@/components/empresas/FirmaDigital.vue';
 import LogoEmpresa from '@/components/empresas/LogoEmpresa.vue';
 import Heading from '@/components/Heading.vue';
 import InputError from '@/components/InputError.vue';
@@ -22,6 +23,7 @@ import type {
     DatosRuc,
     EmpresaEditable,
     EstablecimientoFila,
+    FirmaDigitalEmpresa,
     Opcion,
     RegimenLaboral,
     SeguroSalud,
@@ -32,6 +34,7 @@ const props = defineProps<{
     establecimientos: EstablecimientoFila[];
     regimenes: Opcion<RegimenLaboral>[];
     seguros: Opcion<SeguroSalud>[];
+    firma?: FirmaDigitalEmpresa | null;
 }>();
 
 const esNueva = props.empresa === null;
@@ -308,6 +311,12 @@ function guardar(): void {
             v-if="empresa"
             :empresa-id="empresa.id"
             :logo="empresa.logo"
+        />
+
+        <FirmaDigital
+            v-if="empresa"
+            :empresa-id="empresa.id"
+            :firma="firma ?? null"
         />
 
         <Establecimientos

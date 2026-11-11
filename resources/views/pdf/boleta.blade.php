@@ -172,7 +172,7 @@
 
         <table class="firmas">
             <tr>
-                <td><div class="firma">Empleador<br><span class="suave">{{ $empresa->razon_social }}</span></div></td>
+                <td><div class="firma">Empleador<br><span class="suave">{{ $empresa->razon_social }}</span>@include('pdf.partials.firma-digital')</div></td>
                 <td><div class="firma">Trabajador<br><span class="suave">{{ $t['nombre'] }}</span></div></td>
             </tr>
         </table>

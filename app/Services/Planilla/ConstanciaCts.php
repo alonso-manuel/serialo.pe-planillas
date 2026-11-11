@@ -5,6 +5,7 @@ namespace App\Services\Planilla;
 use App\Models\EntidadFinanciera;
 use App\Models\LiquidacionCts;
 use App\Models\LiquidacionCtsLinea;
+use App\Services\Empresas\FirmaDigitalPdf;
 use App\Services\Empresas\LogoEmpresa;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Collection;
@@ -23,14 +24,20 @@ class ConstanciaCts
         $liquidacion->loadMissing('empresa');
         $entidades = EntidadFinanciera::query()->pluck('nombre', 'codigo');
 
-        return Pdf::loadView('pdf.constancia-cts', [
+        $firma = app(FirmaDigitalPdf::class);
+        $firmar = $liquidacion->estaCerrada();
+
+        $pdf = Pdf::loadView('pdf.constancia-cts', [
             'liquidacion' => $liquidacion,
             'empresa' => $liquidacion->empresa,
             'logo' => app(LogoEmpresa::class)->dataUri($liquidacion->empresa),
             'lineas' => $lineas->each(fn (LiquidacionCtsLinea $l) => $l->loadMissing('trabajador')),
             'entidades' => $entidades,
             'borrador' => ! $liquidacion->estaCerrada(),
+            'firma' => $firmar ? $firma->sello($liquidacion->empresa) : null,
         ])->setPaper('a4')->output();
+
+        return $firmar ? $firma->firmar($pdf, $liquidacion->empresa, 'Constancia de depósito de CTS') : $pdf;
     }
 
     /** Zip con una constancia por trabajador. Devuelve la ruta temporal. */

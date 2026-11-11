@@ -11,6 +11,7 @@ use App\Http\Controllers\Empresas\ConsultaRucController;
 use App\Http\Controllers\Empresas\EmpresaController;
 use App\Http\Controllers\Empresas\EstablecimientoController;
 use App\Http\Controllers\Empresas\EstadoEmpresaController;
+use App\Http\Controllers\Empresas\FirmaDigitalController;
 use App\Http\Controllers\Empresas\LogoEmpresaController;
 use App\Http\Controllers\Instalador\InstaladorController;
 use App\Http\Controllers\Licencia\LicenciaController;
@@ -165,6 +166,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('empresas/{empresa}/logo', [LogoEmpresaController::class, 'show'])->name('empresas.logo.show');
     Route::post('empresas/{empresa}/logo', [LogoEmpresaController::class, 'store'])->name('empresas.logo.store');
     Route::delete('empresas/{empresa}/logo', [LogoEmpresaController::class, 'destroy'])->name('empresas.logo.destroy');
+    Route::post('empresas/{empresa}/firma', [FirmaDigitalController::class, 'store'])->middleware('throttle:10,1')->name('empresas.firma.store');
+    Route::delete('empresas/{empresa}/firma', [FirmaDigitalController::class, 'destroy'])->name('empresas.firma.destroy');
     Route::scopeBindings()->group(function () {
         Route::post('empresas/{empresa}/establecimientos', [EstablecimientoController::class, 'store'])
             ->name('empresas.establecimientos.store');

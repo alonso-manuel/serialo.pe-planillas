@@ -71,7 +71,8 @@ Los límites se leen de la clave de licencia (ver `arquitectura.md`), nunca se e
 | Reportes   | Planilla, resumen, centralización, costo laboral                        | 1.0     |
 | Reportes   | Panel del estudio (estado de cada empresa en el mes)                    | 1.0     |
 | Documentos | Certificado de retenciones AFP, elección de sistema, traslado CTS       | 1.1     |
-| Portal     | Portal del trabajador; firma digital de boletas                         | 2.0     |
+| Documentos | Firma digital (certificado .pfx) de boletas, liquidación y CTS          | 1.1 ✓   |
+| Portal     | Portal del trabajador; conformidad de recepción                         | 2.0     |
 
 ## Criterio de calidad para vender
 

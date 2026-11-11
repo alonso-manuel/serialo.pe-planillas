@@ -6,6 +6,7 @@ use App\Domain\Planilla\MontoEnLetras;
 use App\Enums\EstadoPeriodo;
 use App\Models\Periodo;
 use App\Models\PlanillaLinea;
+use App\Services\Empresas\FirmaDigitalPdf;
 use App\Services\Empresas\LogoEmpresa;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Dompdf\Adapter\CPDF;
@@ -19,7 +20,10 @@ use ZipArchive;
  */
 class BoletaPago
 {
-    public function __construct(private readonly DetalleLinea $detalle) {}
+    public function __construct(
+        private readonly DetalleLinea $detalle,
+        private readonly FirmaDigitalPdf $firma,
+    ) {}
 
     /** PDF de un trabajador (contenido binario). */
     public function pdf(Periodo $periodo, PlanillaLinea $linea): string
@@ -37,6 +41,12 @@ class BoletaPago
     {
         $this->exigirCalculada($periodo, $linea);
         $linea->loadMissing('trabajador');
+        $periodo->loadMissing('empresa');
+
+        // Con firma digital, el PDF se firma y no se cifra: un PDF cifrado no admite la firma después ⚠.
+        if ($this->firmable($periodo)) {
+            return $this->render($periodo, collect([$linea]));
+        }
 
         $pdf = Pdf::loadView('pdf.boleta', $this->vista($periodo, collect([$linea])))->setPaper('a4');
         $pdf->render();
@@ -124,7 +134,15 @@ class BoletaPago
     /** @param  Collection<int, PlanillaLinea>  $lineas */
     private function render(Periodo $periodo, Collection $lineas): string
     {
-        return Pdf::loadView('pdf.boleta', $this->vista($periodo, $lineas))->setPaper('a4')->output();
+        $pdf = Pdf::loadView('pdf.boleta', $this->vista($periodo, $lineas))->setPaper('a4')->output();
+
+        return $this->firmable($periodo) ? $this->firma->firmar($pdf, $periodo->empresa, 'Boleta de pago') : $pdf;
+    }
+
+    /** Solo se firman las boletas de un periodo cerrado (un borrador no se firma) y con certificado vigente. */
+    private function firmable(Periodo $periodo): bool
+    {
+        return $periodo->estado === EstadoPeriodo::Cerrado && $this->firma->vigente($periodo->empresa) !== null;
     }
 
     /**
@@ -154,6 +172,7 @@ class BoletaPago
             'logo' => app(LogoEmpresa::class)->dataUri($periodo->empresa),
             'periodo' => $periodo,
             'borrador' => $periodo->estado !== EstadoPeriodo::Cerrado,
+            'firma' => $periodo->estado === EstadoPeriodo::Cerrado ? $this->firma->sello($periodo->empresa) : null,
             'boletas' => $boletas,
         ];
     }

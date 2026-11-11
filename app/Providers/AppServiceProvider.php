@@ -5,6 +5,7 @@ namespace App\Providers;
 use App\Models\Concepto;
 use App\Models\Empresa;
 use App\Models\Establecimiento;
+use App\Models\FirmaDigital;
 use App\Models\Liquidacion;
 use App\Models\LiquidacionCts;
 use App\Models\Novedad;
@@ -105,6 +106,7 @@ class AppServiceProvider extends ServiceProvider
             'vacacion' => VacacionGoce::class,
             'liquidacion' => Liquidacion::class,
             'renta_otro_empleador' => RentaOtroEmpleador::class,
+            'firma_digital' => FirmaDigital::class,
         ]);
     }
 

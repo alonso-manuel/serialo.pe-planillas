@@ -108,4 +108,6 @@ Centros de costo, comisiones, pagos a bancos, asientos contables, validación co
 
 ## v2.0 — abr → jun 2027
 
-Regímenes agrario y construcción civil, portal del trabajador, firma digital de boletas.
+- [x] Firma digital de boletas y documentos laborales con el certificado de la empresa (PAdES) — adelantada el 10/11, ver docs/firma-digital.md
+- [ ] Regímenes agrario y construcción civil
+- [ ] Portal del trabajador (incluye su conformidad de recepción)

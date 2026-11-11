@@ -56,3 +56,15 @@ export type DatosRuc = {
     condicion: string | null;
     alerta: string | null;
 };
+
+/** Certificado digital registrado para firmar los documentos de la empresa (nunca trae el archivo ni la clave). */
+export type FirmaDigitalEmpresa = {
+    titular: string;
+    documento: string | null;
+    emisor: string;
+    valido_desde: string;
+    valido_hasta: string;
+    vigente: boolean;
+    dias_para_vencer: number;
+    huella: string;
+};

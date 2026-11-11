@@ -8,6 +8,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Empresas\GuardarEmpresaRequest;
 use App\Models\Empresa;
 use App\Models\Establecimiento;
+use App\Models\FirmaDigital;
 use App\Services\Empresas\GestionEmpresas;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\RedirectResponse;
@@ -105,6 +106,7 @@ class EmpresaController extends Controller
                 // Versión en la URL para que el navegador no muestre un logo anterior en caché.
                 'logo' => $empresa->logo_path !== null ? md5($empresa->logo_path) : null,
             ],
+            'firma' => $this->firma($empresa),
             'establecimientos' => $empresa->establecimientos()
                 ->withCount('trabajadores')
                 ->orderBy('codigo')
@@ -153,5 +155,22 @@ class EmpresaController extends Controller
             fn (RegimenLaboral $r) => ['value' => $r->value, 'label' => $r->etiqueta()],
             RegimenLaboral::cases(),
         );
+    }
+
+    /** @return array{titular: string, documento: string|null, emisor: string, valido_desde: string, valido_hasta: string, vigente: bool, dias_para_vencer: int, huella: string}|null */
+    private function firma(Empresa $empresa): ?array
+    {
+        $f = FirmaDigital::query()->where('empresa_id', $empresa->id)->first();
+
+        return $f === null ? null : [
+            'titular' => $f->titular,
+            'documento' => $f->documento,
+            'emisor' => $f->emisor,
+            'valido_desde' => $f->valido_desde->format('d/m/Y'),
+            'valido_hasta' => $f->valido_hasta->format('d/m/Y'),
+            'vigente' => $f->vigente(),
+            'dias_para_vencer' => max(0, (int) ceil(now()->diffInDays($f->valido_hasta, false))),
+            'huella' => implode(':', str_split(strtoupper($f->huella), 2)),
+        ];
     }
 }

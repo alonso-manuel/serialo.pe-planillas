@@ -10,6 +10,7 @@ use App\Models\Periodo;
 use App\Models\PlanillaConcepto;
 use App\Models\PlanillaLinea;
 use App\Models\Trabajador;
+use App\Services\Empresas\FirmaDigitalPdf;
 use App\Services\Empresas\LogoEmpresa;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Str;
@@ -20,7 +21,10 @@ use Illuminate\Support\Str;
  */
 class DocumentosLiquidacion
 {
-    public function __construct(private readonly LogoEmpresa $logos) {}
+    public function __construct(
+        private readonly LogoEmpresa $logos,
+        private readonly FirmaDigitalPdf $firma,
+    ) {}
 
     public function hoja(Liquidacion $liquidacion): string
     {
@@ -30,7 +34,9 @@ class DocumentosLiquidacion
         /** @var Empresa $empresa */
         $empresa = $liquidacion->empresa;
 
-        return Pdf::loadView('pdf.liquidacion', [
+        $firmar = $liquidacion->estaCerrada();
+
+        $pdf = Pdf::loadView('pdf.liquidacion', [
             'liquidacion' => $liquidacion,
             'trabajador' => $t,
             'empresa' => $empresa,
@@ -39,7 +45,10 @@ class DocumentosLiquidacion
             'planilla' => $this->planillaDelCese($liquidacion),
             'mesCese' => Periodo::MESES[$liquidacion->fecha_cese->month].' '.$liquidacion->fecha_cese->year,
             'borrador' => ! $liquidacion->estaCerrada(),
+            'firma' => $firmar ? $this->firma->sello($empresa) : null,
         ])->setPaper('a4')->output();
+
+        return $firmar ? $this->firma->firmar($pdf, $empresa, 'Liquidación de beneficios sociales') : $pdf;
     }
 
     public function certificado(Trabajador $trabajador): string
@@ -48,11 +57,14 @@ class DocumentosLiquidacion
         /** @var Empresa $empresa */
         $empresa = $trabajador->empresa;
 
-        return Pdf::loadView('pdf.certificado-trabajo', [
+        $pdf = Pdf::loadView('pdf.certificado-trabajo', [
             'trabajador' => $trabajador,
             'empresa' => $empresa,
             'logo' => $this->logos->dataUri($empresa),
+            'firma' => $this->firma->sello($empresa),
         ])->setPaper('a4')->output();
+
+        return $this->firma->firmar($pdf, $empresa, 'Certificado de trabajo');
     }
 
     public function cartaCts(Liquidacion $liquidacion): string
@@ -63,14 +75,19 @@ class DocumentosLiquidacion
         /** @var Empresa $empresa */
         $empresa = $liquidacion->empresa;
 
-        return Pdf::loadView('pdf.carta-cts', [
+        $firmar = $liquidacion->estaCerrada();
+
+        $pdf = Pdf::loadView('pdf.carta-cts', [
             'liquidacion' => $liquidacion,
             'trabajador' => $t,
             'empresa' => $empresa,
             'logo' => $this->logos->dataUri($empresa),
             'entidad' => $t->entidad_cts === null ? null : (EntidadFinanciera::query()->where('codigo', $t->entidad_cts)->value('nombre') ?? $t->entidad_cts),
             'borrador' => ! $liquidacion->estaCerrada(),
+            'firma' => $firmar ? $this->firma->sello($empresa) : null,
         ])->setPaper('a4')->output();
+
+        return $firmar ? $this->firma->firmar($pdf, $empresa, 'Carta de liberación de CTS') : $pdf;
     }
 
     public function nombre(string $documento, Trabajador $trabajador): string

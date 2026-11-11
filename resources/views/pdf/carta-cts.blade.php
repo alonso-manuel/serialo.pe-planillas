@@ -63,6 +63,7 @@
 <div class="firma">
     {{ $empresa->representante_legal ?? 'Representante legal' }}<br>
     <span class="suave">{{ $empresa->razon_social }}</span>
+    @include('pdf.partials.firma-digital')
 </div>
 
 <div class="pie">Generado con Serialo Planillas · {{ $empresa->ruc }}</div>
