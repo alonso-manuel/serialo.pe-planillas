@@ -37,6 +37,7 @@ class AuditoriaController extends Controller
         'derechohabiente' => 'Derechohabiente',
         'prestador_servicio' => 'Prestador de servicios',
         'recibo_honorarios' => 'Recibo por honorarios',
+        'prestamo' => 'Préstamo',
         'licencia' => 'Licencia',
         'respaldo' => 'Respaldo',
         'soporte' => 'Soporte',

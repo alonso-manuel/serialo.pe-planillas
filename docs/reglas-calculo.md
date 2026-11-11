@@ -219,6 +219,13 @@ Retención por comprobante (LIR art. 74): **tasa** (8 %) sobre el monto del reci
 monto mínimo (S/ 1,500), salvo que el prestador tenga constancia de suspensión de retenciones del ejercicio del pago.
 Notas de crédito, dietas y otros: sin retención ⚠. Tasa y mínimo con vigencia en Parámetros.
 
+## Préstamos al trabajador (v1.1)
+
+Cuotas mensuales iguales sin intereses (la última ajusta los céntimos), descontadas solas en la planilla de su mes
+con el concepto **0706** de la tabla 22 («Otros descuentos no deducibles de la base imponible»: no reduce la base de
+aportes). Un 0706 registrado a mano en la grilla reemplaza la cuota. La primera cuota no puede caer en un mes cerrado;
+una cuota cuenta como pagada cuando su planilla se cierra. Al cese con saldo pendiente, la liquidación lo avisa ⚠.
+
 ## Verificaciones pendientes (lista viva)
 
 - [ ] Códigos tabla 22: 0811 (SIS), 0312/0313/0406 (gratificación), 0904 (CTS), 0909 (movilidad).

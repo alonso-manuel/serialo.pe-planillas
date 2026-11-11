@@ -37,11 +37,13 @@ import {
 import CeseTrabajador from '@/components/trabajadores/CeseTrabajador.vue';
 import Derechohabientes from '@/components/trabajadores/Derechohabientes.vue';
 import HistorialTrabajador from '@/components/trabajadores/HistorialTrabajador.vue';
+import Prestamos from '@/components/trabajadores/Prestamos.vue';
 import OtrosEmpleadores from '@/components/trabajadores/OtrosEmpleadores.vue';
 import type {
     CatalogosTrabajador,
     CambioHistorial,
     DerechohabienteFila,
+    PrestamoEstado,
     Opcion,
     RentaOtroEmpleador,
     TrabajadorEditable,
@@ -54,6 +56,7 @@ const props = defineProps<{
     grupos_historial?: Opcion[];
     otros_empleadores?: RentaOtroEmpleador[];
     derechohabientes?: DerechohabienteFila[];
+    prestamos?: PrestamoEstado[];
 }>();
 
 /** Ya figura en planillas: sueldo, cargo, pensión... solo cambian con historial. */
@@ -152,16 +155,24 @@ const PESTANAS = {
     ],
 } as const;
 
-type Pestana = keyof typeof PESTANAS | 'historial' | 'quinta' | 'familia';
+type Pestana =
+    | keyof typeof PESTANAS
+    | 'historial'
+    | 'quinta'
+    | 'familia'
+    | 'prestamos';
 
 const pestana = ref<Pestana>('personales');
 
 function errores(p: Pestana): number {
-    if (p === 'historial' || p === 'quinta' || p === 'familia') {
+    // Las pestañas sin campos de la ficha (historial, quinta, derechohabientes, préstamos) no cuentan errores.
+    if (!(p in PESTANAS)) {
         return 0;
     }
 
-    return PESTANAS[p].filter((campo) => campo in form.errors).length;
+    const campos: readonly string[] = PESTANAS[p as keyof typeof PESTANAS];
+
+    return campos.filter((campo) => campo in form.errors).length;
 }
 
 const esAfp = computed(() => form.sistema_pension === 'afp');
@@ -377,6 +388,7 @@ function eliminar(): void {
                                 ? {}
                                 : {
                                       familia: 'Derechohabientes',
+                                      prestamos: 'Préstamos',
                                       historial: 'Historial',
                                       quinta: 'Quinta',
                                   }),
@@ -1099,6 +1111,14 @@ function eliminar(): void {
                         :trabajador="trabajador"
                         :derechohabientes="derechohabientes ?? []"
                         :catalogos="catalogos"
+                    />
+                </TabsContent>
+
+                <!-- Préstamos en cuotas -->
+                <TabsContent v-if="trabajador" value="prestamos" class="pt-4">
+                    <Prestamos
+                        :trabajador="trabajador"
+                        :prestamos="prestamos ?? []"
                     />
                 </TabsContent>
 

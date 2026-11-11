@@ -38,6 +38,7 @@ class CalcularPlanillaPeriodo
         private readonly VacacionesTrabajador $vacaciones,
         private readonly LiquidacionesBeneficios $liquidaciones,
         private readonly RetencionQuinta $quinta,
+        private readonly PrestamosTrabajador $prestamos,
     ) {}
 
     /**
@@ -66,10 +67,11 @@ class CalcularPlanillaPeriodo
             $gratificaciones = $this->gratificacion->calcular($periodo);
             $liquidaciones = $this->liquidaciones->delPeriodo($periodo);
             $this->quinta->preparar($periodo);
+            $cuotas = $this->prestamos->cuotasDelPeriodo($periodo);
 
             foreach ($periodo->lineas as $linea) {
                 $datos = $this->datosTrabajador($linea, $periodo);
-                $entrada = $this->entrada($linea, $gratificaciones[$linea->id] ?? null, $this->remuneracionVacacional($linea, $periodo, $datos), $liquidaciones->get($linea->trabajador_id));
+                $entrada = $this->entrada($linea, $gratificaciones[$linea->id] ?? null, $this->remuneracionVacacional($linea, $periodo, $datos), $liquidaciones->get($linea->trabajador_id), $cuotas[$linea->trabajador_id] ?? null);
                 $resultado = $this->calculadora->calcular($datos, $entrada, $parametros);
 
                 // Quinta categoría: sobre los ingresos ya calculados; entra como descuento 0605 y se recalcula el neto.
@@ -149,7 +151,7 @@ class CalcularPlanillaPeriodo
         return CalculadoraVacaciones::remuneracion($datos->remuneracionBasica, $this->vacaciones->promedioVariables($linea, $periodo), $linea->dias_vacaciones);
     }
 
-    private function entrada(PlanillaLinea $linea, ?ResultadoGratificacion $gratificacion, ?string $vacacional = null, ?Liquidacion $liquidacion = null): EntradaPlanilla
+    private function entrada(PlanillaLinea $linea, ?ResultadoGratificacion $gratificacion, ?string $vacacional = null, ?Liquidacion $liquidacion = null, ?string $cuotaPrestamo = null): EntradaPlanilla
     {
         $ingresos = [];
 
@@ -184,6 +186,11 @@ class CalcularPlanillaPeriodo
             } elseif ($c->tipo === TipoConcepto::DescuentoTrabajador) {
                 $descuentos[$c->codigo_plame] = (string) $novedad->monto;
             }
+        }
+
+        // Cuotas de préstamos del mes (0706); si se registró el 0706 a mano en la grilla, se usa ese monto.
+        if ($cuotaPrestamo !== null && ! array_key_exists(PrestamosTrabajador::CODIGO, $descuentos)) {
+            $descuentos[PrestamosTrabajador::CODIGO] = $cuotaPrestamo;
         }
 
         return new EntradaPlanilla(

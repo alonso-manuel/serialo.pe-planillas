@@ -26,7 +26,7 @@ class ConceptoSeeder extends Seeder
         '0501' => ['623', null], '0503' => ['623', null],
         '0601' => [null, '4170'], '0606' => [null, '4170'], '0608' => [null, '4170'],
         '0607' => [null, '4032'], '0605' => [null, '40173'],
-        '0701' => [null, '1411'],
+        '0701' => [null, '1411'], '0706' => [null, '1411'],
         '0804' => ['6271', '4031'], '0811' => ['6271', '4039'],
     ];
 
@@ -55,6 +55,7 @@ class ConceptoSeeder extends Seeder
             ['0607', 'Sistema Nacional de Pensiones – D.L. 19990', T::AporteTrabajador, 0, 0, 0, 0, 1],
             ['0608', 'SPP – aportación obligatoria', T::AporteTrabajador, 0, 0, 0, 0, 1],
             ['0701', 'Adelanto', T::DescuentoTrabajador, 0, 0, 0, 0, 0],
+            ['0706', 'Otros descuentos no deducibles de la base imponible', T::DescuentoTrabajador, 0, 0, 0, 0, 0],
             ['0804', 'EsSalud – seguro regular trabajador', T::AporteEmpleador, 0, 0, 0, 0, 1],
             ['0811', 'SIS – microempresa', T::AporteEmpleador, 0, 0, 0, 0, 1],
         ];

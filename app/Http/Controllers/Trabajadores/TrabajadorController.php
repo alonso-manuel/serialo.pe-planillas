@@ -30,6 +30,7 @@ use App\Models\User;
 use App\Services\Dni\ConsultaDni;
 use App\Services\Empresas\EmpresaActiva;
 use App\Services\Licencia\LicenciaActual;
+use App\Services\Planilla\PrestamosTrabajador;
 use App\Services\Trabajadores\HistorialTrabajador;
 use Carbon\CarbonImmutable;
 use Illuminate\Database\Eloquent\Builder;
@@ -190,6 +191,7 @@ class TrabajadorController extends Controller
                     'fecha_baja' => $d->fecha_baja?->format('d/m/Y'),
                     'motivo_baja' => $d->motivo_baja?->etiqueta(),
                 ])->values()->all(),
+            'prestamos' => app(PrestamosTrabajador::class)->estadoDeCuenta($trabajador),
             'otros_empleadores' => $trabajador->rentasOtrosEmpleadores()->orderByDesc('anio')->orderBy('id')->get()
                 ->map(fn (RentaOtroEmpleador $r) => [
                     'id' => $r->id, 'anio' => $r->anio, 'ruc_empleador' => $r->ruc_empleador, 'empleador' => $r->empleador,

@@ -135,3 +135,19 @@ export type DerechohabienteFila = {
     fecha_baja: string | null;
     motivo_baja: string | null;
 };
+
+/** Préstamo del trabajador con su cronograma y saldo. */
+export type PrestamoEstado = {
+    id: number;
+    fecha: string;
+    monto: string;
+    glosa: string | null;
+    saldo: string;
+    eliminable: boolean;
+    cuotas: {
+        numero: number;
+        mes: string;
+        monto: string;
+        descontada: boolean;
+    }[];
+};

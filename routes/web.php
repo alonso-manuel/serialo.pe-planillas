@@ -40,6 +40,7 @@ use App\Http\Controllers\Trabajadores\ConsultaDniController;
 use App\Http\Controllers\Trabajadores\DerechohabienteController;
 use App\Http\Controllers\Trabajadores\ImportacionTrabajadoresController;
 use App\Http\Controllers\Trabajadores\OtroEmpleadorController;
+use App\Http\Controllers\Trabajadores\PrestamoController;
 use App\Http\Controllers\Trabajadores\TrabajadorController;
 use App\Http\Controllers\Usuarios\EstadoUsuarioController;
 use App\Http\Controllers\Usuarios\UsuarioController;
@@ -156,6 +157,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
             ->name('trabajadores.derechohabientes.baja');
         Route::delete('trabajadores/{trabajador}/derechohabientes/{derechohabiente}', [DerechohabienteController::class, 'destroy'])
             ->name('trabajadores.derechohabientes.destroy');
+        Route::post('trabajadores/{trabajador}/prestamos', [PrestamoController::class, 'store'])->name('trabajadores.prestamos.store');
+        Route::delete('trabajadores/{trabajador}/prestamos/{prestamo}', [PrestamoController::class, 'destroy'])->name('trabajadores.prestamos.destroy');
         Route::post('trabajadores/{trabajador}/otros-empleadores', [OtroEmpleadorController::class, 'store'])
             ->name('trabajadores.otros-empleadores.store');
         Route::delete('trabajadores/{trabajador}/otros-empleadores/{renta}', [OtroEmpleadorController::class, 'destroy'])

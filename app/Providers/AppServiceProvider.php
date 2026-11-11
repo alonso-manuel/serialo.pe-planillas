@@ -14,6 +14,7 @@ use App\Models\Parametro;
 use App\Models\Periodo;
 use App\Models\PlanillaLinea;
 use App\Models\PrestadorServicio;
+use App\Models\Prestamo;
 use App\Models\ReciboHonorarios;
 use App\Models\RentaOtroEmpleador;
 use App\Models\TasaAfp;
@@ -113,6 +114,7 @@ class AppServiceProvider extends ServiceProvider
             'derechohabiente' => Derechohabiente::class,
             'prestador_servicio' => PrestadorServicio::class,
             'recibo_honorarios' => ReciboHonorarios::class,
+            'prestamo' => Prestamo::class,
         ]);
     }
 

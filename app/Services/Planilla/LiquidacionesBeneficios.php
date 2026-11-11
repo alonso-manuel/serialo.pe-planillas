@@ -116,6 +116,10 @@ class LiquidacionesBeneficios
         if ($periodoCese === null) {
             $avisos[] = 'No hay planilla de '.Periodo::MESES[$cese->month]." {$cese->year} en el sistema: la liquidación no se incluirá en una boleta ni en el PLAME.";
         }
+        $saldoPrestamos = app(PrestamosTrabajador::class)->saldo($trabajador);
+        if (BigDecimal::of($saldoPrestamos)->isPositive()) {
+            $avisos[] = "Tiene un saldo de préstamos de S/ {$saldoPrestamos}: si corresponde descontarlo, regístralo como 0706 en la planilla del mes del cese ⚠.";
+        }
         if ($t->entidad_cts === null && $resultado->cts !== null) {
             $avisos[] = 'Falta la entidad CTS en la ficha (para la carta de liberación de la CTS).';
         }
