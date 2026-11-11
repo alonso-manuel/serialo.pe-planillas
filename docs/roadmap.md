@@ -109,7 +109,7 @@ Ideas tomadas del análisis de mercado (09/11): conceptos recurrentes y proporci
 - [ ] Pagos a bancos: archivo de abono de remuneraciones (BCP, BBVA, Interbank, Scotiabank)
 - [x] Asiento contable por centro de costo (reporte en Excel y PDF): cargos separados por el centro de cada trabajador, abonos sin centro, debe = haber
 - [ ] Validación cruzada con T-Registro (datos de la ficha frente a lo registrado en SUNAT)
-- [ ] Reportes analíticos: comparativo entre meses (ya existen en el panel el costo de 12 meses y el reparto del costo)
+- [x] Reportes analíticos: comparativo con el mes anterior por trabajador (neto, bruto y costo, variación, altas y bajas) y costo por centro de costo; el panel ya tiene el costo de 12 meses y su reparto
 
 ## v2.0 — abr → jun 2027
 

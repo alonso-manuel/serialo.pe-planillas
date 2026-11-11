@@ -17,6 +17,7 @@ use App\Services\Planilla\ParametrosRepositorio;
 use App\Services\Planilla\VacacionesTrabajador;
 use App\Services\Trabajadores\HistorialTrabajador;
 use Brick\Math\BigDecimal;
+use Brick\Math\RoundingMode;
 use Illuminate\Support\Collection;
 
 /**
@@ -36,6 +37,7 @@ class ReportesPlanilla
         'costo' => 'Costo laboral',
         'centros' => 'Costo por centro de costo',
         'asiento' => 'Asiento contable por centro de costo',
+        'comparativo' => 'Comparativo con el mes anterior',
     ];
 
     public function __construct(
@@ -54,6 +56,7 @@ class ReportesPlanilla
             'resumen' => $this->resumen($periodo, $lineas),
             'centralizacion' => $this->centralizacion($lineas),
             'asiento' => $this->centralizacion($lineas, $periodo),
+            'comparativo' => $this->comparativo($periodo, $lineas),
             'costo' => $this->costoLaboral($periodo, $lineas),
             'centros' => $this->costoPorCentro($periodo, $lineas),
             default => throw new \InvalidArgumentException("Reporte desconocido: {$tipo}."),
@@ -456,6 +459,78 @@ class ReportesPlanilla
         }
 
         return $totales;
+    }
+
+    /**
+     * Comparativo por trabajador con el mes anterior de la misma empresa: neto, remuneración bruta y costo
+     * del empleador (bruto + aportes), con la variación. Marca las altas y las bajas del mes.
+     *
+     * @param  Collection<int, PlanillaLinea>  $lineas
+     * @return Reporte
+     */
+    private function comparativo(Periodo $periodo, Collection $lineas): array
+    {
+        $fechaAnterior = $periodo->ultimoDia()->startOfMonth()->subMonth();
+        $anterior = Periodo::query()->where('empresa_id', $periodo->empresa_id)
+            ->where('anio', $fechaAnterior->year)->where('mes', $fechaAnterior->month)->first();
+        $previas = $anterior === null
+            ? collect()
+            : $anterior->lineas()->whereNotNull('calculado_en')->with('trabajador')->get()->keyBy('trabajador_id');
+
+        $costo = fn (?PlanillaLinea $l) => $l === null ? BigDecimal::zero() : BigDecimal::of($l->total_ingresos)->plus($l->total_aportes_empleador);
+        $fila = function (?PlanillaLinea $actual, ?PlanillaLinea $previa) use ($costo): array {
+            $t = ($actual ?? $previa)?->trabajador;
+            $netoA = BigDecimal::of((string) ($previa->neto_pagar ?? '0'));
+            $netoB = BigDecimal::of((string) ($actual->neto_pagar ?? '0'));
+            $variacion = $netoB->minus($netoA);
+
+            return [
+                'trabajador' => (string) $t?->nombre_completo,
+                'estado' => $previa === null ? 'Alta' : ($actual === null ? 'Baja' : ''),
+                'bruto_anterior' => $this->m($previa?->total_ingresos),
+                'bruto_actual' => $this->m($actual?->total_ingresos),
+                'neto_anterior' => $this->m($netoA),
+                'neto_actual' => $this->m($netoB),
+                'variacion' => $this->m($variacion),
+                'porcentaje' => $netoA->isZero() ? '—' : (string) $variacion->multipliedBy(100)->dividedBy($netoA, 1, RoundingMode::HalfUp).' %',
+                'costo_anterior' => $this->m($costo($previa)),
+                'costo_actual' => $this->m($costo($actual)),
+            ];
+        };
+
+        $filas = [];
+        foreach ($lineas as $l) {
+            $filas[] = $fila($l, $previas->get($l->trabajador_id));
+        }
+        foreach ($previas as $trabajadorId => $p) {
+            if (! $lineas->contains('trabajador_id', $trabajadorId)) {
+                $filas[] = $fila(null, $p);
+            }
+        }
+
+        $columnas = [
+            ['clave' => 'trabajador', 'titulo' => 'Trabajador', 'tipo' => 'texto'],
+            ['clave' => 'estado', 'titulo' => 'Movimiento', 'tipo' => 'texto'],
+            ['clave' => 'bruto_anterior', 'titulo' => 'Bruto anterior', 'tipo' => 'monto'],
+            ['clave' => 'bruto_actual', 'titulo' => 'Bruto actual', 'tipo' => 'monto'],
+            ['clave' => 'neto_anterior', 'titulo' => 'Neto anterior', 'tipo' => 'monto'],
+            ['clave' => 'neto_actual', 'titulo' => 'Neto actual', 'tipo' => 'monto'],
+            ['clave' => 'variacion', 'titulo' => 'Variación del neto', 'tipo' => 'monto'],
+            ['clave' => 'porcentaje', 'titulo' => '%', 'tipo' => 'texto'],
+            ['clave' => 'costo_anterior', 'titulo' => 'Costo anterior', 'tipo' => 'monto'],
+            ['clave' => 'costo_actual', 'titulo' => 'Costo actual', 'tipo' => 'monto'],
+        ];
+
+        $nombreAnterior = Periodo::MESES[$fechaAnterior->month].' '.$fechaAnterior->year;
+        $avisos = $anterior === null
+            ? ["No hay planilla de {$nombreAnterior}: todos figuran como altas."]
+            : ["Comparado con {$nombreAnterior}. Costo = remuneración bruta + aportes del empleador (sin provisiones)."];
+
+        return [
+            'titulo' => 'Comparativo con el mes anterior',
+            'tablas' => [['titulo' => "{$periodo->etiqueta()} frente a {$nombreAnterior}", 'columnas' => $columnas, 'filas' => $filas, 'totales' => $this->totales($columnas, $filas, 'trabajador', 'Total')]],
+            'avisos' => $avisos,
+        ];
     }
 
     private function m(BigDecimal|string|null $monto): string

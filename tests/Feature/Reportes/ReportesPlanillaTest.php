@@ -155,7 +155,7 @@ class ReportesPlanillaTest extends TestCase
             ->component('reportes/Index')
             ->has('periodos', 1)
             ->where('periodos.0.etiqueta', 'Noviembre 2026')
-            ->has('tipos', 6)); // + costo por centro y asiento por centro
+            ->has('tipos', 7)); // + costo por centro, asiento por centro y comparativo
     }
 
     #[Test]
