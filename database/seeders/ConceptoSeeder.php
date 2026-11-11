@@ -19,6 +19,7 @@ class ConceptoSeeder extends Seeder
      */
     public const CUENTAS = [
         '0121' => ['6211', null], '0105' => ['6211', null], '0106' => ['6211', null],
+        '0103' => ['6212', null], '0104' => ['6212', null],
         '0118' => ['6215', null], '0201' => ['6221', null],
         '0406' => ['6214', null], '0312' => ['6214', null], '0313' => ['6214', null],
         '0904' => ['6291', null], '0909' => ['625', null],
@@ -36,6 +37,8 @@ class ConceptoSeeder extends Seeder
         $filas = [
             ['0121', 'Remuneración o jornal básico', T::Ingreso, 1, 1, 1, 1, 1],
             ['0118', 'Remuneración vacacional', T::Ingreso, 1, 1, 1, 1, 1],
+            ['0103', 'Comisiones o destajo', T::Ingreso, 1, 1, 1, 1, 0],
+            ['0104', 'Comisiones eventuales a trabajadores', T::Ingreso, 1, 1, 1, 1, 0],
             ['0105', 'Trabajo en sobretiempo (horas extras) 25 %', T::Ingreso, 1, 1, 1, 1, 1],
             ['0106', 'Trabajo en sobretiempo (horas extras) 35 %', T::Ingreso, 1, 1, 1, 1, 1],
             ['0201', 'Asignación familiar', T::Ingreso, 1, 1, 1, 1, 1],

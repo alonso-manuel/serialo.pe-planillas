@@ -67,9 +67,10 @@ class ConceptosTest extends TestCase
                 ->has('grupos', 4)
                 ->where('grupos.0.tipo', 'ingreso')
                 ->where('grupos.0.etiqueta', 'Ingresos')
-                ->where('grupos.0.conceptos.0.codigo_plame', '0105')
-                ->where('grupos.0.conceptos.0.sistema', true)
-                ->where('grupos.0.conceptos.0.usado', false)
+                // Ordenados por código; se busca el 0105 por su código (no por posición).
+                ->where('grupos.0.conceptos', fn ($conceptos) => collect($conceptos)->contains(
+                    fn ($c) => $c['codigo_plame'] === '0105' && $c['sistema'] === true && $c['usado'] === false,
+                ))
                 ->where('grupos.1.tipo', 'descuento')
             );
     }

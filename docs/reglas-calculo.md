@@ -90,7 +90,7 @@ Se agrega sola al calcular la planilla de **julio** y **diciembre** (conceptos d
 - **Meses computables**: meses calendario completos del semestre. El mes de ingreso cuenta solo si se ingresó el día 1.
   **Diciembre cuenta** como mes completo si el trabajador está en planilla (se paga antes de que termine) ⚠.
 - **Remuneración computable** = básico + asignación familiar + promedio de variables.
-  Variables = **horas extra** (0105, 0106) ⚠ comisiones y otros variables quedan para después.
+  Variables = **horas extra** (0105, 0106) y **comisiones** (0103 comisiones o destajo, 0104 comisiones eventuales) ⚠.
   El promedio (suma del semestre / 6) entra solo si hubo variables en **3 meses o más** del semestre.
   Se usan el básico y la asignación vigentes en el mes de pago (historial del trabajador).
 - **Gratificación** = computable × meses / 6 − computable / 180 × días de falta injustificada ⚠ (1/180 por día).
@@ -121,7 +121,7 @@ Pantalla **Beneficios → CTS** (por empresa activa): calcular, cerrar/reabrir (
 - **Se descuentan** por día: faltas injustificadas, licencias sin goce y los días de **subsidio por enfermedad que pasen de 60**
   en el periodo; el subsidio por **maternidad** se computa completo ⚠.
 - **Remuneración computable** = básico + asignación familiar + **1/6 de la gratificación** del periodo (diciembre para mayo,
-  julio para noviembre) + promedio de horas extra (suma / 6, si las hubo en 3 meses o más) ⚠.
+  julio para noviembre) + promedio de horas extra y comisiones (suma / 6, si las hubo en 3 meses o más) ⚠.
     - La gratificación se toma de la planilla calculada de ese mes (0406). Si no hay planilla, se **estima** con el motor de
       gratificación (meses completos, sin faltas) y se avisa.
 - **Monto** = computable / 360 × días computables (= /12 por mes + /360 por día). Redondeo a 2 decimales al final.
@@ -148,7 +148,7 @@ Pantalla **Beneficios → Vacaciones** (empresa activa): saldos por año de serv
   en meses cuya planilla está cerrada, ni se cruzan entre sí, ni superan el saldo de los años cumplidos.
 - **En la planilla**: los días de cada mes (calendario, tope 30; mes completo = 30) van a la línea como `dias_vacaciones`
   (columna «Vac.» de solo lectura). El básico se paga por los demás días y los de vacaciones como **0118 remuneración
-  vacacional** = (básico + promedio de horas extra de los 6 meses anteriores, si las hubo en 3 o más) / 30 × días ⚠.
+  vacacional** = (básico + promedio de horas extra y comisiones de los 6 meses anteriores, si las hubo en 3 o más) / 30 × días ⚠.
   Afecta a ONP, AFP y EsSalud como el sueldo. La asignación familiar se paga aparte como cada mes.
 - **PLAME**: `.snl` con el código **23** (S.I. descanso vacacional); el `.jor` no cuenta horas ordinarias de esos días.
 - **Gratificación y CTS**: los días de vacaciones son tiempo computable (no se descuentan).
@@ -169,7 +169,7 @@ con la fecha de cese) y `App\Services\Planilla\LiquidacionesBeneficios`. Pantall
 - **Vacaciones** (D.Leg. 713): días ganados y no gozados × computable / 30 (0118); si el periodo **venció** sin gozarse,
   además una **indemnización** por los mismos días (art. 23, **0504**, no remunerativa). **Truncas** del año en curso: dozavos y
   treintavos × días del régimen / 30, con al menos un mes de servicios (D.S. 012-92-TR, art. 22) ⚠.
-  Computable = básico + asignación familiar + promedio de horas extra de los 6 meses previos (si las hubo en 3 o más) ⚠.
+  Computable = básico + asignación familiar + promedio de horas extra y comisiones de los 6 meses previos (si las hubo en 3 o más) ⚠.
   Un adelanto de vacaciones en el año en curso solo se avisa ⚠.
 - **Régimen**: factores de gratificación y CTS por parámetro (general 1, pequeña 0.5, micro 0); vacaciones 30 / 15 / 15.
 - **Pago**: los conceptos entran solos en la **planilla del mes del cese** (boleta, PLAME, AFPnet). Solo las vacaciones

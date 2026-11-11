@@ -29,7 +29,7 @@ use Illuminate\Validation\ValidationException;
  */
 class VacacionesTrabajador
 {
-    private const VARIABLES = [CalculadoraPlanilla::HORA_EXTRA_25, CalculadoraPlanilla::HORA_EXTRA_35];
+    private const VARIABLES = CalculadoraPlanilla::VARIABLES; // horas extra y comisiones
 
     private const SUBSIDIO_MATERNIDAD = '22';
 

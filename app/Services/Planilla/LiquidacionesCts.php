@@ -29,7 +29,7 @@ class LiquidacionesCts
     /** Subsidio por maternidad: se computa completo (los demás, hasta 60 días). */
     private const SUBSIDIO_MATERNIDAD = '22';
 
-    private const VARIABLES = [CalculadoraPlanilla::HORA_EXTRA_25, CalculadoraPlanilla::HORA_EXTRA_35];
+    private const VARIABLES = CalculadoraPlanilla::VARIABLES; // horas extra y comisiones
 
     public function __construct(
         private readonly CalculadoraCts $calculadora,

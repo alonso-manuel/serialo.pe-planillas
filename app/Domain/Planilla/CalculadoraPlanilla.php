@@ -27,6 +27,17 @@ final class CalculadoraPlanilla
 
     public const HORA_EXTRA_35 = '0106';
 
+    /** Tabla 22: comisiones o destajo (remuneración principal imprecisa) y comisiones eventuales. */
+    public const COMISIONES = '0103';
+
+    public const COMISIONES_EVENTUALES = '0104';
+
+    /**
+     * Remuneraciones variables que entran al promedio de gratificación, CTS y vacaciones cuando son regulares
+     * (percibidas en al menos 3 de los últimos 6 meses): horas extra y comisiones ⚠.
+     */
+    public const VARIABLES = [self::HORA_EXTRA_25, self::HORA_EXTRA_35, self::COMISIONES, self::COMISIONES_EVENTUALES];
+
     public const AFP_COMISION = '0601';
 
     public const AFP_PRIMA = '0606';

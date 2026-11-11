@@ -21,7 +21,7 @@ use Carbon\CarbonImmutable;
 class GratificacionPeriodo
 {
     /** Conceptos variables que entran al promedio (⚠ hoy solo horas extra; ver reglas-calculo.md). */
-    private const VARIABLES = [CalculadoraPlanilla::HORA_EXTRA_25, CalculadoraPlanilla::HORA_EXTRA_35];
+    private const VARIABLES = CalculadoraPlanilla::VARIABLES; // horas extra y comisiones
 
     /** Quien cesa antes de este día del mes de pago no recibe gratificación en la planilla (va a la liquidación). */
     private const DIA_PAGO = CalculadoraGratificacion::DIA_PAGO;

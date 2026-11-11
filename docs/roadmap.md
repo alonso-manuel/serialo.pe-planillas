@@ -105,7 +105,7 @@ Ideas tomadas del análisis de mercado (09/11): conceptos recurrentes y proporci
 ## v1.2 — 15 feb → 26 mar 2027
 
 - [x] Centros de costo: catálogo por empresa, en la ficha con vigencia (historial), foto en cada línea de planilla y reporte «Costo por centro de costo»
-- [ ] Comisiones de ventas (hoy solo existe la comisión de la AFP)
+- [x] Comisiones: conceptos 0103 y 0104 (remunerativos, afectos a todo) que entran al promedio de variables de gratificación, CTS, vacaciones y liquidación cuando son regulares
 - [x] Pagos a bancos (genérico): Excel/CSV del periodo con banco, cuenta y neto, efectivo aparte y resumen por banco (los formatos propios de cada banco, cuando se tengan sus especificaciones)
 - [x] Asiento contable por centro de costo (reporte en Excel y PDF): cargos separados por el centro de cada trabajador, abonos sin centro, debe = haber
 - [ ] Validación cruzada con T-Registro (datos de la ficha frente a lo registrado en SUNAT)
