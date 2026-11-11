@@ -1,4 +1,4 @@
-Cada mes hay cuatro reportes, en Excel y en pe de efe.
+Cada mes hay siete reportes, en Excel y en pe de efe. Aquí, los cuatro principales.
 <break time="0.8s" />
 La planilla del mes, con una fila por trabajador y cada concepto en su columna.
 <break time="0.8s" />

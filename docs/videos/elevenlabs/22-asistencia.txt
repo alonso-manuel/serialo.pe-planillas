@@ -1,0 +1,7 @@
+Cuando la asistencia viene de un reloj o de otra hoja de cálculo, no hace falta escribirla trabajador por trabajador.
+<break time="1.2s" />
+Se descarga la plantilla, que ya trae a los trabajadores del periodo. Se completan las faltas, licencias, subsidios y horas extra, y se sube el archivo.
+<break time="1.2s" />
+Si una fila tuviera un error, no se guarda nada y se listan todos los errores juntos.
+<break time="1.2s" />
+La grilla ya muestra los datos importados, listos para calcular.

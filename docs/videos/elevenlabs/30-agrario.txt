@@ -1,0 +1,9 @@
+El sistema también calcula el régimen laboral agrario de la ley treinta y un mil ciento diez. Registremos una empresa agroexportadora.
+<break time="1.2s" />
+La tasa de Es Salud agrario depende del tamaño de la empresa el año anterior. Esta es pequeña: aporta el seis por ciento.
+<break time="1.2s" />
+Por defecto, la gratificación y la ce te ese se pagan cada mes dentro de la remuneración diaria. Si el trabajador pidió por escrito cobrarlas en las fechas legales, se desmarca esta casilla.
+<break time="1.2s" />
+En la planilla, sobre el básico se agregan la gratificación prorrateada y su bonificación, la ce te ese prorrateada y la beta, que no es remunerativa.
+<break time="1.2s" />
+Es Salud agrario al seis por ciento, sin la base mínima de la remuneración mínima vital.

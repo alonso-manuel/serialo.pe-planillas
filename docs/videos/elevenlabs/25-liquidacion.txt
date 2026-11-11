@@ -1,0 +1,9 @@
+Diego Campos tiene contrato a plazo fijo, y la empresa decide terminar el vínculo a fin de mes, antes del vencimiento. Se registra el cese con su fecha y su motivo.
+<break time="1.2s" />
+En Liquidaciones aparece el trabajador cesado. La liquidación incluye gratificación y ce te ese truncas y las vacaciones pendientes.
+<break time="1.2s" />
+Si el despido fue sin causa justa, corresponde indemnización. En plazo fijo, un sueldo y medio por cada mes que faltaba, hasta doce. Aquí faltaban cuatro meses.
+<break time="1.2s" />
+El detalle muestra cada concepto con su código, y se paga en la planilla del mes del cese.
+<break time="1.2s" />
+Salen la hoja de liquidación, el certificado de trabajo y la carta para liberar la ce te ese. Revisada, se cierra.

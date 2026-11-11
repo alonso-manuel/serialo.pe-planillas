@@ -1,0 +1,7 @@
+Los centros de costo son las áreas, obras o sedes de la empresa. Sirven para repartir el costo de la planilla. Creamos tres: Administración, Ventas y Almacén.
+<break time="1.2s" />
+Cada trabajador tiene su centro de costo con vigencia: se asigna desde el historial, indicando desde qué mes rige.
+<break time="1.2s" />
+Desde noviembre, Sofía Vargas pertenece a Ventas. Los meses anteriores conservan el centro de entonces.
+<break time="1.2s" />
+Al calcular la planilla, cada línea guarda el centro de su trabajador. Así salen el costo y el asiento contable por centro.

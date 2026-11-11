@@ -1,0 +1,7 @@
+Cada alta y baja de trabajadores se informa a SUNAT en el te registro, dentro del día hábil siguiente.
+<break time="1.2s" />
+Se elige un rango de fechas, y el sistema lista los ingresos y los ceses. Aquí está la baja de Diego Campos. Si faltara un dato, se avisa.
+<break time="1.2s" />
+Con todo completo, se descarga un zip con los archivos en el formato que valida SUNAT.
+<break time="1.2s" />
+Y aparte, los derechohabientes: el alta del hijo que registramos en la ficha.

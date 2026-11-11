@@ -1,0 +1,9 @@
+La retención de renta de quinta categoría se calcula sola en cada planilla, con el procedimiento del reglamento de la ley del impuesto a la renta.
+<break time="1.2s" />
+Carlos Ríos gana ocho mil quinientos soles al mes. Su renta anual supera las siete u i te, así que le corresponde retención.
+<break time="1.2s" />
+El detalle muestra el cálculo completo: la renta anual proyectada, la deducción, el impuesto por tramos, lo ya retenido y el divisor del mes. El resultado entra como descuento cero seis cero cinco.
+<break time="1.2s" />
+Si el trabajador tuvo otro empleador en el año, se registra lo que dice su certificado, para no retener de más ni de menos.
+<break time="1.2s" />
+Y cada año, o al cese, se entrega el certificado de rentas y retenciones, de un trabajador o de todos a la vez.

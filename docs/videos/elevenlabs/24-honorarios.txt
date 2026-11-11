@@ -1,0 +1,7 @@
+Los prestadores de servicios con recibo por honorarios, la cuarta categoría, también se declaran en el pe lame.
+<break time="1.2s" />
+Registramos el recibo de un consultor: su ruc, sus nombres y el comprobante. Es de dos mil soles, supera los mil quinientos, así que se retiene el ocho por ciento.
+<break time="1.2s" />
+Retención de ciento sesenta soles y neto de mil ochocientos cuarenta. Un recibo de mil doscientos no lleva retención, ni tampoco si el prestador tiene constancia de suspensión.
+<break time="1.2s" />
+Al cerrar el periodo, el pe lame incluye los archivos de prestadores y de recibos.

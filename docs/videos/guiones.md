@@ -1,8 +1,10 @@
 # Videos de demo — guiones
 
-Dieciocho videos cortos (1280×720, `.webm`, sin audio) que muestran cómo va quedando Serialo Planillas, en dos temporadas:
-la **1** (00–09) recorre la base del sistema y la **2** (10–17) los módulos que vinieron después: panel, boletas,
-beneficios, archivos oficiales y reportes.
+Treinta y un videos cortos (1280×720, `.webm`, sin audio) que muestran cómo va quedando Serialo Planillas, en tres temporadas:
+la **1** (00–09) recorre la base del sistema, la **2** (10–17) los módulos que vinieron después: panel, boletas,
+beneficios, archivos oficiales y reportes, y la **3** (18–30) el resto, con más detalle: ficha SUNAT, derechohabientes,
+préstamos, centros de costo, asistencia, quinta, honorarios, liquidación, T-Registro, pagos, firma digital, respaldos
+y régimen agrario.
 Cada video lleva **subtítulos en pantalla** (versión breve de la narración), una **etiqueta de escena** arriba a la derecha
 y un **cursor azul** que marca cada clic. La columna **Narración** es el texto para leer como voz en off si se graba audio
 encima (por ejemplo, con Clipchamp o CapCut), o para acompañar una presentación en vivo.
@@ -29,11 +31,27 @@ Todos los datos son **ficticios** (DNI 7000xxxx, RUC 200000000xx, nombres invent
 | 15  | PLAME                | ~0:45    | Admin   | — (todas las empresas)      |
 | 16  | AFPnet               | ~0:25    | Admin   | — (todas las empresas)      |
 | 17  | Reportes             | ~0:45    | Admin   | Distribuidora Pacífico S.A. |
+| 18  | Ficha y datos SUNAT  | ~1:05    | Admin   | Distribuidora Pacífico S.A. |
+| 19  | Derechohabientes     | ~0:45    | Admin   | Distribuidora Pacífico S.A. |
+| 20  | Préstamos            | ~0:50    | Admin   | Distribuidora Pacífico S.A. |
+| 21  | Centros de costo     | ~1:00    | Admin   | Distribuidora Pacífico S.A. |
+| 22  | Importar asistencia  | ~0:35    | Admin   | Distribuidora Pacífico S.A. |
+| 23  | Renta de quinta      | ~1:00    | Admin   | Distribuidora Pacífico S.A. |
+| 24  | Honorarios (cuarta)  | ~1:00    | Admin   | Distribuidora Pacífico S.A. |
+| 25  | Liquidación al cese  | ~1:15    | Admin   | Distribuidora Pacífico S.A. |
+| 26  | T-Registro           | ~0:35    | Admin   | Distribuidora Pacífico S.A. |
+| 27  | Pagos y reportes     | ~1:10    | Admin   | Distribuidora Pacífico S.A. |
+| 28  | Firma digital        | ~0:50    | Admin   | Distribuidora Pacífico S.A. |
+| 29  | Respaldos y licencia | ~0:30    | Admin   | —                           |
+| 30  | Régimen agrario      | ~1:35    | Admin   | Agrícola Valle Verde S.A.C. |
 
 Orden pensado para contar una historia: primero el **resumen**, luego **cómo se entra**, después la **configuración**
 (empresas, usuarios, parámetros, tasas, conceptos), el **personal**, la **planilla** y la **auditoría**, que muestra
 el rastro de todo lo hecho en los videos anteriores. La temporada 2 sigue el ciclo del mes: el **panel** para ver qué falta,
 las **boletas**, los **beneficios** (gratificación, CTS, vacaciones), los **archivos para SUNAT y AFP** y los **reportes**.
+La temporada 3 completa el mes de noviembre de Distribuidora Pacífico paso a paso: datos del trabajador, préstamo,
+centros de costo, asistencia, quinta, honorarios y un cese con su liquidación; luego lo declara (T-Registro), lo cierra,
+paga y reporta, lo firma digitalmente, y termina con una empresa del régimen agrario.
 
 En la temporada 2, los PDF (boletas, constancias, reportes) y los archivos descargados (zip del PLAME, TXT de AFPnet)
 se muestran dentro del video en un **visor superpuesto**, para que se vea lo que genera cada módulo.
@@ -212,11 +230,125 @@ Presentación animada (no es la aplicación). Seis láminas.
 
 | Tiempo    | En pantalla                            | Narración                                                                                            |
 | --------- | -------------------------------------- | ---------------------------------------------------------------------------------------------------- |
-| 0:00–0:05 | Cuatro tarjetas; mes «Octubre 2026»    | Cada mes hay cuatro reportes, en Excel y en PDF.                                                     |
+| 0:00–0:05 | Tarjetas; mes «Octubre 2026»           | Cada mes hay siete reportes, en Excel y en PDF; aquí, los cuatro principales.                        |
 | 0:05–0:15 | Visor: planilla del mes                | La planilla del mes, con una fila por trabajador y cada concepto en su columna.                      |
 | 0:15–0:24 | Visor: resumen                         | El resumen, con lo que se paga a ONP, a cada AFP, a EsSalud, a SUNAT y a los trabajadores.           |
 | 0:24–0:36 | Visor: centralización contable         | La centralización contable: el asiento del mes con las cuentas del PCGE, donde debe y haber cuadran. |
 | 0:36–0:45 | Tarjeta «Costo laboral», botón «Excel» | Y el costo laboral por trabajador, con las provisiones de gratificación, CTS y vacaciones.           |
+
+---
+
+# Temporada 3
+
+Cada video usa lo que dejó el anterior: se graban en orden (ver «Cómo volver a grabarlos»).
+
+## 18 · Ficha y datos SUNAT (~1:05)
+
+| En pantalla                                              | Narración                                                                                                                    |
+| -------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------- |
+| Ficha de Carlos Ríos; pestañas                           | La ficha del trabajador reúne todo lo que el sistema necesita para la planilla, las boletas y SUNAT, organizado en pestañas. |
+| Pestaña Cuentas: cuenta de sueldo y banco                | En Cuentas van la cuenta de sueldo con su banco y la cuenta CTS con su entidad: el archivo de pagos ya sabe dónde depositar. |
+| Pestaña SUNAT: categoría «Ejecutivo»                     | En SUNAT están los datos del T-Registro. La categoría define el tipo de trabajador: ejecutivo, empleado u obrero.            |
+| Búsqueda «gerente general» → 124008; situación educativa | La ocupación se busca por nombre o código en la tabla 30, solo entre las válidas para su categoría.                          |
+| «Guardar cambios»                                        | Con estos datos, el T-Registro genera sus archivos sin pedir nada más.                                                       |
+
+## 19 · Derechohabientes (~0:45)
+
+| En pantalla                                          | Narración                                                                                              |
+| ---------------------------------------------------- | ------------------------------------------------------------------------------------------------------ |
+| Pestaña Derechohabientes                             | Los derechohabientes son los familiares con derecho a EsSalud: cónyuge, concubino, gestante e hijos.   |
+| Vínculo «hijo menor», DNI, nombres, nacimiento, sexo | El vínculo define qué documentos se piden; con DNI no hace falta un documento que sustente el vínculo. |
+| «Agregar» → fila con su fecha de alta; botón «Baja»  | Queda registrado con su fecha de alta; si deja de tener derecho, se da de baja con el motivo de SUNAT. |
+| —                                                    | Las altas y bajas se descargan en T-Registro, listas para SUNAT.                                       |
+
+## 20 · Préstamos (~0:50)
+
+| En pantalla                                                | Narración                                                                                                 |
+| ---------------------------------------------------------- | --------------------------------------------------------------------------------------------------------- |
+| Ficha de Martín Huertas → Préstamos                        | Un préstamo de la empresa al trabajador se registra en su ficha y se descuenta en cuotas.                 |
+| S/ 1,500 en 3 cuotas desde noviembre; «Registrar préstamo» | El sistema arma el cronograma: tres cuotas de 500 soles, de noviembre a enero.                            |
+| Planilla de noviembre → «Calcular» → detalle: 0706         | Cada cuota se descuenta sola en su mes (0706) y cuenta como pagada al cerrar; al cese, se avisa el saldo. |
+
+## 21 · Centros de costo (~1:00)
+
+| En pantalla                                                               | Narración                                                                                                 |
+| ------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------- |
+| Empresa → Centros de costo: ADM, VEN, ALM                                 | Los centros de costo son las áreas, obras o sedes. Sirven para repartir el costo de la planilla.          |
+| Ficha de Sofía Vargas → Historial → «Registrar cambio»: Ventas desde nov. | Cada trabajador tiene su centro con vigencia: se asigna desde el historial, con el mes desde el que rige. |
+| Cambio registrado                                                         | Los meses anteriores conservan su centro; cada línea de planilla guarda el centro del mes.                |
+
+## 22 · Importar asistencia (~0:35)
+
+| En pantalla                                                      | Narración                                                                                         |
+| ---------------------------------------------------------------- | ------------------------------------------------------------------------------------------------- |
+| Planilla de noviembre → «Importar asistencia»; «Plantilla Excel» | Si la asistencia viene de un reloj o de otra hoja, se descarga la plantilla con los trabajadores. |
+| Se sube `demo-asistencia.csv` → «Importar»                       | Faltas, licencias, subsidios y horas extra; si una fila tiene error, no se guarda nada.           |
+| Grilla con los valores importados                                | La grilla ya muestra los datos importados.                                                        |
+
+## 23 · Renta de quinta (~1:00)
+
+| En pantalla                                             | Narración                                                                                                 |
+| ------------------------------------------------------- | --------------------------------------------------------------------------------------------------------- |
+| «Calcular planilla» → detalle de Carlos Ríos (S/ 8,500) | La retención de quinta se calcula sola; con 8,500 al mes su renta anual supera las 7 UIT.                 |
+| Bloque «Renta de quinta categoría»                      | Renta proyectada, deducción de 7 UIT, impuesto por tramos, lo retenido y el divisor; resultado como 0605. |
+| Ficha → Quinta: otros empleadores                       | La renta de otro empleador del año se suma y lo retenido se descuenta.                                    |
+| Visor: certificado de rentas y retenciones              | Cada año, o al cese, el certificado: de un trabajador o de todos en un zip.                               |
+
+## 24 · Honorarios (~1:00)
+
+| En pantalla                   | Narración                                                                  |
+| ----------------------------- | -------------------------------------------------------------------------- |
+| Planilla → «Honorarios (4ta)» | Los recibos por honorarios (cuarta categoría) también van al PLAME.        |
+| Recibo E001-125 por S/ 2,000  | Supera los 1,500: retención del 8 % (160) y neto de 1,840.                 |
+| Recibo E001-48 por S/ 1,200   | No supera el mínimo: sin retención (tampoco con constancia de suspensión). |
+| —                             | Al cerrar el periodo, el PLAME incluye los archivos .ps4 y .4ta.           |
+
+## 25 · Liquidación al cese (~1:15)
+
+| En pantalla                                                           | Narración                                                                                          |
+| --------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------- |
+| Ficha de Diego Campos (plazo fijo) → «Registrar cese»: 30/11, despido | La empresa termina el contrato antes del vencimiento; se registra la fecha y el motivo (tabla 17). |
+| Liquidaciones → «Calcular»; casilla de indemnización ya marcada       | Despido sin causa en plazo fijo: 1.5 sueldos por mes faltante, hasta 12. Vencía el 31/03/2027.     |
+| Detalle por concepto                                                  | Truncas, vacaciones e indemnización 0503; se paga en la planilla del mes del cese.                 |
+| Visor: hoja, certificado de trabajo, carta CTS; «Cerrar»              | Los documentos del cese; cerrada, ya no se recalcula y sale sin «borrador».                        |
+
+## 26 · T-Registro (~0:35)
+
+| En pantalla                                  | Narración                                                                                     |
+| -------------------------------------------- | --------------------------------------------------------------------------------------------- |
+| T-Registro: rango de noviembre → «Consultar» | Las altas y bajas se informan a SUNAT dentro del día hábil siguiente; aquí la baja de Campos. |
+| Visor: zip con los archivos                  | Con todo completo, el zip en el formato del PVS de SUNAT.                                     |
+| Derechohabientes                             | Y aparte, el alta del hijo registrado en el video 19.                                         |
+
+## 27 · Pagos y reportes (~1:10)
+
+| En pantalla                                                              | Narración                                                                                   |
+| ------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------- |
+| «Calcular planilla» → «Cerrar periodo»                                   | Con todo registrado, se calcula noviembre y se cierra.                                      |
+| Visor: CSV de «Pagos (banco)»                                            | El archivo para la transferencia: banco, cuenta y neto; en Excel, el efectivo en otra hoja. |
+| Reportes de noviembre: comparativo, costo por centro, asiento por centro | Los tres reportes nuevos, en Excel y PDF.                                                   |
+
+## 28 · Firma digital (~0:50)
+
+| En pantalla                                                         | Narración                                                                                        |
+| ------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------ |
+| Empresa → Firma digital: `demo-firma.p12` + clave → «Registrar»     | Certificado del representante legal; se valida al momento y se guarda cifrado.                   |
+| Visor: boletas de noviembre con el sello «Firmado digitalmente por» | Las boletas de periodos cerrados salen firmadas; el lector muestra quién firmó y si se modificó. |
+
+## 29 · Respaldos y licencia (~0:30)
+
+| En pantalla                                   | Narración                                                                      |
+| --------------------------------------------- | ------------------------------------------------------------------------------ |
+| Respaldos → «Crear respaldo ahora»; Descargar | Copia diaria de la base (14 días) y una al momento; descargar una cada semana. |
+| Licencia: uso del plan                        | Sin licencia vigente, solo lectura: nunca se pierden datos.                    |
+
+## 30 · Régimen agrario (~1:35)
+
+| En pantalla                                                    | Narración                                                                                                        |
+| -------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------- |
+| «Nueva empresa»: Agrícola Valle Verde, régimen agrario         | Régimen de la Ley 31110; la tasa de EsSalud agrario depende del tamaño de la empresa el año anterior (aquí 6 %). |
+| Nuevo trabajador: Elena Cóndor, S/ 1,130; casilla de prorrateo | Por defecto, gratificación y CTS se pagan cada mes; se desmarca si el trabajador pidió las fechas legales.       |
+| «Abrir primer periodo» → «Calcular» → detalle                  | 0406 (16.66 %), 0312 (9 %), 0904 (9.72 %), BETA 0314 (30 % RMV) y EsSalud agrario sin base mínima.               |
 
 ---
 
@@ -231,7 +363,7 @@ de arriba, adaptada para voz:
 - **Siglas escritas como se pronuncian**: «o ene pe» (ONP), «a efe pe» (AFP), «u i te» (UIT), «ese be ese» (SBS),
   «de ene i» (DNI), «Es Salud», «cero uno cero siete», «tabla veintidós». Se evitan símbolos (S/, %, códigos) y
   palabras en inglés (passkey → «llave de acceso», 2FA → «doble factor»).
-- **Total: ~11,000 caracteres** para los 18 videos (temporada 2: ~4,300). Revisar el saldo del plan antes de generar.
+- **Total: ~19,000 caracteres** para los 31 videos (temporada 2: ~4,300; temporada 3: ~7,900). Revisar el saldo del plan antes de generar.
 - Siglas nuevas de la temporada 2: «ce te ese» (CTS), «pe de efe» (PDF), «pe de te» (PDT), «e pe ese» (EPS),
   «ce u ese pe pe» (CUSPP), «a efe pe net» (AFPnet), «punto rem» y «punto jor» (extensiones de archivo).
 
@@ -263,14 +395,14 @@ Los videos se graban de forma automática con Playwright (`tools/videos/`), así
 ```bash
 # 1. Base limpia con datos ficticios y servidor corriendo
 php artisan migrate:fresh --seed
-php artisan db:seed --class=HistorialDemoSeeder   # solo para la temporada 2 (un año de planillas)
+php artisan db:seed --class=HistorialDemoSeeder   # para las temporadas 2 y 3 (un año de planillas)
 composer dev                      # http://127.0.0.1:8000 (incluye la cola para el cálculo masivo)
 
 # 2. Grabar (la primera vez instala Playwright solo en esa carpeta)
 cd tools/videos
 npm install
 npx playwright install chromium   # si no está descargado
-npm run grabar                    # los 18 videos, en orden
+npm run grabar                    # los 31 videos, en orden
 node videos.js 08-periodos        # o solo uno
 ```
 
@@ -283,6 +415,11 @@ node videos.js 08-periodos        # o solo uno
   volver a sembrar la base.
 - Los meses que se nombran en los recorridos (octubre y noviembre de 2026) son los del momento de la grabación.
   Si se graba en otro mes, ajustarlos en `videos.js`.
+- La temporada 3 está en `tools/videos/temporada3.js`. Se graba **en orden y sobre la base recién sembrada con el
+  historial** (sin haber grabado la temporada 1 ni la 2 encima): `node videos.js 18-ficha-sunat 19-derechohabientes …`.
+  Usa archivos ficticios de la carpeta: `demo-asistencia.csv` (asistencia de Distribuidora) y `demo-firma.p12`
+  (certificado **autofirmado** de un titular inventado, clave `demo1234`; no es un certificado real).
+- El video 29 crea un respaldo real en `storage/app/private/respaldos`: borrarlo después de grabar si la base era de demo.
 - El visor de PDF y archivos está en `tools/videos/visor.js` (usa `pdfjs-dist`; Chromium sin ventana no dibuja PDF en el video).
 - Formato `.webm` (se abre en Chrome, Edge, VLC y el Reproductor multimedia de Windows 11). Para `.mp4`, convertir con
   HandBrake o `ffmpeg -i 00-resumen.webm 00-resumen.mp4`.

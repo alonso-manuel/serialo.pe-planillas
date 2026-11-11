@@ -1,0 +1,7 @@
+Cada empresa puede registrar el certificado digital de su representante legal, emitido por RENIEC u otra entidad acreditada.
+<break time="1.2s" />
+Se elige el archivo y se escribe su clave. El sistema lo valida al momento y muestra el titular, el emisor y su vigencia.
+<break time="1.2s" />
+Desde ahora, las boletas de periodos cerrados salen firmadas digitalmente. El lector de pe de efe muestra quién firmó y avisa si el archivo se modificó.
+<break time="1.2s" />
+También se firman la liquidación, el certificado de trabajo y las constancias de ce te ese. Los borradores, nunca.

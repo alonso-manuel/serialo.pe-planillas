@@ -1,0 +1,7 @@
+Con todo registrado, calculamos noviembre y lo cerramos.
+<break time="1.2s" />
+Pagos al banco genera el archivo para la transferencia: cada trabajador con su banco, su cuenta y su neto. Los que no tienen cuenta van aparte, para pago en efectivo.
+<break time="1.2s" />
+A los reportes del mes se sumaron tres nuevos. El comparativo con el mes anterior: neto, bruto y costo de cada trabajador, y quién entró o salió.
+<break time="1.2s" />
+El costo laboral por centro de costo, y el asiento contable con los cargos separados por centro, donde el debe y el haber cuadran.

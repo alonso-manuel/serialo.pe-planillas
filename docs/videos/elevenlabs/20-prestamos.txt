@@ -1,0 +1,7 @@
+Cuando la empresa presta dinero a un trabajador, se registra en su ficha y se descuenta en cuotas.
+<break time="1.2s" />
+Indicamos el monto, el número de cuotas y el mes de la primera: este mismo noviembre. El sistema arma el cronograma: tres cuotas de quinientos soles, de noviembre a enero.
+<break time="1.2s" />
+Cada cuota se descuenta sola en la planilla de su mes, con el código cero siete cero seis, y cuenta como pagada al cerrar esa planilla.
+<break time="1.2s" />
+En el detalle de noviembre ya aparece la primera cuota. Y si el trabajador cesa con saldo pendiente, la liquidación lo avisa.

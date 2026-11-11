@@ -1146,7 +1146,7 @@ const VIDEOS = {
             const p = d.page;
             await d.ir('/reportes');
             await d.escena('Reportes');
-            await d.sub('Cuatro reportes del mes, en Excel y en PDF.', 2400);
+            await d.sub('Los reportes del mes, en Excel y en PDF.', 2400);
             await d.mover('#periodo');
             await p.locator('#periodo').selectOption({ label: 'Octubre 2026' });
             await p.waitForLoadState('networkidle');
@@ -1205,6 +1205,9 @@ const VIDEOS = {
         },
     ],
 };
+
+// Temporada 3 (18–30) en su propio archivo.
+Object.assign(VIDEOS, require('./temporada3'));
 
 void (async () => {
     const pedidos = process.argv.slice(2);

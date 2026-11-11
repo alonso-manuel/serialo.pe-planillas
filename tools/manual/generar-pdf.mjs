@@ -34,7 +34,20 @@ let md = readFileSync(origen, 'utf8');
 md = md.replace(/^# .*\n/, ''); // el título va en la portada
 md = md.replace(/^---\s*$/gm, ''); // los separadores se reemplazan por saltos de página
 
-const meses = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre'];
+const meses = [
+    'enero',
+    'febrero',
+    'marzo',
+    'abril',
+    'mayo',
+    'junio',
+    'julio',
+    'agosto',
+    'septiembre',
+    'octubre',
+    'noviembre',
+    'diciembre',
+];
 const hoy = new Date();
 const fecha = `${meses[hoy.getMonth()]} de ${hoy.getFullYear()}`;
 

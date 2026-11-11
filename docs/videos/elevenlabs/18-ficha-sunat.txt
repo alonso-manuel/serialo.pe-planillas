@@ -1,0 +1,9 @@
+La ficha del trabajador reúne todo lo que el sistema necesita para la planilla, las boletas y SUNAT. Está organizada en pestañas.
+<break time="1.2s" />
+En Cuentas van la cuenta de sueldo con su banco, y la cuenta ce te ese con su entidad. Con la cuenta de sueldo, el archivo de pagos al banco ya sabe dónde depositar.
+<break time="1.2s" />
+En SUNAT están los datos que exige el te registro. La categoría ocupacional define el tipo de trabajador: ejecutivo, empleado u obrero.
+<break time="1.2s" />
+La ocupación se busca por nombre o por código en la tabla treinta de SUNAT, y solo aparecen las válidas para su categoría. Luego, la situación educativa.
+<break time="1.2s" />
+Guardamos. Con estos datos, el te registro genera sus archivos sin pedir nada más.

@@ -1,0 +1,7 @@
+Los derechohabientes son los familiares con derecho a Es Salud: cónyuge, concubino, gestante e hijos.
+<break time="1.2s" />
+Registremos a un hijo menor de edad. El vínculo define qué documentos y datos se piden. Con de ene i, no hace falta un documento que sustente el vínculo.
+<break time="1.2s" />
+Queda registrado con su fecha de alta. Si deja de tener derecho, se le da de baja con el motivo de SUNAT.
+<break time="1.2s" />
+Las altas y bajas de derechohabientes se descargan en el módulo te registro, listas para SUNAT.

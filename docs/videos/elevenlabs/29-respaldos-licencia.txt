@@ -1,0 +1,5 @@
+Cada madrugada el sistema guarda una copia completa de la base de datos, y conserva las de los últimos catorce días. También se puede crear una al momento.
+<break time="1.2s" />
+Se recomienda descargar una cada semana y guardarla fuera del servidor.
+<break time="1.2s" />
+En Licencia se ve el plan contratado y su uso. Sin una licencia vigente, el sistema queda en solo lectura, y nunca se pierden datos.
