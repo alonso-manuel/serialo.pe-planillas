@@ -53,6 +53,24 @@ class ParametroSeeder extends Seeder
         ];
     }
 
+    /**
+     * Indemnización por despido arbitrario (v1.1). También los inserta la migración `add_indemnizacion_despido`.
+     *
+     * @return list<array{0: C, 1: string, 2: string, 3: string}>
+     */
+    public static function indemnizacion(): array
+    {
+        return [
+            [C::IndemnizacionDiasAnioGeneral, '45', '1997-03-27', 'D.S. 003-97-TR, art. 38'],
+            [C::IndemnizacionTopeGeneral, '360', '1997-03-27', 'D.S. 003-97-TR, art. 38'],
+            [C::IndemnizacionDiasMesPlazoFijo, '45', '1997-03-27', 'D.S. 003-97-TR, art. 76'],
+            [C::IndemnizacionDiasAnioPequena, '20', '2013-07-01', 'D.S. 013-2013-PRODUCE — VERIFICAR'],
+            [C::IndemnizacionTopePequena, '120', '2013-07-01', 'D.S. 013-2013-PRODUCE — VERIFICAR'],
+            [C::IndemnizacionDiasAnioMicro, '10', '2013-07-01', 'D.S. 013-2013-PRODUCE — VERIFICAR'],
+            [C::IndemnizacionTopeMicro, '90', '2013-07-01', 'D.S. 013-2013-PRODUCE — VERIFICAR'],
+        ];
+    }
+
     public function run(): void
     {
         $filas = [
@@ -66,6 +84,7 @@ class ParametroSeeder extends Seeder
             [C::SobretasaHoraExtra35, '0.35', '2002-01-01', 'D.S. 007-2002-TR'],
             ...self::gratificacion(),
             ...self::quinta(),
+            ...self::indemnizacion(),
         ];
 
         foreach ($filas as [$clave, $valor, $desde, $base]) {

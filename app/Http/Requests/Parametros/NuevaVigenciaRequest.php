@@ -59,8 +59,8 @@ class NuevaVigenciaRequest extends FormRequest
                         $validator->errors()->add('valor', 'Indica una cantidad de UIT mayor que cero (hasta 2 decimales).');
                     }
                 } elseif ($clave->tipo() === 'dias') {
-                    if (preg_match('/^\d{1,2}$/', $valor) !== 1 || (int) $valor < 1) {
-                        $validator->errors()->add('valor', 'Indica un número entero de días (1 a 99).');
+                    if (preg_match('/^\d{1,3}$/', $valor) !== 1 || (int) $valor < 1) {
+                        $validator->errors()->add('valor', 'Indica un número entero de días (1 a 999).');
                     }
                 } elseif (preg_match('/^\d{1,10}(\.\d{1,2})?$/', $valor) !== 1 || preg_match('/^0+(\.0+)?$/', $valor) === 1) {
                     $validator->errors()->add('valor', 'El monto debe ser mayor que cero y tener como máximo 2 decimales.');

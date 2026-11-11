@@ -127,6 +127,23 @@
     </table>
 @endif
 
+@php $ind = $d['indemnizacion'] ?? null; @endphp
+@if ($ind && \Brick\Math\BigDecimal::of((string) $ind['monto'])->isPositive())
+    <h2>Indemnización por despido arbitrario</h2>
+    <table class="calc caja">
+        <tr><td>Remuneración mensual ordinaria</td><td class="monto">{{ Formato::monto($ind['remuneracion']) }}</td></tr>
+        <tr><td>
+            @if ($ind['codigo'] === '0503')
+                Meses que faltaban del contrato (vence el {{ $liquidacion->fin_contrato?->format('d/m/Y') }}):
+            @else
+                Tiempo de servicios:
+            @endif
+            {{ $plural($ind['anios'], 'año', 'años') }}, {{ $plural($ind['meses'], 'mes', 'meses') }} y {{ $plural($ind['dias'], 'día', 'días') }}
+        </td><td class="monto"></td></tr>
+        <tr class="sub"><td>{{ $ind['codigo'] === '0503' ? 'Art. 76 del D.S. 003-97-TR' : 'Art. 38 del D.S. 003-97-TR' }}{{ $ind['tope'] ? ' · con el tope legal' : '' }}</td><td class="monto">{{ Formato::monto($ind['monto']) }}</td></tr>
+    </table>
+@endif
+
 <table class="total caja">
     <tr>
         <td>

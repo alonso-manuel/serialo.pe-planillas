@@ -3,13 +3,16 @@
 namespace App\Services\Planilla;
 
 use App\Domain\Planilla\CalculadoraGratificacion;
+use App\Domain\Planilla\CalculadoraIndemnizacionDespido;
 use App\Domain\Planilla\CalculadoraLiquidacion;
 use App\Domain\Planilla\EntradaGratificacion;
+use App\Domain\Planilla\EntradaIndemnizacion;
 use App\Domain\Planilla\EntradaLiquidacion;
 use App\Domain\Planilla\ParametrosLiquidacion;
 use App\Domain\Planilla\ResultadoGratificacion;
 use App\Domain\Planilla\ResultadoLiquidacion;
 use App\Enums\EstadoPeriodo;
+use App\Enums\TipoContrato;
 use App\Models\Auditoria;
 use App\Models\Empresa;
 use App\Models\Liquidacion;
@@ -36,9 +39,14 @@ class LiquidacionesBeneficios
         private readonly HistorialTrabajador $historial,
         private readonly VacacionesTrabajador $vacaciones,
         private readonly LiquidacionesCts $cts,
+        private readonly CalculadoraIndemnizacionDespido $indemnizacion,
     ) {}
 
-    public function calcular(Trabajador $trabajador): Liquidacion
+    /**
+     * @param  bool|null  $despidoArbitrario  null = conservar lo elegido en el cálculo anterior (o no)
+     * @param  string|null  $finContrato  vencimiento del contrato a plazo fijo (Y-m-d), para el 0503
+     */
+    public function calcular(Trabajador $trabajador, ?bool $despidoArbitrario = null, ?string $finContrato = null): Liquidacion
     {
         if ($trabajador->fecha_cese === null) {
             throw new \DomainException('Registra primero el cese del trabajador.');
@@ -85,6 +93,26 @@ class LiquidacionesBeneficios
         ), $this->parametrosPara($empresa, $cese));
 
         $avisos = [...$avisos, ...$resultado->avisos];
+
+        // Indemnización por despido arbitrario (art. 38 / art. 76): solo si se indicó; se conserva al recalcular.
+        $despido = $despidoArbitrario ?? (bool) $existente?->despido_arbitrario;
+        $plazoFijo = $t->tipo_contrato === TipoContrato::PlazoFijo;
+        $fin = $plazoFijo ? ($finContrato ?? $existente?->fin_contrato?->toDateString()) : null;
+        $indemnizacion = null;
+        if ($despido) {
+            if ($plazoFijo && $fin === null) {
+                throw new \DomainException('Indica la fecha de vencimiento del contrato a plazo fijo para calcular la indemnización.');
+            }
+            $indemnizacion = $this->indemnizacion->calcular(new EntradaIndemnizacion(
+                fechaIngreso: $t->fecha_ingreso->toDateTimeImmutable(),
+                fechaCese: $cese->toDateTimeImmutable(),
+                remuneracionMensual: $resultado->remuneracionComputableVacaciones,
+                finContrato: $fin === null ? null : new \DateTimeImmutable($fin),
+            ), $this->parametros->indemnizacion($empresa, $cese->toDateString()));
+            if ($indemnizacion->aviso !== null) {
+                $avisos[] = $indemnizacion->aviso;
+            }
+        }
         if ($periodoCese === null) {
             $avisos[] = 'No hay planilla de '.Periodo::MESES[$cese->month]." {$cese->year} en el sistema: la liquidación no se incluirá en una boleta ni en el PLAME.";
         }
@@ -93,21 +121,34 @@ class LiquidacionesBeneficios
         }
 
         $montos = $resultado->conceptos;
+        $total = BigDecimal::of($resultado->total);
+        if ($indemnizacion !== null && BigDecimal::of($indemnizacion->monto)->isPositive()) {
+            $montos[$indemnizacion->codigo] = $indemnizacion->monto;
+            $total = $total->plus($indemnizacion->monto);
+        }
         $codigo = fn (string $columna) => $montos[Liquidacion::CONCEPTOS[$columna]] ?? '0.00';
 
-        return DB::transaction(function () use ($trabajador, $empresa, $cese, $resultado, $codigo, $avisos, $periodoCese) {
-            $liquidacion = Liquidacion::query()->updateOrCreate(
-                ['trabajador_id' => $trabajador->id, 'fecha_cese' => $cese->toDateString()],
+        $detalle = $this->detalle($resultado);
+        if ($indemnizacion !== null) {
+            $detalle['indemnizacion'] = $indemnizacion->detalle();
+        }
+
+        return DB::transaction(function () use ($trabajador, $empresa, $cese, $codigo, $avisos, $periodoCese, $despido, $fin, $total, $detalle, $existente) {
+            // La existente se ubicó con whereDate: la fecha guardada puede traer hora según el motor de BD.
+            $liquidacion = $existente ?? new Liquidacion(['trabajador_id' => $trabajador->id, 'fecha_cese' => $cese->toDateString()]);
+            $liquidacion->fill(
                 [
                     'empresa_id' => $empresa->id,
                     'estado' => Liquidacion::BORRADOR,
+                    'despido_arbitrario' => $despido,
+                    'fin_contrato' => $fin,
                     ...array_combine(array_keys(Liquidacion::CONCEPTOS), array_map($codigo, array_keys(Liquidacion::CONCEPTOS))),
-                    'total' => $resultado->total,
-                    'detalle' => $this->detalle($resultado),
+                    'total' => (string) $total->toScale(2),
+                    'detalle' => $detalle,
                     'avisos' => $avisos === [] ? null : array_values(array_unique($avisos)),
                     'calculado_en' => now(),
                 ],
-            );
+            )->save();
 
             // La planilla del mes del cese debe recalcularse para incluirla.
             if ($periodoCese?->estado === EstadoPeriodo::Calculado) {

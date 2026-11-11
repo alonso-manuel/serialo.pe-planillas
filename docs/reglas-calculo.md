@@ -167,7 +167,7 @@ con la fecha de cese) y `App\Services\Planilla\LiquidacionesBeneficios`. Pantall
   vínculo a su cierre). **Sexto**: la gratificación percibida en el periodo (julio en mayo–octubre, diciembre en
   noviembre–abril); si cesa en julio o diciembre antes del pago, la de esta liquidación; si aún no hubo, cero ⚠.
 - **Vacaciones** (D.Leg. 713): días ganados y no gozados × computable / 30 (0118); si el periodo **venció** sin gozarse,
-  además una **indemnización** por los mismos días (art. 23, 0911, no remunerativa). **Truncas** del año en curso: dozavos y
+  además una **indemnización** por los mismos días (art. 23, **0504**, no remunerativa). **Truncas** del año en curso: dozavos y
   treintavos × días del régimen / 30, con al menos un mes de servicios (D.S. 012-92-TR, art. 22) ⚠.
   Computable = básico + asignación familiar + promedio de horas extra de los 6 meses previos (si las hubo en 3 o más) ⚠.
   Un adelanto de vacaciones en el año en curso solo se avisa ⚠.
@@ -178,7 +178,15 @@ con la fecha de cese) y `App\Services\Planilla\LiquidacionesBeneficios`. Pantall
 - **Documentos**: hoja de liquidación (con el pago de la planilla del mes si ya se recalculó), certificado de trabajo y
   carta a la entidad para liberar la CTS (D.S. 001-97-TR, art. 45). «BORRADOR» mientras no se cierra.
 - Cerrada = inmutable: no se recalcula ni cambia el cese; solo el admin la reabre con motivo (auditado).
-- Pendiente: indemnización por despido arbitrario (1.5 remuneraciones por año, tope 12), comisiones en el promedio.
+- **Indemnización por despido arbitrario** (opcional al calcular la liquidación; se conserva al recalcular), sobre la
+  remuneración computable (básico + asignación familiar + promedio de variables) ÷ 30 por día:
+    - Indeterminado (art. 38, **0501**): 45 remuneraciones diarias (1.5 sueldos) por año de servicios, fracciones por
+      dozavos y treintavos; tope 360 días (12 sueldos).
+    - Plazo fijo (art. 76, **0503**): 45 remuneraciones diarias por cada mes que faltaba hasta el vencimiento (días en
+      treintavos); tope 12 sueldos. Pide la fecha de vencimiento del contrato.
+    - Pequeña empresa 20 días por año (tope 120); microempresa 10 (tope 90); en REMYPE también para plazo fijo ⚠.
+    - Nada dentro del periodo de prueba (3 meses). No remunerativa: inafecta a aportes y a renta.
+- Pendiente: comisiones en el promedio.
 
 ## Quinta categoría (v1.1)
 
@@ -219,6 +227,7 @@ anual del trabajador.
 - [ ] CTS: tope de 60 días de subsidio por enfermedad, maternidad completa, 1/6 de la gratificación estimada si no hay planilla, factor REMYPE 50 % / 0 %.
 - [ ] Licencia sin goce: descuenta días pagados y reduce la gratificación como las faltas (1/180 por día).
 - [ ] PLAME: códigos de la tabla 21 (07 faltas, 21/22 subsidios), jornada de 8 h diarias en el .jor, montos en cero omitidos en el .rem.
-- [ ] Liquidación: códigos tabla 22 **0407** (gratificación proporcional), **0313** (bonificación proporcional), **0114** (vacaciones truncas) y **0911** (indemnización vacacional — código supuesto); afectación de las vacaciones no gozadas y truncas; sexto de gratificación de la CTS trunca; computable de vacaciones con asignación familiar; mínimo de un mes para truncas; casos reales para tests.
-- [ ] Quinta: clasificación ordinario/extraordinario (horas extra y bonos como extraordinarios), bonificación extraordinaria afecta, indemnización vacacional (0911) y CTS inafectas, cese sin proyección, retenciones de otros empleadores restadas desde abril, estimación de gratificaciones por percibir (tasa 9 % aun con EPS), divisores del art. 40, UIT 2026.
+- [ ] Liquidación: códigos tabla 22 **0407** (gratificación proporcional), **0313** (bonificación proporcional), **0114** (vacaciones truncas) — códigos confirmados con la Tabla 22 de SUNAT (22/09/2026); la indemnización vacacional pasó de 0911 (que es «Participación en las utilidades») a **0504**; afectación de las vacaciones no gozadas y truncas; sexto de gratificación de la CTS trunca; computable de vacaciones con asignación familiar; mínimo de un mes para truncas; casos reales para tests.
+- [ ] Indemnización por despido: remuneración base con promedio de variables, fracciones también en REMYPE, fórmula por año en REMYPE para plazo fijo, periodo de prueba de 3 meses (6 o 12 para confianza/dirección), cuenta PCGE 623.
+- [ ] Quinta: clasificación ordinario/extraordinario (horas extra y bonos como extraordinarios), bonificación extraordinaria afecta, indemnización vacacional (0504) y CTS inafectas, cese sin proyección, retenciones de otros empleadores restadas desde abril, estimación de gratificaciones por percibir (tasa 9 % aun con EPS), divisores del art. 40, UIT 2026.
 - [ ] Gratificación: diciembre como mes completo, faltas 1/180 por día, variables solo HE (≥ 3 meses), factor REMYPE (50 % / 0 %), meses sin planilla asumidos completos, faltas de diciembre excluidas.

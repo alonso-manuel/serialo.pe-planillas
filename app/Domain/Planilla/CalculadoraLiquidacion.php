@@ -32,7 +32,7 @@ final class CalculadoraLiquidacion
 
     public const VACACIONES_NO_GOZADAS = '0118';
 
-    public const INDEMNIZACION_VACACIONAL = '0911';
+    public const INDEMNIZACION_VACACIONAL = '0504'; // tabla 22: «Indemnización por vacaciones no gozadas»
 
     public const VACACIONES_TRUNCAS = '0114';
 

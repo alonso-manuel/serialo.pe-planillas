@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\Beneficios;
 
+use App\Enums\MotivoCese;
+use App\Enums\TipoContrato;
 use App\Http\Controllers\Controller;
 use App\Models\Empresa;
 use App\Models\Liquidacion;
@@ -31,6 +33,8 @@ class LiquidacionController extends Controller
         'vacaciones_no_gozadas' => 'Vacaciones no gozadas',
         'indemnizacion_vacacional' => 'Indemnización vacacional',
         'vacaciones_truncas' => 'Vacaciones truncas',
+        'indemnizacion_despido' => 'Indemnización por despido arbitrario',
+        'indemnizacion_plazo_fijo' => 'Indemnización por resolución del plazo fijo',
     ];
 
     public function __construct(
@@ -64,11 +68,15 @@ class LiquidacionController extends Controller
                     'ingreso' => $t->fecha_ingreso->format('d/m/Y'),
                     'cese' => $t->fecha_cese?->format('d/m/Y'),
                     'motivo' => $t->motivo_cese?->etiqueta(),
+                    'es_despido' => $t->motivo_cese === MotivoCese::Despido,
+                    'plazo_fijo' => $t->tipo_contrato === TipoContrato::PlazoFijo,
                     'puede_calcular' => $l === null ? $usuario->can('update', $t) : $usuario->can('update', $l),
                     'liquidacion' => $l === null ? null : [
                         'id' => $l->id,
                         'estado' => $l->estado,
                         'total' => (string) $l->total,
+                        'despido_arbitrario' => $l->despido_arbitrario,
+                        'fin_contrato' => $l->fin_contrato?->toDateString(),
                         'conceptos' => collect(self::CONCEPTOS)
                             ->map(fn (string $etiqueta, string $columna) => ['etiqueta' => $etiqueta, 'monto' => (string) $l->getAttribute($columna)])
                             ->filter(fn (array $c) => $c['monto'] !== '0.00')->values()->all(),
@@ -89,8 +97,17 @@ class LiquidacionController extends Controller
         $this->deLaEmpresaActiva($request, $trabajador);
         Gate::authorize('update', $trabajador);
 
+        $datos = $request->validate([
+            'despido_arbitrario' => ['sometimes', 'boolean'],
+            'fin_contrato' => ['nullable', 'date_format:Y-m-d'],
+        ], [], ['despido_arbitrario' => 'despido arbitrario', 'fin_contrato' => 'vencimiento del contrato']);
+
         try {
-            $liquidacion = $this->liquidaciones->calcular($trabajador);
+            $liquidacion = $this->liquidaciones->calcular(
+                $trabajador,
+                array_key_exists('despido_arbitrario', $datos) ? (bool) $datos['despido_arbitrario'] : null,
+                $datos['fin_contrato'] ?? null,
+            );
             Inertia::flash('toast', ['type' => 'success', 'message' => "Liquidación de {$trabajador->nombre_completo} calculada: S/ ".Formato::monto((string) $liquidacion->total).'.']);
         } catch (\DomainException $e) {
             Inertia::flash('toast', ['type' => 'error', 'message' => $e->getMessage()]);

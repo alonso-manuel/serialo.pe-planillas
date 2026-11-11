@@ -92,13 +92,13 @@ Marca `[x]` al terminar (o usa `/actualizar-roadmap`). Cada tarea: código + tes
 ## v1.1 — 11 ene → 12 feb 2027
 
 - [x] Quinta categoría: retención mensual (art. 40 del Reglamento de la LIR) con proyección, gratificaciones por percibir, extraordinarios, cese, otros empleadores y detalle en la línea — ver docs/reglas-calculo.md
-- [ ] Indemnización por despido arbitrario
-- [ ] T-Registro
-- [ ] Cuarta categoría
-- [ ] Carga masiva de asistencia
-- [ ] Derechohabientes
-- [ ] Adelantos y préstamos
-- [ ] Documentos laborales
+- [x] Indemnización por despido arbitrario en la liquidación: 0501 (indeterminado), 0503 (plazo fijo) y REMYPE; además, la indemnización vacacional corregida de 0911 a 0504 según la Tabla 22 — ver docs/reglas-calculo.md
+- [ ] T-Registro: archivos de altas y bajas (ya están los códigos de motivo de cese y tipo de contrato)
+- [ ] Derechohabientes (para T-Registro y EsSalud)
+- [ ] Cuarta categoría: recibos por honorarios, retención y PLAME .4ta / .ps4
+- [ ] Asistencia: importar días, horas extra y faltas desde Excel (ya existe la grilla editable de novedades)
+- [ ] Préstamos en cuotas con descuento automático y estado de cuenta (el adelanto ya existe como novedad 0701)
+- [ ] Certificado anual de rentas y retenciones de quinta (los demás documentos ya existen: boleta, liquidación, certificado de trabajo, carta y constancia de CTS, con firma digital)
 
 Ideas tomadas del análisis de mercado (09/11): conceptos recurrentes y proporcionales por trabajador, EPS y seguro Vida Ley, comparativo entre recálculos de un mismo mes y simulador de costo de contratación.
 

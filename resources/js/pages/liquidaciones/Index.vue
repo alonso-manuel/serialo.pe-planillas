@@ -27,6 +27,8 @@ import {
     DialogHeader,
     DialogTitle,
 } from '@/components/ui/dialog';
+import { Checkbox } from '@/components/ui/checkbox';
+import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Spinner } from '@/components/ui/spinner';
 import { formatoMonto } from '@/lib/montos';
@@ -48,11 +50,15 @@ type Fila = {
     ingreso: string;
     cese: string | null;
     motivo: string | null;
+    es_despido: boolean;
+    plazo_fijo: boolean;
     puede_calcular: boolean;
     liquidacion: {
         id: number;
         estado: 'borrador' | 'cerrada';
         total: string;
+        despido_arbitrario: boolean;
+        fin_contrato: string | null;
         conceptos: { etiqueta: string; monto: string }[];
         avisos: string[];
         calculado_en: string | null;
@@ -83,21 +89,47 @@ function alternar(id: number): void {
 }
 
 const calculando = ref<number | null>(null);
-function calcularLiquidacion(f: Fila): void {
+/** Antes de calcular: ¿corresponde indemnización por despido arbitrario? (y, si es plazo fijo, su vencimiento). */
+const aCalcular = ref<Fila | null>(null);
+const formCalculo = useForm({ despido_arbitrario: false, fin_contrato: '' });
+
+function abrirCalculo(f: Fila): void {
+    aCalcular.value = f;
+    formCalculo.clearErrors();
+    formCalculo.despido_arbitrario =
+        f.liquidacion?.despido_arbitrario ?? f.es_despido;
+    formCalculo.fin_contrato = f.liquidacion?.fin_contrato ?? '';
+}
+
+function confirmarCalculo(): void {
+    const f = aCalcular.value;
+
+    if (f) {
+        aCalcular.value = null;
+        calcularLiquidacion(f, {
+            despido_arbitrario: formCalculo.despido_arbitrario,
+            fin_contrato:
+                f.plazo_fijo && formCalculo.despido_arbitrario
+                    ? formCalculo.fin_contrato || null
+                    : null,
+        });
+    }
+}
+
+function calcularLiquidacion(
+    f: Fila,
+    datos: { despido_arbitrario: boolean; fin_contrato: string | null },
+): void {
     calculando.value = f.trabajador_id;
-    router.post(
-        calcular.url(f.trabajador_id),
-        {},
-        {
-            preserveScroll: true,
-            onFinish: () => (calculando.value = null),
-            onSuccess: () => {
-                const s = new Set(abiertas.value);
-                s.add(f.trabajador_id);
-                abiertas.value = s;
-            },
+    router.post(calcular.url(f.trabajador_id), datos, {
+        preserveScroll: true,
+        onFinish: () => (calculando.value = null),
+        onSuccess: () => {
+            const s = new Set(abiertas.value);
+            s.add(f.trabajador_id);
+            abiertas.value = s;
         },
-    );
+    });
 }
 
 const aCerrar = ref<Fila | null>(null);
@@ -254,7 +286,7 @@ function confirmarReapertura(): void {
                                         :disabled="
                                             calculando === f.trabajador_id
                                         "
-                                        @click="calcularLiquidacion(f)"
+                                        @click="abrirCalculo(f)"
                                     >
                                         <Spinner
                                             v-if="
@@ -458,6 +490,78 @@ function confirmarReapertura(): void {
                     <Spinner v-if="formCerrar.processing" />
                     <Lock v-else />
                     Cerrar liquidación
+                </Button>
+            </DialogFooter>
+        </DialogContent>
+    </Dialog>
+
+    <Dialog
+        :open="aCalcular !== null"
+        @update:open="(v) => !v && (aCalcular = null)"
+    >
+        <DialogContent>
+            <DialogHeader>
+                <DialogTitle
+                    >Liquidación de {{ aCalcular?.nombre }}</DialogTitle
+                >
+                <DialogDescription>
+                    Motivo del cese: {{ aCalcular?.motivo ?? 'sin indicar' }}.
+                    La indemnización solo corresponde si el despido fue sin
+                    causa justa (o no se pudo probar), o si el trabajador se dio
+                    por despedido por hostilidad.
+                </DialogDescription>
+            </DialogHeader>
+            <div class="grid gap-4">
+                <label class="flex items-start gap-3 text-sm">
+                    <Checkbox
+                        :model-value="formCalculo.despido_arbitrario"
+                        class="mt-0.5"
+                        @update:model-value="
+                            (v) => (formCalculo.despido_arbitrario = v === true)
+                        "
+                    />
+                    <span>
+                        <span class="font-medium"
+                            >Pagar indemnización por despido arbitrario</span
+                        >
+                        <span class="block text-muted-foreground">
+                            {{
+                                aCalcular?.plazo_fijo
+                                    ? '1.5 sueldos por cada mes que faltaba del contrato, hasta 12 (código 0503).'
+                                    : '1.5 sueldos por año de servicios, hasta 12 (código 0501). En pequeña y microempresa, 20 y 10 remuneraciones diarias por año.'
+                            }}
+                        </span>
+                    </span>
+                </label>
+                <div
+                    v-if="
+                        aCalcular?.plazo_fijo && formCalculo.despido_arbitrario
+                    "
+                    class="grid gap-2"
+                >
+                    <Label for="fin-contrato">Vencimiento del contrato</Label>
+                    <Input
+                        id="fin-contrato"
+                        v-model="formCalculo.fin_contrato"
+                        type="date"
+                        required
+                    />
+                </div>
+            </div>
+            <DialogFooter>
+                <DialogClose as-child>
+                    <Button variant="outline">Cancelar</Button>
+                </DialogClose>
+                <Button
+                    :disabled="
+                        aCalcular?.plazo_fijo &&
+                        formCalculo.despido_arbitrario &&
+                        !formCalculo.fin_contrato
+                    "
+                    @click="confirmarCalculo"
+                >
+                    <Calculator />
+                    Calcular
                 </Button>
             </DialogFooter>
         </DialogContent>

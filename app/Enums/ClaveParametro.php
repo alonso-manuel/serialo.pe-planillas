@@ -39,7 +39,16 @@ enum ClaveParametro: string
     case QuintaTasa2 = 'quinta_tasa2';                         // 14 %
     case QuintaTasa3 = 'quinta_tasa3';                         // 17 %
     case QuintaTasa4 = 'quinta_tasa4';                         // 20 %
-    case QuintaTasa5 = 'quinta_tasa5';                         // 30 % (exceso del último tramo)
+    case QuintaTasa5 = 'quinta_tasa5';
+
+    // Indemnización por despido arbitrario, en remuneraciones diarias (D.S. 003-97-TR arts. 38 y 76; REMYPE).
+    case IndemnizacionDiasAnioGeneral = 'indem_dias_anio_general';   // 45 (1.5 sueldos por año)
+    case IndemnizacionTopeGeneral = 'indem_tope_general';            // 360 (12 sueldos)
+    case IndemnizacionDiasMesPlazoFijo = 'indem_dias_mes_plazo_fijo'; // 45 (1.5 sueldos por mes faltante)
+    case IndemnizacionDiasAnioPequena = 'indem_dias_anio_pequena';   // 20
+    case IndemnizacionTopePequena = 'indem_tope_pequena';            // 120
+    case IndemnizacionDiasAnioMicro = 'indem_dias_anio_micro';       // 10
+    case IndemnizacionTopeMicro = 'indem_tope_micro';                // 90                         // 30 % (exceso del último tramo)
 
     public function etiqueta(): string
     {
@@ -70,6 +79,13 @@ enum ClaveParametro: string
             self::QuintaTasa3 => 'Quinta: tasa del 3.er tramo',
             self::QuintaTasa4 => 'Quinta: tasa del 4.º tramo',
             self::QuintaTasa5 => 'Quinta: tasa del exceso',
+            self::IndemnizacionDiasAnioGeneral => 'Indemnización por despido: días por año (general)',
+            self::IndemnizacionTopeGeneral => 'Indemnización por despido: tope (general)',
+            self::IndemnizacionDiasMesPlazoFijo => 'Indemnización plazo fijo: días por mes faltante',
+            self::IndemnizacionDiasAnioPequena => 'Indemnización por despido: días por año (pequeña)',
+            self::IndemnizacionTopePequena => 'Indemnización por despido: tope (pequeña)',
+            self::IndemnizacionDiasAnioMicro => 'Indemnización por despido: días por año (micro)',
+            self::IndemnizacionTopeMicro => 'Indemnización por despido: tope (micro)',
         };
     }
 
@@ -96,6 +112,9 @@ enum ClaveParametro: string
             self::QuintaTramo1Uit, self::QuintaTramo2Uit, self::QuintaTramo3Uit, self::QuintaTramo4Uit => 'Hasta cuántas UIT de renta neta llega el tramo.',
             self::QuintaTasa1, self::QuintaTasa2, self::QuintaTasa3, self::QuintaTasa4 => 'Impuesto sobre la parte de la renta neta dentro del tramo.',
             self::QuintaTasa5 => 'Impuesto sobre la renta neta que excede el último tramo.',
+            self::IndemnizacionDiasAnioGeneral, self::IndemnizacionDiasAnioPequena, self::IndemnizacionDiasAnioMicro => 'Remuneraciones diarias por cada año de servicios (fracciones por dozavos y treintavos).',
+            self::IndemnizacionTopeGeneral, self::IndemnizacionTopePequena, self::IndemnizacionTopeMicro => 'Máximo de remuneraciones diarias que se pagan.',
+            self::IndemnizacionDiasMesPlazoFijo => 'Remuneraciones diarias por cada mes que faltaba para el vencimiento del contrato.',
         };
     }
 
@@ -104,7 +123,9 @@ enum ClaveParametro: string
     {
         return match ($this) {
             self::Rmv, self::Uit, self::AporteSis => 'monto',
-            self::DiasVacacionesGeneral, self::DiasVacacionesPequena, self::DiasVacacionesMicro => 'dias',
+            self::DiasVacacionesGeneral, self::DiasVacacionesPequena, self::DiasVacacionesMicro,
+            self::IndemnizacionDiasAnioGeneral, self::IndemnizacionTopeGeneral, self::IndemnizacionDiasMesPlazoFijo,
+            self::IndemnizacionDiasAnioPequena, self::IndemnizacionTopePequena, self::IndemnizacionDiasAnioMicro, self::IndemnizacionTopeMicro => 'dias',
             self::QuintaDeduccionUit, self::QuintaTramo1Uit, self::QuintaTramo2Uit, self::QuintaTramo3Uit, self::QuintaTramo4Uit => 'uit',
             default => 'tasa',
         };

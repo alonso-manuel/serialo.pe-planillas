@@ -66,7 +66,7 @@ class CalculadoraLiquidacionTest extends TestCase
             '0313' => '93.39',
             '0904' => '1412.38',
             '0118' => '6226.00',
-            '0911' => '3113.00',
+            '0504' => '3113.00',
             '0114' => '1729.44',
         ], $r->conceptos);
         $this->assertSame('13611.88', $r->total);
@@ -82,7 +82,7 @@ class CalculadoraLiquidacionTest extends TestCase
             '0313' => '30.00',
             '0904' => '421.30',   // (2000 + 166.67) × 140 / 360 × 50 %
             '0118' => '2000.00',  // 15 + 15 días sin gozar
-            '0911' => '1000.00',  // 15 días del periodo vencido
+            '0504' => '1000.00',  // 15 días del periodo vencido
             '0114' => '555.56',   // 2000 × 15/30 × 200 / 360
         ], $r->conceptos);
         $this->assertSame('4340.19', $r->total);
@@ -95,7 +95,7 @@ class CalculadoraLiquidacionTest extends TestCase
 
         $this->assertArrayNotHasKey('0407', $r->conceptos);
         $this->assertArrayNotHasKey('0904', $r->conceptos);
-        $this->assertSame(['0118', '0911', '0114'], array_keys($r->conceptos));
+        $this->assertSame(['0118', '0504', '0114'], array_keys($r->conceptos));
     }
 
     #[Test]
@@ -143,7 +143,7 @@ class CalculadoraLiquidacionTest extends TestCase
 
         $this->assertSame(30, $r->vacacionesNoGozadasDias);
         $this->assertSame('3000.00', $r->conceptos['0118']);
-        $this->assertArrayNotHasKey('0911', $r->conceptos);
+        $this->assertArrayNotHasKey('0504', $r->conceptos);
     }
 
     #[Test]

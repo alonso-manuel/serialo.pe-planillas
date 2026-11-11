@@ -4,6 +4,7 @@ namespace App\Services\Planilla;
 
 use App\Domain\Planilla\ParametrosCts;
 use App\Domain\Planilla\ParametrosGratificacion;
+use App\Domain\Planilla\ParametrosIndemnizacion;
 use App\Domain\Planilla\ParametrosPeriodo;
 use App\Domain\Planilla\ParametrosQuinta;
 use App\Domain\Planilla\TasaAfpPeriodo;
@@ -32,6 +33,18 @@ class ParametrosRepositorio
             sobretasaHoraExtra25: Parametro::vigente(C::SobretasaHoraExtra25, $fecha),
             sobretasaHoraExtra35: Parametro::vigente(C::SobretasaHoraExtra35, $fecha),
         );
+    }
+
+    /** Indemnización por despido arbitrario de una empresa, vigente a la fecha de cese (Y-m-d). */
+    public function indemnizacion(Empresa $empresa, string $fecha): ParametrosIndemnizacion
+    {
+        $v = fn (C $clave) => (int) Parametro::vigente($clave, $fecha);
+
+        return match ($empresa->regimen_laboral) {
+            RegimenLaboral::General => new ParametrosIndemnizacion($v(C::IndemnizacionDiasAnioGeneral), $v(C::IndemnizacionTopeGeneral), $v(C::IndemnizacionDiasMesPlazoFijo)),
+            RegimenLaboral::PequenaEmpresa => new ParametrosIndemnizacion($v(C::IndemnizacionDiasAnioPequena), $v(C::IndemnizacionTopePequena), null),
+            RegimenLaboral::Microempresa => new ParametrosIndemnizacion($v(C::IndemnizacionDiasAnioMicro), $v(C::IndemnizacionTopeMicro), null),
+        };
     }
 
     /** Renta de quinta categoría vigente al cierre del periodo. */

@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Domain\Planilla\CalculadoraGratificacion;
+use App\Domain\Planilla\CalculadoraIndemnizacionDespido;
 use App\Domain\Planilla\CalculadoraLiquidacion;
 use App\Models\Concerns\Auditable;
 use App\Models\Concerns\PerteneceAEmpresa;
@@ -20,6 +21,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property int $trabajador_id
  * @property CarbonImmutable $fecha_cese
  * @property string $estado borrador | cerrada
+ * @property bool $despido_arbitrario se paga indemnización por despido (0501) o por resolución del plazo fijo (0503)
+ * @property CarbonImmutable|null $fin_contrato vencimiento del contrato a plazo fijo (para el 0503)
  * @property string $gratificacion_pendiente
  * @property string $bonificacion_pendiente
  * @property string $gratificacion_trunca
@@ -28,6 +31,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property string $vacaciones_no_gozadas
  * @property string $indemnizacion_vacacional
  * @property string $vacaciones_truncas
+ * @property string $indemnizacion_despido
+ * @property string $indemnizacion_plazo_fijo
  * @property string $total
  * @property array<string, mixed>|null $detalle
  * @property list<string>|null $avisos
@@ -55,18 +60,21 @@ class Liquidacion extends Model
         'vacaciones_no_gozadas' => CalculadoraLiquidacion::VACACIONES_NO_GOZADAS,
         'indemnizacion_vacacional' => CalculadoraLiquidacion::INDEMNIZACION_VACACIONAL,
         'vacaciones_truncas' => CalculadoraLiquidacion::VACACIONES_TRUNCAS,
+        'indemnizacion_despido' => CalculadoraIndemnizacionDespido::DESPIDO,
+        'indemnizacion_plazo_fijo' => CalculadoraIndemnizacionDespido::PLAZO_FIJO,
     ];
 
     protected $table = 'liquidaciones';
 
     protected $fillable = [
-        'empresa_id', 'trabajador_id', 'fecha_cese', 'estado', ...self::COLUMNAS_MONTO, 'total',
+        'empresa_id', 'trabajador_id', 'fecha_cese', 'estado', 'despido_arbitrario', 'fin_contrato', ...self::COLUMNAS_MONTO, 'total',
         'detalle', 'avisos', 'calculado_en', 'cerrado_por', 'cerrado_en',
     ];
 
     private const COLUMNAS_MONTO = [
         'gratificacion_pendiente', 'bonificacion_pendiente', 'gratificacion_trunca', 'bonificacion_trunca',
         'cts', 'vacaciones_no_gozadas', 'indemnizacion_vacacional', 'vacaciones_truncas',
+        'indemnizacion_despido', 'indemnizacion_plazo_fijo',
     ];
 
     /** @return array<string, string> */
@@ -74,6 +82,8 @@ class Liquidacion extends Model
     {
         return [
             'fecha_cese' => 'immutable_date',
+            'despido_arbitrario' => 'boolean',
+            'fin_contrato' => 'immutable_date',
             ...array_fill_keys([...self::COLUMNAS_MONTO, 'total'], 'decimal:2'),
             'detalle' => 'array',
             'avisos' => 'array',
