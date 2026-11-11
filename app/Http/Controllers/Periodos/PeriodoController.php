@@ -12,6 +12,7 @@ use App\Models\PlanillaLinea;
 use App\Models\TipoSuspension;
 use App\Models\User;
 use App\Services\Empresas\EmpresaActiva;
+use App\Services\Empresas\FirmaDigitalPdf;
 use App\Services\Planilla\CierrePeriodo;
 use App\Services\Planilla\EnvioBoletas;
 use App\Services\Planilla\GratificacionPeriodo;
@@ -124,6 +125,8 @@ class PeriodoController extends Controller
                 'estado_etiqueta' => $periodo->estado->etiqueta(),
                 'puede_editar' => $usuario->can('update', $periodo),
                 'empresa' => $periodo->empresa?->razon_social,
+                // Titular del certificado vigente de la empresa: las boletas se firman al cerrar el periodo.
+                'firma_digital' => $periodo->empresa === null ? null : app(FirmaDigitalPdf::class)->vigente($periodo->empresa)?->titular,
             ],
             'cierre' => [
                 'puede_cerrar' => $usuario->can('cerrar', $periodo),

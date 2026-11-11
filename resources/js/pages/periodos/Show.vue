@@ -8,6 +8,7 @@ import {
     Lock,
     LockOpen,
     RefreshCw,
+    ShieldCheck,
     Trash2,
     TriangleAlert,
 } from '@lucide/vue';
@@ -178,6 +179,24 @@ function eliminar(): void {
                     :description="periodo.empresa ?? undefined"
                 />
                 <EstadoPeriodo :estado="estado" :etiqueta="ETIQUETAS[estado]" />
+                <span
+                    v-if="periodo.firma_digital"
+                    class="inline-flex items-center gap-1.5 text-xs text-muted-foreground"
+                >
+                    <ShieldCheck
+                        class="size-3.5"
+                        :class="
+                            estado === 'cerrado'
+                                ? 'text-green-700 dark:text-green-400'
+                                : ''
+                        "
+                    />
+                    {{
+                        estado === 'cerrado'
+                            ? `Boletas firmadas digitalmente por ${periodo.firma_digital}`
+                            : `Las boletas se firmarán digitalmente (${periodo.firma_digital}) al cerrar el periodo`
+                    }}
+                </span>
             </div>
             <div
                 v-if="

@@ -127,6 +127,10 @@ class FirmaDigitalTest extends TestCase
 
         // El lote para imprimir también.
         $this->assertTrue($this->firmaValida((string) $this->get(route('periodos.boletas.pdf', $periodo))->getContent()));
+
+        // La pantalla del periodo avisa quién firma.
+        $this->get(route('periodos.show', $periodo))
+            ->assertInertia(fn (Assert $p) => $p->where('periodo.firma_digital', 'REPRESENTANTE FICTICIO PRUEBA'));
     }
 
     #[Test]

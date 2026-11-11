@@ -19,6 +19,8 @@ export type PeriodoDetalle = {
     estado_etiqueta: string;
     puede_editar: boolean;
     empresa: string | null;
+    /** Titular del certificado digital vigente de la empresa (null si no tiene). */
+    firma_digital: string | null;
 };
 
 export type LineaPeriodo = {

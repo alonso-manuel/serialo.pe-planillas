@@ -110,7 +110,7 @@ class FirmaDigitalPdf
         if ($doc === false || $doc->set_signature_certificate($partes, $firma->clave) !== true) {
             throw new RuntimeException('No se pudo preparar la firma digital del documento.');
         }
-        $doc->set_metadata_props($firma->titular, $motivo, 'Perú');
+        $doc->set_metadata_props($firma->titular, $motivo, 'Perú', '');
 
         $firmado = $doc->to_pdf_file_s();
         if (! is_string($firmado) || ! str_contains($firmado, '/ByteRange')) {
