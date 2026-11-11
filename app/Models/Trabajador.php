@@ -151,4 +151,10 @@ class Trabajador extends Model
     {
         return $this->hasMany(RentaOtroEmpleador::class);
     }
+
+    /** @return HasMany<Derechohabiente, $this> */
+    public function derechohabientes(): HasMany
+    {
+        return $this->hasMany(Derechohabiente::class);
+    }
 }

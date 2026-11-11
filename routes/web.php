@@ -35,6 +35,7 @@ use App\Http\Controllers\TasasAfp\TasaAfpController;
 use App\Http\Controllers\Trabajadores\CambioTrabajadorController;
 use App\Http\Controllers\Trabajadores\CeseTrabajadorController;
 use App\Http\Controllers\Trabajadores\ConsultaDniController;
+use App\Http\Controllers\Trabajadores\DerechohabienteController;
 use App\Http\Controllers\Trabajadores\ImportacionTrabajadoresController;
 use App\Http\Controllers\Trabajadores\OtroEmpleadorController;
 use App\Http\Controllers\Trabajadores\TrabajadorController;
@@ -111,6 +112,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         // T-Registro de la empresa activa
         Route::get('t-registro', [TRegistroController::class, 'index'])->name('tregistro.index');
         Route::get('t-registro/zip', [TRegistroController::class, 'zip'])->name('tregistro.zip');
+        Route::get('t-registro/derechohabientes', [TRegistroController::class, 'derechohabientes'])->name('tregistro.derechohabientes');
         Route::get('t-registro/ocupaciones', [TRegistroController::class, 'ocupaciones'])->middleware('throttle:120,1')->name('tregistro.ocupaciones');
         Route::post('liquidaciones/{trabajador}/calcular', [LiquidacionController::class, 'calcular'])->name('liquidaciones.calcular');
         Route::post('liquidaciones/{liquidacion}/cerrar', [LiquidacionController::class, 'cerrar'])->name('liquidaciones.cerrar');
@@ -141,6 +143,12 @@ Route::middleware(['auth', 'verified'])->group(function () {
             ->name('trabajadores.cese.destroy');
         Route::post('trabajadores/{trabajador}/cambios', [CambioTrabajadorController::class, 'store'])
             ->name('trabajadores.cambios.store');
+        Route::post('trabajadores/{trabajador}/derechohabientes', [DerechohabienteController::class, 'store'])
+            ->name('trabajadores.derechohabientes.store');
+        Route::patch('trabajadores/{trabajador}/derechohabientes/{derechohabiente}/baja', [DerechohabienteController::class, 'baja'])
+            ->name('trabajadores.derechohabientes.baja');
+        Route::delete('trabajadores/{trabajador}/derechohabientes/{derechohabiente}', [DerechohabienteController::class, 'destroy'])
+            ->name('trabajadores.derechohabientes.destroy');
         Route::post('trabajadores/{trabajador}/otros-empleadores', [OtroEmpleadorController::class, 'store'])
             ->name('trabajadores.otros-empleadores.store');
         Route::delete('trabajadores/{trabajador}/otros-empleadores/{renta}', [OtroEmpleadorController::class, 'destroy'])

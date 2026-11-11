@@ -2,6 +2,8 @@
 
 namespace App\Services\Sunat;
 
+use App\Domain\Sunat\TRegistro\DerechohabienteTRegistro;
+use App\Domain\Sunat\TRegistro\GeneradorDerechohabientes;
 use App\Domain\Sunat\TRegistro\GeneradorTRegistro;
 use App\Domain\Sunat\TRegistro\PrestadorTRegistro;
 use App\Enums\RegimenLaboral;
@@ -9,6 +11,7 @@ use App\Enums\SeguroSalud;
 use App\Enums\SistemaPension;
 use App\Enums\TipoContrato;
 use App\Enums\TipoDocumento;
+use App\Models\Derechohabiente;
 use App\Models\Empresa;
 use App\Models\Establecimiento;
 use App\Models\Trabajador;
@@ -25,7 +28,99 @@ use ZipArchive;
  */
 class ExportacionTRegistro
 {
-    public function __construct(private readonly GeneradorTRegistro $generador) {}
+    public function __construct(
+        private readonly GeneradorTRegistro $generador,
+        private readonly GeneradorDerechohabientes $derechohabientes,
+    ) {}
+
+    /**
+     * Derechohabientes con alta o baja dentro del rango (trabajadores de la empresa).
+     *
+     * @return array{altas: list<Derechohabiente>, bajas: list<Derechohabiente>}
+     */
+    public function derechohabientes(Empresa $empresa, CarbonImmutable $desde, CarbonImmutable $hasta): array
+    {
+        $rango = [$desde->toDateString(), $hasta->toDateString()];
+        $base = fn () => Derechohabiente::query()->with('trabajador')
+            ->whereHas('trabajador', fn ($q) => $q->where('empresa_id', $empresa->id))
+            ->orderBy('apellido_paterno');
+
+        $altas = [];
+        foreach ($base()->whereBetween('fecha_alta', $rango)->get() as $d) {
+            $altas[] = $d;
+        }
+        $bajas = [];
+        foreach ($base()->whereNotNull('fecha_baja')->whereBetween('fecha_baja', $rango)->get() as $d) {
+            $bajas[] = $d;
+        }
+
+        return ['altas' => $altas, 'bajas' => $bajas];
+    }
+
+    /**
+     * Zip con RD_<RUC>_<ddmmaaaa>_ALTA.TXT y _BAJA.TXT (fecha de envío: hoy) para la carga masiva del
+     * Registro de Derechohabientes en SOL. Devuelve la ruta temporal.
+     */
+    public function zipDerechohabientes(Empresa $empresa, CarbonImmutable $desde, CarbonImmutable $hasta): string
+    {
+        $dh = $this->derechohabientes($empresa, $desde, $hasta);
+        if ($dh['altas'] === [] && $dh['bajas'] === []) {
+            throw new \DomainException('No hay altas ni bajas de derechohabientes en esas fechas.');
+        }
+
+        $prefijo = "RD_{$empresa->ruc}_".CarbonImmutable::today()->format('dmY');
+        $archivos = [
+            "{$prefijo}_ALTA.TXT" => $this->derechohabientes->alta(array_map(fn (Derechohabiente $d) => $this->dhTRegistro($d), $dh['altas'])),
+            "{$prefijo}_BAJA.TXT" => $this->derechohabientes->baja(array_map(fn (Derechohabiente $d) => $this->dhTRegistro($d), $dh['bajas'])),
+        ];
+
+        return $this->comprimir($archivos);
+    }
+
+    private function dhTRegistro(Derechohabiente $d): DerechohabienteTRegistro
+    {
+        $t = $d->trabajador;
+
+        return new DerechohabienteTRegistro(
+            tipoDocumentoTitular: $t->tipo_documento->value,
+            numeroDocumentoTitular: $t->numero_documento,
+            tipoDocumento: $d->tipo_documento->value,
+            numeroDocumento: $d->numero_documento,
+            paisEmisor: $d->tipo_documento === TipoDocumento::Pasaporte ? (string) $d->pais_emisor : '604',
+            fechaNacimiento: $d->fecha_nacimiento->format('d/m/Y'),
+            apellidoPaterno: $this->texto($d->apellido_paterno, 40),
+            apellidoMaterno: $this->texto((string) $d->apellido_materno, 40),
+            nombres: $this->texto($d->nombres, 40),
+            sexo: $d->sexo === 'F' ? '2' : '1',
+            vinculo: $d->vinculo->value,
+            documentoVinculo: (string) $d->documento_vinculo?->value,
+            numeroDocumentoVinculo: (string) $d->numero_documento_vinculo,
+            mesConcepcion: $d->mes_concepcion === null ? '' : substr($d->mes_concepcion, 5, 2).substr($d->mes_concepcion, 0, 4),
+            fechaBaja: $d->fecha_baja?->format('d/m/Y') ?? '',
+            motivoBaja: (string) $d->motivo_baja?->value,
+        );
+    }
+
+    /**
+     * @param  array<string, string>  $archivos  nombre => contenido (los vacíos se omiten)
+     */
+    private function comprimir(array $archivos): string
+    {
+        $ruta = tempnam(sys_get_temp_dir(), 'treg');
+        $zip = new ZipArchive;
+        if ($ruta === false || $zip->open($ruta, ZipArchive::OVERWRITE) !== true) {
+            throw new RuntimeException('No se pudo crear el zip de T-Registro.');
+        }
+        foreach ($archivos as $nombre => $contenido) {
+            if ($contenido !== '') {
+                // Los aplicativos de SUNAT leen texto ANSI (Windows-1252): tildes y eñes de los nombres ⚠.
+                $zip->addFromString($nombre, (string) mb_convert_encoding($contenido, 'Windows-1252', 'UTF-8'));
+            }
+        }
+        $zip->close();
+
+        return $ruta;
+    }
 
     /**
      * @return array{
@@ -71,27 +166,14 @@ class ExportacionTRegistro
         $altas = array_map(fn (array $r) => $this->prestador($r['trabajador'], $empresa), $revision['altas']);
         $bajas = array_map(fn (array $r) => $this->prestador($r['trabajador'], $empresa), $revision['bajas']);
 
-        $archivos = [
-            'ide' => $this->generador->ide($altas),
-            'tra' => $this->generador->tra($altas),
-            'per' => $this->generador->per($altas, $bajas),
-            'est' => $this->generador->est($altas),
-        ];
+        $p = "RP_{$empresa->ruc}";
 
-        $ruta = tempnam(sys_get_temp_dir(), 'treg');
-        $zip = new ZipArchive;
-        if ($ruta === false || $zip->open($ruta, ZipArchive::OVERWRITE) !== true) {
-            throw new RuntimeException('No se pudo crear el zip de T-Registro.');
-        }
-        foreach ($archivos as $extension => $contenido) {
-            if ($contenido !== '') {
-                // Los aplicativos de SUNAT leen texto ANSI (Windows-1252): tildes y eñes de los nombres ⚠.
-                $zip->addFromString("RP_{$empresa->ruc}.{$extension}", (string) mb_convert_encoding($contenido, 'Windows-1252', 'UTF-8'));
-            }
-        }
-        $zip->close();
-
-        return $ruta;
+        return $this->comprimir([
+            "{$p}.ide" => $this->generador->ide($altas),
+            "{$p}.tra" => $this->generador->tra($altas),
+            "{$p}.per" => $this->generador->per($altas, $bajas),
+            "{$p}.est" => $this->generador->est($altas),
+        ]);
     }
 
     public function nombreZip(Empresa $empresa, CarbonImmutable $desde, CarbonImmutable $hasta): string

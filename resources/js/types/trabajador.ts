@@ -71,6 +71,8 @@ export type CatalogosTrabajador = {
     situaciones_educativas: Opcion[];
     modalidades_contrato: Opcion[];
     situaciones_especiales: Opcion[];
+    vinculos: (Opcion & { documentos: Opcion[]; exige_numero: boolean })[];
+    motivos_baja_derechohabiente: Opcion[];
     tipos_comision: Opcion[];
     motivos_cese: Opcion[];
     entidades_cts: Opcion[];
@@ -119,4 +121,17 @@ export type RentaOtroEmpleador = {
     empleador: string | null;
     renta: string;
     retencion: string;
+};
+
+/** Derechohabiente del trabajador en la ficha. */
+export type DerechohabienteFila = {
+    id: number;
+    nombre: string;
+    documento: string;
+    vinculo: string;
+    fecha_nacimiento: string;
+    fecha_alta: string;
+    fecha_alta_iso: string;
+    fecha_baja: string | null;
+    motivo_baja: string | null;
 };

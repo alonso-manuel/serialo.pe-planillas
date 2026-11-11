@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use App\Models\Concepto;
+use App\Models\Derechohabiente;
 use App\Models\Empresa;
 use App\Models\Establecimiento;
 use App\Models\FirmaDigital;
@@ -107,6 +108,7 @@ class AppServiceProvider extends ServiceProvider
             'liquidacion' => Liquidacion::class,
             'renta_otro_empleador' => RentaOtroEmpleador::class,
             'firma_digital' => FirmaDigital::class,
+            'derechohabiente' => Derechohabiente::class,
         ]);
     }
 

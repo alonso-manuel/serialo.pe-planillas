@@ -6,6 +6,7 @@ use App\Domain\Licencia\Recurso;
 use App\Enums\CategoriaOcupacional;
 use App\Enums\ClaveParametro;
 use App\Enums\ModalidadContrato;
+use App\Enums\MotivoBajaDerechohabiente;
 use App\Enums\MotivoCese;
 use App\Enums\RegimenLaboral;
 use App\Enums\SistemaPension;
@@ -14,9 +15,11 @@ use App\Enums\SituacionEspecial;
 use App\Enums\TipoComisionAfp;
 use App\Enums\TipoContrato;
 use App\Enums\TipoDocumento;
+use App\Enums\VinculoFamiliar;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Trabajadores\GuardarTrabajadorRequest;
 use App\Models\Afp;
+use App\Models\Derechohabiente;
 use App\Models\Empresa;
 use App\Models\EntidadFinanciera;
 use App\Models\Establecimiento;
@@ -175,6 +178,18 @@ class TrabajadorController extends Controller
             ],
             'catalogos' => $this->catalogos($empresa),
             'historial' => $this->historial->lineaDeTiempo($trabajador),
+            'derechohabientes' => $trabajador->derechohabientes()->orderByRaw('fecha_baja is not null')->orderBy('fecha_nacimiento')->get()
+                ->map(fn (Derechohabiente $d) => [
+                    'id' => $d->id,
+                    'nombre' => $d->nombre_completo,
+                    'documento' => "{$d->tipo_documento->abreviatura()} {$d->numero_documento}",
+                    'vinculo' => $d->vinculo->etiqueta(),
+                    'fecha_nacimiento' => $d->fecha_nacimiento->format('d/m/Y'),
+                    'fecha_alta' => $d->fecha_alta->format('d/m/Y'),
+                    'fecha_alta_iso' => $d->fecha_alta->toDateString(),
+                    'fecha_baja' => $d->fecha_baja?->format('d/m/Y'),
+                    'motivo_baja' => $d->motivo_baja?->etiqueta(),
+                ])->values()->all(),
             'otros_empleadores' => $trabajador->rentasOtrosEmpleadores()->orderByDesc('anio')->orderBy('id')->get()
                 ->map(fn (RentaOtroEmpleador $r) => [
                     'id' => $r->id, 'anio' => $r->anio, 'ruc_empleador' => $r->ruc_empleador, 'empleador' => $r->empleador,
@@ -258,6 +273,11 @@ class TrabajadorController extends Controller
             'situaciones_educativas' => $opciones(SituacionEducativa::cases()),
             'modalidades_contrato' => $opciones(ModalidadContrato::cases()),
             'situaciones_especiales' => $opciones(SituacionEspecial::cases()),
+            'vinculos' => array_map(fn (VinculoFamiliar $v) => [
+                'value' => $v->value, 'label' => $v->etiqueta(),
+                'documentos' => $opciones($v->documentos()), 'exige_numero' => $v->exigeNumeroDocumento(),
+            ], VinculoFamiliar::cases()),
+            'motivos_baja_derechohabiente' => $opciones(MotivoBajaDerechohabiente::cases()),
             'tipos_comision' => $opciones(TipoComisionAfp::cases()),
             'motivos_cese' => array_map(fn (MotivoCese $m) => ['value' => $m->value, 'label' => "{$m->value} · {$m->etiqueta()}"], MotivoCese::cases()),
             'seguro_por_defecto' => $empresa->seguro_salud->value,

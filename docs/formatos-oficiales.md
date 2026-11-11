@@ -103,6 +103,26 @@ Fuentes: [manual del PVS T-Registro](https://www.sunat.gob.pe/orientacion/pvs/re
 - ⚠ Pendiente: dirección (E04 13–41), SCTR, cuenta de abono (`.cta`), estudios (`.edu`), personal en formación y
   modificaciones de datos (solo altas y bajas por ahora). Verificar en el PVS la baja solo con el periodo laboral.
 
+### Derechohabientes
+
+Ficha del trabajador → **Derechohabientes** (cónyuge, concubino(a), gestante, hijo menor, hijo mayor incapacitado) y
+**SUNAT → T-Registro → Descargar derechohabientes**: zip para SOL → T-Registro → Registro de derechohabientes →
+Carga masiva (no pasa por el PVS). Código: `GeneradorDerechohabientes` (puro) y `ExportacionTRegistro`.
+
+| Archivo                        | Estructura | Contenido                                                                                                                                                                        |
+| ------------------------------ | ---------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `RD_<RUC>_<ddmmaaaa>_ALTA.TXT` | E13 (46)   | Titular, documento, nacimiento, nombres, sexo, vínculo (t. 19), documento que lo sustenta (t. 27) y su número, mes de concepción (mmaaaa); direcciones, teléfono y correo vacíos |
+| `RD_<RUC>_<ddmmaaaa>_BAJA.TXT` | E24 (12)   | Titular, documento, nacimiento, nombres, vínculo, fecha y motivo de baja (t. 20)                                                                                                 |
+
+- Fecha del nombre: el día en que se genera (fecha de envío). Altas y bajas dentro del rango elegido.
+- Reglas: documento de la tabla 27 según el vínculo (el hijo menor con DNI no lo necesita); número del documento
+  obligatorio para concubino(a) e hijo mayor incapacitado; mes de concepción para gestante; hijo menor con menos de
+  18 años al alta. Aviso si hay hijos menores y el trabajador no cobra asignación familiar.
+- Fuente: [cartilla de instrucciones del Registro de Derechohabientes](http://contenido.app.sunat.gob.pe/insc/PLAME/CARTILLAREGDERECHOH072012.pdf)
+  y el Anexo 3 de estructuras (versión de julio 2023, mismas estructuras 13 y 24).
+- ⚠ Pendiente de probar en SOL; las direcciones (obligatorias en la práctica para menores con DNI o extranjeros) no se
+  registran aún.
+
 ## Reglas
 
 - Los catálogos (tabla 3, 21, 22, ocupaciones, etc.) se cargan como **datos** (seeders/tablas), nunca como `match` en el código.

@@ -7,7 +7,11 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { edit } from '@/routes/trabajadores';
-import { index, zip } from '@/routes/tregistro';
+import {
+    derechohabientes as zipDerechohabientes,
+    index,
+    zip,
+} from '@/routes/tregistro';
 
 type Fila = {
     id: number;
@@ -26,6 +30,7 @@ const props = defineProps<{
     altas: Fila[];
     bajas: Fila[];
     listo: boolean;
+    derechohabientes: { altas: number; bajas: number };
 }>();
 
 defineOptions({
@@ -159,6 +164,37 @@ function consultar(): void {
                     </Button>
                 </li>
             </ul>
+        </section>
+        <section class="rounded-lg border">
+            <h2 class="border-b px-4 py-3 font-medium">Derechohabientes</h2>
+            <div
+                class="flex flex-wrap items-center justify-between gap-3 p-4 text-sm"
+            >
+                <p class="text-muted-foreground">
+                    {{ derechohabientes.altas }}
+                    {{ derechohabientes.altas === 1 ? 'alta' : 'altas' }} y
+                    {{ derechohabientes.bajas }}
+                    {{ derechohabientes.bajas === 1 ? 'baja' : 'bajas' }} en
+                    estas fechas. Se suben en SOL → T-Registro → Registro de
+                    derechohabientes → Carga masiva (archivos
+                    <code>RD_{{ ruc }}_…_ALTA.TXT</code> y
+                    <code>_BAJA.TXT</code>).
+                </p>
+                <Button
+                    v-if="derechohabientes.altas + derechohabientes.bajas > 0"
+                    variant="outline"
+                    as-child
+                >
+                    <a
+                        :href="
+                            zipDerechohabientes.url({ query: { desde, hasta } })
+                        "
+                    >
+                        <Download />
+                        Descargar derechohabientes
+                    </a>
+                </Button>
+            </div>
         </section>
     </div>
 </template>

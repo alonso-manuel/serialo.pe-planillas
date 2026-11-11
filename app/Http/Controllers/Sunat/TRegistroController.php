@@ -43,6 +43,7 @@ class TRegistroController extends Controller
             'hasta' => $hasta->toDateString(),
             'altas' => $altas,
             'bajas' => $bajas,
+            'derechohabientes' => array_map(fn (array $lista) => count($lista), $this->exportacion->derechohabientes($empresa, $desde, $hasta)),
             'listo' => ($altas !== [] || $bajas !== []) && collect([...$altas, ...$bajas])->every(fn (array $f) => $f['problemas'] === []),
         ]);
     }
@@ -61,6 +62,23 @@ class TRegistroController extends Controller
         }
 
         return response()->download($ruta, $this->exportacion->nombreZip($empresa, $desde, $hasta), ['Content-Type' => 'application/zip'])
+            ->deleteFileAfterSend();
+    }
+
+    public function derechohabientes(Request $request): BinaryFileResponse|RedirectResponse
+    {
+        $empresa = $this->empresa($request);
+        [$desde, $hasta] = $this->rango($request);
+
+        try {
+            $ruta = $this->exportacion->zipDerechohabientes($empresa, $desde, $hasta);
+        } catch (\DomainException $e) {
+            Inertia::flash('toast', ['type' => 'error', 'message' => $e->getMessage()]);
+
+            return to_route('tregistro.index', ['desde' => $desde->toDateString(), 'hasta' => $hasta->toDateString()]);
+        }
+
+        return response()->download($ruta, "Derechohabientes {$empresa->ruc} {$desde->format('Y-m-d')} a {$hasta->format('Y-m-d')}.zip", ['Content-Type' => 'application/zip'])
             ->deleteFileAfterSend();
     }
 

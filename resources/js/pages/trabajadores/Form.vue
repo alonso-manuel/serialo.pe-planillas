@@ -35,11 +35,13 @@ import {
     update,
 } from '@/routes/trabajadores';
 import CeseTrabajador from '@/components/trabajadores/CeseTrabajador.vue';
+import Derechohabientes from '@/components/trabajadores/Derechohabientes.vue';
 import HistorialTrabajador from '@/components/trabajadores/HistorialTrabajador.vue';
 import OtrosEmpleadores from '@/components/trabajadores/OtrosEmpleadores.vue';
 import type {
     CatalogosTrabajador,
     CambioHistorial,
+    DerechohabienteFila,
     Opcion,
     RentaOtroEmpleador,
     TrabajadorEditable,
@@ -51,6 +53,7 @@ const props = defineProps<{
     historial?: CambioHistorial[];
     grupos_historial?: Opcion[];
     otros_empleadores?: RentaOtroEmpleador[];
+    derechohabientes?: DerechohabienteFila[];
 }>();
 
 /** Ya figura en planillas: sueldo, cargo, pensión... solo cambian con historial. */
@@ -149,12 +152,12 @@ const PESTANAS = {
     ],
 } as const;
 
-type Pestana = keyof typeof PESTANAS | 'historial' | 'quinta';
+type Pestana = keyof typeof PESTANAS | 'historial' | 'quinta' | 'familia';
 
 const pestana = ref<Pestana>('personales');
 
 function errores(p: Pestana): number {
-    if (p === 'historial' || p === 'quinta') {
+    if (p === 'historial' || p === 'quinta' || p === 'familia') {
         return 0;
     }
 
@@ -372,7 +375,11 @@ function eliminar(): void {
                             sunat: 'SUNAT',
                             ...(esNuevo
                                 ? {}
-                                : { historial: 'Historial', quinta: 'Quinta' }),
+                                : {
+                                      familia: 'Derechohabientes',
+                                      historial: 'Historial',
+                                      quinta: 'Quinta',
+                                  }),
                         } as Record<Pestana, string>"
                         :key="clave"
                         :value="clave"
@@ -1082,6 +1089,15 @@ function eliminar(): void {
                         :trabajador="trabajador"
                         :historial="historial ?? []"
                         :grupos="grupos_historial ?? []"
+                        :catalogos="catalogos"
+                    />
+                </TabsContent>
+
+                <!-- Derechohabientes -->
+                <TabsContent v-if="trabajador" value="familia" class="pt-4">
+                    <Derechohabientes
+                        :trabajador="trabajador"
+                        :derechohabientes="derechohabientes ?? []"
                         :catalogos="catalogos"
                     />
                 </TabsContent>

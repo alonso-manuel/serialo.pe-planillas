@@ -34,6 +34,7 @@ class AuditoriaController extends Controller
         'liquidacion' => 'Liquidación',
         'renta_otro_empleador' => 'Renta de otro empleador',
         'firma_digital' => 'Firma digital',
+        'derechohabiente' => 'Derechohabiente',
         'licencia' => 'Licencia',
         'respaldo' => 'Respaldo',
         'soporte' => 'Soporte',
