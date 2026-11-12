@@ -26,6 +26,33 @@ Internet ──HTTPS──► proxy del servidor (Nginx/Caddy/Traefik, ya existe
 | `deploy/docker/mysql-permisos.sh`       | Permiso para crear las bases `planillas_*` de cada estudio           |
 | `.dockerignore`                         | Deja fuera de la imagen docs, videos, herramientas y tests           |
 
+## 0. Probar en la PC (Docker Desktop)
+
+Antes de tocar el VPS se puede levantar todo en la PC. `*.localhost` apunta a la propia PC en el navegador.
+
+```bash
+cp deploy/docker/serialo.env.ejemplo serialo.env
+# En serialo.env: APP_KEY y claves de MySQL, y para local:
+#   APP_URL=http://admin.localhost:8090
+#   PLANILLAS_DOMINIOS_CENTRALES=localhost,admin.localhost
+#   PLANILLAS_DOMINIO_PANEL=admin.localhost
+#   PLANILLAS_URL_ESTUDIO=http://{estudio}.localhost:8090
+#   SESSION_SECURE_COOKIE=false   MAIL_MAILER=log
+docker compose build && docker compose up -d
+docker compose exec app php artisan estudios:migrar
+docker compose exec app php artisan estudio:crear prueba "Estudio de Prueba" admin@prueba.test --clave='Clave-Segura-2026!'
+# Datos de demo (solo en pruebas): catálogos y empresas ficticias
+docker compose exec app php artisan tenants:seed --tenants=prueba --class=CatalogosSeeder
+docker compose exec app php artisan tenants:seed --tenants=prueba --class=DemoSeeder
+```
+
+Abrir `http://prueba.localhost:8090` (demo@serialo.pe / demo1234). Al terminar: `docker compose down` (conserva los
+volúmenes) o `docker compose down -v` para borrarlo todo **solo en la PC**.
+
+Verificado el 12/11/2026 en Docker Desktop 29.9: ingreso, cálculo de planilla, PDF de boletas, respaldo de la base
+central y del estudio, cola y programador. La cola muestra errores «Table jobs doesn't exist» solo hasta que se corre
+`estudios:migrar` la primera vez.
+
 ## 1. Antes de empezar (reconocimiento, sin cambiar nada)
 
 ```bash
@@ -96,6 +123,8 @@ server {
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
         proxy_set_header X-Forwarded-Host $host;
         proxy_read_timeout 120s;
+        proxy_buffer_size 32k;          # cabeceras grandes de Laravel (si no: 502 en el login)
+        proxy_buffers 16 32k;
     }
 }
 server { listen 80; listen [::]:80; server_name *.impulso.cfd; return 301 https://$host$request_uri; }
