@@ -196,14 +196,16 @@ GitHub Actions construirá las imágenes y el servidor solo hará `docker compos
 
 ## 6. Operación
 
-| Tarea                    | Comando                                                                                               |
-| ------------------------ | ----------------------------------------------------------------------------------------------------- |
-| Ver registros            | `docker compose logs -f app cola programador`                                                         |
-| Crear un estudio         | `docker compose exec app php artisan estudio:crear garcia "Estudio García" admin@garcia.pe --invitar` |
-| Respaldo ahora           | `docker compose exec app php artisan respaldos:crear`                                                 |
-| Copiar respaldos al host | `docker compose cp app:/var/www/html/storage/app/private/respaldos ./respaldos`                       |
-| Consola de MySQL         | `docker compose exec mysql mysql -uroot -p`                                                           |
-| Reiniciar todo           | `docker compose restart`                                                                              |
+| Tarea                    | Comando                                                                                                                               |
+| ------------------------ | ------------------------------------------------------------------------------------------------------------------------------------- |
+| Ver registros            | `docker compose logs -f app cola programador`                                                                                         |
+| Crear un estudio         | `docker compose exec app php artisan estudio:crear garcia "Estudio García" admin@garcia.pe --invitar`                                 |
+| Respaldo ahora           | `docker compose exec app php artisan respaldos:crear`                                                                                 |
+| Copiar respaldos al host | `docker compose cp app:/var/www/html/storage/app/private/respaldos ./respaldos`                                                       |
+| Consola de MySQL         | `docker compose exec mysql mysql -uroot -p`                                                                                           |
+| Reiniciar todo           | `docker compose restart`                                                                                                              |
+| Probar el correo         | `docker compose exec app php artisan tinker --execute="Mail::raw('Prueba', fn (\$m) => \$m->to('tu@correo.pe')->subject('Prueba'));"` |
+| Cambiar una variable     | Editar `serialo.env` y `docker compose up -d --force-recreate app cola programador` (la configuración se cachea al arrancar)          |
 
 - **Respaldos fuera del servidor:** los diarios quedan en el volumen `storage`. Copiarlos a otro lugar (rclone a un
   almacenamiento externo o `PLANILLAS_RESPALDO_DISCO`, ver [respaldos.md](respaldos.md)); el volumen `mysql` no
