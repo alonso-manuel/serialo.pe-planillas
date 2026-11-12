@@ -97,6 +97,10 @@ de los videos ya grabados (`videos/`, ver `guiones.md`) o se graban de nuevo en 
 | V3    | «¿Quién cambió este sueldo?»                 | Auditoría con antes/después → periodo cerrado e inalterable → boleta firmada | «Seguridad de verdad · Demo gratis»     | 09-auditoria, 28-firma-digital  |
 | V4    | «Tu planilla, lista en minutos»              | Novedades → calcular → boletas PDF → envío por correo → CTS y gratificación  | «Déjanos tus datos · 15 días gratis»    | 08-periodos, 11-boletas, 13-cts |
 
+**Generado:** `videos/anuncio-v1.mp4` (V1, 1080×1920, H.264, ~32 s, sin audio). Se regenera con
+`cd tools/videos && BASE_URL=http://127.0.0.1:8000 node anuncios.js` sobre la base de demo con la cola corriendo
+(toma con `anuncios.js`, montaje en `anuncio-v1.html`, MP4 con ffmpeg o su imagen de Docker).
+
 ## 5. WhatsApp y formulario
 
 **Mensaje de bienvenida (WhatsApp Business):**

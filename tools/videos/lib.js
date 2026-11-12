@@ -6,7 +6,11 @@ const path = require('path');
 
 const BASE = process.env.BASE_URL || 'http://127.0.0.1:8000';
 const SALIDA = process.env.SALIDA || path.resolve(__dirname, '../../videos');
-const TAM = { width: 1280, height: 720 };
+// Tamaño de la grabación: 1280×720 en los tutoriales; los anuncios verticales usan otra toma (ANCHO/ALTO).
+const TAM = {
+    width: Number(process.env.ANCHO) || 1280,
+    height: Number(process.env.ALTO) || 720,
+};
 
 // Capa que se inyecta en cada página: subtítulo inferior, título de escena y cursor.
 const CAPA = `

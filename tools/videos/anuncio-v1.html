@@ -1,0 +1,429 @@
+<!doctype html>
+<html lang="es">
+    <head>
+        <meta charset="utf-8" />
+        <!-- Anuncio vertical V1 (docs/videos/meta-ads.md): gancho, toma del sistema y cierre a WhatsApp.
+             Lo graba anuncios.js; la toma llega por ?toma=archivo.webm. Datos de la toma: ficticios. -->
+        <style>
+            * {
+                box-sizing: border-box;
+                margin: 0;
+            }
+            html,
+            body {
+                width: 1080px;
+                height: 1920px;
+                overflow: hidden;
+                font-family: 'Segoe UI', system-ui, sans-serif;
+            }
+            body {
+                background:
+                    radial-gradient(
+                        1200px 900px at 85% -10%,
+                        #3b82f6 0%,
+                        transparent 60%
+                    ),
+                    radial-gradient(
+                        900px 900px at -10% 110%,
+                        #1e40af 0%,
+                        transparent 60%
+                    ),
+                    #0b1530;
+                color: #fff;
+            }
+            .fase {
+                position: absolute;
+                inset: 0;
+                opacity: 0;
+                transition: opacity 0.5s ease;
+            }
+            .fase.on {
+                opacity: 1;
+            }
+
+            /* Gancho */
+            #gancho {
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                padding: 0 90px 260px;
+                gap: 56px;
+            }
+            #gancho h1 {
+                font-size: 92px;
+                line-height: 1.06;
+                font-weight: 800;
+                letter-spacing: -1px;
+            }
+            #gancho h1 span {
+                color: #fca5a5;
+            }
+            .excel {
+                display: grid;
+                grid-template-columns: repeat(4, 1fr);
+                gap: 6px;
+                width: 820px;
+                transform: rotate(-2deg);
+            }
+            .excel div {
+                background: #fff;
+                color: #0b1530;
+                font:
+                    600 32px Consolas,
+                    monospace;
+                padding: 18px 8px;
+                text-align: center;
+                border-radius: 6px;
+            }
+            .excel .err {
+                background: #fee2e2;
+                color: #b91c1c;
+                animation: parpadeo 0.6s steps(2) infinite;
+            }
+            @keyframes parpadeo {
+                50% {
+                    background: #fecaca;
+                }
+            }
+
+            /* Demostración */
+            #demo .titulo {
+                position: absolute;
+                top: 210px;
+                left: 60px;
+                right: 60px;
+                height: 250px;
+                display: flex;
+                align-items: flex-end;
+            }
+            #texto {
+                font-size: 66px;
+                line-height: 1.1;
+                font-weight: 800;
+                letter-spacing: -0.5px;
+            }
+            #texto b {
+                color: #93c5fd;
+                font-weight: 800;
+            }
+            .marco {
+                position: absolute;
+                top: 500px;
+                left: 40px;
+                width: 1000px;
+                height: 800px;
+                border-radius: 28px;
+                overflow: hidden;
+                box-shadow:
+                    0 30px 80px rgba(0, 0, 0, 0.55),
+                    0 0 0 6px rgba(255, 255, 255, 0.12);
+                background: #fff;
+            }
+            .marco video {
+                width: 100%;
+                height: 100%;
+                display: block;
+            }
+            .chips {
+                position: absolute;
+                top: 1350px;
+                left: 60px;
+                right: 60px;
+                display: flex;
+                flex-wrap: wrap;
+                gap: 16px;
+            }
+            .chips span {
+                background: rgba(255, 255, 255, 0.14);
+                border: 1px solid rgba(255, 255, 255, 0.28);
+                padding: 12px 24px;
+                border-radius: 999px;
+                font-size: 32px;
+                font-weight: 600;
+            }
+
+            /* Cierre */
+            #cierre {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                text-align: center;
+                padding: 0 80px 300px;
+                gap: 40px;
+            }
+            .logo svg {
+                width: 200px;
+                height: 200px;
+                border-radius: 44px;
+                box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+            }
+            .nombre {
+                font-size: 72px;
+                font-weight: 800;
+                display: flex;
+                align-items: center;
+                gap: 22px;
+            }
+            .beta {
+                font-size: 30px;
+                font-weight: 800;
+                letter-spacing: 2px;
+                color: #78350f;
+                background: #fcd34d;
+                padding: 8px 18px;
+                border-radius: 999px;
+            }
+            .oferta {
+                font-size: 64px;
+                line-height: 1.12;
+                font-weight: 800;
+            }
+            .oferta b {
+                color: #fcd34d;
+            }
+            .whatsapp {
+                display: flex;
+                align-items: center;
+                gap: 22px;
+                background: #22c55e;
+                color: #052e16;
+                font-size: 50px;
+                font-weight: 800;
+                padding: 30px 54px;
+                border-radius: 999px;
+                box-shadow: 0 16px 50px rgba(34, 197, 94, 0.45);
+                animation: latido 1.1s ease-in-out infinite;
+            }
+            .whatsapp svg {
+                width: 64px;
+                height: 64px;
+            }
+            @keyframes latido {
+                50% {
+                    transform: scale(1.05);
+                }
+            }
+            .pie {
+                font-size: 34px;
+                color: #cbd5e1;
+            }
+        </style>
+    </head>
+    <body>
+        <section id="gancho" class="fase">
+            <h1>¿Tu macro de planillas se <span>rompió</span> otra vez? 😩</h1>
+            <div class="excel">
+                <div>Sueldo</div>
+                <div>ONP</div>
+                <div>AFP</div>
+                <div>Neto</div>
+                <div>1,500.00</div>
+                <div class="err">#¡REF!</div>
+                <div class="err">#¡VALOR!</div>
+                <div class="err">#¡REF!</div>
+            </div>
+        </section>
+
+        <section id="demo" class="fase">
+            <div class="titulo"><p id="texto"></p></div>
+            <div class="marco">
+                <video id="toma" muted playsinline preload="auto"></video>
+            </div>
+            <div class="chips">
+                <span>Multiempresa</span><span>PLAME y AFPnet</span
+                ><span>Boletas PDF</span><span>CTS y gratificación</span>
+            </div>
+        </section>
+
+        <section id="cierre" class="fase">
+            <div class="logo">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+                    <rect width="32" height="32" rx="7" fill="#2558a8" />
+                    <g fill="#7fcbe8">
+                        <rect
+                            x="9.4"
+                            y="7.6"
+                            width="3.2"
+                            height="4.4"
+                            rx="0.7"
+                            transform="rotate(0 11 16)"
+                        />
+                        <rect
+                            x="9.4"
+                            y="7.6"
+                            width="3.2"
+                            height="4.4"
+                            rx="0.7"
+                            transform="rotate(45 11 16)"
+                        />
+                        <rect
+                            x="9.4"
+                            y="7.6"
+                            width="3.2"
+                            height="4.4"
+                            rx="0.7"
+                            transform="rotate(90 11 16)"
+                        />
+                        <rect
+                            x="9.4"
+                            y="7.6"
+                            width="3.2"
+                            height="4.4"
+                            rx="0.7"
+                            transform="rotate(135 11 16)"
+                        />
+                        <rect
+                            x="9.4"
+                            y="7.6"
+                            width="3.2"
+                            height="4.4"
+                            rx="0.7"
+                            transform="rotate(180 11 16)"
+                        />
+                        <rect
+                            x="9.4"
+                            y="7.6"
+                            width="3.2"
+                            height="4.4"
+                            rx="0.7"
+                            transform="rotate(225 11 16)"
+                        />
+                        <rect
+                            x="9.4"
+                            y="7.6"
+                            width="3.2"
+                            height="4.4"
+                            rx="0.7"
+                            transform="rotate(270 11 16)"
+                        />
+                        <rect
+                            x="9.4"
+                            y="7.6"
+                            width="3.2"
+                            height="4.4"
+                            rx="0.7"
+                            transform="rotate(315 11 16)"
+                        />
+                        <circle cx="11" cy="16" r="5.4" />
+                    </g>
+                    <circle cx="11" cy="16" r="2.3" fill="#2558a8" />
+                    <g fill="#ffffff">
+                        <rect
+                            x="20.4"
+                            y="9.5"
+                            width="1.6"
+                            height="13"
+                            rx="0.4"
+                        />
+                        <rect x="23" y="9.5" width="0.9" height="13" rx="0.3" />
+                        <rect
+                            x="24.8"
+                            y="9.5"
+                            width="1.9"
+                            height="13"
+                            rx="0.4"
+                        />
+                        <rect
+                            x="27.5"
+                            y="9.5"
+                            width="0.9"
+                            height="13"
+                            rx="0.3"
+                        />
+                    </g>
+                </svg>
+            </div>
+            <div class="nombre">
+                Serialo Planillas <span class="beta">BETA</span>
+            </div>
+            <p class="oferta">
+                Deja el Excel.<br />Prueba <b>gratis 15 días</b>.
+            </p>
+            <div class="whatsapp">
+                <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                    <path
+                        d="M12 2C6.5 2 2 6.1 2 11.2c0 2.9 1.5 5.5 3.8 7.2L5 22l3.9-2.1c1 .3 2 .4 3.1.4 5.5 0 10-4.1 10-9.1S17.5 2 12 2zm-4 10.5a1.3 1.3 0 110-2.6 1.3 1.3 0 010 2.6zm4 0a1.3 1.3 0 110-2.6 1.3 1.3 0 010 2.6zm4 0a1.3 1.3 0 110-2.6 1.3 1.3 0 010 2.6z"
+                    />
+                </svg>
+                Escríbenos por WhatsApp
+            </div>
+            <p class="pie">
+                Para estudios contables y empresas · Hecho en el Perú
+            </p>
+        </section>
+
+        <script>
+            const espera = (ms) => new Promise((r) => setTimeout(r, ms));
+            const mostrar = (id) =>
+                document
+                    .querySelectorAll('.fase')
+                    .forEach((f) => f.classList.toggle('on', f.id === id));
+
+            // Texto superior según el avance de la toma (fracción de su duración).
+            const TEXTOS = [
+                [
+                    0.0,
+                    'Registra faltas y horas extra <b>como en una hoja de cálculo</b>',
+                ],
+                [
+                    0.24,
+                    'Calcula la planilla de <b>TODAS tus empresas</b> en un clic ⚡',
+                ],
+                [
+                    0.55,
+                    '<b>ONP, AFP, EsSalud, quinta, gratificación y CTS</b>: automático',
+                ],
+                [
+                    0.82,
+                    'Planilla lista ✅ <b>Boletas, PLAME y AFPnet</b> en minutos',
+                ],
+            ];
+
+            window.terminado = false;
+            (async () => {
+                const toma = document.getElementById('toma');
+                toma.src = decodeURIComponent(
+                    new URLSearchParams(location.search).get('toma') || '',
+                );
+                await new Promise((r) =>
+                    toma.readyState >= 1
+                        ? r()
+                        : toma.addEventListener('loadedmetadata', r, {
+                              once: true,
+                          }),
+                );
+                // La demostración dura ~20 s aunque la toma sea más larga (se acelera, nunca se frena).
+                const duracion = isFinite(toma.duration) ? toma.duration : 30;
+                toma.playbackRate = Math.max(1, duracion / 20);
+
+                await espera(300);
+                mostrar('gancho');
+                await espera(3200);
+
+                const texto = document.getElementById('texto');
+                let actual = -1;
+                toma.addEventListener('timeupdate', () => {
+                    const avance = toma.currentTime / duracion;
+                    const i = TEXTOS.findLastIndex(
+                        ([desde]) => avance >= desde,
+                    );
+                    if (i !== actual) {
+                        actual = i;
+                        texto.innerHTML = TEXTOS[i][1];
+                    }
+                });
+                texto.innerHTML = TEXTOS[0][1];
+                mostrar('demo');
+                await toma.play();
+                await new Promise((r) =>
+                    toma.addEventListener('ended', r, { once: true }),
+                );
+
+                mostrar('cierre');
+                await espera(5500);
+                window.terminado = true;
+            })();
+        </script>
+    </body>
+</html>
