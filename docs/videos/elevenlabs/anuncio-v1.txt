@@ -1,11 +1,13 @@
-¿Tu planilla en Excel te hace esto? Macros rotas, fórmulas a mano, pe lame digitado... y sin respaldo.
+¿Macro rota? <break time="0.3s" /> ¿Pe lame a mano? <break time="0.2s" /> ¿Un Excel por empresa? <break time="0.2s" /> ¿Y sin respaldo?
+<break time="0.3s" />
+¡Hay una forma mejor!
+<break time="0.4s" />
+Con Serialo Planillas registras las novedades... como en Excel.
 <break time="0.6s" />
-Con Serialo Planillas registras faltas y horas extra como en una hoja de cálculo.
+Y calculas TODAS tus empresas... ¡en un solo clic!
 <break time="0.5s" />
-Y calculas la planilla de todas tus empresas a la vez, con un solo clic.
-<break time="0.8s" />
-O ene pe, a efe pe, Es Salud, quinta, gratificación y ce te ese: todo automático.
+Aportes, quinta y ce te ese: ¡todo automático!
 <break time="0.4s" />
-Planilla lista: boletas, pe lame y a efe pe net en minutos.
-<break time="0.4s" />
-Serialo Planillas. Deja el Excel: pide tu demo por WhatsApp.
+Boletas, pe lame y a efe pe net... ¡en minutos!
+<break time="0.5s" />
+Deja el Excel. Escríbenos por WhatsApp y pide tu demo.

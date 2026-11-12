@@ -90,35 +90,48 @@ pulsar «Ver más» son las primeras ~125 caracteres, así que el gancho va al i
 Siempre con subtítulos grandes en pantalla (la mayoría ve sin sonido) y el logo + «Beta» al final. Las tomas salen
 de los videos ya grabados (`videos/`, ver `guiones.md`) o se graban de nuevo en vertical.
 
-| Guion | 0–3 s (gancho)                                            | 3–22 s (demostración)                                                        | Cierre (22–30 s)                         | Tomas base                      |
-| ----- | --------------------------------------------------------- | ---------------------------------------------------------------------------- | ---------------------------------------- | ------------------------------- |
-| V1    | «¿Tu planilla en Excel te hace esto?» + 9 errores en ~5 s | Grilla de novedades → «Calcular todas las empresas» → avance → neto del mes  | «Pide tu demo por WhatsApp»              | 08-periodos, 10-panel           |
-| V2    | «PLAME en 10 segundos»                                    | Periodo cerrado → PLAME «Descargar todas» → visor con el .rem → AFPnet       | «Para estudios contables · Pide tu demo» | 15-plame, 16-afpnet             |
-| V3    | «¿Quién cambió este sueldo?»                              | Auditoría con antes/después → periodo cerrado e inalterable → boleta firmada | «Seguridad de verdad · Pide tu demo»     | 09-auditoria, 28-firma-digital  |
-| V4    | «Tu planilla, lista en minutos»                           | Novedades → calcular → boletas PDF → envío por correo → CTS y gratificación  | «Déjanos tus datos · Pide tu demo»       | 08-periodos, 11-boletas, 13-cts |
+| Guion | 0–3 s (gancho)                                                                                         | 3–22 s (demostración)                                                        | Cierre (22–30 s)                         | Tomas base                      |
+| ----- | ------------------------------------------------------------------------------------------------------ | ---------------------------------------------------------------------------- | ---------------------------------------- | ------------------------------- |
+| V1    | 4 tarjetas rápidas: #¡REF!, PLAME a mano, 1 Excel por empresa, ¿y el respaldo? → «Hay una forma mejor» | Grilla de novedades → «Calcular todas las empresas» → avance → neto del mes  | «Pide tu demo por WhatsApp»              | 08-periodos, 10-panel           |
+| V2    | «PLAME en 10 segundos»                                                                                 | Periodo cerrado → PLAME «Descargar todas» → visor con el .rem → AFPnet       | «Para estudios contables · Pide tu demo» | 15-plame, 16-afpnet             |
+| V3    | «¿Quién cambió este sueldo?»                                                                           | Auditoría con antes/después → periodo cerrado e inalterable → boleta firmada | «Seguridad de verdad · Pide tu demo»     | 09-auditoria, 28-firma-digital  |
+| V4    | «Tu planilla, lista en minutos»                                                                        | Novedades → calcular → boletas PDF → envío por correo → CTS y gratificación  | «Déjanos tus datos · Pide tu demo»       | 08-periodos, 11-boletas, 13-cts |
 
-**Generado:** `videos/anuncio-v1.mp4` (V1, 1080×1920, H.264, ~35 s, sin audio): catálogo de 9 errores del Excel en los primeros ~5 s, demostración y cierre «Pide tu demo por WhatsApp». Se regenera con
+**Generado:** `videos/anuncio-v1.mp4` (V1, 1080×1920, H.264, 25 s, sin audio): gancho de 4 tarjetas rápidas, demostración con movimiento de cámara y cierre «Pide tu demo por WhatsApp». Se regenera con
 `cd tools/videos && BASE_URL=http://127.0.0.1:8000 node anuncios.js` sobre la base de demo con la cola corriendo
 (toma con `anuncios.js`, montaje en `anuncio-v1.html`, MP4 con ffmpeg o su imagen de Docker).
 
-### Voz en off del anuncio V1 (ElevenLabs)
+### Voz en off del anuncio V1 (ElevenLabs) — versión 2
 
-Texto listo para pegar: [`elevenlabs/anuncio-v1.txt`](elevenlabs/anuncio-v1.txt). Tiempos medidos en `anuncio-v1.mp4`
-(detección de cambios de escena); cada bloque empieza cuando aparece su imagen y cabe en su tramo a ~2.8 palabras/s.
+Video: `videos/anuncio-v1.mp4` (25 s). Gancho de 4 tarjetas rápidas que se reemplazan, demostración con zoom y
+desplazamiento de cámara hacia cada momento clave (marcas que graba `anuncios.js`), textos cortos con rebote y cierre
+«Pide tu demo por WhatsApp». Texto: [`elevenlabs/anuncio-v1.txt`](elevenlabs/anuncio-v1.txt) (modelo Multilingual v2)
+o [`elevenlabs/anuncio-v1-v3.txt`](elevenlabs/anuncio-v1-v3.txt) (modelo v3, con etiquetas de emoción). Tiempos
+medidos en el MP4 (cambios de escena):
 
-| Tramo       | En pantalla                                       | Narración                                                                                          |
-| ----------- | ------------------------------------------------- | -------------------------------------------------------------------------------------------------- |
-| 0.4–6.7 s   | «¿Tu planilla en Excel te hace esto?» + 9 errores | ¿Tu planilla en Excel te hace esto? Macros rotas, fórmulas a mano, PLAME digitado… y sin respaldo. |
-| 6.8–12.4 s  | Grilla de novedades                               | Con Serialo Planillas registras faltas y horas extra como en una hoja de cálculo.                  |
-| 12.4–19.6 s | «Calcular todas las empresas» y su avance         | Y calculas la planilla de todas tus empresas a la vez, con un solo clic.                           |
-| 19.6–25.9 s | «ONP, AFP, EsSalud, quinta, gratificación y CTS»  | ONP, AFP, EsSalud, quinta, gratificación y CTS: todo automático.                                   |
-| 25.9–30.2 s | «Planilla lista ✅ Boletas, PLAME y AFPnet»       | Planilla lista: boletas, PLAME y AFPnet en minutos.                                                |
-| 30.2–34.9 s | Cierre: logo, Beta, «Pide tu demo por WhatsApp»   | Serialo Planillas. Deja el Excel: pide tu demo por WhatsApp.                                       |
+| Tramo        | En pantalla                                                       | Voz (énfasis en mayúsculas o signos ¡!)                       |
+| ------------ | ----------------------------------------------------------------- | ------------------------------------------------------------- |
+| 0.25–1.0 s   | Tarjeta «#¡REF!»                                                  | ¿Macro rota?                                                  |
+| 1.0–1.8 s    | Tarjeta «PLAME digitado a mano»                                   | ¿PLAME a mano?                                                |
+| 1.8–2.6 s    | Tarjeta «1 Excel por cada empresa»                                | ¿Un Excel por empresa?                                        |
+| 2.6–3.4 s    | Tarjeta «¿Y el respaldo?»                                         | ¿Y sin respaldo?                                              |
+| 3.4–4.5 s    | «Hay una forma mejor ⚡»                                          | ¡Hay una forma mejor!                                         |
+| 4.6–9.3 s    | Novedades (zoom a la celda)                                       | Con Serialo Planillas registras las novedades… como en Excel. |
+| 9.35–13.5 s  | «TODAS tus empresas en un solo clic» (zoom al botón y al diálogo) | Y calculas TODAS tus empresas… ¡en un solo clic!              |
+| 13.55–17.0 s | «ONP, AFP, EsSalud, CTS: automático» (zoom al avance)             | Aportes, quinta y CTS: ¡todo automático!                      |
+| 17.0–20.4 s  | «Boletas, PLAME y AFPnet en minutos» (zoom al neto)               | Boletas, PLAME y AFPnet… ¡en minutos!                         |
+| 20.45–25.0 s | Cierre: logo, Beta, «Pide tu demo por WhatsApp»                   | Deja el Excel. Escríbenos por WhatsApp y pide tu demo.        |
 
-Configuración: Eleven Multilingual v2, voz en español latinoamericano enérgica pero profesional, Stability ~45 %,
-Similarity ~75 %, Style 10–20 %, velocidad 1.05–1.1 (anuncio con ritmo). En CapCut o Clipchamp: poner el audio en
-0.4 s; si un bloque se adelanta o atrasa, cortar en su pausa y moverlo al inicio de su tramo. Música de fondo
-(biblioteca de Meta o CapCut) al 10–15 %. Si «WhatsApp» suena raro, escribirlo «guatsap».
+**Para que no suene plana:** la voz _Milena (silky, sweet, neutral)_ es suave y tranquila; para un anuncio conviene
+una voz **enérgica o de publicidad** en español latinoamericano (en la Voice Library, filtrar por español y buscar
+«energetic», «advertising» o «upbeat»). Ajustes en Multilingual v2: **Stability 30–35 %** (más expresiva),
+Similarity ~75 %, **Style 40–50 %**, Speaker boost activado y **velocidad 1.1**. Con el modelo **v3** usar el texto
+con etiquetas (`[excited]`, `[confident]`…), que marcan la emoción de cada frase. Si una frase sale plana, se
+regenera solo esa.
+
+**Montaje (CapCut o Clipchamp):** proyecto en **9:16 (1080×1920)** —la versión anterior se exportó en 1800×1440 con
+franjas negras—; cada párrafo del audio empieza al inicio de su tramo de la tabla (cortar en las pausas y mover);
+música de fondo con ritmo al 10–15 % y un golpe de sonido («whoosh» o «hit») en cada tarjeta del gancho.
 
 ## 5. WhatsApp y formulario
 
