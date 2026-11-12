@@ -164,6 +164,16 @@ Probar: `https://admin.impulso.cfd` muestra el ingreso del panel central.
 El Nginx interno vuelve a resolver el contenedor `app` cada 10 s (DNS de Docker), así que recrear `app` en una
 actualización no deja a `web` con una IP vieja (502).
 
+## Seguridad del servidor (aplicada en el VPS de Contabo, 12/11/2026)
+
+- Ubuntu 24.04 actualizado, Docker instalado con `get.docker.com` y 2 GB de swap (`/swapfile`).
+- Firewall `ufw`: solo SSH, 80 y 443. MySQL y Redis no se publican (solo la red interna de Docker).
+- SSH **solo con llave**: `/etc/ssh/sshd_config.d/00-serialo.conf` (`PasswordAuthentication no`,
+  `PermitRootLogin prohibit-password`); se lee antes que `50-cloud-init.conf`, que la activaba. Para entrar sin
+  llave queda la consola VNC del panel de Contabo.
+- `fail2ban` con la jaula `sshd`.
+- Llave de despliegue de **solo lectura** en GitHub (`~/.ssh/serialo_deploy`, alias en `~/.ssh/config`).
+
 ## 5. Actualizar a una versión nueva
 
 ```bash

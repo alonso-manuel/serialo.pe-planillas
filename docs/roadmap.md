@@ -77,7 +77,7 @@ Marca `[x]` al terminar (o usa `/actualizar-roadmap`). Cada tarea: código + tes
 - [x] Planes SaaS: plan y límites por cuenta (plantillas en config), editar desde el panel, vencimiento con solo lectura y avisos por correo (3 días antes y al vencer) — ver docs/multitenant.md
 - [x] Respaldos automáticos: diario a las 03:00, por estudio en SaaS, 14 días, copia fuera del servidor opcional, pantalla de descarga para el admin y respaldo previo a eliminar una cuenta — ver docs/respaldos.md
 - [x] Guía y scripts para un VPS dedicado (referencia) — ver docs/vps.md
-- [ ] **Al final:** despliegue con Docker en el VPS compartido (dominio `impulso.cfd`: `*.impulso.cfd` y `admin.impulso.cfd`), sin chocar con las otras apps
+- [x] Despliegue con Docker en el VPS de Contabo (12/11/2026): `https://admin.impulso.cfd` y `*.impulso.cfd` con Caddy (HTTPS bajo demanda), firewall, solo llaves SSH y fail2ban — ver docs/docker.md. Pendiente: correo con Resend y CI/CD con GitHub Actions
 - ~~Actualizador desde el panel (instalaciones únicas)~~ — descartado el 10/11
 - ~~Script de empaquetado (zip versionado)~~ — descartado el 10/11
 
