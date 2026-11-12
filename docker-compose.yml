@@ -31,18 +31,18 @@ services:
         <<: *app
         command:
             [
-                "php",
-                "artisan",
-                "queue:work",
-                "--sleep=3",
-                "--tries=3",
-                "--max-time=3600",
+                'php',
+                'artisan',
+                'queue:work',
+                '--sleep=3',
+                '--tries=3',
+                '--max-time=3600',
             ]
 
     # Respaldos 03:00, avisos de vencimiento y demás tareas programadas.
     programador:
         <<: *app
-        command: ["php", "artisan", "schedule:work"]
+        command: ['php', 'artisan', 'schedule:work']
 
     web:
         image: serialo-web:${SERIALO_VERSION:-latest}
@@ -50,7 +50,7 @@ services:
             context: .
             target: web
         ports:
-            - "127.0.0.1:${SERIALO_PUERTO:-8090}:80"
+            - '127.0.0.1:${SERIALO_PUERTO:-8090}:80'
         depends_on:
             - app
         restart: unless-stopped
@@ -59,7 +59,7 @@ services:
     caddy:
         image: caddy:2.10-alpine
         profiles: ['proxy']
-        env_file: serialo.env   # CADDY_EMAIL
+        env_file: serialo.env # CADDY_EMAIL
         ports:
             - '80:80'
             - '443:443'
@@ -81,7 +81,7 @@ services:
         healthcheck:
             test:
                 [
-                    "CMD-SHELL",
+                    'CMD-SHELL',
                     'mysqladmin ping -h 127.0.0.1 -uroot -p"$$MYSQL_ROOT_PASSWORD" --silent',
                 ]
             interval: 5s
@@ -91,7 +91,7 @@ services:
 
     redis:
         image: redis:7.4-alpine
-        command: ["redis-server", "--save", "", "--appendonly", "no"]
+        command: ['redis-server', '--save', '', '--appendonly', 'no']
         restart: unless-stopped
 
 volumes:
