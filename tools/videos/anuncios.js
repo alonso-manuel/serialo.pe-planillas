@@ -3,6 +3,7 @@
 // 2) La monta en anuncio-v1.html (1080×1920) con textos y cierre, y graba ese montaje.
 // 3) Convierte a MP4 (H.264) con ffmpeg (en Docker si no está instalado).
 // Uso: BASE_URL=http://127.0.0.1:8000 node anuncios.js   (BD de demo con la cola corriendo, como los videos)
+//      SOLO_MONTAJE=1 node anuncios.js                     (rehace el montaje con la toma ya grabada)
 process.env.ANCHO = process.env.ANCHO || '1000';
 process.env.ALTO = process.env.ALTO || '800';
 
@@ -120,7 +121,13 @@ function aMp4(webm) {
 
 void (async () => {
     fs.mkdirSync(SALIDA, { recursive: true });
-    await grabar('anuncio-v1-toma', tomaV1, { empresa: 'Distribuidora' });
+    // SOLO_MONTAJE=1: reutiliza la toma ya grabada (cambios de textos o diseño sin volver a grabar el sistema).
+    if (
+        !process.env.SOLO_MONTAJE ||
+        !fs.existsSync(archivo('anuncio-v1-toma.webm'))
+    ) {
+        await grabar('anuncio-v1-toma', tomaV1, { empresa: 'Distribuidora' });
+    }
     const webm = await montar(
         'anuncio-v1',
         'anuncio-v1.html',

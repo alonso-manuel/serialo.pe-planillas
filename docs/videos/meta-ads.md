@@ -1,8 +1,8 @@
 # Campaña en Meta Ads (Facebook e Instagram)
 
 Kit para anunciar la **beta** de Serialo Planillas a contadores y dueños de PYMEs en el Perú. Todo lo que se promete
-existe hoy en el sistema; sin precios en los anuncios (se conversan por WhatsApp). La oferta es la **demo gratuita
-de 15 días** (cuenta tipo demo del panel central: app limpia, vence sola).
+existe hoy en el sistema; sin precios en los anuncios (se conversan por WhatsApp). La oferta es una **demo**: te muestran el sistema
+con su caso por WhatsApp o videollamada (no se ofrece una prueba gratuita por días).
 
 ## 1. Estructura
 
@@ -43,10 +43,10 @@ pulsar «Ver más» son las primeras ~125 caracteres, así que el gancho va al i
     ```text
     ¿Otra vez la macro de planillas se rompió justo en el cierre? 😩
     Con Serialo Planillas calculas la planilla de TODAS tus empresas en un clic: ONP, AFP, EsSalud, quinta, gratificación y CTS, sin fórmulas que se dañan.
-    Estamos en beta 🚀 Pide tu demo gratuita de 15 días por WhatsApp.
+    Estamos en beta 🚀 Pide tu demo por WhatsApp y te lo mostramos con tu caso.
     ```
 - **Titular:** `Adiós a las macros de planillas`
-- **Descripción:** `Demo gratuita de 15 días`
+- **Descripción:** `Pide tu demo por WhatsApp`
 - **Botón:** Enviar mensaje · **Video:** guion V1
 
 ### Enfoque 2 · SUNAT, PLAME y AFPnet sin digitar (A1, A2)
@@ -67,7 +67,7 @@ pulsar «Ver más» son las primeras ~125 caracteres, así que el gancho va al i
     ```text
     Tus planillas, protegidas como deben estar 🔐
     Periodos cerrados que nadie puede alterar, auditoría de cada cambio, respaldos diarios automáticos y boletas firmadas digitalmente con el certificado de tu empresa (D. Leg. 1310).
-    Prueba Serialo Planillas gratis 15 días.
+    Pide tu demo y te lo mostramos con tu caso.
     ```
 - **Titular:** `Planillas seguras y auditadas`
 - **Descripción:** `Firma digital integrada`
@@ -79,10 +79,10 @@ pulsar «Ver más» son las primeras ~125 caracteres, así que el gancho va al i
     ```text
     ¿Cuántas horas al mes te quita la planilla? ⏱️
     Registras faltas y horas extra, calculas, cierras y las boletas llegan por correo a cada trabajador. Gratificaciones, CTS, vacaciones y liquidaciones salen solas.
-    Déjanos tus datos y te activamos una demo de 15 días.
+    Déjanos tus datos y te mostramos una demo con tu caso.
     ```
 - **Titular:** `Tu planilla lista en minutos`
-- **Descripción:** `Demo gratuita · Hecho en Perú`
+- **Descripción:** `Pide tu demo · Hecho en el Perú`
 - **Botón:** Registrarte · **Video:** guion V4
 
 ## 4. Guiones de video (vertical 9:16, 20–30 s, sin audio obligatorio)
@@ -90,14 +90,14 @@ pulsar «Ver más» son las primeras ~125 caracteres, así que el gancho va al i
 Siempre con subtítulos grandes en pantalla (la mayoría ve sin sonido) y el logo + «Beta» al final. Las tomas salen
 de los videos ya grabados (`videos/`, ver `guiones.md`) o se graban de nuevo en vertical.
 
-| Guion | 0–3 s (gancho)                               | 3–22 s (demostración)                                                        | Cierre (22–30 s)                        | Tomas base                      |
-| ----- | -------------------------------------------- | ---------------------------------------------------------------------------- | --------------------------------------- | ------------------------------- |
-| V1    | «¿Tu macro de planillas se rompió otra vez?» | Grilla de novedades → «Calcular todas las empresas» → avance → neto del mes  | «Pide tu demo gratis · WhatsApp»        | 08-periodos, 10-panel           |
-| V2    | «PLAME en 10 segundos»                       | Periodo cerrado → PLAME «Descargar todas» → visor con el .rem → AFPnet       | «Para estudios contables · Demo gratis» | 15-plame, 16-afpnet             |
-| V3    | «¿Quién cambió este sueldo?»                 | Auditoría con antes/después → periodo cerrado e inalterable → boleta firmada | «Seguridad de verdad · Demo gratis»     | 09-auditoria, 28-firma-digital  |
-| V4    | «Tu planilla, lista en minutos»              | Novedades → calcular → boletas PDF → envío por correo → CTS y gratificación  | «Déjanos tus datos · 15 días gratis»    | 08-periodos, 11-boletas, 13-cts |
+| Guion | 0–3 s (gancho)                                            | 3–22 s (demostración)                                                        | Cierre (22–30 s)                         | Tomas base                      |
+| ----- | --------------------------------------------------------- | ---------------------------------------------------------------------------- | ---------------------------------------- | ------------------------------- |
+| V1    | «¿Tu planilla en Excel te hace esto?» + 9 errores en ~5 s | Grilla de novedades → «Calcular todas las empresas» → avance → neto del mes  | «Pide tu demo por WhatsApp»              | 08-periodos, 10-panel           |
+| V2    | «PLAME en 10 segundos»                                    | Periodo cerrado → PLAME «Descargar todas» → visor con el .rem → AFPnet       | «Para estudios contables · Pide tu demo» | 15-plame, 16-afpnet             |
+| V3    | «¿Quién cambió este sueldo?»                              | Auditoría con antes/después → periodo cerrado e inalterable → boleta firmada | «Seguridad de verdad · Pide tu demo»     | 09-auditoria, 28-firma-digital  |
+| V4    | «Tu planilla, lista en minutos»                           | Novedades → calcular → boletas PDF → envío por correo → CTS y gratificación  | «Déjanos tus datos · Pide tu demo»       | 08-periodos, 11-boletas, 13-cts |
 
-**Generado:** `videos/anuncio-v1.mp4` (V1, 1080×1920, H.264, ~32 s, sin audio). Se regenera con
+**Generado:** `videos/anuncio-v1.mp4` (V1, 1080×1920, H.264, ~35 s, sin audio): catálogo de 9 errores del Excel en los primeros ~5 s, demostración y cierre «Pide tu demo por WhatsApp». Se regenera con
 `cd tools/videos && BASE_URL=http://127.0.0.1:8000 node anuncios.js` sobre la base de demo con la cola corriendo
 (toma con `anuncios.js`, montaje en `anuncio-v1.html`, MP4 con ffmpeg o su imagen de Docker).
 
@@ -115,10 +115,11 @@ Para mostrarte la demo, cuéntame:
 
 **Formulario instantáneo (B1):** nombre, celular (WhatsApp), correo, RUC o razón social, «¿Cuántos trabajadores
 tiene tu empresa?» (1–10 / 11–50 / más de 50) y «¿Cómo calculan hoy la planilla?» (Excel / contador externo / otro
-sistema). Mensaje final: «Te escribiremos por WhatsApp para activar tu demo de 15 días».
+sistema). Mensaje final: «Te escribiremos por WhatsApp para coordinar tu demo».
 
-**Atender rápido:** responder en menos de 1 hora en horario laboral; crear la cuenta demo desde el panel central
-(**Nueva cuenta** → tipo demo) y enviar el acceso.
+**Atender rápido:** responder en menos de 1 hora en horario laboral y coordinar la demo (por WhatsApp o
+videollamada), mostrando el sistema con el caso del interesado. Si después quiere probarlo, se le crea una cuenta
+desde el panel central (**Nueva cuenta**).
 
 ## 6. Qué medir
 
