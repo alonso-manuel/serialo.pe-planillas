@@ -101,6 +101,25 @@ de los videos ya grabados (`videos/`, ver `guiones.md`) o se graban de nuevo en 
 `cd tools/videos && BASE_URL=http://127.0.0.1:8000 node anuncios.js` sobre la base de demo con la cola corriendo
 (toma con `anuncios.js`, montaje en `anuncio-v1.html`, MP4 con ffmpeg o su imagen de Docker).
 
+### Voz en off del anuncio V1 (ElevenLabs)
+
+Texto listo para pegar: [`elevenlabs/anuncio-v1.txt`](elevenlabs/anuncio-v1.txt). Tiempos medidos en `anuncio-v1.mp4`
+(detección de cambios de escena); cada bloque empieza cuando aparece su imagen y cabe en su tramo a ~2.8 palabras/s.
+
+| Tramo       | En pantalla                                       | Narración                                                                                          |
+| ----------- | ------------------------------------------------- | -------------------------------------------------------------------------------------------------- |
+| 0.4–6.7 s   | «¿Tu planilla en Excel te hace esto?» + 9 errores | ¿Tu planilla en Excel te hace esto? Macros rotas, fórmulas a mano, PLAME digitado… y sin respaldo. |
+| 6.8–12.4 s  | Grilla de novedades                               | Con Serialo Planillas registras faltas y horas extra como en una hoja de cálculo.                  |
+| 12.4–19.6 s | «Calcular todas las empresas» y su avance         | Y calculas la planilla de todas tus empresas a la vez, con un solo clic.                           |
+| 19.6–25.9 s | «ONP, AFP, EsSalud, quinta, gratificación y CTS»  | ONP, AFP, EsSalud, quinta, gratificación y CTS: todo automático.                                   |
+| 25.9–30.2 s | «Planilla lista ✅ Boletas, PLAME y AFPnet»       | Planilla lista: boletas, PLAME y AFPnet en minutos.                                                |
+| 30.2–34.9 s | Cierre: logo, Beta, «Pide tu demo por WhatsApp»   | Serialo Planillas. Deja el Excel: pide tu demo por WhatsApp.                                       |
+
+Configuración: Eleven Multilingual v2, voz en español latinoamericano enérgica pero profesional, Stability ~45 %,
+Similarity ~75 %, Style 10–20 %, velocidad 1.05–1.1 (anuncio con ritmo). En CapCut o Clipchamp: poner el audio en
+0.4 s; si un bloque se adelanta o atrasa, cortar en su pausa y moverlo al inicio de su tramo. Música de fondo
+(biblioteca de Meta o CapCut) al 10–15 %. Si «WhatsApp» suena raro, escribirlo «guatsap».
+
 ## 5. WhatsApp y formulario
 
 **Mensaje de bienvenida (WhatsApp Business):**
