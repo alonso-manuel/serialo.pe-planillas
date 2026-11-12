@@ -414,6 +414,33 @@ En **Administración → Licencia → Acceso de soporte**, **Permitir acceso por
 Serialo.pe para ayudarle con un problema. Entra como el usuario «Soporte Serialo.pe» y todo lo que haga queda en la
 auditoría. **Quitar acceso** lo corta al momento; al vencer las 24 horas se corta solo.
 
+### 12.5 Seguridad y cumplimiento
+
+**Administración → Seguridad** resume cómo protege el sistema la información, con el estado real de la instalación:
+
+| Sección                  | Qué muestra                                                                                 |
+| ------------------------ | ------------------------------------------------------------------------------------------- |
+| Periodos cerrados        | Cuántos hay, el último cierre y las reaperturas de los últimos 90 días                      |
+| Trazabilidad y auditoría | Registros totales y de los últimos 30 días, con enlace a la auditoría                       |
+| Firma digital            | Por empresa: titular, vencimiento y estado (vigente, por vencer, vencida o sin certificado) |
+| Respaldos automáticos    | Último respaldo, cuántos hay disponibles y la política (diario, a las 03:00)                |
+| Acceso de usuarios       | Usuarios activos y quiénes aún no activan el doble factor                                   |
+
+Revísala cada mes: un certificado por vencer o un usuario sin doble factor aparecen resaltados.
+
+### 12.6 Términos del servicio y política de privacidad
+
+Están enlazados en la pantalla de ingreso («Al ingresar, aceptas…») y al pie de cada pantalla; se pueden abrir sin
+iniciar sesión.
+
+- **Términos del servicio:** el sistema es una herramienta de cálculo; la revisión de los datos y la declaración ante
+  SUNAT, AFPnet, EsSalud y Sunafil son responsabilidad de la empresa o del estudio.
+- **Política de privacidad (Ley N.º 29733):** qué datos se guardan, para qué, quién los recibe y cómo se ejercen los
+  derechos de acceso, rectificación, cancelación y oposición (ARCO).
+
+El nombre del responsable de los datos y el correo para los derechos ARCO se configuran al instalar el sistema; para
+cambiarlos, pídelo a soporte.
+
 ---
 
 ## 13. Preguntas frecuentes

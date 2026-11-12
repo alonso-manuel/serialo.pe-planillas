@@ -15,6 +15,7 @@ use App\Http\Controllers\Empresas\EstadoEmpresaController;
 use App\Http\Controllers\Empresas\FirmaDigitalController;
 use App\Http\Controllers\Empresas\LogoEmpresaController;
 use App\Http\Controllers\Instalador\InstaladorController;
+use App\Http\Controllers\Legal\LegalController;
 use App\Http\Controllers\Licencia\LicenciaController;
 use App\Http\Controllers\PanelController;
 use App\Http\Controllers\Parametros\ParametroController;
@@ -30,6 +31,7 @@ use App\Http\Controllers\Periodos\PeriodoController;
 use App\Http\Controllers\Periodos\ResumenBoletasController;
 use App\Http\Controllers\Reportes\ReporteController;
 use App\Http\Controllers\Respaldos\RespaldoController;
+use App\Http\Controllers\Seguridad\SeguridadController;
 use App\Http\Controllers\Soporte\SoporteController;
 use App\Http\Controllers\Sunat\AfpnetController;
 use App\Http\Controllers\Sunat\PlameController;
@@ -57,6 +59,10 @@ require __DIR__.'/panel.php';
 
 // Sistema instalable: no hay página pública; la raíz lleva al panel (o al login).
 Route::redirect('/', '/dashboard')->name('home');
+
+// Términos del servicio y política de privacidad: públicas (se enlazan desde el login y el pie de página).
+Route::get('terminos', [LegalController::class, 'terminos'])->name('legal.terminos');
+Route::get('privacidad', [LegalController::class, 'privacidad'])->name('legal.privacidad');
 
 // Instalador web: solo existe mientras el sistema no está instalado (middleware ModoInstalador).
 Route::prefix('instalar')->name('instalar.')
@@ -230,6 +236,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     // Auditoría (solo admin, solo lectura)
     Route::get('auditoria', [AuditoriaController::class, 'index'])->name('auditoria.index');
+
+    // Seguridad y cumplimiento (solo admin): resumen de cierres, auditoría, firma digital, respaldos y accesos
+    Route::get('seguridad', SeguridadController::class)->name('seguridad.index');
 
     // Licencia (solo admin; se puede registrar aunque el sistema esté en solo lectura)
     Route::get('licencia', [LicenciaController::class, 'show'])->name('licencia.show');

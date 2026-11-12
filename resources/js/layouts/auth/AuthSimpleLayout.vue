@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import EnlacesLegales from '@/components/legal/EnlacesLegales.vue';
 import { Link } from '@inertiajs/vue3';
 import AppLogoIcon from '@/components/AppLogoIcon.vue';
 import { home } from '@/routes';
@@ -39,5 +40,6 @@ defineProps<{
                 <slot />
             </div>
         </div>
+        <EnlacesLegales />
     </div>
 </template>

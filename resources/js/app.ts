@@ -2,6 +2,7 @@ import { createInertiaApp } from '@inertiajs/vue3';
 import { initializeTheme } from '@/composables/useAppearance';
 import AppLayout from '@/layouts/AppLayout.vue';
 import AuthLayout from '@/layouts/AuthLayout.vue';
+import LegalLayout from '@/layouts/LegalLayout.vue';
 import PanelLayout from '@/layouts/PanelLayout.vue';
 import SettingsLayout from '@/layouts/settings/Layout.vue';
 import { initializeFlashToast } from '@/lib/flashToast';
@@ -15,6 +16,8 @@ void createInertiaApp({
             case name.startsWith('auth/'):
             case name.startsWith('panel/acceso/'):
                 return AuthLayout;
+            case name.startsWith('legal/'):
+                return LegalLayout;
             case name.startsWith('panel/'):
                 return PanelLayout;
             case name.startsWith('settings/'):

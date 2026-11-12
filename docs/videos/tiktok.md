@@ -180,7 +180,7 @@ Parte 17 👉 se viene la temporada 3: quinta, liquidaciones, T-Registro y más.
 ```text
 La ficha del trabajador que SUNAT te pide, completa en 1 minuto 🪪
 Cuenta de sueldo con su banco, categoría ocupacional y la ocupación buscada en la tabla 30 de SUNAT, solo entre las válidas para su categoría. Con eso, el T-Registro sale sin pedir nada más.
-Temporada 3, parte 18 👉 sígueme.
+Parte 18 👉 sígueme.
 #SerialoPlanillas #planillas #contadoresperu #tregistro #sunat #rrhh #contabilidad #peru
 ```
 

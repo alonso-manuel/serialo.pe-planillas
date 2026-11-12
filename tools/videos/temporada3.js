@@ -661,11 +661,9 @@ module.exports = {
             await d.mover('#periodo');
             await d.sub('A los reportes del mes se sumaron tres nuevos.', 2400);
             const tarjeta = (t) =>
-                p
-                    .locator('section')
-                    .filter({
-                        has: p.getByRole('heading', { name: t, exact: true }),
-                    });
+                p.locator('section').filter({
+                    has: p.getByRole('heading', { name: t, exact: true }),
+                });
             await d.mover(
                 p.getByRole('heading', {
                     name: 'Comparativo con el mes anterior',

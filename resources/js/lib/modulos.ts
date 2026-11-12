@@ -14,6 +14,7 @@ import {
     Percent,
     PiggyBank,
     ScrollText,
+    ShieldCheck,
     SlidersHorizontal,
     TreePalm,
     UserCog,
@@ -31,6 +32,7 @@ import { index as gratificaciones } from '@/routes/gratificaciones';
 import { index as liquidaciones } from '@/routes/liquidaciones';
 import { show as licencia } from '@/routes/licencia';
 import { index as respaldos } from '@/routes/respaldos';
+import { index as seguridad } from '@/routes/seguridad';
 import { index as parametros } from '@/routes/parametros';
 import { index as periodos } from '@/routes/periodos';
 import { index as plame } from '@/routes/plame';
@@ -98,6 +100,11 @@ export const gruposNav: GrupoNav[] = [
             { title: 'Tasas AFP', href: tasasAfp(), icon: Percent },
             { title: 'Conceptos', href: conceptos(), icon: ListChecks },
             { title: 'Auditoría', href: auditoria(), icon: ScrollText },
+            {
+                title: 'Seguridad',
+                href: seguridad(),
+                icon: ShieldCheck,
+            },
             { title: 'Respaldos', href: respaldos(), icon: DatabaseBackup },
             { title: 'Licencia', href: licencia(), icon: KeyRound },
         ],

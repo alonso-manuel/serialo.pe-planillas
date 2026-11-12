@@ -8,6 +8,7 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Spinner } from '@/components/ui/spinner';
+import { privacidad, terminos } from '@/routes/legal';
 import { store } from '@/routes/login';
 import { request } from '@/routes/password';
 import PasskeyVerify from '@/components/PasskeyVerify.vue';
@@ -99,6 +100,13 @@ defineProps<{
                 <Spinner v-if="processing" />
                 Ingresar
             </Button>
+            <p class="text-center text-xs text-muted-foreground">
+                Al ingresar, aceptas los
+                <TextLink :href="terminos()">Términos del servicio</TextLink>
+                y la
+                <TextLink :href="privacidad()">Política de privacidad</TextLink
+                >.
+            </p>
         </div>
     </Form>
 </template>

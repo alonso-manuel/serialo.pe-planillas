@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import EnlacesLegales from '@/components/legal/EnlacesLegales.vue';
 import AppContent from '@/components/AppContent.vue';
 import AppShell from '@/components/AppShell.vue';
 import AppSidebar from '@/components/AppSidebar.vue';
@@ -25,6 +26,9 @@ withDefaults(defineProps<Props>(), {
             <AvisoSoporte />
             <AvisoLicencia />
             <slot />
+            <footer class="mt-auto border-t px-4 py-3 md:px-6">
+                <EnlacesLegales />
+            </footer>
         </AppContent>
         <Toaster />
     </AppShell>

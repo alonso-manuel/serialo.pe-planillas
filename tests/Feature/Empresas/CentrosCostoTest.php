@@ -68,8 +68,9 @@ class CentrosCostoTest extends TestCase
         CentroCosto::query()->create(['empresa_id' => Empresa::factory()->create()->id, 'codigo' => 'OTR', 'nombre' => 'De otra empresa', 'activo' => true]);
         $trabajador = Trabajador::factory()->for($this->empresa)->create();
 
+        // «Nuevo trabajador» usa la empresa activa; la ficha, la del trabajador.
         foreach ([route('trabajadores.create'), route('trabajadores.edit', $trabajador)] as $url) {
-            $this->get($url)->assertOk()->assertInertia(fn (Assert $page) => $page
+            $this->withSession(['empresa_id' => $this->empresa->id])->get($url)->assertOk()->assertInertia(fn (Assert $page) => $page
                 ->where('catalogos.centros_costo', [['value' => (string) $ventas->id, 'label' => 'VEN · Ventas']]));
         }
     }

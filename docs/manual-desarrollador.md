@@ -68,14 +68,15 @@ contraseña `demo1234`. `HistorialDemoSeeder` agrega un año de planillas cerrad
 
 ### Variables de entorno relevantes
 
-| Variable                                      | Uso                                                              |
-| --------------------------------------------- | ---------------------------------------------------------------- |
-| `PLANILLAS_MODO`                              | `unica` (hosting del cliente) o `saas` (VPS, ver multitenant.md) |
-| `QUEUE_CONNECTION=database`                   | Cálculo masivo y correos; en local lo procesa `composer dev`     |
-| `MAIL_MAILER=log`                             | En local los correos quedan en `storage/logs`                    |
-| `PLANILLAS_CORREOS_POR_MINUTO`                | Límite de envío de boletas                                       |
-| `RUC_DRIVER`, `DNI_DRIVER`, `DECOLECTA_TOKEN` | Consulta de RUC y DNI (`ninguno` para trabajar sin red)          |
-| `PLANILLAS_RESPALDO_*`                        | Días de retención y disco externo de respaldos                   |
+| Variable                                                | Uso                                                                                      |
+| ------------------------------------------------------- | ---------------------------------------------------------------------------------------- |
+| `PLANILLAS_MODO`                                        | `unica` (hosting del cliente) o `saas` (VPS, ver multitenant.md)                         |
+| `QUEUE_CONNECTION=database`                             | Cálculo masivo y correos; en local lo procesa `composer dev`                             |
+| `MAIL_MAILER=log`                                       | En local los correos quedan en `storage/logs`                                            |
+| `PLANILLAS_CORREOS_POR_MINUTO`                          | Límite de envío de boletas                                                               |
+| `RUC_DRIVER`, `DNI_DRIVER`, `DECOLECTA_TOKEN`           | Consulta de RUC y DNI (`ninguno` para trabajar sin red)                                  |
+| `PLANILLAS_RESPALDO_*`                                  | Días de retención y disco externo de respaldos                                           |
+| `PLANILLAS_LEGAL_RESPONSABLE`, `PLANILLAS_LEGAL_CORREO` | Responsable de los datos y correo ARCO en `/privacidad` (en SaaS, el nombre del estudio) |
 
 El instalador web se omite con `APP_ENV=local|testing` (ver instalacion.md para probarlo).
 
@@ -230,6 +231,13 @@ Antes de dar una tarea por terminada: `composer test` y `npm run types:check` en
 - Correo SMTP del hosting y `PLANILLAS_CORREOS_POR_MINUTO` según su límite.
 
 ---
+
+### Documentos legales
+
+`/terminos` y `/privacidad` (`LegalController`, páginas `resources/js/pages/legal/`) son públicas y se enlazan desde el
+login y el pie de página. Los textos describen lo que el sistema hace de verdad (datos, destinatarios, medidas de
+seguridad): si se agrega un dato personal nuevo o un servicio externo que lo reciba, actualizar la política y su
+`planillas.legal.version`. ⚠ Revisar ambos textos con un abogado antes de vender.
 
 ## 9. Problemas conocidos en Windows
 

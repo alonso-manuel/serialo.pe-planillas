@@ -53,4 +53,17 @@ return [
         'disco_externo' => env('PLANILLAS_RESPALDO_DISCO'),
     ],
 
+    /*
+    | Términos del servicio y política de privacidad (páginas públicas /terminos y /privacidad).
+    | responsable: empresa o estudio que opera esta instalación y es titular de los datos de sus trabajadores
+    |   (vacío = texto genérico; en modo saas se usa el nombre del estudio).
+    | correo: dónde se ejercen los derechos ARCO y se hacen consultas de privacidad.
+    | ⚠ Textos por revisar con un abogado antes de vender (docs/manual-usuario.md, sección 12).
+    */
+    'legal' => [
+        'version' => '12/11/2026',
+        'responsable' => env('PLANILLAS_LEGAL_RESPONSABLE'),
+        'correo' => env('PLANILLAS_LEGAL_CORREO'),
+    ],
+
 ];
