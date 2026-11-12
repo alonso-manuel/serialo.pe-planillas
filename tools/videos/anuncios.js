@@ -4,6 +4,7 @@
 // 3) Convierte a MP4 (H.264) con ffmpeg (en Docker si no está instalado).
 // Uso: BASE_URL=http://127.0.0.1:8000 node anuncios.js   (BD de demo con la cola corriendo, como los videos)
 //      SOLO_MONTAJE=1 node anuncios.js                     (rehace el montaje con la toma ya grabada)
+//      SOLO_MONTAJE=1 VOZ=voz-v1.mp3 node anuncios.js      (y une la voz en off: anuncio-v1-con-voz.mp4)
 process.env.ANCHO = process.env.ANCHO || '1000';
 process.env.ALTO = process.env.ALTO || '800';
 
@@ -132,6 +133,96 @@ async function montar(nombre, html, toma) {
     return destino;
 }
 
+/** Ejecuta ffmpeg/ffprobe local o, si no está instalado, el de la imagen de Docker (carpeta montada en /w). */
+function ff(herramienta, args, carpeta) {
+    try {
+        return execFileSync(herramienta, args, {
+            cwd: carpeta,
+            stdio: ['ignore', 'pipe', 'ignore'],
+        }).toString();
+    } catch {
+        return execFileSync(
+            'docker',
+            [
+                'run',
+                '--rm',
+                '--entrypoint',
+                herramienta,
+                '-v',
+                `${carpeta}:/w`,
+                '-w',
+                '/w',
+                'jrottenberg/ffmpeg:7.1-ubuntu',
+                ...args,
+            ],
+            { stdio: ['ignore', 'pipe', 'ignore'] },
+        ).toString();
+    }
+}
+
+const duracionDe = (archivo) =>
+    parseFloat(
+        ff(
+            'ffprobe',
+            [
+                '-v',
+                'error',
+                '-show_entries',
+                'format=duration',
+                '-of',
+                'csv=p=0',
+                path.basename(archivo),
+            ],
+            path.dirname(archivo),
+        ),
+    );
+
+/**
+ * Une la voz en off (mp3 en la misma carpeta). La grabación del navegador pierde cuadros y queda ~10 % más corta
+ * que la pauta (PAUTA en anuncio-v1.html, medida en la voz), de forma pareja: se estira el video entero hasta la
+ * duración del audio y cada tramo cae sobre su frase.
+ */
+function conVoz(mp4, voz) {
+    const salida = mp4.replace(/\.mp4$/, '-con-voz.mp4');
+    const factor = duracionDe(voz) / duracionDe(mp4);
+    ff(
+        'ffmpeg',
+        [
+            '-y',
+            '-i',
+            path.basename(mp4),
+            '-i',
+            path.basename(voz),
+            '-filter_complex',
+            `[0:v]setpts=PTS*${factor.toFixed(4)}[v]`,
+            '-map',
+            '[v]',
+            '-map',
+            '1:a',
+            '-c:v',
+            'libx264',
+            '-preset',
+            'slow',
+            '-crf',
+            '20',
+            '-pix_fmt',
+            'yuv420p',
+            '-r',
+            '30',
+            '-c:a',
+            'aac',
+            '-b:a',
+            '192k',
+            '-shortest',
+            '-movflags',
+            '+faststart',
+            path.basename(salida),
+        ],
+        path.dirname(mp4),
+    );
+    return salida;
+}
+
 /** MP4 para Meta: H.264, 30 fps, yuv420p, sin audio. Usa ffmpeg local o la imagen de Docker. */
 function aMp4(webm) {
     const mp4 = webm.replace(/\.webm$/, '.mp4');
@@ -196,5 +287,10 @@ void (async () => {
         'anuncio-v1.html',
         archivo('anuncio-v1-toma.webm'),
     );
-    console.log('✓', aMp4(webm));
+    const mp4 = aMp4(webm);
+    console.log('✓', mp4);
+    // VOZ=voz-v1.mp3 (en la carpeta de salida): además genera la versión con la voz en off.
+    if (process.env.VOZ) {
+        console.log('✓', conVoz(mp4, archivo(process.env.VOZ)));
+    }
 })();

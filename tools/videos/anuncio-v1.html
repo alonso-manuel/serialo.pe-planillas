@@ -72,9 +72,18 @@
                 transition-duration: 0.16s;
             }
             .tarjeta.on .grande {
-                animation: sacude 0.32s 0.3s;
+                animation:
+                    sacude 0.32s 0.3s,
+                    crece 3s 0.62s ease-out forwards;
+            }
+            /* Mientras la tarjeta sigue en pantalla, el texto crece despacio: nunca queda quieto. */
+            @keyframes crece {
+                to {
+                    transform: scale(1.08);
+                }
             }
             .contexto {
+                transition: opacity 0.3s;
                 position: absolute;
                 top: 300px;
                 left: 0;
@@ -326,6 +335,10 @@
         <section id="gancho" class="fase">
             <!-- Dolores del Excel que el sistema resuelve (no prometer lo que no hace). -->
             <p class="contexto">Haciendo la planilla en Excel…</p>
+            <div class="tarjeta pregunta">
+                <p class="grande">¿Todavía en Excel?</p>
+                <p class="chico">la planilla de todos los meses 🤔</p>
+            </div>
             <div class="tarjeta">
                 <p class="grande error">#¡REF!</p>
                 <p class="chico">la macro se rompió… otra vez</p>
@@ -499,6 +512,14 @@
                 ['Boletas, PLAME y AFPnet <b>en minutos</b>', 6, 0.82],
             ];
 
+            // Pauta sincronizada con la voz en off (pausas medidas en el audio de ElevenLabs, ver meta-ads.md).
+            // gancho: ms de cada tarjeta; demo: segundos de cada texto (la toma se acelera o frena por tramo); cierre: s.
+            const PAUTA = {
+                gancho: [2900, 1500, 1500, 1100, 700, 1200],
+                demo: [7.35, 3.8, 6.0, 4.25],
+                cierre: 4.9,
+            };
+
             window.terminado = false;
             (async () => {
                 const toma = document.getElementById('toma');
@@ -513,8 +534,6 @@
                           }),
                 );
                 const duracion = isFinite(toma.duration) ? toma.duration : 30;
-                // La demostración dura ~18 s aunque la toma sea más larga (se acelera, nunca se frena).
-                toma.playbackRate = Math.max(1, duracion / 18);
                 const inicioTexto = TEXTOS.map(([, marca, fraccion]) =>
                     MARCAS[marca]
                         ? Math.max(0, MARCAS[marca].t - 0.4)
@@ -534,11 +553,11 @@
                         if (x.classList.contains('on')) x.classList.add('sale');
                         x.classList.toggle('on', x === t);
                     });
-                    contexto.style.opacity = ultima ? '0' : '1';
+                    contexto.style.opacity = ultima || i === 0 ? '0' : '1';
                     destello.classList.remove('on');
                     void destello.offsetWidth;
                     if (!ultima) destello.classList.add('on');
-                    await espera(ultima ? 1100 : 1000);
+                    await espera(PAUTA.gancho[i] ?? 1000);
                 }
 
                 // --- Demostración con cámara.
@@ -599,6 +618,15 @@
                     if (i !== actual && i >= 0) {
                         actual = i;
                         texto.innerHTML = TEXTOS[i][0];
+                        // Velocidad del tramo: lo que dura en la toma ÷ lo que dura su frase en la voz.
+                        const fin = inicioTexto[i + 1] ?? duracion;
+                        toma.playbackRate = Math.min(
+                            4,
+                            Math.max(
+                                0.5,
+                                (fin - inicioTexto[i]) / PAUTA.demo[i],
+                            ),
+                        );
                         texto.classList.remove('pop');
                         void texto.offsetWidth;
                         texto.classList.add('pop');
@@ -614,7 +642,7 @@
 
                 // --- Cierre.
                 mostrar('cierre');
-                await espera(5000);
+                await espera(PAUTA.cierre * 1000);
                 window.terminado = true;
             })();
         </script>

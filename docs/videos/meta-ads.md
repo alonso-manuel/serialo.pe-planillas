@@ -97,7 +97,7 @@ de los videos ya grabados (`videos/`, ver `guiones.md`) o se graban de nuevo en 
 | V3    | «¿Quién cambió este sueldo?»                                                                                          | Auditoría con antes/después → periodo cerrado e inalterable → boleta firmada | «Seguridad de verdad · Pide tu demo»     | 09-auditoria, 28-firma-digital  |
 | V4    | «Tu planilla, lista en minutos»                                                                                       | Novedades → calcular → boletas PDF → envío por correo → CTS y gratificación  | «Déjanos tus datos · Pide tu demo»       | 08-periodos, 11-boletas, 13-cts |
 
-**Generado:** `videos/anuncio-v1.mp4` (V1, 1080×1920, H.264, 26 s, sin audio): gancho de 4 tarjetas con frase
+**Generado:** `videos/anuncio-v1.mp4` (V1, 1080×1920, H.264, ~32 s, sin audio) y `videos/anuncio-v1-con-voz.mp4` (35 s, con la voz en off): gancho de 4 tarjetas con frase
 completa que se deslizan, demostración con movimiento de cámara continuo (tres celdas de la grilla, botón, avance y
 neto, con un pulso en cada clic) y cierre «Pide tu demo por WhatsApp». Se regenera con
 `cd tools/videos && BASE_URL=http://127.0.0.1:8000 node anuncios.js` sobre la base de demo con la cola corriendo
@@ -110,16 +110,25 @@ le cuenta a un colega lo que encontró. Frases completas, palabras de todos los 
 esto») y cierre sin presión («con tu propio caso. Sin compromiso»). Texto:
 [`elevenlabs/anuncio-v1.txt`](elevenlabs/anuncio-v1.txt) (Multilingual v2) o
 [`elevenlabs/anuncio-v1-v3.txt`](elevenlabs/anuncio-v1-v3.txt) (modelo v3, con etiquetas de tono). Tiempos medidos en
-el MP4:
+el audio y en el MP4 final:
 
-| Tramo       | En pantalla                                                              | Voz                                                                                                                       |
-| ----------- | ------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------- |
-| 0.0–5.7 s   | «Haciendo la planilla en Excel…» + 4 tarjetas + «Hay una forma mejor ⚡» | Oye… ¿todavía haces la planilla en Excel? La macro que se rompe, la PLAME a mano, un archivo por cada empresa… Mira esto. |
-| 5.8–12.9 s  | «Novedades como en Excel» (la cámara recorre tres celdas)                | Aquí cargas las horas extra y las faltas igualito que en Excel, celda por celda, pero sin fórmulas que se rompan.         |
-| 13.0–16.4 s | «TODAS tus empresas en un solo clic» (botón y diálogo)                   | Y con un solo clic calculas todas tus empresas a la vez.                                                                  |
-| 16.5–19.4 s | «ONP, AFP, EsSalud, CTS: automático» (avance «Terminado»)                | ONP, AFP, EsSalud, CTS… todo sale calculado solito.                                                                       |
-| 19.5–21.9 s | «Boletas, PLAME y AFPnet en minutos» (neto del mes)                      | Boletas, PLAME y AFPnet, listos en minutos.                                                                               |
-| 22.0–26.0 s | Cierre: logo, Beta, «Pide tu demo por WhatsApp»                          | Escríbenos al WhatsApp y te lo mostramos con tu propio caso. Sin compromiso.                                              |
+| Voz (audio) | En pantalla (video con voz)                                     | Voz                                                                                                               |
+| ----------- | --------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------- |
+| 0.0–2.8 s   | Tarjeta «¿Todavía en Excel?»                                    | Oye… ¿todavía haces la planilla en Excel?                                                                         |
+| 3.2–7.8 s   | «#¡REF!» (3.2) → «PLAME» (4.6) → «1 Excel» (6.1) → «¿Respaldo?» | La macro que se rompe, la PLAME a mano, un archivo por cada empresa…                                              |
+| 8.0–8.8 s   | «Hay una forma mejor ⚡»                                        | Mira esto.                                                                                                        |
+| 9.3–16.3 s  | «Novedades como en Excel» (desde 9.0, tres celdas)              | Aquí cargas las horas extra y las faltas igualito que en Excel, celda por celda, pero sin fórmulas que se rompan. |
+| 16.6–20.1 s | «TODAS tus empresas en un solo clic» (desde 16.0)               | Y con un solo clic calculas todas tus empresas a la vez.                                                          |
+| 20.4–26.1 s | «ONP, AFP, EsSalud, CTS: automático» (desde 20.0)               | ONP, AFP, EsSalud, CTS… todo sale calculado solito.                                                               |
+| 26.5–30.4 s | «Boletas, PLAME y AFPnet en minutos» (desde 26.0)               | Boletas, PLAME y AFPnet, listos en minutos.                                                                       |
+| 30.8–35.3 s | Cierre (desde 30.0): logo, Beta, «Pide tu demo por WhatsApp»    | Escríbenos al WhatsApp y te lo mostramos con tu propio caso. Sin compromiso.                                      |
+
+**Video con voz:** el montaje sigue la `PAUTA` de `anuncio-v1.html` (duración de cada tarjeta y de cada texto,
+medida en las pausas del audio con `silencedetect`; la toma se acelera o frena por tramo). Con el mp3 en `videos/`:
+`SOLO_MONTAJE=1 VOZ=voz-v1.mp3 node anuncios.js` genera `videos/anuncio-v1-con-voz.mp4` (35 s, AAC). La grabación del
+navegador pierde cuadros (~10 % más corta, de forma pareja); el script estira el video entero hasta la duración del
+audio. Si se graba otra voz, medir sus pausas, ajustar `PAUTA` y volver a generar. Voz usada: _Sam Adam_
+(Stability 50 %, Similarity 75 %).
 
 **Que suene a persona y no a robot (en orden de efecto):**
 
