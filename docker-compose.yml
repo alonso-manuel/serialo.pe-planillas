@@ -1,0 +1,82 @@
+# Serialo Planillas (modo SaaS) en el VPS. Ver docs/docker.md.
+# Todo vive en su propia red; solo «web» se publica, y únicamente en 127.0.0.1 (el proxy del servidor
+# atiende HTTPS y *.impulso.cfd y reenvía aquí). No toma los puertos 80/443 ni choca con otras apps.
+
+name: serialo
+
+x-app: &app
+    image: serialo-planillas:${SERIALO_VERSION:-latest}
+    build:
+        context: .
+        target: app
+    env_file: serialo.env
+    environment:
+        DB_HOST: mysql
+        REDIS_HOST: redis
+    volumes:
+        - storage:/var/www/html/storage
+    depends_on:
+        mysql:
+            condition: service_healthy
+        redis:
+            condition: service_started
+    restart: unless-stopped
+
+services:
+    app:
+        <<: *app
+
+    # Cálculo masivo y envío de boletas por correo.
+    cola:
+        <<: *app
+        command:
+            [
+                "php",
+                "artisan",
+                "queue:work",
+                "--sleep=3",
+                "--tries=3",
+                "--max-time=3600",
+            ]
+
+    # Respaldos 03:00, avisos de vencimiento y demás tareas programadas.
+    programador:
+        <<: *app
+        command: ["php", "artisan", "schedule:work"]
+
+    web:
+        image: serialo-web:${SERIALO_VERSION:-latest}
+        build:
+            context: .
+            target: web
+        ports:
+            - "127.0.0.1:${SERIALO_PUERTO:-8090}:80"
+        depends_on:
+            - app
+        restart: unless-stopped
+
+    mysql:
+        image: mysql:8.4
+        env_file: serialo.env # MYSQL_ROOT_PASSWORD, MYSQL_DATABASE, MYSQL_USER, MYSQL_PASSWORD
+        volumes:
+            - mysql:/var/lib/mysql
+            - ./deploy/docker/mysql-permisos.sh:/docker-entrypoint-initdb.d/10-permisos.sh:ro
+        healthcheck:
+            test:
+                [
+                    "CMD-SHELL",
+                    'mysqladmin ping -h 127.0.0.1 -uroot -p"$$MYSQL_ROOT_PASSWORD" --silent',
+                ]
+            interval: 5s
+            timeout: 5s
+            retries: 30
+        restart: unless-stopped
+
+    redis:
+        image: redis:7.4-alpine
+        command: ["redis-server", "--save", "", "--appendonly", "no"]
+        restart: unless-stopped
+
+volumes:
+    storage:
+    mysql:

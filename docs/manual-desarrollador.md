@@ -34,6 +34,7 @@ no se rompen están en [CLAUDE.md](../CLAUDE.md).
 | [licencias.md](licencias.md)                   | Clave Ed25519, estados, solo lectura y límites del plan                                        |
 | [instalacion.md](instalacion.md)               | Instalador web en hosting compartido                                                           |
 | [vps.md](vps.md)                               | Despliegue SaaS en el VPS                                                                      |
+| [docker.md](docker.md)                         | Despliegue con Docker en el VPS (Contabo), detrás del proxy existente                          |
 | [respaldos.md](respaldos.md)                   | Respaldos de la base                                                                           |
 | [firma-digital.md](firma-digital.md)           | Firma PAdES de documentos                                                                      |
 | [manual-usuario.md](manual-usuario.md)         | Cómo se usa el sistema. Su PDF se regenera con `cd tools/manual && npm install && npm run pdf` |

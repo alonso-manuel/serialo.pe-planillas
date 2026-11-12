@@ -1,0 +1,26 @@
+# Solo lo necesario para correr: fuera documentación, videos, herramientas, tests y datos locales.
+.git
+.github
+.env
+.env.*
+serialo.env
+!.env.example
+node_modules
+vendor
+public/build
+public/hot
+public/storage
+storage/app/*
+storage/framework/cache/*
+storage/framework/sessions/*
+storage/framework/views/*
+storage/logs/*
+bootstrap/cache/*.php
+database/database.sqlite
+docs
+tools
+videos
+tests
+deploy/vps
+*.md
+!README.md

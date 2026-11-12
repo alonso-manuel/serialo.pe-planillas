@@ -1,8 +1,7 @@
 # VPS (modo SaaS)
 
-> ⚠ **Pendiente de rehacer con Docker** (decidido el 10/11): el VPS ya tiene otras aplicaciones y la instalación
-> directa de abajo (Nginx, PHP, MySQL y Redis en el sistema) podría chocar con ellas. El despliegue se hace al final
-> del roadmap con `docker-compose`, detrás del proxy que ya exista. Lo de abajo sirve de referencia para un VPS dedicado.
+> ⚠ En el VPS de Contabo (con otras aplicaciones) el despliegue es **con Docker**: ver [docker.md](docker.md).
+> La instalación directa de abajo (Nginx, PHP, MySQL y Redis en el sistema) queda como referencia para un VPS dedicado.
 
 Cómo montar Serialo Planillas en el VPS de Serialo.pe para las demos y los clientes de plan mensual. Cada estudio
 entra por su subdominio (`garcia.impulso.cfd`) y el superadmin por `admin.impulso.cfd` (ver [multitenant.md](multitenant.md)).

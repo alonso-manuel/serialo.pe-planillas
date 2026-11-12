@@ -47,3 +47,6 @@ yarn-error.log
 /videos
 /tools/videos/node_modules
 /tools/manual/node_modules
+
+# Variables del despliegue con Docker (tienen claves)
+/serialo.env
