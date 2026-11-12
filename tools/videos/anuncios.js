@@ -25,7 +25,10 @@ function crearMarcas() {
     const marcas = [];
     return {
         marcas,
-        async marcar(loc, { zoom = 1.8, dura = 1.6, dx = 0, dy = 0 } = {}) {
+        marcar: async (
+            loc,
+            { zoom = 1.8, dura = 1.6, dx = 0, dy = 0 } = {},
+        ) => {
             const b = await loc.boundingBox().catch(() => null);
             if (!b) return;
             marcas.push({
