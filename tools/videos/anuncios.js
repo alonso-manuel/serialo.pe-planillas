@@ -51,12 +51,24 @@ async function tomaV1(d) {
     marcasV1 = marcas;
     await d.ir('/periodos');
     await d.clic(p.getByRole('link', { name: /Noviembre 2026/ }).first(), 900);
-    const celda = p.locator('input[aria-label^="HE 25 % de Vargas"]');
-    await d.mover(celda);
-    await marcar(celda, { zoom: 2.1, dura: 2.2 });
-    await d.escribir(celda, '4');
+    // Varias celdas seguidas (horas extra y una falta): la cámara viaja de una a otra, nada queda quieto.
+    // dura cubre hasta la celda siguiente: la cámara viaja de una a otra sin alejarse.
+    for (const [columna, apellido, valor, dura] of [
+        ['HE 25 %', 'Vargas', '4', 2.7],
+        ['Faltas', 'Ñique', '1', 2.7],
+        ['HE 35 %', 'Huertas', '2', 1.6],
+    ]) {
+        const celda = p.locator(
+            `input[aria-label^="${columna} de ${apellido}"]`,
+        );
+        await d.mover(celda);
+        await marcar(celda, { zoom: 2.2, dura });
+        await d.escribir(celda, valor, { retraso: 90 });
+        await p.keyboard.press('Tab');
+        await d.espera(250);
+    }
     await p.keyboard.press('Enter');
-    await d.espera(900);
+    await d.espera(700);
     await d.ir('/periodos');
     const boton = p.getByRole('button', {
         name: /Calcular todas las empresas/,

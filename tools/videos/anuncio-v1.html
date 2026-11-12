@@ -54,11 +54,59 @@
                 gap: 26px;
                 opacity: 0;
             }
+            /* Transición deslizada: la tarjeta entra desde abajo y la anterior sale hacia arriba (sin corte seco). */
+            .tarjeta {
+                transform: translateY(90px);
+                transition:
+                    opacity 0.3s ease,
+                    transform 0.38s cubic-bezier(0.2, 0.9, 0.3, 1.15);
+            }
             .tarjeta.on {
                 opacity: 1;
-                animation:
-                    entra 0.28s cubic-bezier(0.2, 1.6, 0.4, 1),
-                    sacude 0.3s 0.28s;
+                transform: none;
+                transition-delay: 0.16s;
+            }
+            .tarjeta.sale {
+                opacity: 0;
+                transform: translateY(-90px);
+                transition-duration: 0.16s;
+            }
+            .tarjeta.on .grande {
+                animation: sacude 0.32s 0.3s;
+            }
+            .contexto {
+                position: absolute;
+                top: 300px;
+                left: 0;
+                right: 0;
+                text-align: center;
+                font-size: 48px;
+                font-weight: 700;
+                color: #cbd5e1;
+            }
+            /* Pulso en cada clic de la toma (se ubica según la cámara). */
+            .pulso {
+                position: absolute;
+                width: 120px;
+                height: 120px;
+                margin: -60px 0 0 -60px;
+                border-radius: 50%;
+                border: 8px solid #fcd34d;
+                opacity: 0;
+                pointer-events: none;
+            }
+            .pulso.on {
+                animation: pulso 0.7s ease-out;
+            }
+            @keyframes pulso {
+                from {
+                    transform: scale(0.3);
+                    opacity: 1;
+                }
+                to {
+                    transform: scale(1.6);
+                    opacity: 0;
+                }
             }
             .tarjeta .grande {
                 font-size: 150px;
@@ -277,21 +325,22 @@
     <body>
         <section id="gancho" class="fase">
             <!-- Dolores del Excel que el sistema resuelve (no prometer lo que no hace). -->
+            <p class="contexto">Haciendo la planilla en Excel…</p>
             <div class="tarjeta">
                 <p class="grande error">#¡REF!</p>
-                <p class="chico">en la macro de planillas</p>
+                <p class="chico">la macro se rompió… otra vez</p>
             </div>
             <div class="tarjeta">
                 <p class="grande">PLAME</p>
-                <p class="chico">digitado a mano 😩</p>
+                <p class="chico">digitado trabajador por trabajador 😩</p>
             </div>
             <div class="tarjeta">
                 <p class="grande">1 Excel</p>
-                <p class="chico">por cada empresa</p>
+                <p class="chico">por cada empresa que atiendes</p>
             </div>
             <div class="tarjeta">
-                <p class="grande">¿Y el respaldo?</p>
-                <p class="chico">el archivo se dañó 💥</p>
+                <p class="grande">¿Respaldo?</p>
+                <p class="chico">si el archivo se daña, adiós 💥</p>
             </div>
             <div class="tarjeta solucion">
                 <p class="grande">Hay una forma mejor ⚡</p>
@@ -303,6 +352,7 @@
             <div class="titulo"><p id="texto"></p></div>
             <div class="marco">
                 <video id="toma" muted playsinline preload="auto"></video>
+                <div class="pulso"></div>
             </div>
             <div class="chips">
                 <span>Multiempresa</span><span>PLAME y AFPnet</span
@@ -442,10 +492,11 @@
 
             // Textos cortos; cambian en el momento clave (o por avance si no hay marcas): [texto, marca, fracción].
             const TEXTOS = [
+                // Marcas: 0–2 celdas de la grilla, 3 botón, 4 diálogo, 5 terminado, 6 neto.
                 ['Novedades <b>como en Excel</b>', 0, 0],
-                ['<b>TODAS tus empresas</b> en un solo clic ⚡', 1, 0.25],
-                ['ONP, AFP, EsSalud, CTS: <b>automático</b> ✅', 3, 0.55],
-                ['Boletas, PLAME y AFPnet <b>en minutos</b>', 4, 0.8],
+                ['<b>TODAS tus empresas</b> en un solo clic ⚡', 3, 0.3],
+                ['ONP, AFP, EsSalud, CTS: <b>automático</b> ✅', 5, 0.6],
+                ['Boletas, PLAME y AFPnet <b>en minutos</b>', 6, 0.82],
             ];
 
             window.terminado = false;
@@ -476,26 +527,38 @@
                 mostrar('gancho');
                 const destello = document.querySelector('.destello');
                 const tarjetas = [...document.querySelectorAll('.tarjeta')];
+                const contexto = document.querySelector('.contexto');
                 for (const [i, t] of tarjetas.entries()) {
-                    tarjetas.forEach((x) => x.classList.toggle('on', x === t));
+                    const ultima = i === tarjetas.length - 1;
+                    tarjetas.forEach((x) => {
+                        if (x.classList.contains('on')) x.classList.add('sale');
+                        x.classList.toggle('on', x === t);
+                    });
+                    contexto.style.opacity = ultima ? '0' : '1';
                     destello.classList.remove('on');
                     void destello.offsetWidth;
-                    if (i < tarjetas.length - 1) destello.classList.add('on');
-                    await espera(i < tarjetas.length - 1 ? 750 : 1000);
+                    if (!ultima) destello.classList.add('on');
+                    await espera(ultima ? 1100 : 1000);
                 }
 
                 // --- Demostración con cámara.
                 const texto = document.getElementById('texto');
                 let actual = -1;
                 const cam = { s: 1.06, x: ANCHO / 2, y: ALTO / 2 };
+                const pulso = document.querySelector('.pulso');
+                let ultimoPulso = -1;
                 const mover = () => {
                     const t = toma.currentTime;
                     const m = MARCAS.find(
                         (k) => t >= k.t - 0.45 && t <= k.t + k.dura,
                     );
-                    // Sin marca activa: vaivén suave (Ken Burns) para que la imagen nunca quede quieta.
+                    // En una marca la cámara sigue acercándose despacio (nunca se congela); sin marca, vaivén suave.
                     const objetivo = m
-                        ? { s: m.zoom, x: m.x, y: m.y }
+                        ? {
+                              s: m.zoom + Math.max(0, t - m.t) * 0.08,
+                              x: m.x,
+                              y: m.y,
+                          }
                         : {
                               s: 1.08,
                               x: ANCHO / 2 + Math.sin(t * 0.5) * 60,
@@ -517,6 +580,20 @@
                         Math.max(ALTO - ALTO * cam.s, ALTO / 2 - cam.y * cam.s),
                     );
                     toma.style.transform = `translate(${tx}px, ${ty}px) scale(${cam.s})`;
+
+                    // Pulso en el instante del clic de cada marca, en su posición según la cámara.
+                    const golpe = MARCAS.findIndex(
+                        (k) => t >= k.t && t < k.t + 0.15,
+                    );
+                    if (golpe >= 0 && golpe !== ultimoPulso) {
+                        ultimoPulso = golpe;
+                        const g = MARCAS[golpe];
+                        pulso.style.left = `${tx + g.x * cam.s}px`;
+                        pulso.style.top = `${ty + g.y * cam.s}px`;
+                        pulso.classList.remove('on');
+                        void pulso.offsetWidth;
+                        pulso.classList.add('on');
+                    }
 
                     const i = inicioTexto.findLastIndex((desde) => t >= desde);
                     if (i !== actual && i >= 0) {

@@ -1,7 +1,6 @@
-[frustrated] ¿Macro rota? ¿Pe lame a mano? ¿Un Excel por empresa? ¿Y sin respaldo?
-[excited] ¡Hay una forma mejor!
-[confident] Con Serialo Planillas registras las novedades... como en Excel.
-[excited] Y calculas TODAS tus empresas... ¡en un solo clic!
-[confident] Aportes, quinta y ce te ese: ¡todo automático!
-[excited] Boletas, pe lame y a efe pe net... ¡en minutos!
-[warm] Deja el Excel. Escríbenos por WhatsApp y pide tu demo.
+[casual] Oye... ¿todavía haces la planilla en Excel? [sighs] La macro que se rompe, la pe lame a mano, un archivo por cada empresa... [curious] Mira esto.
+[conversational] Aquí cargas las horas extra y las faltas igualito que en Excel, celda por celda, pero sin fórmulas que se rompan.
+[impressed] Y con un solo clic calculas todas tus empresas a la vez.
+[conversational] O ene pe, a efe pe, EsSalud, ce te ese... todo sale calculado solito.
+[satisfied] Boletas, pe lame y a efe pe net, listos en minutos.
+[warm] Escríbenos al WhatsApp y te lo mostramos con tu propio caso. Sin compromiso.
