@@ -190,7 +190,7 @@ Presentación animada (no es la aplicación). Seis láminas.
 | --------- | --------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------ |
 | 0:00–0:08 | Resumen: julio 2026 y diciembre 2025                            | La gratificación de julio y diciembre no se calcula aparte: entra sola en la planilla de ese mes.                        |
 | 0:08–0:22 | Planilla de julio: tabla «Gratificación de Julio 2026»          | El detalle por trabajador: meses completos, faltas y remuneración computable. Quien ingresó en julio aún no suma un mes. |
-| 0:22–0:30 | Columna «Bonificación»                                          | La bonificación extraordinaria es el 9 % (o 6.75 % con EPS) y no paga ONP, AFP ni EsSalud.                               |
+| 0:22–0:30 | Columna «Bonificación»                                          | La bonificación extraordinaria es el 9 % y no paga ONP, AFP ni EsSalud.                                                  |
 | 0:30–0:40 | Detalle del trabajador: conceptos 0406 y 0312 junto a su sueldo | Todo aparece en el detalle del trabajador y en su boleta.                                                                |
 
 ## 13 · CTS (~0:50)

@@ -2,6 +2,6 @@ La gratificación de julio y diciembre no se calcula aparte: entra sola en la pl
 <break time="1.0s" />
 En la planilla de julio está el detalle por trabajador: meses completos, faltas y remuneración computable. Quien ingresó en julio todavía no suma un mes completo.
 <break time="1.0s" />
-La bonificación extraordinaria es el nueve por ciento, o seis punto setenta y cinco con e pe ese, y no paga o ene pe, a efe pe ni Es Salud.
+La bonificación extraordinaria es el nueve por ciento, y no paga o ene pe, a efe pe ni Es Salud.
 <break time="1.0s" />
 Todo aparece en el detalle del trabajador y en su boleta.

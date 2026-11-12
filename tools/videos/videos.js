@@ -863,7 +863,7 @@ const VIDEOS = {
             );
             await d.mover(p.getByText('Bonificación', { exact: true }).last());
             await d.sub(
-                'La bonificación extraordinaria es el 9 % (EsSalud) o 6.75 % (EPS). No paga ONP, AFP ni EsSalud.',
+                'La bonificación extraordinaria es el 9 % de la gratificación. No paga ONP, AFP ni EsSalud.',
                 3800,
             );
             await d.desplazar(-2000, 500);
