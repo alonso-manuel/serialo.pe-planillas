@@ -172,6 +172,12 @@ actualización no deja a `web` con una IP vieja (502).
   `PermitRootLogin prohibit-password`); se lee antes que `50-cloud-init.conf`, que la activaba. Para entrar sin
   llave queda la consola VNC del panel de Contabo.
 - `fail2ban` con la jaula `sshd`.
+- Sin reenvío X11 en SSH; Nginx no revela su versión (`server_tokens off`).
+- Revisión del 12/11/2026 desde internet: solo 22, 80 y 443 abiertos (MySQL, Redis, el puerto interno 8090 y la
+  administración de Caddy cerrados); TLS 1.2 y 1.3 únicamente; HSTS, `X-Frame-Options`, `nosniff`; cookies `secure`,
+  `httponly` y `samesite`; `/.env`, `/.git` y archivos del proyecto inaccesibles; CSRF activo y límite de intentos
+  en los ingresos (5/min en los estudios, 10/min en el panel); `APP_ENV=production`, `APP_DEBUG=false`; PHP corre
+  como `www-data`; actualizaciones automáticas de seguridad del sistema activas.
 - Llave de despliegue de **solo lectura** en GitHub (`~/.ssh/serialo_deploy`, alias en `~/.ssh/config`).
 
 ## 5. Actualizar a una versión nueva
