@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Central\PermisoCertificadoController;
 use App\Http\Middleware\AsegurarUsuarioActivo;
 use App\Http\Middleware\HandleAppearance;
 use App\Http\Middleware\HandleInertiaRequests;
@@ -16,6 +17,7 @@ use Illuminate\Foundation\Configuration\Middleware;
 use Illuminate\Http\Middleware\AddLinkHeadersForPreloadedAssets;
 use Illuminate\Http\Request;
 use Illuminate\Session\Middleware\StartSession;
+use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
 return Application::configure(basePath: dirname(__DIR__))
@@ -23,6 +25,10 @@ return Application::configure(basePath: dirname(__DIR__))
         web: __DIR__.'/../routes/web.php',
         commands: __DIR__.'/../routes/console.php',
         health: '/up',
+        // Sin el grupo «web» (ni sesión ni estudio): la consulta interna de Caddy antes de emitir un certificado.
+        then: function (): void {
+            Route::get('caddy/permitido', PermisoCertificadoController::class)->middleware('throttle:120,1')->name('caddy.permitido');
+        },
     )
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->encryptCookies(except: ['appearance', 'sidebar_state']);

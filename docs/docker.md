@@ -100,7 +100,27 @@ curl -sI -H 'Host: admin.impulso.cfd' http://127.0.0.1:8090 | head -1   # 200 o 
   firma digital y las sesiones.
 - Otro puerto: `SERIALO_PUERTO=8091 docker compose up -d` (o ponerlo en un archivo `.env` junto al compose).
 
-## 4. Conectar el proxy del servidor
+## 4. HTTPS
+
+### 4a. VPS nuevo, sin otro proxy: Caddy incluido (el caso de impulso.cfd en Contabo)
+
+El servicio `caddy` del compose (perfil `proxy`) toma los puertos 80 y 443 y saca **solo** el certificado de cada
+subdominio la primera vez que alguien entra (on-demand TLS, Let's Encrypt). Antes de emitirlo pregunta a la app
+(`/caddy/permitido`, solo desde la red interna) si el dominio es el panel o un estudio que existe: nadie puede forzar
+certificados para subdominios inventados. **No necesita certificado comodín ni API del DNS**: basta el registro A `*`.
+
+```bash
+echo "COMPOSE_PROFILES=proxy" > .env     # junto a docker-compose.yml
+# en serialo.env: CADDY_EMAIL=tu-correo@dominio.pe (avisos de Let's Encrypt)
+docker compose up -d
+docker compose logs -f caddy               # al entrar a https://admin.impulso.cfd: «certificate obtained successfully»
+```
+
+El primer ingreso a cada subdominio tarda unos segundos (emite el certificado); luego se renueva solo.
+
+### 4b. Servidor con su propio proxy
+
+Si el servidor ya tiene Nginx, Caddy o Traefik atendiendo 80/443, no se activa el perfil `proxy`:
 
 El proxy debe **conservar el Host** y enviar `X-Forwarded-Proto` y `X-Forwarded-For` (la app confía en ellos por
 `TRUSTED_PROXIES`, que en la plantilla son las redes internas de Docker).
@@ -140,6 +160,9 @@ server { listen 80; listen [::]:80; server_name *.impulso.cfd; return 301 https:
 ```
 
 Probar: `https://admin.impulso.cfd` muestra el ingreso del panel central.
+
+El Nginx interno vuelve a resolver el contenedor `app` cada 10 s (DNS de Docker), así que recrear `app` en una
+actualización no deja a `web` con una IP vieja (502).
 
 ## 5. Actualizar a una versión nueva
 

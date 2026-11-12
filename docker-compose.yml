@@ -55,6 +55,23 @@ services:
             - app
         restart: unless-stopped
 
+    # HTTPS en un VPS sin otro proxy (perfil «proxy»: COMPOSE_PROFILES=proxy). Toma los puertos 80 y 443.
+    caddy:
+        image: caddy:2.10-alpine
+        profiles: ['proxy']
+        env_file: serialo.env   # CADDY_EMAIL
+        ports:
+            - '80:80'
+            - '443:443'
+            - '443:443/udp'
+        volumes:
+            - ./deploy/docker/Caddyfile:/etc/caddy/Caddyfile:ro
+            - caddy_data:/data
+            - caddy_config:/config
+        depends_on:
+            - web
+        restart: unless-stopped
+
     mysql:
         image: mysql:8.4
         env_file: serialo.env # MYSQL_ROOT_PASSWORD, MYSQL_DATABASE, MYSQL_USER, MYSQL_PASSWORD
@@ -80,3 +97,5 @@ services:
 volumes:
     storage:
     mysql:
+    caddy_data:
+    caddy_config:

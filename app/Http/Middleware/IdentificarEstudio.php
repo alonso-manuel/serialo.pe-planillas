@@ -13,7 +13,7 @@ use Symfony\Component\HttpFoundation\Response;
  * Modo SaaS (middleware global): antes del enrutamiento decide el contexto de la petición.
  * - Dominio del panel (admin.impulso.cfd): contexto central, con sus propias sesiones.
  * - Subdominio de un estudio (garcia.impulso.cfd): su base; si está suspendido, aviso y nada más.
- * - Cualquier otro (desconocido o central): 404, salvo /up.
+ * - Cualquier otro (desconocido o central): 404, salvo /up y /caddy/permitido (consulta interna de Caddy).
  * En modo «unica» no hace nada.
  */
 class IdentificarEstudio
@@ -24,7 +24,7 @@ class IdentificarEstudio
 
     public function handle(Request $request, Closure $next): Response
     {
-        if (! ModoSistema::saas() || $request->is('up')) {
+        if (! ModoSistema::saas() || $request->is('up') || $request->is('caddy/permitido')) {
             return $next($request);
         }
 

@@ -1,0 +1,22 @@
+# Caddy: HTTPS automático para el panel y cada estudio (*.impulso.cfd) sin certificado comodín ni API del DNS.
+# Emite el certificado de cada subdominio la primera vez que alguien entra (on-demand TLS), solo si la app
+# confirma que es el panel o un estudio que existe (/caddy/permitido). Los certificados quedan en el volumen caddy_data.
+{
+	email {$CADDY_EMAIL}
+	on_demand_tls {
+		ask http://web/caddy/permitido
+	}
+}
+
+https:// {
+	tls {
+		on_demand
+	}
+	encode zstd gzip
+	header Strict-Transport-Security "max-age=31536000"
+	reverse_proxy web:80
+}
+
+http:// {
+	redir https://{host}{uri} permanent
+}
