@@ -45,6 +45,8 @@ COPY --from=build --chown=www-data:www-data /var/www/html /var/www/html
 COPY deploy/docker/entrypoint.sh /usr/local/bin/serialo-entrypoint
 RUN chmod +x /usr/local/bin/serialo-entrypoint
 
+# www-data no tiene carpeta personal: tinker y otras herramientas guardan su configuración en /tmp.
+ENV HOME=/tmp
 USER www-data
 ENTRYPOINT ["serialo-entrypoint"]
 CMD ["php-fpm"]
