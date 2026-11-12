@@ -87,7 +87,8 @@ Marca `[x]` al terminar (o usa `/actualizar-roadmap`). Cada tarea: código + tes
 - ~~Correcciones~~ — descartado el 10/11 (se corrige sobre la marcha)
 - [x] Demos por estudio desde el panel central: ya cubierto por **Nueva cuenta** tipo demo (app limpia, vencimiento y avisos)
 - [x] Manual de uso y videos cortos — `docs/manual-usuario.md`, `docs/manual-desarrollador.md` y `docs/videos/`
-- [ ] Etiqueta `v1.0.0`
+- [x] Beta pública `v1.0.0-beta.1` (12/11/2026): etiqueta «Beta» en el sistema (`PLANILLAS_BETA`) y sección de beta en los términos, para empezar a publicitarlo
+- [ ] Etiqueta `v1.0.0` (y `PLANILLAS_BETA=false`): después de probar PLAME/AFPnet, la validación del contador y la revisión legal
 
 ## v1.1 — 11 ene → 12 feb 2027
 

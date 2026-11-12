@@ -77,6 +77,7 @@ contraseña `demo1234`. `HistorialDemoSeeder` agrega un año de planillas cerrad
 | `PLANILLAS_CORREOS_POR_MINUTO`                          | Límite de envío de boletas                                                               |
 | `RUC_DRIVER`, `DNI_DRIVER`, `DECOLECTA_TOKEN`           | Consulta de RUC y DNI (`ninguno` para trabajar sin red)                                  |
 | `PLANILLAS_RESPALDO_*`                                  | Días de retención y disco externo de respaldos                                           |
+| `PLANILLAS_BETA`                                        | Etiqueta «Beta» junto al nombre y sección de beta en los términos (true hasta la 1.0)    |
 | `PLANILLAS_LEGAL_RESPONSABLE`, `PLANILLAS_LEGAL_CORREO` | Responsable de los datos y correo ARCO en `/privacidad` (en SaaS, el nombre del estudio) |
 
 El instalador web se omite con `APP_ENV=local|testing` (ver instalacion.md para probarlo).

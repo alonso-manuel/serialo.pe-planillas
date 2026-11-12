@@ -48,6 +48,7 @@ class HandleInertiaRequests extends Middleware
         return [
             ...parent::share($request),
             'name' => config('app.name'),
+            'beta' => (bool) config('planillas.beta'),
             'auth' => [
                 'user' => $user,
                 'esAdmin' => $user?->esAdmin() ?? false,

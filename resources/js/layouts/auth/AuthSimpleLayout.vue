@@ -2,6 +2,7 @@
 import EnlacesLegales from '@/components/legal/EnlacesLegales.vue';
 import { Link } from '@inertiajs/vue3';
 import AppLogoIcon from '@/components/AppLogoIcon.vue';
+import EtiquetaBeta from '@/components/EtiquetaBeta.vue';
 import { home } from '@/routes';
 
 defineProps<{
@@ -30,6 +31,7 @@ defineProps<{
                         </div>
                         <span class="sr-only">{{ title }}</span>
                     </Link>
+                    <EtiquetaBeta />
                     <div class="space-y-2 text-center">
                         <h1 class="text-xl font-medium">{{ title }}</h1>
                         <p class="text-center text-sm text-muted-foreground">

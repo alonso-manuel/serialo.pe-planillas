@@ -60,6 +60,12 @@ return [
     | correo: dónde se ejercen los derechos ARCO y se hacen consultas de privacidad.
     | ⚠ Textos por revisar con un abogado antes de vender (docs/manual-usuario.md, sección 12).
     */
+    /*
+    | Beta pública: muestra la etiqueta «Beta» junto al nombre del sistema y la sección de beta en los términos.
+    | Se apaga con PLANILLAS_BETA=false al publicar la versión 1.0.
+    */
+    'beta' => (bool) env('PLANILLAS_BETA', true),
+
     'legal' => [
         'version' => '12/11/2026',
         'responsable' => env('PLANILLAS_LEGAL_RESPONSABLE'),

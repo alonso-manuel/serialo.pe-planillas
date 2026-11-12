@@ -3,6 +3,7 @@ import { Link, router, usePage } from '@inertiajs/vue3';
 import { LogOut } from '@lucide/vue';
 import { computed } from 'vue';
 import AppLogoIcon from '@/components/AppLogoIcon.vue';
+import EtiquetaBeta from '@/components/EtiquetaBeta.vue';
 import { Button } from '@/components/ui/button';
 import { Toaster } from '@/components/ui/sonner';
 import { rutasPanel } from '@/lib/panel';
@@ -39,7 +40,7 @@ function salir(): void {
                 >
                     <AppLogoIcon class="size-8" />
                     <span class="leading-tight">
-                        Serialo Planillas
+                        Serialo Planillas <EtiquetaBeta />
                         <span
                             class="block text-xs font-normal text-muted-foreground"
                             >Panel central</span

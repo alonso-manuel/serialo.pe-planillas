@@ -20,6 +20,8 @@ declare module '@inertiajs/core' {
     export interface InertiaConfig {
         sharedPageProps: {
             name: string;
+            /** Beta pública: etiqueta «Beta» junto al nombre del sistema. */
+            beta: boolean;
             auth: Auth;
             empresaActiva: EmpresaResumen | null;
             empresas: EmpresaResumen[];

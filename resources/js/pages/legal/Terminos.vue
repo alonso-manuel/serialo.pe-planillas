@@ -35,6 +35,20 @@ defineProps<{ legal: DatosLegales }>();
             reemplaza el criterio de un profesional.
         </p>
 
+        <template v-if="$page.props.beta">
+            <h2>Versión beta</h2>
+            <p>
+                Serialo Planillas está en <strong>etapa beta</strong>: sus
+                funciones principales están disponibles, pero el sistema sigue
+                en evaluación y puede cambiar, mejorar o corregirse sin previo
+                aviso. Durante la beta es aún más importante revisar los
+                cálculos y los archivos antes de pagar o declarar, y reportar a
+                Serialo.pe cualquier diferencia que se encuentre. Lo dicho en
+                estos términos sobre la responsabilidad del cliente aplica
+                plenamente durante la beta.
+            </p>
+        </template>
+
         <h2>2. Responsabilidad del cliente</h2>
         <p>
             <strong

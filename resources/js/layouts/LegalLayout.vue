@@ -2,6 +2,7 @@
 import { Link } from '@inertiajs/vue3';
 import { ArrowLeft } from '@lucide/vue';
 import AppLogoIcon from '@/components/AppLogoIcon.vue';
+import EtiquetaBeta from '@/components/EtiquetaBeta.vue';
 import EnlacesLegales from '@/components/legal/EnlacesLegales.vue';
 import { home } from '@/routes';
 </script>
@@ -18,6 +19,7 @@ import { home } from '@/routes';
                 >
                     <AppLogoIcon class="size-7 fill-current" />
                     Serialo Planillas
+                    <EtiquetaBeta />
                 </Link>
                 <Link
                     :href="home()"
