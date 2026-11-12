@@ -109,6 +109,37 @@ Empresa con régimen «agrario». Fuentes: [Ley 31110](https://busquedas.elperua
 - ⚠ Pendiente: utilidades (5 % / 7.5 % / 10 %), sobretasa nocturna (35 % de la RMV), la RD de la indemnización con
   gratificación y CTS incluidas, y el promedio semanal de 4 horas para tener derecho a la RD.
 
+## Construcción civil — pospuesto (no implementado)
+
+Se pospuso el 11/11/2026: el rubro paga por **semana** (boleta semanal, jornada de 48 h: lunes a viernes 8.5 h y
+sábado 5.5 h) y el sistema trabaja por mes. Datos reunidos para retomarlo, vigentes del 01/01/2026 al 31/12/2026:
+
+- Fuentes: [R.M. 197-2025-TR con el Acta Final 2026](https://www.capeco.org/descargas/CC2026/RM_197-2025-TR.pdf)
+  (El Peruano, 19/12/2025; Exp. 339-2025-MTPE/2.14-NC) y la
+  [tabla oficial CAPECO–FTCCP 2026](https://www.capeco.org/descargas/CC2026/CAPECO_FTCCP_Remuneraciones%202026_%20FV.pdf).
+  El acta 2026 solo trae los cambios del año; el resto de beneficios viene de convenios anteriores con carácter permanente.
+
+| Concepto                     | Regla 2026                                                                                          | Tabla 22  |
+| ---------------------------- | --------------------------------------------------------------------------------------------------- | --------- |
+| Jornal básico diario         | Operario S/ 89.30 · Oficial S/ 69.75 · Peón S/ 62.80                                                | 0121      |
+| Dominical                    | 1 jornal por semana completa (proporcional a las horas: horas / 48)                                 | 0115      |
+| BUC                          | 32 % (operario) y 30 % (oficial y peón) del jornal por día laborado                                 | 0311      |
+| Movilidad                    | S/ 8.60 por día asistido (R.M. 139-2024-TR)                                                         | 0909      |
+| Horas extra                  | Sobre el jornal / 8: +60 % las dos primeras, +100 % las siguientes                                  | —         |
+| Gratificación                | 40 jornales en julio y 40 en diciembre, más 9 % de bonificación (Ley 30334)                         | 0406/0312 |
+| CTS («indemnización»)        | 15 % de los jornales básicos (12 % CTS + 3 % por utilidades)                                        | 0904      |
+| Vacaciones                   | 10 % de los jornales básicos                                                                        | —         |
+| Asignación escolar           | 30 jornales por hijo al año; hijos con estudios técnicos o superiores hasta los 24 años (acta 2026) | 0211      |
+| Bonificación por altura      | 8 % del jornal por día, solo con riesgo de caída; no es base de CTS, vacaciones ni gratificación    | 0303      |
+| Feriado trabajado (BAE)      | 25 % de la Bonificación por Alta Especialización                                                    | —         |
+| Altas temperaturas (asfalto) | S/ 4.50 por día, no es base de beneficios                                                           | —         |
+| Conafovicer (trabajador)     | 2 % de básico + dominical (R.S. 001-95-MTC)                                                         | 0602      |
+| Fondo de capacitación        | 0.45 % del jornal básico (empleador)                                                                | 0817      |
+| ONP                          | 13 % de básico + dominical + BUC (la movilidad no se afecta)                                        | 0607      |
+
+Ejemplo de la tabla oficial (operario, semana completa): básico 535.80 + dominical 89.30 + BUC 171.46 + movilidad 51.60
+= 848.16; ONP 103.55 y Conafovicer 12.50; neto 732.10. No aplica a las empresas de inversión limitada (D. Leg. 727, art. 14).
+
 ## Gratificaciones (semana 4) — Ley 27735 y Ley 30334
 
 Implementado en `App\Domain\Planilla\CalculadoraGratificacion` (motor puro) y `App\Services\Planilla\GratificacionPeriodo`.

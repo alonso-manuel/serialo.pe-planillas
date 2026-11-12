@@ -115,6 +115,6 @@ Ideas tomadas del análisis de mercado (09/11): conceptos recurrentes y proporci
 
 - [x] Firma digital de boletas y documentos laborales con el certificado de la empresa (PAdES) — adelantada el 10/11, ver docs/firma-digital.md
 - [x] Régimen agrario (Ley 31110): gratificaciones y CTS prorrateadas o en las fechas legales por trabajador, BETA, EsSalud agrario por tamaño del empleador y códigos T-Registro
-- [ ] Régimen de construcción civil (pendiente: cifras oficiales del convenio vigente — BUC, movilidad, gratificación, vacaciones, CTS, Conafovicer)
+- ~~Régimen de construcción civil~~ — pospuesto el 11/11/2026: la planilla del rubro es semanal y el sistema es mensual. Las cifras oficiales 2026 y sus fuentes quedan en docs/reglas-calculo.md para retomarlo
 
 El portal del trabajador se descartó (11/11/2026).
