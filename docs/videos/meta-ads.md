@@ -153,11 +153,12 @@ música de fondo con ritmo al 10–15 % y un golpe de sonido («whoosh» o «hit
 
 ### Imagen fija para la prueba A/B (video vs. imagen)
 
-`videos/anuncio-imagen-v1-4x5.png` (1080×1350, feed) y `videos/anuncio-imagen-v1-1x1.png` (1080×1080). Titular
-«Tu planilla en piloto automático ⚡», captura real de la planilla calculada (datos ficticios de la demo) con tres
-insignias —boletas con firma digital, planilla calculada en un clic, PLAME y AFPnet listos—, seis funciones (cálculo
-automático, multiempresa, CTS y gratificación, novedades como Excel, auditoría, respaldos) y el botón «Pide tu demo
-por WhatsApp». Se regenera con `cd tools/videos && BASE_URL=http://127.0.0.1:8000 node imagenes.js` (diseño en
+`videos/anuncio-imagen-v1-4x5.png` (1080×1350, feed) y `videos/anuncio-imagen-v1-1x1.png` (1080×1080). Estilo
+corporativo sobrio: fondo azul medianoche (#060B18), titular «Tu planilla laboral en total automatización», captura
+real de la planilla calculada (datos ficticios de la demo) con tres avisos de check verde —planilla calculada, boletas
+firmadas digitalmente, PLAME y AFPnet generados—, seis funciones en tarjetas oscuras con íconos de línea, sin emojis
+(cálculo automático, multiempresa, beneficios sociales, integración con Excel, auditoría, respaldos) y el botón verde
+«Pide tu demo por WhatsApp». Se regenera con `cd tools/videos && BASE_URL=http://127.0.0.1:8000 node imagenes.js` (diseño en
 `imagen-v1.html`; `SOLO_MONTAJE=1` reusa la captura).
 
 **Prueba A/B:** mismo público, presupuesto, texto y botón «Enviar mensaje»; solo cambia el creativo (video V1 con voz

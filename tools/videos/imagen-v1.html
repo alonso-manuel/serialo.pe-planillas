@@ -2,9 +2,18 @@
 <html lang="es">
     <head>
         <meta charset="utf-8" />
-        <!-- Imagen fija del anuncio (prueba A/B frente al video V1, docs/videos/meta-ads.md). La captura llega por
+        <!-- Imagen fija del anuncio (prueba A/B frente al video V1, docs/videos/meta-ads.md). Estilo corporativo sobrio:
+             fondo medianoche, íconos de línea (sin emojis), avisos con check verde. La captura llega por
              ?captura=archivo.png (datos ficticios de la demo); ?alto=1350 (4:5) o 1080 (1:1, versión compacta). -->
         <style>
+            :root {
+                --fondo: #060b18;
+                --tarjeta: #0f172a;
+                --borde: rgba(148, 163, 184, 0.18);
+                --texto: #f8fafc;
+                --suave: #94a3b8;
+                --verde: #10b981;
+            }
             * {
                 box-sizing: border-box;
                 margin: 0;
@@ -20,238 +29,254 @@
                 position: relative;
                 background:
                     radial-gradient(
-                        1000px 800px at 90% -10%,
-                        #3b82f6 0%,
-                        transparent 60%
+                        900px 520px at 50% 46%,
+                        rgba(37, 99, 235, 0.22) 0%,
+                        transparent 70%
                     ),
-                    radial-gradient(
-                        900px 800px at -15% 105%,
-                        #1e40af 0%,
-                        transparent 60%
-                    ),
-                    #0b1530;
-                color: #fff;
-                padding: 56px 60px 0;
+                    var(--fondo);
+                color: var(--texto);
+                padding: 60px 64px 0;
             }
+            svg.linea {
+                fill: none;
+                stroke: currentColor;
+                stroke-width: 1.6;
+                stroke-linecap: round;
+                stroke-linejoin: round;
+            }
+
             .marca {
                 display: flex;
                 align-items: center;
-                gap: 16px;
-                font-size: 34px;
-                font-weight: 800;
+                gap: 14px;
+                font-size: 28px;
+                font-weight: 700;
+                letter-spacing: 0.2px;
             }
             .marca img {
-                width: 60px;
-                height: 60px;
+                width: 48px;
+                height: 48px;
             }
             .beta {
-                background: #fcd34d;
-                color: #0b1530;
-                font-size: 20px;
-                font-weight: 900;
+                font-size: 16px;
+                font-weight: 700;
+                letter-spacing: 2px;
+                color: #a7f3d0;
+                border: 1.5px solid rgba(16, 185, 129, 0.55);
+                background: rgba(16, 185, 129, 0.1);
                 padding: 4px 12px;
                 border-radius: 999px;
-                letter-spacing: 1px;
             }
             h1 {
-                margin-top: 34px;
-                font-size: 74px;
-                line-height: 1.02;
-                font-weight: 900;
-                letter-spacing: -1.5px;
-            }
-            h1 b {
-                color: #fcd34d;
+                margin-top: 32px;
+                font-size: 70px;
+                line-height: 1.05;
+                font-weight: 800;
+                letter-spacing: -1.6px;
             }
             .sub {
-                margin-top: 16px;
-                font-size: 32px;
-                color: #cbd5e1;
-                font-weight: 600;
+                margin-top: 18px;
+                font-size: 28px;
+                line-height: 1.35;
+                color: var(--suave);
+                max-width: 880px;
             }
 
-            /* Captura del sistema en ventana de navegador, con insignias flotantes */
+            /* Panel del sistema flotando, con avisos de check verde */
             .pantalla {
                 position: relative;
-                margin-top: 40px;
-                height: 420px;
+                margin-top: 38px;
+                height: 400px;
             }
             .ventana {
                 position: absolute;
-                left: 40px;
-                right: -20px;
-                top: 0;
-                bottom: 0;
-                border-radius: 18px;
+                inset: 0 6px;
+                border-radius: 20px;
                 overflow: hidden;
                 background: #fff;
                 box-shadow:
-                    0 30px 80px rgba(0, 0, 0, 0.55),
-                    0 0 0 2px rgba(255, 255, 255, 0.15);
+                    0 40px 90px rgba(0, 0, 0, 0.6),
+                    0 0 0 1px rgba(255, 255, 255, 0.08);
             }
             .barra {
-                height: 34px;
-                background: #e2e8f0;
+                height: 32px;
+                background: #f1f5f9;
+                border-bottom: 1px solid #e2e8f0;
                 display: flex;
                 align-items: center;
-                gap: 9px;
+                gap: 8px;
                 padding-left: 16px;
             }
             .barra i {
-                width: 13px;
-                height: 13px;
+                width: 11px;
+                height: 11px;
                 border-radius: 50%;
-                background: #94a3b8;
+                background: #cbd5e1;
             }
             .ventana img {
                 display: block;
                 width: 100%;
-                height: calc(100% - 34px);
+                height: calc(100% - 32px);
                 object-fit: cover;
                 object-position: left top;
             }
-            .insignia {
+            .aviso {
                 position: absolute;
                 display: flex;
                 align-items: center;
-                gap: 12px;
-                background: #fff;
+                gap: 14px;
+                background: rgba(255, 255, 255, 0.97);
                 color: #0f172a;
-                font-size: 27px;
-                font-weight: 800;
-                padding: 14px 22px;
-                border-radius: 16px;
-                box-shadow: 0 16px 40px rgba(0, 0, 0, 0.45);
+                padding: 14px 22px 14px 16px;
+                border-radius: 14px;
+                border: 1px solid #e2e8f0;
+                box-shadow: 0 18px 44px rgba(2, 6, 23, 0.45);
                 white-space: nowrap;
             }
-            .insignia small {
+            .aviso .check {
+                width: 36px;
+                height: 36px;
+                flex: none;
+                border-radius: 50%;
+                background: rgba(16, 185, 129, 0.12);
+                color: var(--verde);
+                display: grid;
+                place-items: center;
+            }
+            .aviso .check svg {
+                width: 20px;
+                height: 20px;
+                stroke-width: 2.6;
+            }
+            .aviso b {
                 display: block;
-                font-size: 20px;
-                font-weight: 600;
-                color: #475569;
+                font-size: 23px;
+                font-weight: 700;
             }
-            .insignia .ico {
-                font-size: 38px;
+            .aviso small {
+                display: block;
+                font-size: 18px;
+                color: #64748b;
             }
-            .i1 {
-                left: -14px;
-                top: 120px;
+            .a1 {
+                right: -22px;
+                top: -22px;
             }
-            .i2 {
-                right: -18px;
-                top: -26px;
+            .a2 {
+                left: -24px;
+                top: 140px;
             }
-            .i3 {
-                left: 40px;
-                top: 330px;
+            .a3 {
+                right: 40px;
+                bottom: -26px;
             }
 
-            /* Funciones */
+            /* Funciones: 2×3, tarjetas oscuras con ícono de línea */
             .funciones {
                 display: grid;
                 grid-template-columns: 1fr 1fr;
-                gap: 12px 20px;
-                margin-top: 36px;
+                gap: 14px 18px;
+                margin-top: 44px;
             }
             .f {
                 display: flex;
-                gap: 16px;
+                gap: 18px;
                 align-items: center;
-                background: rgba(255, 255, 255, 0.08);
-                border: 2px solid rgba(255, 255, 255, 0.12);
-                border-radius: 18px;
-                padding: 12px 18px;
+                background: var(--tarjeta);
+                border: 1px solid var(--borde);
+                border-radius: 16px;
+                padding: 16px 20px;
             }
-            .f .ico {
-                font-size: 40px;
+            .f svg {
+                width: 38px;
+                height: 38px;
                 flex: none;
+                color: #e2e8f0;
             }
             .f b {
                 display: block;
-                font-size: 28px;
+                font-size: 25px;
+                font-weight: 700;
             }
             .f span {
                 display: block;
-                font-size: 21px;
-                color: #cbd5e1;
-                font-weight: 600;
+                font-size: 19px;
+                color: var(--suave);
             }
 
             .cta {
                 position: absolute;
-                left: 60px;
-                right: 60px;
-                bottom: 50px;
+                left: 64px;
+                right: 64px;
+                bottom: 58px;
                 display: flex;
                 align-items: center;
                 justify-content: center;
                 gap: 16px;
-                background: #22c55e;
+                background: var(--verde);
                 color: #fff;
-                font-size: 40px;
-                font-weight: 900;
+                font-size: 36px;
+                font-weight: 700;
                 padding: 24px;
-                border-radius: 999px;
-                box-shadow: 0 16px 40px rgba(34, 197, 94, 0.4);
+                border-radius: 16px;
+                box-shadow: 0 18px 40px rgba(16, 185, 129, 0.28);
             }
             .cta svg {
-                width: 46px;
-                height: 46px;
+                width: 40px;
+                height: 40px;
             }
             .pie {
                 position: absolute;
                 left: 0;
                 right: 0;
-                bottom: 14px;
+                bottom: 20px;
                 text-align: center;
-                font-size: 20px;
-                color: #94a3b8;
+                font-size: 19px;
+                color: #64748b;
             }
 
-            /* 1:1 — versión compacta: sin subtítulo, pantalla más baja, funciones en 3 columnas */
+            /* 1:1 — versión compacta: sin subtítulo, funciones en 3 columnas sin descripción */
             body.cuadrada {
                 height: 1080px;
-                padding-top: 44px;
+                padding-top: 48px;
             }
             .cuadrada h1 {
-                margin-top: 24px;
-                font-size: 68px;
+                margin-top: 28px;
+                font-size: 62px;
             }
             .cuadrada .sub {
                 display: none;
             }
             .cuadrada .pantalla {
-                margin-top: 28px;
-                height: 410px;
-            }
-            .cuadrada .i1 {
-                top: 110px;
-            }
-            .cuadrada .i3 {
-                top: 300px;
+                margin-top: 44px;
+                height: 420px;
             }
             .cuadrada .funciones {
                 grid-template-columns: 1fr 1fr 1fr;
                 gap: 12px;
-                margin-top: 30px;
+                margin-top: 44px;
             }
             .cuadrada .f {
-                padding: 12px 14px;
-                gap: 10px;
+                padding: 14px 16px;
+                gap: 12px;
             }
-            .cuadrada .f .ico {
-                font-size: 32px;
+            .cuadrada .f svg {
+                width: 30px;
+                height: 30px;
             }
             .cuadrada .f b {
-                font-size: 23px;
+                font-size: 21px;
             }
-            .cuadrada .f div span {
+            .cuadrada .f span {
                 display: none;
             }
             .cuadrada .cta {
-                bottom: 46px;
-                font-size: 36px;
+                bottom: 48px;
+                font-size: 32px;
                 padding: 20px;
+            }
+            .cuadrada .pie {
+                bottom: 14px;
             }
         </style>
     </head>
@@ -260,73 +285,117 @@
             <img src="../../public/favicon.svg" alt="" />
             Serialo Planillas <span class="beta">BETA</span>
         </div>
-        <h1>Tu planilla en <b>piloto automático</b> ⚡</h1>
-        <p class="sub">Para estudios contables y empresas del Perú</p>
+        <h1>Tu planilla laboral en<br />total automatización</h1>
+        <p class="sub">
+            Cálculo, boletas firmadas y archivos PLAME y AFPnet para estudios
+            contables y empresas del Perú.
+        </p>
 
         <div class="pantalla">
             <div class="ventana">
                 <div class="barra"><i></i><i></i><i></i></div>
                 <img id="captura" alt="" />
             </div>
-            <div class="insignia i1">
-                <span class="ico">✍️</span>
+            <div class="aviso a1">
+                <span class="check"
+                    ><svg class="linea" viewBox="0 0 24 24">
+                        <path d="M20 6 9 17l-5-5" /></svg
+                ></span>
                 <div>
-                    Boletas con firma digital<small
-                        >PDF firmado y enviado por correo</small
-                    >
+                    <b>Planilla calculada</b
+                    ><small>todas tus empresas, en un clic</small>
                 </div>
             </div>
-            <div class="insignia i2">
-                <span class="ico">✅</span>
+            <div class="aviso a2">
+                <span class="check"
+                    ><svg class="linea" viewBox="0 0 24 24">
+                        <path d="M20 6 9 17l-5-5" /></svg
+                ></span>
                 <div>
-                    Planilla calculada<small>todas tus empresas, un clic</small>
+                    <b>Boletas firmadas digitalmente</b
+                    ><small>PDF enviado a cada trabajador</small>
                 </div>
             </div>
-            <div class="insignia i3">
-                <span class="ico">📤</span>
+            <div class="aviso a3">
+                <span class="check"
+                    ><svg class="linea" viewBox="0 0 24 24">
+                        <path d="M20 6 9 17l-5-5" /></svg
+                ></span>
                 <div>
-                    PLAME y AFPnet listos<small
-                        >archivos oficiales para subir</small
-                    >
+                    <b>PLAME y AFPnet generados</b
+                    ><small>archivos oficiales listos para subir</small>
                 </div>
             </div>
         </div>
 
         <div class="funciones">
             <div class="f">
-                <span class="ico">🧮</span>
+                <svg class="linea" viewBox="0 0 24 24">
+                    <rect width="16" height="20" x="4" y="2" rx="2" />
+                    <path
+                        d="M8 6h8M16 14v4M16 10h.01M12 10h.01M8 10h.01M12 14h.01M8 14h.01M12 18h.01M8 18h.01"
+                    />
+                </svg>
                 <div>
                     <b>Cálculo automático</b
                     ><span>ONP, AFP, EsSalud y quinta</span>
                 </div>
             </div>
             <div class="f">
-                <span class="ico">🏢</span>
+                <svg class="linea" viewBox="0 0 24 24">
+                    <path d="M6 22V4a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v18Z" />
+                    <path
+                        d="M6 12H4a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h2M18 9h2a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2h-2M10 6h4M10 10h4M10 14h4M10 18h4"
+                    />
+                </svg>
                 <div>
-                    <b>Multiempresa</b><span>todas en un solo sistema</span>
+                    <b>Multiempresa</b
+                    ><span>todas tus empresas, un sistema</span>
                 </div>
             </div>
             <div class="f">
-                <span class="ico">🎁</span>
+                <svg class="linea" viewBox="0 0 24 24">
+                    <path
+                        d="M19 7V4a1 1 0 0 0-1-1H5a2 2 0 0 0 0 4h15a1 1 0 0 1 1 1v4h-3a2 2 0 0 0 0 4h3a1 1 0 0 0 1-1v-2a1 1 0 0 0-1-1"
+                    />
+                    <path d="M3 5v14a2 2 0 0 0 2 2h15a1 1 0 0 0 1-1v-4" />
+                </svg>
                 <div>
-                    <b>CTS y gratificación</b
-                    ><span>vacaciones y liquidaciones</span>
+                    <b>Beneficios sociales</b
+                    ><span>CTS, gratificación y liquidaciones</span>
                 </div>
             </div>
             <div class="f">
-                <span class="ico">📊</span>
+                <svg class="linea" viewBox="0 0 24 24">
+                    <rect width="18" height="18" x="3" y="3" rx="2" />
+                    <path d="M3 9h18M3 15h18M9 9v12M15 9v12" />
+                </svg>
                 <div>
-                    <b>Novedades como Excel</b
-                    ><span>o cárgalas desde un archivo</span>
+                    <b>Integración con Excel</b
+                    ><span>novedades y carga masiva</span>
                 </div>
             </div>
             <div class="f">
-                <span class="ico">🔒</span>
-                <div><b>Auditoría</b><span>sabes quién cambió qué</span></div>
+                <svg class="linea" viewBox="0 0 24 24">
+                    <path
+                        d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"
+                    />
+                    <path d="m9 12 2 2 4-4" />
+                </svg>
+                <div>
+                    <b>Auditoría</b><span>quién cambió qué y cuándo</span>
+                </div>
             </div>
             <div class="f">
-                <span class="ico">💾</span>
-                <div><b>Respaldos</b><span>tu información, segura</span></div>
+                <svg class="linea" viewBox="0 0 24 24">
+                    <path
+                        d="M12 13v8M4 14.9A7 7 0 1 1 15.7 8h1.8a4.5 4.5 0 0 1 2.5 8.2"
+                    />
+                    <path d="m8 17 4-4 4 4" />
+                </svg>
+                <div>
+                    <b>Respaldos</b><span>tu información, siempre segura</span>
+                </div>
             </div>
         </div>
 
