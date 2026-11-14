@@ -1,0 +1,355 @@
+<!doctype html>
+<html lang="es">
+    <head>
+        <meta charset="utf-8" />
+        <!-- Imagen fija del anuncio (prueba A/B frente al video V1, docs/videos/meta-ads.md). La captura llega por
+             ?captura=archivo.png (datos ficticios de la demo); ?alto=1350 (4:5) o 1080 (1:1, versión compacta). -->
+        <style>
+            * {
+                box-sizing: border-box;
+                margin: 0;
+            }
+            html,
+            body {
+                width: 1080px;
+                height: 1350px;
+                overflow: hidden;
+                font-family: 'Segoe UI', system-ui, sans-serif;
+            }
+            body {
+                position: relative;
+                background:
+                    radial-gradient(
+                        1000px 800px at 90% -10%,
+                        #3b82f6 0%,
+                        transparent 60%
+                    ),
+                    radial-gradient(
+                        900px 800px at -15% 105%,
+                        #1e40af 0%,
+                        transparent 60%
+                    ),
+                    #0b1530;
+                color: #fff;
+                padding: 56px 60px 0;
+            }
+            .marca {
+                display: flex;
+                align-items: center;
+                gap: 16px;
+                font-size: 34px;
+                font-weight: 800;
+            }
+            .marca img {
+                width: 60px;
+                height: 60px;
+            }
+            .beta {
+                background: #fcd34d;
+                color: #0b1530;
+                font-size: 20px;
+                font-weight: 900;
+                padding: 4px 12px;
+                border-radius: 999px;
+                letter-spacing: 1px;
+            }
+            h1 {
+                margin-top: 34px;
+                font-size: 74px;
+                line-height: 1.02;
+                font-weight: 900;
+                letter-spacing: -1.5px;
+            }
+            h1 b {
+                color: #fcd34d;
+            }
+            .sub {
+                margin-top: 16px;
+                font-size: 32px;
+                color: #cbd5e1;
+                font-weight: 600;
+            }
+
+            /* Captura del sistema en ventana de navegador, con insignias flotantes */
+            .pantalla {
+                position: relative;
+                margin-top: 40px;
+                height: 420px;
+            }
+            .ventana {
+                position: absolute;
+                left: 40px;
+                right: -20px;
+                top: 0;
+                bottom: 0;
+                border-radius: 18px;
+                overflow: hidden;
+                background: #fff;
+                box-shadow:
+                    0 30px 80px rgba(0, 0, 0, 0.55),
+                    0 0 0 2px rgba(255, 255, 255, 0.15);
+            }
+            .barra {
+                height: 34px;
+                background: #e2e8f0;
+                display: flex;
+                align-items: center;
+                gap: 9px;
+                padding-left: 16px;
+            }
+            .barra i {
+                width: 13px;
+                height: 13px;
+                border-radius: 50%;
+                background: #94a3b8;
+            }
+            .ventana img {
+                display: block;
+                width: 100%;
+                height: calc(100% - 34px);
+                object-fit: cover;
+                object-position: left top;
+            }
+            .insignia {
+                position: absolute;
+                display: flex;
+                align-items: center;
+                gap: 12px;
+                background: #fff;
+                color: #0f172a;
+                font-size: 27px;
+                font-weight: 800;
+                padding: 14px 22px;
+                border-radius: 16px;
+                box-shadow: 0 16px 40px rgba(0, 0, 0, 0.45);
+                white-space: nowrap;
+            }
+            .insignia small {
+                display: block;
+                font-size: 20px;
+                font-weight: 600;
+                color: #475569;
+            }
+            .insignia .ico {
+                font-size: 38px;
+            }
+            .i1 {
+                left: -14px;
+                top: 120px;
+            }
+            .i2 {
+                right: -18px;
+                top: -26px;
+            }
+            .i3 {
+                left: 40px;
+                top: 330px;
+            }
+
+            /* Funciones */
+            .funciones {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 12px 20px;
+                margin-top: 36px;
+            }
+            .f {
+                display: flex;
+                gap: 16px;
+                align-items: center;
+                background: rgba(255, 255, 255, 0.08);
+                border: 2px solid rgba(255, 255, 255, 0.12);
+                border-radius: 18px;
+                padding: 12px 18px;
+            }
+            .f .ico {
+                font-size: 40px;
+                flex: none;
+            }
+            .f b {
+                display: block;
+                font-size: 28px;
+            }
+            .f span {
+                display: block;
+                font-size: 21px;
+                color: #cbd5e1;
+                font-weight: 600;
+            }
+
+            .cta {
+                position: absolute;
+                left: 60px;
+                right: 60px;
+                bottom: 50px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                gap: 16px;
+                background: #22c55e;
+                color: #fff;
+                font-size: 40px;
+                font-weight: 900;
+                padding: 24px;
+                border-radius: 999px;
+                box-shadow: 0 16px 40px rgba(34, 197, 94, 0.4);
+            }
+            .cta svg {
+                width: 46px;
+                height: 46px;
+            }
+            .pie {
+                position: absolute;
+                left: 0;
+                right: 0;
+                bottom: 14px;
+                text-align: center;
+                font-size: 20px;
+                color: #94a3b8;
+            }
+
+            /* 1:1 — versión compacta: sin subtítulo, pantalla más baja, funciones en 3 columnas */
+            body.cuadrada {
+                height: 1080px;
+                padding-top: 44px;
+            }
+            .cuadrada h1 {
+                margin-top: 24px;
+                font-size: 68px;
+            }
+            .cuadrada .sub {
+                display: none;
+            }
+            .cuadrada .pantalla {
+                margin-top: 28px;
+                height: 410px;
+            }
+            .cuadrada .i1 {
+                top: 110px;
+            }
+            .cuadrada .i3 {
+                top: 300px;
+            }
+            .cuadrada .funciones {
+                grid-template-columns: 1fr 1fr 1fr;
+                gap: 12px;
+                margin-top: 30px;
+            }
+            .cuadrada .f {
+                padding: 12px 14px;
+                gap: 10px;
+            }
+            .cuadrada .f .ico {
+                font-size: 32px;
+            }
+            .cuadrada .f b {
+                font-size: 23px;
+            }
+            .cuadrada .f div span {
+                display: none;
+            }
+            .cuadrada .cta {
+                bottom: 46px;
+                font-size: 36px;
+                padding: 20px;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="marca">
+            <img src="../../public/favicon.svg" alt="" />
+            Serialo Planillas <span class="beta">BETA</span>
+        </div>
+        <h1>Tu planilla en <b>piloto automático</b> ⚡</h1>
+        <p class="sub">Para estudios contables y empresas del Perú</p>
+
+        <div class="pantalla">
+            <div class="ventana">
+                <div class="barra"><i></i><i></i><i></i></div>
+                <img id="captura" alt="" />
+            </div>
+            <div class="insignia i1">
+                <span class="ico">✍️</span>
+                <div>
+                    Boletas con firma digital<small
+                        >PDF firmado y enviado por correo</small
+                    >
+                </div>
+            </div>
+            <div class="insignia i2">
+                <span class="ico">✅</span>
+                <div>
+                    Planilla calculada<small>todas tus empresas, un clic</small>
+                </div>
+            </div>
+            <div class="insignia i3">
+                <span class="ico">📤</span>
+                <div>
+                    PLAME y AFPnet listos<small
+                        >archivos oficiales para subir</small
+                    >
+                </div>
+            </div>
+        </div>
+
+        <div class="funciones">
+            <div class="f">
+                <span class="ico">🧮</span>
+                <div>
+                    <b>Cálculo automático</b
+                    ><span>ONP, AFP, EsSalud y quinta</span>
+                </div>
+            </div>
+            <div class="f">
+                <span class="ico">🏢</span>
+                <div>
+                    <b>Multiempresa</b><span>todas en un solo sistema</span>
+                </div>
+            </div>
+            <div class="f">
+                <span class="ico">🎁</span>
+                <div>
+                    <b>CTS y gratificación</b
+                    ><span>vacaciones y liquidaciones</span>
+                </div>
+            </div>
+            <div class="f">
+                <span class="ico">📊</span>
+                <div>
+                    <b>Novedades como Excel</b
+                    ><span>o cárgalas desde un archivo</span>
+                </div>
+            </div>
+            <div class="f">
+                <span class="ico">🔒</span>
+                <div><b>Auditoría</b><span>sabes quién cambió qué</span></div>
+            </div>
+            <div class="f">
+                <span class="ico">💾</span>
+                <div><b>Respaldos</b><span>tu información, segura</span></div>
+            </div>
+        </div>
+
+        <div class="cta">
+            <svg viewBox="0 0 24 24" fill="#fff" aria-hidden="true">
+                <path
+                    d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm0 18.2c-1.5 0-3-.4-4.3-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.3-.4.2-.4.7-1.3.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.7 11.8 11.8 0 0 0 4.5 4c1.7.7 2.3.8 3.2.6.5-.1 1.5-.6 1.7-1.2.2-.6.2-1.1.2-1.2-.1-.1-.3-.2-.5-.3z"
+                />
+            </svg>
+            Pide tu demo por WhatsApp
+        </div>
+        <p class="pie">Hecho en el Perú · Demo sin compromiso</p>
+
+        <script>
+            window.listo = false;
+            const q = new URLSearchParams(location.search);
+            if (q.get('alto') === '1080')
+                document.body.classList.add('cuadrada');
+            const img = document.getElementById('captura');
+            img.onload = img.onerror = () => {
+                window.listo = true;
+            };
+            img.src = decodeURIComponent(q.get('captura') || '');
+        </script>
+    </body>
+</html>
