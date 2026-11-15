@@ -1,0 +1,9 @@
+Servicios Generales Huallaga es una pequeña empresa inscrita en el remype. Quien ya trabajaba antes de la inscripción conserva el régimen general: gratificación, ce te ese y vacaciones completas.
+<break time="1.2s" />
+En la ficha del trabajador, el régimen laboral toma por defecto el de la empresa. Para Ana Lucía elegimos régimen general.
+<break time="1.2s" />
+Solo existe en micro y pequeñas empresas, y siempre con Es Salud: el ese i ese es del régimen de microempresa.
+<break time="1.2s" />
+Calculamos la ce te ese de noviembre. Ana Lucía recibe la ce te ese completa del régimen general; sus compañeros, la mitad de la pequeña empresa.
+<break time="1.2s" />
+En vacaciones, su derecho es de treinta días por año; el de los demás, quince. La gratificación, la liquidación y el te registro también usan el régimen de cada trabajador.

@@ -292,6 +292,15 @@ Parte 30 👉 ¿trabajas con agroexportadoras? Cuéntame en comentarios.
 #SerialoPlanillas #planillas #contadoresperu #regimenagrario #ley31110 #agroexportacion #essalud #peru
 ```
 
+## 31 · Régimen por trabajador
+
+```text
+¿Tu cliente MYPE tiene trabajadores en régimen general? 🤔
+Quien ya trabajaba antes de la inscripción en el REMYPE conserva el régimen general. En Serialo Planillas se marca en su ficha y el sistema le calcula gratificación, CTS y vacaciones completas, mientras los demás siguen con el régimen MYPE.
+Parte 31 👉 ¿tienes empresas con régimen mixto? Cuéntame en comentarios.
+#SerialoPlanillas #planillas #contadoresperu #remype #mype #cts #gratificacion #peru
+```
+
 ---
 
 ## Consejos para publicar

@@ -350,6 +350,15 @@ Cada video usa lo que dejó el anterior: se graban en orden (ver «Cómo volver 
 | Nuevo trabajador: Elena Cóndor, S/ 1,130; casilla de prorrateo | Por defecto, gratificación y CTS se pagan cada mes; se desmarca si el trabajador pidió las fechas legales.       |
 | «Abrir primer periodo» → «Calcular» → detalle                  | 0406 (16.66 %), 0312 (9 %), 0904 (9.72 %), BETA 0314 (30 % RMV) y EsSalud agrario sin base mínima.               |
 
+## 31 · Régimen por trabajador (~0:50)
+
+| En pantalla                                                    | Narración                                                                                              |
+| -------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------ |
+| Trabajadores de Servicios Generales Huallaga (pequeña empresa) | Quien ya trabajaba antes de la inscripción en el REMYPE conserva el régimen general.                   |
+| Ficha de Ana Lucía Mendoza → Laborales → «Régimen general»     | Por defecto, el de la empresa. Solo en micro y pequeñas empresas, y siempre con EsSalud (no SIS).      |
+| CTS → «Calcular CTS» de noviembre                              | Ella recibe la CTS completa (S/ 1,794.54); sus compañeros, la mitad de la pequeña empresa.             |
+| Vacaciones                                                     | Su derecho es de 30 días por año; el de los demás, 15. Gratificación, liquidación y T-Registro, igual. |
+
 ---
 
 ## Voz en off con ElevenLabs

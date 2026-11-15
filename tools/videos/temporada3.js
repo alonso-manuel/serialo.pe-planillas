@@ -915,4 +915,63 @@ module.exports = {
             );
         },
     ],
+
+    /* ------------------------------------------------------------------ 31 */
+    '31-regimen-por-trabajador': [
+        { empresa: 'Huallaga' },
+        async (d) => {
+            const p = d.page;
+            await d.ir('/trabajadores');
+            await d.escena('Régimen por trabajador');
+            await d.sub(
+                'Servicios Generales Huallaga es una pequeña empresa inscrita en el REMYPE.',
+                3000,
+            );
+            await d.sub(
+                'Quien ya trabajaba antes de la inscripción conserva el régimen general: gratificación, CTS y vacaciones completas.',
+                4400,
+            );
+            await abrirFicha(d, 'Mendoza Cruz');
+            await pestana(d, 'Laborales', 1200);
+            await d.mover('#regimen_laboral');
+            await d.sub(
+                'En la ficha, «Régimen laboral» toma por defecto el de la empresa. Para ella elegimos «Régimen general».',
+                4000,
+            );
+            await d.elegir('#regimen_laboral', /Régimen general/);
+            await d.sub(
+                'Solo existe en micro y pequeñas empresas, y siempre con EsSalud: el SIS es del régimen de microempresa.',
+                4000,
+            );
+            await d.clic(
+                p.getByRole('button', { name: 'Guardar cambios' }),
+                1800,
+            );
+
+            await d.escena('CTS según el régimen');
+            await d.ir('/cts');
+            await d.sub('Calculamos la CTS de noviembre.', 2000);
+            await d.clic(
+                p.getByRole('button', { name: /Recalcular|Calcular CTS/ }),
+                2600,
+            );
+            await d.mover(p.getByText('Mendoza Cruz').first());
+            await d.sub(
+                'Ana Lucía recibe la CTS completa del régimen general; sus compañeros, la mitad de la pequeña empresa.',
+                4200,
+            );
+
+            await d.escena('Vacaciones según el régimen');
+            await d.ir('/vacaciones');
+            await d.mover(p.getByText('Mendoza Cruz').first());
+            await d.sub(
+                'En vacaciones, su derecho es de 30 días por año; el de los demás, 15.',
+                3400,
+            );
+            await d.sub(
+                'La gratificación, la liquidación y el T-Registro también usan el régimen de cada trabajador.',
+                3800,
+            );
+        },
+    ],
 };
