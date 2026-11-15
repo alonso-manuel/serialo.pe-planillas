@@ -102,7 +102,7 @@ objeciones frecuentes:
 | «Es beta, ¿y si tiene errores?»      | «Por eso estamos con pocos estudios y te acompaño directamente. Los cálculos tienen pruebas automáticas y cualquier diferencia que encuentres la corrijo de inmediato.» |
 | «¿Y si cambia la ley (RMV, UIT…)?»   | «Las tasas y montos legales son parámetros con fecha de vigencia, se actualizan sin tocar tus datos y un mes antiguo siempre se recalcula igual.»                       |
 | «¿Dónde quedan mis datos?»           | «En tu propio hosting o en nuestro servidor, con base de datos separada por estudio, respaldos y registro de cambios.»                                                  |
-| «Está caro»                          | «¿Cuántas horas al mes te toma hoy la planilla de las 7 empresas? Con una o dos horas ahorradas al mes ya se paga.»                                                     |
+| «Está caro»                          | «Son unos S/ 21 por empresa al mes. ¿Cuántas horas te toma hoy la planilla de las 7? Con una o dos horas ahorradas ya se paga.»                                         |
 | «Tengo que pensarlo / consultarlo»   | «Claro. ¿Qué es lo que te falta ver para decidir? Si quieres, lo pruebas una semana con una empresa y el jueves lo vemos juntos.»                                       |
 | «¿Hace construcción civil?» (u otra) | Responde solo lo que el sistema hace hoy. Si no lo hace: «Todavía no; lo anoto y te aviso cuando esté.» **Nunca prometer fechas.**                                      |
 
