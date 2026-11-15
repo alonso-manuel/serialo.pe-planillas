@@ -18,6 +18,9 @@ use App\Models\User;
  */
 class EstudioDemoSeeder extends DemoSeeder
 {
+    /** Claves del catálogo de empresas ficticias. */
+    public const CLAVES = ['andes', 'huallaga', 'pacifico', 'misti', 'chira', 'espiga', 'ucayali', 'sonrisa'];
+
     /** @var list<string> claves del catálogo de EMPRESAS */
     public array $empresasElegidas = [];
 

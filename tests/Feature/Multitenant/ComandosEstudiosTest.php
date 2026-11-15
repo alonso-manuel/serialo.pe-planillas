@@ -2,10 +2,12 @@
 
 namespace Tests\Feature\Multitenant;
 
+use App\Enums\EstadoPeriodo;
 use App\Enums\RolUsuario;
 use App\Models\Central\Estudio;
 use App\Models\Empresa;
 use App\Models\Parametro;
+use App\Models\Periodo;
 use App\Models\Trabajador;
 use App\Models\User;
 use Database\Seeders\EstudioDemoSeeder;
@@ -76,6 +78,53 @@ class ComandosEstudiosTest extends TestCase
         });
 
         $vacio->run(fn () => $this->assertSame(0, Empresa::query()->count()));
+    }
+
+    #[Test]
+    public function carga_datos_demo_en_un_estudio_existente_sin_tocar_otros(): void
+    {
+        $this->activarModoSaas();
+        $demo = $this->crearEstudio('prueba', 'yo@prueba.test');
+        $otro = $this->crearEstudio('otro', 'a@otro.test');
+
+        $this->artisan('estudio:datos-demo', [
+            'subdominio' => 'prueba', '--empresas' => 'espiga,sonrisa', '--correo' => 'yo@prueba.test',
+        ])
+            ->expectsConfirmation('«Estudio Prueba» no es un estudio demo. ¿Cargar datos ficticios igualmente?', 'yes')
+            ->expectsOutputToContain('Datos ficticios cargados')
+            ->assertSuccessful();
+
+        $demo->run(function (): void {
+            $this->assertSame(2, Empresa::query()->count());
+            $this->assertSame(6, Trabajador::query()->count());
+            // Boletas de prueba solo al correo indicado, nunca a correos inventados.
+            $this->assertSame(['yo@prueba.test'], Trabajador::query()->distinct()->pluck('email')->all());
+            // Mes actual abierto con novedades para calcular en la demo.
+            $this->assertTrue(Periodo::query()->where('anio', now()->year)->where('mes', now()->month)
+                ->where('estado', EstadoPeriodo::Abierto)->exists());
+            $this->assertSame(['yo@prueba.test'], User::query()->pluck('email')->all()); // sin usuarios demo
+        });
+        $otro->run(fn () => $this->assertSame(0, Empresa::query()->count()));
+
+        // Repetirlo no duplica nada.
+        $this->artisan('estudio:datos-demo', ['subdominio' => 'prueba', '--empresas' => 'espiga,sonrisa', '--force' => true])
+            ->assertSuccessful();
+        $demo->run(function (): void {
+            $this->assertSame(6, Trabajador::query()->count());
+            $this->assertSame([null], Trabajador::query()->distinct()->pluck('email')->all());
+        });
+    }
+
+    #[Test]
+    public function datos_demo_rechaza_estudio_o_empresas_desconocidas(): void
+    {
+        $this->activarModoSaas();
+        $this->crearEstudio('prueba', 'yo@prueba.test');
+
+        $this->artisan('estudio:datos-demo', ['subdominio' => 'noexiste'])->assertFailed();
+        $this->artisan('estudio:datos-demo', ['subdominio' => 'prueba', '--empresas' => 'inventada', '--force' => true])
+            ->expectsOutputToContain('Empresas desconocidas: inventada')
+            ->assertFailed();
     }
 
     #[Test]

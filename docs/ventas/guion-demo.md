@@ -5,6 +5,28 @@ que el prospecto vea **su** problema resuelto y acepte un siguiente paso concret
 
 Regla de oro: **habla menos que él**. Pregunta, escucha y muestra solo lo que responde a lo que te dijo.
 
+## Ambiente de demo (una sola vez)
+
+En el VPS, un estudio propio con datos **100 % ficticios** (RUC 200000000xx, DNI 7000xxxx):
+
+```bash
+cd /opt/serialo
+docker compose exec app php artisan estudio:datos-demo <subdominio> --correo=<tu-correo>
+```
+
+Carga 7 empresas (régimen general, pequeña y microempresa) con sus trabajadores, 11 meses de planillas cerradas
+(con gratificación de julio y CTS) y el **mes actual abierto con novedades**, listo para «Calcular todas las
+empresas». `--correo` hace que las boletas de prueba lleguen a tu bandeja (así muestras el envío real); sin esa
+opción los trabajadores quedan sin correo. Se puede repetir sin duplicar datos. Otras empresas del catálogo:
+`--empresas=andes,misti,sonrisa…` (ver `EstudioDemoSeeder::CLAVES`).
+
+Para la boleta **firmada**: en **Empresas → editar la empresa → Firma digital** (Distribuidora Pacífico, régimen
+general), subir el certificado de prueba
+`tools/videos/demo-firma.p12` (clave `demo1234`, autofirmado, solo para demos).
+
+Después de la demo el mes queda calculado; se puede volver a calcular en la siguiente demo mientras **no se cierre**.
+No cierres el periodo durante la demo.
+
 ## Antes de la llamada (10 minutos)
 
 - [ ] Lo que ya sabes del prospecto (de WhatsApp): tipo (estudio o empresa), n.º de empresas, regímenes, cómo hace hoy
