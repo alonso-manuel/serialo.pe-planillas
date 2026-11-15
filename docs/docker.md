@@ -204,6 +204,7 @@ Los videos no van en el repositorio ni en la imagen: viven en `/opt/serialo/guia
 cd tools/videos && node preparar-guia.mjs              # videos/Videosparalaguia → guia/ (1080p para web)
 ssh serialo-vps mkdir -p /opt/serialo/guia
 scp ../../guia/*.mp4 serialo-vps:/opt/serialo/guia/     # los que ya están se reemplazan
+ssh serialo-vps chmod 755 /opt/serialo/guia             # scp desde Windows la deja en 700: sin esto, «Próximamente»
 ```
 
 No hace falta reiniciar nada: aparecen al recargar la Guía. Un video que falta se muestra como «Próximamente».
