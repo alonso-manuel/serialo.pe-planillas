@@ -1,6 +1,6 @@
 // Imagen fija para la prueba A/B de Meta Ads (frente al video V1). Ver docs/videos/meta-ads.md.
 // 1) Captura la planilla calculada de la demo (datos ficticios) en alta resolución.
-// 2) La monta en imagen-v1.html y exporta PNG en 4:5 (feed) y 1:1.
+// 2) La monta en imagen-v1.html y exporta PNG en 4:5 (feed) y 1:1; también la imagen de planes (imagen-planes.html).
 // Uso: BASE_URL=http://127.0.0.1:8000 node imagenes.js   (base de demo)
 //      SOLO_MONTAJE=1 node imagenes.js                    (reusa la captura)
 const { chromium } = require('playwright');
@@ -50,15 +50,18 @@ void (async () => {
         await capturar(navegador);
     }
     const captura = encodeURIComponent(aUrl(archivo('imagen-v1-captura.png')));
-    for (const [nombre, ancho, alto] of [
-        ['anuncio-imagen-v1-4x5', 1080, 1350],
-        ['anuncio-imagen-v1-1x1', 1080, 1080],
+    // [archivo de salida, diseño, alto]: anuncio con captura del sistema y planes mensuales (docs/producto.md).
+    for (const [nombre, html, alto] of [
+        ['anuncio-imagen-v1-4x5', 'imagen-v1.html', 1350],
+        ['anuncio-imagen-v1-1x1', 'imagen-v1.html', 1080],
+        ['planes-4x5', 'imagen-planes.html', 1350],
+        ['planes-1x1', 'imagen-planes.html', 1080],
     ]) {
         const p = await navegador.newPage({
-            viewport: { width: ancho, height: alto },
+            viewport: { width: 1080, height: alto },
         });
         await p.goto(
-            aUrl(path.resolve(__dirname, 'imagen-v1.html')) +
+            aUrl(path.resolve(__dirname, html)) +
                 `?captura=${captura}&alto=${alto}`,
         );
         await p.waitForFunction(() => window.listo === true);

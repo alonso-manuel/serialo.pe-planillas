@@ -165,6 +165,14 @@ firmadas digitalmente, PLAME y AFPnet generados—, seis funciones en tarjetas o
 vs. imagen 4:5). Usar la función «Prueba A/B» de Meta (o dos conjuntos con el mismo presupuesto) durante 5–7 días y
 comparar **costo por conversación iniciada**, no solo clics.
 
+### Imagen de planes
+
+`videos/planes-4x5.png` y `videos/planes-1x1.png`: los tres planes mensuales (Empresa S/ 69, Estudio S/ 149
+—recomendado—, Estudio Pro S/ 249) con sus límites, lo que incluyen todos y el botón de WhatsApp. Mismo estilo que la
+imagen del anuncio. Para responder «¿cuánto cuesta?» por WhatsApp o como publicación. Diseño en
+`tools/videos/imagen-planes.html`; se regenera con `SOLO_MONTAJE=1 node imagenes.js`. **Si cambian los precios,
+actualizar también `docs/producto.md`.**
+
 ## 5. WhatsApp y formulario
 
 **Mensaje de bienvenida (WhatsApp Business):**
