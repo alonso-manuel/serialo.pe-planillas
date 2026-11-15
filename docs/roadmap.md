@@ -90,7 +90,7 @@ Marca `[x]` al terminar (o usa `/actualizar-roadmap`). Cada tarea: código + tes
 - [x] Panel central: **último ingreso** de cada cuenta (para saber si un prospecto probó la demo)
 - [x] Módulo **Guía** (Ayuda → Guía): los 31 videos servidos desde el propio servidor y descarga del manual en PDF
 - [x] Beta pública `v1.0.0-beta.1` (12/11/2026): etiqueta «Beta» en el sistema (`PLANILLAS_BETA`) y sección de beta en los términos, para empezar a publicitarlo
-- [ ] Etiqueta `v1.0.0` (y `PLANILLAS_BETA=false`): después de probar PLAME/AFPnet, la validación del contador y la revisión legal
+- [x] Versión `v1.0.0` (15/11/2026): sin etiqueta «Beta» (`PLANILLAS_BETA=false` por defecto) y la versión al pie de cada página. Siguen pendientes: probar la importación real en PLAME/AFPnet, la validación del contador (⚠ en docs/reglas-calculo.md) y la revisión legal de los términos
 
 ## v1.1 — 11 ene → 12 feb 2027
 

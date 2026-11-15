@@ -1,6 +1,8 @@
 <script setup lang="ts">
-import { Link } from '@inertiajs/vue3';
+import { Link, usePage } from '@inertiajs/vue3';
 import { privacidad, terminos } from '@/routes/legal';
+
+const page = usePage();
 </script>
 
 <template>
@@ -18,5 +20,9 @@ import { privacidad, terminos } from '@/routes/legal';
         >
             Política de privacidad
         </Link>
+        <template v-if="page.props.version">
+            <span aria-hidden="true">·</span>
+            <span>Versión {{ page.props.version }}</span>
+        </template>
     </nav>
 </template>

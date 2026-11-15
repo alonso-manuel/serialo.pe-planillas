@@ -11,6 +11,10 @@ final class GuiaVideos
 {
     /** @var array<string, list<array{clave: string, numero: int, titulo: string, descripcion: string}>> */
     public const SECCIONES = [
+        // Lo último que se agregó al sistema; al publicar un video nuevo de una función, va aquí primero.
+        'Nuevas implementaciones' => [
+            ['clave' => 'regimen-por-trabajador', 'numero' => 31, 'titulo' => 'Régimen por trabajador', 'descripcion' => 'Trabajadores en régimen general dentro de una micro o pequeña empresa.'],
+        ],
         'Primeros pasos' => [
             ['clave' => 'introduccion', 'numero' => 0, 'titulo' => 'Conoce Serialo Planillas', 'descripcion' => 'Qué hace el sistema y cómo está organizado.'],
             ['clave' => 'login', 'numero' => 1, 'titulo' => 'Acceso al sistema', 'descripcion' => 'Ingreso con contraseña o passkey, empresa activa y doble factor.'],

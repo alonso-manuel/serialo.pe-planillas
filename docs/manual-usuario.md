@@ -451,7 +451,8 @@ cambiarlos, pídelo a soporte.
 
 ## 13. Guía: videos y manual
 
-En **Ayuda → Guía** están los videos cortos de cada módulo, agrupados por tema (primeros pasos, configuración,
+En **Ayuda → Guía** están los videos cortos de cada módulo. Arriba, **Nuevas implementaciones** muestra lo último
+que se agregó al sistema; debajo, el resto agrupado por tema (primeros pasos, configuración,
 trabajadores, planilla mensual, beneficios, archivos oficiales, reportes y regímenes especiales). Haga clic en un
 video para verlo; el buscador filtra por tema (por ejemplo «CTS» o «PLAME»). Desde la misma página se descarga este
 manual en PDF. La guía está disponible para todos los usuarios.

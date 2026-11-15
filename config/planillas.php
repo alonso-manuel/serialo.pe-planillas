@@ -61,10 +61,15 @@ return [
     | ⚠ Textos por revisar con un abogado antes de vender (docs/manual-usuario.md, sección 12).
     */
     /*
-    | Beta pública: muestra la etiqueta «Beta» junto al nombre del sistema y la sección de beta en los términos.
-    | Se apaga con PLANILLAS_BETA=false al publicar la versión 1.0.
+    | Versión del sistema (se muestra al pie de cada página). Subirla con cada etiqueta de git (vX.Y.Z).
     */
-    'beta' => (bool) env('PLANILLAS_BETA', true),
+    'version' => '1.0.0',
+
+    /*
+    | Beta pública: etiqueta «Beta» junto al nombre del sistema y sección de beta en los términos. Terminó con la
+    | versión 1.0.0 (15/11/2026); queda apagada salvo PLANILLAS_BETA=true (p. ej. un servidor de pruebas).
+    */
+    'beta' => (bool) env('PLANILLAS_BETA', false),
 
     'legal' => [
         'version' => '12/11/2026',

@@ -53,12 +53,13 @@ class GuiaTest extends TestCase
         $this->actingAs($asistente)->get(route('guia.index'))->assertOk()
             ->assertInertia(fn (Assert $p) => $p->component('guia/Index')
                 ->has('secciones', count(GuiaVideos::SECCIONES))
-                ->where('secciones.0.titulo', 'Primeros pasos')
-                ->where('secciones.3.titulo', 'Planilla mensual')
-                ->where('secciones.3.videos.0.clave', 'periodos')
-                ->where('secciones.3.videos.0.disponible', true)
-                ->where('secciones.3.videos.0.url', route('guia.video', 'periodos'))
-                ->where('secciones.3.videos.1.disponible', false) // asistencia.mp4 no está en el directorio
+                ->where('secciones.0.titulo', 'Nuevas implementaciones')
+                ->where('secciones.1.titulo', 'Primeros pasos')
+                ->where('secciones.4.titulo', 'Planilla mensual')
+                ->where('secciones.4.videos.0.clave', 'periodos')
+                ->where('secciones.4.videos.0.disponible', true)
+                ->where('secciones.4.videos.0.url', route('guia.video', 'periodos'))
+                ->where('secciones.4.videos.1.disponible', false) // asistencia.mp4 no está en el directorio
                 ->where('manual', true));
     }
 

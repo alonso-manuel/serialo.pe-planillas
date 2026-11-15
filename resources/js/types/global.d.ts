@@ -22,6 +22,8 @@ declare module '@inertiajs/core' {
             name: string;
             /** Beta pública: etiqueta «Beta» junto al nombre del sistema. */
             beta: boolean;
+            /** Versión del sistema (pie de página). */
+            version: string;
             auth: Auth;
             empresaActiva: EmpresaResumen | null;
             empresas: EmpresaResumen[];

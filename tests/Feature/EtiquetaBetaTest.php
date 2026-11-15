@@ -7,23 +7,23 @@ use Inertia\Testing\AssertableInertia as Assert;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 
-/** Etiqueta «Beta» visible mientras el sistema está en beta pública (PLANILLAS_BETA); se apaga sin tocar código. */
+/** Versión 1.0.0: sin etiqueta «Beta» salvo que se encienda (PLANILLAS_BETA), y la versión al pie de página. */
 class EtiquetaBetaTest extends TestCase
 {
     use RefreshDatabase;
 
     #[Test]
-    public function por_defecto_el_sistema_se_muestra_como_beta(): void
+    public function por_defecto_es_la_version_1_sin_beta(): void
     {
-        $this->get(route('login'))->assertInertia(fn (Assert $p) => $p->where('beta', true));
-        $this->get(route('legal.terminos'))->assertInertia(fn (Assert $p) => $p->where('beta', true));
+        $this->get(route('login'))->assertInertia(fn (Assert $p) => $p->where('beta', false)->where('version', '1.0.0'));
+        $this->get(route('legal.terminos'))->assertInertia(fn (Assert $p) => $p->where('beta', false));
     }
 
     #[Test]
-    public function se_apaga_con_la_configuracion(): void
+    public function la_beta_se_puede_encender_con_la_configuracion(): void
     {
-        config(['planillas.beta' => false]);
+        config(['planillas.beta' => true]);
 
-        $this->get(route('login'))->assertInertia(fn (Assert $p) => $p->where('beta', false));
+        $this->get(route('login'))->assertInertia(fn (Assert $p) => $p->where('beta', true));
     }
 }
