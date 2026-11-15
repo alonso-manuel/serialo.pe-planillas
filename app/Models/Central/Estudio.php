@@ -27,6 +27,9 @@ use Stancl\Tenancy\Database\Models\Tenant;
  * @property CarbonImmutable|null $vence_en
  * @property string|null $correo_admin
  * @property CarbonImmutable|null $suspendido_en
+ * @property int $ingresos veces que entraron sus usuarios (sin el acceso de soporte)
+ * @property CarbonImmutable|null $ultimo_ingreso_en
+ * @property string|null $ultimo_ingreso_usuario nombre de quien entró la última vez
  * @property CarbonImmutable $created_at
  */
 class Estudio extends Tenant implements TenantWithDatabase
@@ -64,7 +67,8 @@ class Estudio extends Tenant implements TenantWithDatabase
     {
         return [
             'id', 'nombre', 'tipo', 'plan', 'max_empresas', 'max_usuarios', 'max_trabajadores', 'estado',
-            'vence_en', 'correo_admin', 'suspendido_en', 'aviso_vencimiento', 'created_at', 'updated_at',
+            'vence_en', 'correo_admin', 'suspendido_en', 'aviso_vencimiento', 'ingresos', 'ultimo_ingreso_en',
+            'ultimo_ingreso_usuario', 'created_at', 'updated_at',
         ];
     }
 
@@ -76,6 +80,8 @@ class Estudio extends Tenant implements TenantWithDatabase
             'estado' => EstadoEstudio::class,
             'vence_en' => 'immutable_date',
             'suspendido_en' => 'immutable_datetime',
+            'ultimo_ingreso_en' => 'immutable_datetime',
+            'ingresos' => 'integer',
         ];
     }
 

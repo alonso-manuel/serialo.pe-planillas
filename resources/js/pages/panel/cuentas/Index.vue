@@ -46,6 +46,10 @@ type Cuenta = {
     vence_en: string | null;
     vencida: boolean;
     creada: string;
+    ingresos: number;
+    ultimo_ingreso: string | null;
+    ultimo_ingreso_hace: string | null;
+    ultimo_ingreso_usuario: string | null;
 };
 
 defineProps<{ cuentas: Cuenta[] }>();
@@ -168,6 +172,9 @@ function eliminar(): void {
                         <th class="px-4 py-2 text-left font-medium">Estado</th>
                         <th class="px-4 py-2 text-left font-medium">Vence</th>
                         <th class="px-4 py-2 text-left font-medium">Creada</th>
+                        <th class="px-4 py-2 text-left font-medium">
+                            Último ingreso
+                        </th>
                         <th class="px-4 py-2" />
                     </tr>
                 </thead>
@@ -243,6 +250,28 @@ function eliminar(): void {
                             class="px-4 py-3 text-muted-foreground tabular-nums"
                         >
                             {{ c.creada }}
+                        </td>
+                        <td class="px-4 py-3">
+                            <template v-if="c.ultimo_ingreso">
+                                <p
+                                    :title="c.ultimo_ingreso"
+                                    class="tabular-nums"
+                                >
+                                    {{ c.ultimo_ingreso_hace }}
+                                </p>
+                                <p class="text-xs text-muted-foreground">
+                                    {{ c.ultimo_ingreso_usuario }} ·
+                                    {{ c.ingresos }}
+                                    {{
+                                        c.ingresos === 1
+                                            ? 'ingreso'
+                                            : 'ingresos'
+                                    }}
+                                </p>
+                            </template>
+                            <span v-else class="text-muted-foreground"
+                                >Nunca ingresó</span
+                            >
                         </td>
                         <td class="px-4 py-3">
                             <div class="flex justify-end gap-1">

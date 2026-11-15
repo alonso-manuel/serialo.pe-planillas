@@ -47,6 +47,11 @@ class CuentaController extends Controller
                 'vence_en' => $e->vence_en?->format('d/m/Y'),
                 'vencida' => $e->vence_en !== null && $e->vence_en->lt($hoy),
                 'creada' => $e->created_at->format('d/m/Y'),
+                // ¿Entró a probar? Ingresos de sus usuarios, sin el acceso de soporte.
+                'ingresos' => (int) $e->ingresos,
+                'ultimo_ingreso' => $e->ultimo_ingreso_en?->format('d/m/Y H:i'),
+                'ultimo_ingreso_hace' => $e->ultimo_ingreso_en?->diffForHumans(), // «hace 3 horas» (la app está en español)
+                'ultimo_ingreso_usuario' => $e->ultimo_ingreso_usuario,
             ];
         }
 
