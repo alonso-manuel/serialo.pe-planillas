@@ -12,3 +12,4 @@ export * from './periodo';
 export * from './exportacion';
 export * from './licencia';
 export * from './legal';
+export * from './guia';

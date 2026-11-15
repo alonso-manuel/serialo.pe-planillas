@@ -194,6 +194,21 @@ docker compose exec app php artisan estudios:migrar     # base central y la de c
 Nunca correr `php artisan migrate` solo: crearía las tablas de planilla en la base central. Más adelante, con CI/CD,
 GitHub Actions construirá las imágenes y el servidor solo hará `docker compose pull && up -d` y las migraciones.
 
+### Videos de la guía (menú Ayuda → Guía)
+
+Los videos no van en el repositorio ni en la imagen: viven en `/opt/serialo/guia/` del servidor, que
+`docker-compose.yml` monta (solo lectura) en `app` y `web`. Laravel valida la sesión y Nginx entrega el archivo
+(`X-Accel-Redirect` a la ubicación interna `/_guia/`). Para publicarlos o actualizarlos, desde la PC:
+
+```bash
+cd tools/videos && node preparar-guia.mjs              # videos/Videosparalaguia → guia/ (1080p para web)
+ssh serialo-vps mkdir -p /opt/serialo/guia
+scp ../../guia/*.mp4 serialo-vps:/opt/serialo/guia/     # los que ya están se reemplazan
+```
+
+No hace falta reiniciar nada: aparecen al recargar la Guía. Un video que falta se muestra como «Próximamente».
+El manual en PDF sí viaja en la imagen (`resources/manual/manual-usuario.pdf`, lo genera `tools/manual`).
+
 ## 6. Operación
 
 | Tarea                    | Comando                                                                                                                               |

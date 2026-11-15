@@ -14,6 +14,7 @@ use App\Http\Controllers\Empresas\EstablecimientoController;
 use App\Http\Controllers\Empresas\EstadoEmpresaController;
 use App\Http\Controllers\Empresas\FirmaDigitalController;
 use App\Http\Controllers\Empresas\LogoEmpresaController;
+use App\Http\Controllers\Guia\GuiaController;
 use App\Http\Controllers\Instalador\InstaladorController;
 use App\Http\Controllers\Legal\LegalController;
 use App\Http\Controllers\Licencia\LicenciaController;
@@ -83,6 +84,11 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('dashboard', PanelController::class)->name('dashboard');
 
     Route::put('empresa-activa', [EmpresaActivaController::class, 'update'])->name('empresa-activa.update');
+
+    // Guía: videos tutoriales y manual de usuario (todos los usuarios; no depende de la empresa activa)
+    Route::get('guia', [GuiaController::class, 'index'])->name('guia.index');
+    Route::get('guia/manual', [GuiaController::class, 'manual'])->name('guia.manual');
+    Route::get('guia/videos/{clave}', [GuiaController::class, 'video'])->where('clave', '[a-z0-9-]+')->name('guia.video');
 
     // Personal de la empresa activa (admin y asistente; aislado por empresa)
     Route::middleware('empresa.activa')->group(function () {

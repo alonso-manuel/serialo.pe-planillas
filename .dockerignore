@@ -20,6 +20,7 @@ database/database.sqlite
 docs
 tools
 videos
+guia
 tests
 deploy/vps
 *.md

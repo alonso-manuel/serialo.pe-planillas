@@ -276,6 +276,7 @@ const descripciones: Record<string, string> = {
     PLAME: 'Archivos .rem, .jor, .snl y .toc',
     AFPnet: 'Archivo de aportes a las AFP',
     Reportes: 'Planilla, resumen, centralización y costo',
+    Guía: 'Videos de cada módulo y manual de usuario',
     Empresas: 'Datos, régimen, logo y establecimientos',
     Usuarios: 'Accesos, roles y empresas asignadas',
     Parámetros: 'RMV, UIT y tasas con vigencia',

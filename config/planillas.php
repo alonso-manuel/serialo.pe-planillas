@@ -72,4 +72,17 @@ return [
         'correo' => env('PLANILLAS_LEGAL_CORREO'),
     ],
 
+    /*
+    | Guía (menú Ayuda): videos tutoriales `<clave>.mp4` (catálogo en App\Support\GuiaVideos) y el manual en PDF.
+    | directorio: dónde están los videos (carpeta guia/ junto al sistema, fuera del repositorio; la llena
+    | tools/videos/preparar-guia.mjs).
+    | x_accel: con Nginx delante (Docker), PHP solo valida la sesión y Nginx entrega el archivo (rápido y con saltos
+    | en el video) desde su ubicación interna /_guia/. Sin Nginx (hosting compartido), lo entrega PHP.
+    | Solo los usuarios con sesión iniciada ven los videos y el manual.
+    */
+    'guia' => [
+        'directorio' => env('PLANILLAS_GUIA_DIRECTORIO', base_path('guia')),
+        'x_accel' => (bool) env('PLANILLAS_GUIA_X_ACCEL', false),
+    ],
+
 ];

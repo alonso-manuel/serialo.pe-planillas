@@ -20,7 +20,8 @@ Guía para quienes usan el sistema en el día a día: el **administrador** del e
 10. [Reportes y panel](#10-reportes-y-panel)
 11. [Regímenes laborales](#11-regímenes-laborales)
 12. [Administración](#12-administración)
-13. [Preguntas frecuentes](#13-preguntas-frecuentes)
+13. [Guía: videos y manual](#13-guía-videos-y-manual)
+14. [Preguntas frecuentes](#14-preguntas-frecuentes)
 
 ---
 
@@ -443,7 +444,16 @@ cambiarlos, pídelo a soporte.
 
 ---
 
-## 13. Preguntas frecuentes
+## 13. Guía: videos y manual
+
+En **Ayuda → Guía** están los videos cortos de cada módulo, agrupados por tema (primeros pasos, configuración,
+trabajadores, planilla mensual, beneficios, archivos oficiales, reportes y regímenes especiales). Haga clic en un
+video para verlo; el buscador filtra por tema (por ejemplo «CTS» o «PLAME»). Desde la misma página se descarga este
+manual en PDF. La guía está disponible para todos los usuarios.
+
+---
+
+## 14. Preguntas frecuentes
 
 **«Calcular» muestra una lista de problemas.**
 Es a propósito: el sistema no calcula a medias. Lo más común: faltan las tasas AFP del mes, un trabajador en AFP sin

@@ -1,4 +1,5 @@
 import {
+    BookOpen,
     Building,
     CalendarDays,
     ChartColumn,
@@ -29,6 +30,7 @@ import { index as conceptos } from '@/routes/conceptos';
 import { index as cts } from '@/routes/cts';
 import { index as empresas } from '@/routes/empresas';
 import { index as gratificaciones } from '@/routes/gratificaciones';
+import { index as guia } from '@/routes/guia';
 import { index as liquidaciones } from '@/routes/liquidaciones';
 import { show as licencia } from '@/routes/licencia';
 import { index as respaldos } from '@/routes/respaldos';
@@ -85,6 +87,10 @@ export const gruposNav: GrupoNav[] = [
     {
         title: 'Reportes',
         items: [{ title: 'Reportes', href: reportes(), icon: ChartColumn }],
+    },
+    {
+        title: 'Ayuda',
+        items: [{ title: 'Guía', href: guia(), icon: BookOpen }],
     },
     {
         title: 'Administración',

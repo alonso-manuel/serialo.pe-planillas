@@ -1,4 +1,4 @@
-// Genera docs/manual-usuario.pdf desde docs/manual-usuario.md (A4, portada, índice enlazado, número de página).
+// Genera resources/manual/manual-usuario.pdf (lo descarga el módulo Guía) desde docs/manual-usuario.md (A4, portada, índice enlazado, número de página).
 // Uso: cd tools/manual && npm install && npm run pdf
 import { readFileSync, writeFileSync } from 'node:fs';
 import { dirname, resolve } from 'node:path';
@@ -8,7 +8,7 @@ import { chromium } from 'playwright';
 
 const raiz = resolve(dirname(fileURLToPath(import.meta.url)), '../..');
 const origen = resolve(raiz, 'docs/manual-usuario.md');
-const destino = resolve(raiz, 'docs/manual-usuario.pdf');
+const destino = resolve(raiz, 'resources/manual/manual-usuario.pdf');
 
 // Anclas como las de GitHub, para que funcionen los enlaces internos del índice («#36-firma-digital»).
 const ancla = (texto) =>

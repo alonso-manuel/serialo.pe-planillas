@@ -45,6 +45,8 @@ yarn-error.log
 
 # Videos de demo grabados (pesados; se comparten aparte)
 /videos
+# Videos de la guía en el servidor (docker-compose los monta desde aquí)
+/guia
 /tools/videos/node_modules
 /tools/manual/node_modules
 

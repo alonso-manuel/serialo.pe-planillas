@@ -13,8 +13,12 @@ x-app: &app
     environment:
         DB_HOST: mysql
         REDIS_HOST: redis
+        # Videos de la guía en la carpeta guia/ del servidor (fuera del repositorio); Nginx los entrega.
+        PLANILLAS_GUIA_DIRECTORIO: /var/www/guia
+        PLANILLAS_GUIA_X_ACCEL: 'true'
     volumes:
         - storage:/var/www/html/storage
+        - ./guia:/var/www/guia:ro
     depends_on:
         mysql:
             condition: service_healthy
@@ -51,6 +55,8 @@ services:
             target: web
         ports:
             - '127.0.0.1:${SERIALO_PUERTO:-8090}:80'
+        volumes:
+            - ./guia:/var/www/guia:ro
         depends_on:
             - app
         restart: unless-stopped
