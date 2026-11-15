@@ -17,10 +17,10 @@ return [
     | Límites null = ilimitado. `dias` = vencimiento sugerido (demos).
     */
     'planes' => [
-        'demo' => ['nombre' => 'Demo', 'max_empresas' => 40, 'max_usuarios' => 3, 'max_trabajadores' => null, 'dias' => 15],
+        'demo' => ['nombre' => 'Demo', 'max_empresas' => 40, 'max_usuarios' => 10, 'max_trabajadores' => null, 'dias' => 15],
         'empresa' => ['nombre' => 'Empresa', 'max_empresas' => 1, 'max_usuarios' => 2, 'max_trabajadores' => 50, 'dias' => null],
-        'estudio' => ['nombre' => 'Estudio', 'max_empresas' => 40, 'max_usuarios' => 3, 'max_trabajadores' => null, 'dias' => null],
-        'estudio_pro' => ['nombre' => 'Estudio Pro', 'max_empresas' => null, 'max_usuarios' => 10, 'max_trabajadores' => null, 'dias' => null],
+        'estudio' => ['nombre' => 'Estudio', 'max_empresas' => 40, 'max_usuarios' => 10, 'max_trabajadores' => null, 'dias' => null],
+        'estudio_pro' => ['nombre' => 'Estudio Pro', 'max_empresas' => null, 'max_usuarios' => 20, 'max_trabajadores' => null, 'dias' => null],
     ],
 
     /*

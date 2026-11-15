@@ -31,8 +31,8 @@ El modo SaaS es multitenant con una base de datos por estudio ([multitenant.md](
 | Plan        | Límites                            | Mensual (alojado) | Pago único (no se ofrece por ahora)  |
 | ----------- | ---------------------------------- | ----------------- | ------------------------------------ |
 | Empresa     | 1 RUC, 50 trabajadores, 2 usuarios | **S/ 69 al mes**  | S/ 690 + S/ 290/año desde el 2.º año |
-| Estudio     | 40 empresas, 3 usuarios            | **S/ 149 al mes** | S/ 1,490 + S/ 490/año                |
-| Estudio Pro | Empresas ilimitadas, 10 usuarios   | **S/ 249 al mes** | S/ 2,490 + S/ 790/año                |
+| Estudio     | 40 empresas, 10 usuarios           | **S/ 149 al mes** | S/ 1,490 + S/ 490/año                |
+| Estudio Pro | Empresas ilimitadas, 20 usuarios   | **S/ 249 al mes** | S/ 2,490 + S/ 790/año                |
 
 Los límites se leen de la clave de licencia (instalación única) o del plan de la cuenta en el panel central (SaaS,
 `config/planillas.php` → `planes`), nunca se escriben fijos en el código. Los precios no están en el código.

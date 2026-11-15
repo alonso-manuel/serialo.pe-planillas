@@ -179,7 +179,7 @@ class CuentaController extends Controller
         return to_route('panel.cuentas.index');
     }
 
-    /** «40 empresas · 3 usuarios · trabajadores sin límite» */
+    /** «40 empresas · 10 usuarios · trabajadores sin límite» */
     private function limites(?int $empresas, ?int $usuarios, ?int $trabajadores): string
     {
         $texto = fn (?int $n, string $uno, string $varios) => $n === null ? "{$varios} sin límite" : $n.' '.($n === 1 ? $uno : $varios);

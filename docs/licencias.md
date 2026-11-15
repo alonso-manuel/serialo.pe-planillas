@@ -58,8 +58,8 @@ En `C:\Users\Alonso\serialo-licencias\` (ver su `LEEME.md`):
 php emitir.php --cliente="Estudio Contable Ejemplo S.A.C." --plan=estudio --dominio=planillas.ejemplo.pe
 ```
 
-Planes: `empresa` (1 empresa, 2 usuarios, 50 trabajadores), `estudio` (40 empresas, 3 usuarios), `estudio-pro`
-(empresas ilimitadas, 10 usuarios) o `personalizado` con `--empresas`, `--usuarios`, `--trabajadores`.
+Planes: `empresa` (1 empresa, 2 usuarios, 50 trabajadores), `estudio` (40 empresas, 10 usuarios), `estudio-pro`
+(empresas ilimitadas, 20 usuarios) o `personalizado` con `--empresas`, `--usuarios`, `--trabajadores`.
 Renovación o cambio de dominio = emitir una clave nueva; el cliente la pega en **Administración → Licencia**.
 
 ## Límite de la protección

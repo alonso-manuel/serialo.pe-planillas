@@ -120,8 +120,8 @@ actualizaciones, respaldos y soporte):
 | Plan        | Para                             | Precio            |
 | ----------- | -------------------------------- | ----------------- |
 | Empresa     | 1 RUC, hasta 50 trabajadores     | **S/ 69 al mes**  |
-| Estudio     | Hasta 40 empresas, 3 usuarios    | **S/ 149 al mes** |
-| Estudio Pro | Empresas ilimitadas, 10 usuarios | **S/ 249 al mes** |
+| Estudio     | Hasta 40 empresas, 10 usuarios   | **S/ 149 al mes** |
+| Estudio Pro | Empresas ilimitadas, 20 usuarios | **S/ 249 al mes** |
 
 Un estudio con 7 empresas corresponde al plan **Estudio**. Argumento de valor: S/ 149 entre 7 empresas son ~S/ 21
 por empresa al mes. Durante la beta se puede ofrecer un precio de lanzamiento para los primeros clientes, **siempre
