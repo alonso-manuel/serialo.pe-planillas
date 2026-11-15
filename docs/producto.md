@@ -14,24 +14,28 @@ Problema: hoy trabajan con libros de Excel con macros, un archivo por empresa, c
 
 ## Modalidades de venta
 
-| Modalidad          | Dónde corre                                             | Cobro                                      |
-| ------------------ | ------------------------------------------------------- | ------------------------------------------ |
-| Pago único         | Hosting del cliente (instalador web + licencia firmada) | Pago único + plan anual de actualizaciones |
-| Pago único alojado | VPS de Serialo.pe (modo SaaS)                           | Pago único + cuota anual de alojamiento    |
-| Mensual            | VPS de Serialo.pe (modo SaaS)                           | Cuota mensual                              |
-| Demo               | VPS de Serialo.pe: cada interesado recibe su app limpia | Gratis, con vencimiento                    |
+**Desde el 15/11/2026 se vende solo el plan mensual alojado** (decisión comercial de la beta). El pago único sigue
+soportado por el código (instalador y licencia firmada), pero no se ofrece por ahora.
+
+| Modalidad          | Dónde corre                                             | Cobro                                      | Estado        |
+| ------------------ | ------------------------------------------------------- | ------------------------------------------ | ------------- |
+| **Mensual**        | VPS de Serialo.pe (modo SaaS)                           | Cuota mensual                              | **Se ofrece** |
+| Demo               | VPS de Serialo.pe: cada interesado recibe su app limpia | Gratis, con vencimiento                    | Se ofrece     |
+| Pago único         | Hosting del cliente (instalador web + licencia firmada) | Pago único + plan anual de actualizaciones | No se ofrece  |
+| Pago único alojado | VPS de Serialo.pe (modo SaaS)                           | Pago único + cuota anual de alojamiento    | No se ofrece  |
 
 El modo SaaS es multitenant con una base de datos por estudio ([multitenant.md](multitenant.md)).
 
 ## Licencias (afectan límites en el código)
 
-| Licencia    | Límites                            | Precio                               |
-| ----------- | ---------------------------------- | ------------------------------------ |
-| Empresa     | 1 RUC, 50 trabajadores, 2 usuarios | S/ 690 + S/ 290/año desde el 2.º año |
-| Estudio     | 40 empresas, 3 usuarios            | S/ 1,490 + S/ 490/año                |
-| Estudio Pro | Empresas ilimitadas, 10 usuarios   | S/ 2,490 + S/ 790/año                |
+| Plan        | Límites                            | Mensual (alojado) | Pago único (no se ofrece por ahora)  |
+| ----------- | ---------------------------------- | ----------------- | ------------------------------------ |
+| Empresa     | 1 RUC, 50 trabajadores, 2 usuarios | **S/ 69 al mes**  | S/ 690 + S/ 290/año desde el 2.º año |
+| Estudio     | 40 empresas, 3 usuarios            | **S/ 149 al mes** | S/ 1,490 + S/ 490/año                |
+| Estudio Pro | Empresas ilimitadas, 10 usuarios   | **S/ 249 al mes** | S/ 2,490 + S/ 790/año                |
 
-Los límites se leen de la clave de licencia (ver `arquitectura.md`), nunca se escriben fijos en el código.
+Los límites se leen de la clave de licencia (instalación única) o del plan de la cuenta en el panel central (SaaS,
+`config/planillas.php` → `planes`), nunca se escriben fijos en el código. Los precios no están en el código.
 
 ## Módulos y versión en que entran
 

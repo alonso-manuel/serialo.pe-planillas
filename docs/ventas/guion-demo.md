@@ -114,16 +114,18 @@ Resume con **sus** palabras y propone un siguiente paso concreto:
 > calculas todas de un clic y los archivos salen listos. Te propongo esto: te creo tu acceso, cargas una de tus
 > empresas esta semana y el [día] a las [hora] lo revisamos juntos 15 minutos. ¿Te parece?»
 
-Si está listo para comprar, presenta la licencia que le corresponde:
+Si está listo para comprar, presenta el plan mensual que le corresponde (alojado en nuestro servidor; incluye
+actualizaciones, respaldos y soporte):
 
-| Licencia    | Para                             | Precio                               |
-| ----------- | -------------------------------- | ------------------------------------ |
-| Empresa     | 1 RUC, hasta 50 trabajadores     | S/ 690 + S/ 290/año desde el 2.º año |
-| Estudio     | Hasta 40 empresas, 3 usuarios    | S/ 1,490 + S/ 490/año                |
-| Estudio Pro | Empresas ilimitadas, 10 usuarios | S/ 2,490 + S/ 790/año                |
+| Plan        | Para                             | Precio            |
+| ----------- | -------------------------------- | ----------------- |
+| Empresa     | 1 RUC, hasta 50 trabajadores     | **S/ 69 al mes**  |
+| Estudio     | Hasta 40 empresas, 3 usuarios    | **S/ 149 al mes** |
+| Estudio Pro | Empresas ilimitadas, 10 usuarios | **S/ 249 al mes** |
 
-Un estudio con 7 empresas corresponde a la licencia **Estudio**. Durante la beta se puede ofrecer un precio de
-lanzamiento para los primeros clientes, **siempre con fecha límite** (por ejemplo, «válido hasta fin de mes»).
+Un estudio con 7 empresas corresponde al plan **Estudio**. Argumento de valor: S/ 149 entre 7 empresas son ~S/ 21
+por empresa al mes. Durante la beta se puede ofrecer un precio de lanzamiento para los primeros clientes, **siempre
+con fecha límite** (por ejemplo, «los 3 primeros meses a S/ 99, si empiezas antes de fin de mes»).
 
 Nunca termines la llamada sin **fecha y hora** del siguiente contacto.
 
