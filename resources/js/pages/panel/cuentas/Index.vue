@@ -9,6 +9,7 @@ import {
     ExternalLink,
     KeyRound,
     LifeBuoy,
+    MoreHorizontal,
     Pencil,
     Plus,
     Trash2,
@@ -27,6 +28,13 @@ import {
     DialogHeader,
     DialogTitle,
 } from '@/components/ui/dialog';
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuSeparator,
+    DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Spinner } from '@/components/ui/spinner';
@@ -161,17 +169,12 @@ function eliminar(): void {
         </div>
 
         <div v-else class="overflow-x-auto rounded-lg border bg-background">
-            <table class="w-full min-w-[860px] text-sm">
+            <table class="w-full min-w-[760px] text-sm">
                 <thead class="bg-muted/40 text-xs text-muted-foreground">
                     <tr>
                         <th class="px-4 py-2 text-left font-medium">Cuenta</th>
-                        <th class="px-4 py-2 text-left font-medium">
-                            Administrador
-                        </th>
                         <th class="px-4 py-2 text-left font-medium">Plan</th>
                         <th class="px-4 py-2 text-left font-medium">Estado</th>
-                        <th class="px-4 py-2 text-left font-medium">Vence</th>
-                        <th class="px-4 py-2 text-left font-medium">Creada</th>
                         <th class="px-4 py-2 text-left font-medium">
                             Último ingreso
                         </th>
@@ -182,8 +185,9 @@ function eliminar(): void {
                     <tr
                         v-for="c in cuentas"
                         :key="c.id"
-                        class="border-t align-middle"
+                        class="border-t align-top"
                     >
+                        <!-- Cuenta: nombre, dirección y administrador -->
                         <td class="px-4 py-3">
                             <p class="font-medium">{{ c.nombre }}</p>
                             <a
@@ -195,28 +199,27 @@ function eliminar(): void {
                                 {{ c.url.replace(/^https?:\/\//, '') }}
                                 <ExternalLink class="size-3" />
                             </a>
-                        </td>
-                        <td class="px-4 py-3 text-muted-foreground">
-                            {{ c.correo_admin ?? '—' }}
-                        </td>
-                        <td class="px-4 py-3">
-                            <Badge
-                                variant="outline"
-                                :class="
-                                    c.tipo === 'demo'
-                                        ? 'border-sky-300 text-sky-800 dark:border-sky-800 dark:text-sky-300'
-                                        : ''
-                                "
-                                >{{ c.tipo_etiqueta }}</Badge
-                            >
-                            <p class="mt-1 text-xs text-muted-foreground">
-                                <span class="font-medium text-foreground">{{
-                                    c.plan
-                                }}</span>
-                                · {{ c.limites }}
+                            <p class="text-xs text-muted-foreground">
+                                {{ c.correo_admin ?? '—' }}
                             </p>
                         </td>
-                        <td class="px-4 py-3">
+                        <!-- Plan y límites -->
+                        <td class="max-w-[220px] px-4 py-3">
+                            <div class="flex items-center gap-2">
+                                <span class="font-medium">{{ c.plan }}</span>
+                                <Badge
+                                    v-if="c.tipo === 'demo'"
+                                    variant="outline"
+                                    class="border-sky-300 text-sky-800 dark:border-sky-800 dark:text-sky-300"
+                                    >{{ c.tipo_etiqueta }}</Badge
+                                >
+                            </div>
+                            <p class="mt-0.5 text-xs text-muted-foreground">
+                                {{ c.limites }}
+                            </p>
+                        </td>
+                        <!-- Estado, vencimiento y creación -->
+                        <td class="px-4 py-3 whitespace-nowrap">
                             <span
                                 class="inline-flex items-center gap-1"
                                 :class="
@@ -232,26 +235,28 @@ function eliminar(): void {
                                 <CircleCheck v-else class="size-3.5" />
                                 {{ c.estado_etiqueta }}
                             </span>
-                        </td>
-                        <td class="px-4 py-3 tabular-nums">
-                            <span
-                                v-if="c.vence_en"
+                            <p
+                                class="text-xs tabular-nums"
                                 :class="
                                     c.vencida
                                         ? 'text-red-700 dark:text-red-400'
-                                        : ''
+                                        : 'text-muted-foreground'
                                 "
-                                >{{ c.vence_en
-                                }}{{ c.vencida ? ' (vencida)' : '' }}</span
                             >
-                            <span v-else class="text-muted-foreground">—</span>
+                                <template v-if="c.vence_en">
+                                    Vence {{ c.vence_en
+                                    }}{{ c.vencida ? ' (vencida)' : '' }}
+                                </template>
+                                <template v-else>Sin vencimiento</template>
+                            </p>
+                            <p
+                                class="text-xs text-muted-foreground tabular-nums"
+                            >
+                                Creada {{ c.creada }}
+                            </p>
                         </td>
-                        <td
-                            class="px-4 py-3 text-muted-foreground tabular-nums"
-                        >
-                            {{ c.creada }}
-                        </td>
-                        <td class="px-4 py-3">
+                        <!-- ¿Entró a probar? -->
+                        <td class="px-4 py-3 whitespace-nowrap">
                             <template v-if="c.ultimo_ingreso">
                                 <p
                                     :title="c.ultimo_ingreso"
@@ -273,6 +278,7 @@ function eliminar(): void {
                                 >Nunca ingresó</span
                             >
                         </td>
+                        <!-- Acciones: Editar a la vista, el resto en el menú -->
                         <td class="px-4 py-3">
                             <div class="flex justify-end gap-1">
                                 <Button variant="ghost" size="sm" as-child>
@@ -281,55 +287,68 @@ function eliminar(): void {
                                         Editar
                                     </Link>
                                 </Button>
-                                <Button
-                                    variant="ghost"
-                                    size="sm"
-                                    :disabled="c.estado === 'suspendido'"
-                                    title="Entrar como Soporte Serialo.pe (el estudio debe haberlo autorizado)"
-                                    @click="entrarSoporte(c)"
-                                >
-                                    <LifeBuoy />
-                                    Soporte
-                                </Button>
-                                <Button variant="ghost" size="sm" as-child>
-                                    <a
-                                        :href="rutasPanel.exportar(c.id)"
-                                        title="Descargar la base completa de la cuenta (.sql.gz)"
-                                        download
+                                <DropdownMenu>
+                                    <DropdownMenuTrigger as-child>
+                                        <Button
+                                            variant="ghost"
+                                            size="icon"
+                                            :aria-label="
+                                                'Más acciones de ' + c.nombre
+                                            "
+                                        >
+                                            <MoreHorizontal />
+                                        </Button>
+                                    </DropdownMenuTrigger>
+                                    <DropdownMenuContent
+                                        align="end"
+                                        class="w-64"
                                     >
-                                        <Download />
-                                        Exportar
-                                    </a>
-                                </Button>
-                                <Button
-                                    variant="ghost"
-                                    size="sm"
-                                    :title="`Enviar a ${c.correo_admin} un enlace para crear o restablecer su contraseña`"
-                                    @click="reenviarAcceso(c)"
-                                >
-                                    <KeyRound />
-                                    Acceso
-                                </Button>
-                                <Button
-                                    variant="ghost"
-                                    size="sm"
-                                    @click="cambiarEstado(c)"
-                                >
-                                    {{
-                                        c.estado === 'suspendido'
-                                            ? 'Reactivar'
-                                            : 'Suspender'
-                                    }}
-                                </Button>
-                                <Button
-                                    variant="ghost"
-                                    size="icon"
-                                    class="text-red-700 hover:text-red-800 dark:text-red-400"
-                                    :aria-label="`Eliminar ${c.nombre}`"
-                                    @click="abrirEliminar(c)"
-                                >
-                                    <Trash2 />
-                                </Button>
+                                        <DropdownMenuItem
+                                            :disabled="
+                                                c.estado === 'suspendido'
+                                            "
+                                            @select="entrarSoporte(c)"
+                                        >
+                                            <LifeBuoy />
+                                            Entrar como soporte
+                                        </DropdownMenuItem>
+                                        <DropdownMenuItem
+                                            @select="reenviarAcceso(c)"
+                                        >
+                                            <KeyRound />
+                                            Reenviar acceso al administrador
+                                        </DropdownMenuItem>
+                                        <DropdownMenuItem as-child>
+                                            <a
+                                                :href="
+                                                    rutasPanel.exportar(c.id)
+                                                "
+                                                download
+                                            >
+                                                <Download />
+                                                Exportar base (.sql.gz)
+                                            </a>
+                                        </DropdownMenuItem>
+                                        <DropdownMenuSeparator />
+                                        <DropdownMenuItem
+                                            @select="cambiarEstado(c)"
+                                        >
+                                            <Ban />
+                                            {{
+                                                c.estado === 'suspendido'
+                                                    ? 'Reactivar cuenta'
+                                                    : 'Suspender cuenta'
+                                            }}
+                                        </DropdownMenuItem>
+                                        <DropdownMenuItem
+                                            class="text-red-700 focus:text-red-800 dark:text-red-400"
+                                            @select="abrirEliminar(c)"
+                                        >
+                                            <Trash2 class="text-current" />
+                                            Eliminar cuenta
+                                        </DropdownMenuItem>
+                                    </DropdownMenuContent>
+                                </DropdownMenu>
                             </div>
                         </td>
                     </tr>
