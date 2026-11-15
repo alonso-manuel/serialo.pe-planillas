@@ -13,6 +13,7 @@ use App\Domain\Planilla\ParametrosQuinta;
 use App\Domain\Planilla\ResultadoPlanilla;
 use App\Domain\Planilla\ResultadoQuinta;
 use App\Models\Concepto;
+use App\Models\Empresa;
 use App\Models\Periodo;
 use App\Models\PlanillaLinea;
 use App\Models\RentaOtroEmpleador;
@@ -47,7 +48,8 @@ class RetencionQuinta
 
     private ParametrosQuinta $parametros;
 
-    private ParametrosGratificacion $gratificacion;
+    /** @var array<string, ParametrosGratificacion> por régimen (el trabajador puede conservar el general en una MYPE) */
+    private array $gratificacion = [];
 
     private Periodo $periodo;
 
@@ -61,7 +63,7 @@ class RetencionQuinta
     {
         $this->periodo = $periodo;
         $this->parametros = $this->repositorio->quinta($periodo);
-        $this->gratificacion = $this->repositorio->gratificacion($periodo);
+        $this->gratificacion = [];
         $this->afectos = Concepto::query()->pluck('afecto_quinta', 'codigo_plame')->map(fn ($v) => (bool) $v)->all();
 
         $trabajadores = $periodo->lineas()->pluck('trabajador_id')->all();
@@ -155,8 +157,12 @@ class RetencionQuinta
         }
 
         $total = BigDecimal::zero();
-        $porGratificacion = $mensual->multipliedBy($this->gratificacion->factorRegimen)
-            ->multipliedBy(BigDecimal::one()->plus($this->gratificacion->tasaBonificacion));
+        /** @var Empresa $empresa */
+        $empresa = $this->periodo->empresa;
+        $grati = $this->gratificacion[$linea->trabajador->regimenEn($empresa)->value]
+            ??= $this->repositorio->gratificacion($this->periodo, $linea->trabajador);
+        $porGratificacion = $mensual->multipliedBy($grati->factorRegimen)
+            ->multipliedBy(BigDecimal::one()->plus($grati->tasaBonificacion));
 
         foreach ([7 => [1, 6], 12 => [7, 12]] as $mesPago => [$desde, $hasta]) {
             if ($mes >= $mesPago) {

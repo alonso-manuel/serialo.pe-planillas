@@ -42,7 +42,8 @@ class LineaPlanillaController extends Controller
                 'estado_etiqueta' => $periodo->estado->etiqueta(),
                 'puede_editar' => $usuario->can('update', $periodo),
                 'empresa' => $periodo->empresa?->razon_social,
-                'regimen' => $periodo->empresa?->regimen_laboral->etiqueta(),
+                // El del trabajador: puede conservar el régimen general dentro de una MYPE.
+                'regimen' => $periodo->empresa === null ? null : $linea->trabajador->regimenEn($periodo->empresa)->etiqueta(),
             ],
             ...$detalle->datos($periodo, $linea),
             'anterior' => $posicion > 0 ? $orden[$posicion - 1] : null,

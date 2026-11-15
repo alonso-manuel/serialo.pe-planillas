@@ -148,6 +148,7 @@ class TrabajadorController extends Controller
                 'cargo' => $trabajador->cargo,
                 'fecha_ingreso' => $trabajador->fecha_ingreso->toDateString(),
                 'tipo_contrato' => $trabajador->tipo_contrato->value,
+                'regimen_laboral' => $trabajador->regimen_laboral?->value,
                 'remuneracion_basica' => $trabajador->remuneracion_basica,
                 'asignacion_familiar' => $trabajador->asignacion_familiar,
                 'sistema_pension' => $trabajador->sistema_pension->value,
@@ -290,6 +291,9 @@ class TrabajadorController extends Controller
             'motivos_cese' => array_map(fn (MotivoCese $m) => ['value' => $m->value, 'label' => "{$m->value} · {$m->etiqueta()}"], MotivoCese::cases()),
             'seguro_por_defecto' => $empresa->seguro_salud->value,
             'permite_sis' => $empresa->regimen_laboral === RegimenLaboral::Microempresa,
+            // MYPE: un trabajador contratado antes de la inscripción en el REMYPE conserva el régimen general.
+            'regimen_empresa' => $empresa->regimen_laboral->etiqueta(),
+            'permite_regimen_general' => $empresa->regimen_laboral->esMype(),
             'agrario' => $empresa->regimen_laboral === RegimenLaboral::Agrario,
             'rmv' => $rmv,
             'consulta_dni' => app(ConsultaDni::class)->disponible(),

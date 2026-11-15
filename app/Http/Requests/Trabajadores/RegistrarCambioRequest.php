@@ -71,7 +71,8 @@ class RegistrarCambioRequest extends FormRequest
             function (Validator $validator): void {
                 if ($this->input('grupo') === 'seguro_salud'
                     && $this->input('seguro_salud') === SeguroSalud::Sis->value
-                    && $this->trabajador()->empresa?->regimen_laboral !== RegimenLaboral::Microempresa) {
+                    && ($empresa = $this->trabajador()->empresa) !== null
+                    && $this->trabajador()->regimenEn($empresa) !== RegimenLaboral::Microempresa) {
                     $validator->errors()->add('seguro_salud', 'El SIS solo aplica a trabajadores de microempresas.');
                 }
             },

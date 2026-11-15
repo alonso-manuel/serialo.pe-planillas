@@ -250,7 +250,7 @@ class ExportacionTRegistro
             nacionalidad: $dni ? '' : (string) $t->nacionalidad,
             telefono: (string) preg_replace('/\D/', '', (string) $t->telefono),
             correo: (string) $t->email,
-            regimenLaboral: match ($empresa->regimen_laboral) { // tabla 33
+            regimenLaboral: match ($t->regimenEn($empresa)) { // tabla 33: el del trabajador (puede conservar el general en una MYPE)
                 RegimenLaboral::General => '01',
                 RegimenLaboral::PequenaEmpresa => '17',
                 RegimenLaboral::Microempresa => '16',

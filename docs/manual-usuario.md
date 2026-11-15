@@ -165,13 +165,13 @@ El certificado y su clave se guardan cifrados y no vuelven a mostrarse en pantal
 
 **Nuevo trabajador.** La ficha tiene pestañas:
 
-| Pestaña             | Datos                                                                                                                                                                |
-| ------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Personales**      | Documento (con DNI, un botón consulta RENIEC si está habilitado), nombres, nacimiento, sexo, correo, celular.                                                        |
-| **Laborales**       | Establecimiento, centro de costo, cargo, ingreso, tipo de contrato, sueldo básico, asignación familiar. En empresas agrarias, la casilla de beneficios prorrateados. |
-| **Pensión y salud** | ONP o AFP (con CUSPP y tipo de comisión) y seguro de salud.                                                                                                          |
-| **Cuentas**         | Cuenta de sueldo y su banco; cuenta CTS y su entidad.                                                                                                                |
-| **SUNAT**           | Datos de T-Registro: categoría, ocupación (tabla 30), situación educativa, modalidad, discapacidad, etc.                                                             |
+| Pestaña             | Datos                                                                                                                                                                                                                                  |
+| ------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Personales**      | Documento (con DNI, un botón consulta RENIEC si está habilitado), nombres, nacimiento, sexo, correo, celular.                                                                                                                          |
+| **Laborales**       | Establecimiento, centro de costo, cargo, ingreso, tipo de contrato, sueldo básico, asignación familiar. En empresas agrarias, la casilla de beneficios prorrateados. En micro y pequeñas empresas, el **régimen laboral** (ver abajo). |
+| **Pensión y salud** | ONP o AFP (con CUSPP y tipo de comisión) y seguro de salud.                                                                                                                                                                            |
+| **Cuentas**         | Cuenta de sueldo y su banco; cuenta CTS y su entidad.                                                                                                                                                                                  |
+| **SUNAT**           | Datos de T-Registro: categoría, ocupación (tabla 30), situación educativa, modalidad, discapacidad, etc.                                                                                                                               |
 
 Con la ficha guardada aparecen también:
 
@@ -181,6 +181,11 @@ Con la ficha guardada aparecen también:
 | **Derechohabientes** | Cónyuge, hijos, etc., para el T-Registro. Se dan de baja con su motivo.                                  |
 | **Préstamos**        | Préstamos en cuotas: la cuota de cada mes se descuenta sola en la planilla (código 0706).                |
 | **Quinta**           | Rentas de otros empleadores del año (para la retención de quinta) y certificado anual de retenciones.    |
+
+**Trabajadores en régimen general dentro de una MYPE.** Si la empresa se inscribió en el REMYPE cuando ya tenía
+personal, esos trabajadores conservan el régimen general. En la pestaña **Laborales**, elija **Régimen laboral →
+Régimen general**: el sistema les calcula gratificación, CTS y vacaciones completas (30 días) y los informa así en el
+T-Registro, mientras los demás siguen con el régimen de la empresa. Estos trabajadores van con EsSalud, no con SIS.
 
 > Cuando un trabajador ya figura en alguna planilla, el sueldo, cargo, pensión y seguro **no se cambian en la ficha**:
 > se usa **Historial → Registrar cambio** indicando desde qué mes rige. Así los meses anteriores no se alteran.

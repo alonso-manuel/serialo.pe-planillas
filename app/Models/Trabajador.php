@@ -38,6 +38,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property string|null $sexo
  * @property string|null $cargo
  * @property TipoContrato $tipo_contrato
+ * @property RegimenLaboral|null $regimen_laboral null = el de la empresa; «general» dentro de una MYPE (ver regimenEn)
  * @property string $remuneracion_basica
  * @property bool $asignacion_familiar
  * @property SistemaPension $sistema_pension
@@ -76,7 +77,7 @@ class Trabajador extends Model
     protected $fillable = [
         'empresa_id', 'establecimiento_id', 'centro_costo_id', 'tipo_documento', 'numero_documento',
         'apellido_paterno', 'apellido_materno', 'nombres', 'fecha_nacimiento', 'sexo',
-        'cargo', 'fecha_ingreso', 'fecha_cese', 'motivo_cese', 'tipo_contrato',
+        'cargo', 'fecha_ingreso', 'fecha_cese', 'motivo_cese', 'tipo_contrato', 'regimen_laboral',
         'remuneracion_basica', 'asignacion_familiar', 'sistema_pension', 'afp_id',
         'cuspp', 'tipo_comision_afp', 'seguro_salud', 'cuenta_sueldo', 'entidad_sueldo', 'cuenta_cts', 'entidad_cts',
         'email', 'telefono',
@@ -104,6 +105,7 @@ class Trabajador extends Model
             'situacion_especial' => SituacionEspecial::class,
             'tipo_documento' => TipoDocumento::class,
             'tipo_contrato' => TipoContrato::class,
+            'regimen_laboral' => RegimenLaboral::class,
             'sistema_pension' => SistemaPension::class,
             'tipo_comision_afp' => TipoComisionAfp::class,
             'motivo_cese' => MotivoCese::class,
@@ -129,7 +131,15 @@ class Trabajador extends Model
         return $this->belongsTo(Establecimiento::class);
     }
 
-    /** ¿Tiene cese registrado a la fecha indicada? */
+    /**
+     * Régimen laboral con el que se calculan sus beneficios: el de la empresa, salvo que el trabajador conserve el
+     * régimen general dentro de una micro o pequeña empresa (contratado antes de su inscripción en el REMYPE) ⚠.
+     */
+    public function regimenEn(Empresa $empresa): RegimenLaboral
+    {
+        return $this->regimen_laboral ?? $empresa->regimen_laboral;
+    }
+
     /**
      * Régimen agrario con gratificaciones y CTS prorrateadas en la remuneración diaria (art. 7 del D.S. 005-2021-MIDAGRI):
      * no recibe gratificación de julio/diciembre, depósito CTS ni sus truncas en la liquidación.
@@ -139,6 +149,7 @@ class Trabajador extends Model
         return $empresa->regimen_laboral === RegimenLaboral::Agrario && $this->prorrateo_agrario;
     }
 
+    /** ¿Tiene cese registrado a la fecha indicada? */
     public function estaCesado(?CarbonImmutable $fecha = null): bool
     {
         return $this->fecha_cese !== null && $this->fecha_cese->lte($fecha ?? CarbonImmutable::today());

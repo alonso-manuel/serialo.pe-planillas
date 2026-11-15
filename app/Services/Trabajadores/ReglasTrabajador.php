@@ -66,6 +66,8 @@ final class ReglasTrabajador
             'prorrateo_agrario' => ['sometimes', 'boolean'],
             'fecha_ingreso' => ['required', 'date'],
             'tipo_contrato' => ['required', Rule::enum(TipoContrato::class)],
+            // Solo la excepción «régimen general» dentro de una MYPE; vacío = el régimen de la empresa.
+            'regimen_laboral' => ['nullable', Rule::in([RegimenLaboral::General->value])],
             'remuneracion_basica' => ['required', 'regex:/^\d{1,10}(\.\d{1,2})?$/', 'not_regex:/^0+(\.0+)?$/'],
             'asignacion_familiar' => ['boolean'],
             // Pensión y salud
@@ -104,8 +106,13 @@ final class ReglasTrabajador
             $validator->errors()->add('ocupacion', 'Esa ocupación no aplica a la categoría «'.$categoria->etiqueta().'» según la tabla 30 de SUNAT.');
         }
 
+        $propio = RegimenLaboral::tryFrom((string) ($datos['regimen_laboral'] ?? ''));
+        if ($propio !== null && ! $empresa->regimen_laboral->esMype()) {
+            $validator->errors()->add('regimen_laboral', 'Solo en una micro o pequeña empresa un trabajador puede tener un régimen distinto al de la empresa.');
+        }
+
         if (($datos['seguro_salud'] ?? null) === SeguroSalud::Sis->value
-            && $empresa->regimen_laboral !== RegimenLaboral::Microempresa) {
+            && ($propio ?? $empresa->regimen_laboral) !== RegimenLaboral::Microempresa) {
             $validator->errors()->add('seguro_salud', 'El SIS solo aplica a trabajadores de microempresas.');
         }
     }

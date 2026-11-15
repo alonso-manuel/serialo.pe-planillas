@@ -34,6 +34,16 @@ class Empresa extends Model
     ];
 
     /** @return array<string, string> */
+    /**
+     * ¿Algún trabajador tiene gratificaciones y CTS? La microempresa no, salvo quienes conservan el régimen general
+     * (contratados antes de su inscripción en el REMYPE).
+     */
+    public function tieneGratificacionYCts(): bool
+    {
+        return $this->regimen_laboral->tieneGratificacionYCts()
+            || $this->trabajadores()->where('regimen_laboral', RegimenLaboral::General->value)->exists();
+    }
+
     protected function casts(): array
     {
         return [

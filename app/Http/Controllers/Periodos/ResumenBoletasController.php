@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Periodos;
 
 use App\Domain\Planilla\CalculadoraGratificacion;
-use App\Enums\RegimenLaboral;
 use App\Http\Controllers\Controller;
 use App\Models\Empresa;
 use App\Models\EnvioBoleta;
@@ -80,7 +79,7 @@ class ResumenBoletasController extends Controller
 
         return Inertia::render('gratificaciones/Index', [
             'empresa' => $empresa->razon_social,
-            'aplica' => $empresa->regimen_laboral !== RegimenLaboral::Microempresa,
+            'aplica' => $empresa->tieneGratificacionYCts(),
             'regimen' => $empresa->regimen_laboral->etiqueta(),
             'proxima' => Periodo::MESES[$mesProx]." {$anioProx}",
             'periodos' => $periodos->map(function (Periodo $p) use ($montos) {

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { Head, Link, router, useForm } from '@inertiajs/vue3';
 import { Search, TriangleAlert, Trash2 } from '@lucide/vue';
-import { computed, ref } from 'vue';
+import { computed, ref, watch } from 'vue';
 import Heading from '@/components/Heading.vue';
 import InputError from '@/components/InputError.vue';
 import { Button } from '@/components/ui/button';
@@ -92,6 +92,7 @@ const form = useForm({
     centro_costo_id: t?.centro_costo_id ? String(t.centro_costo_id) : NINGUNO,
     fecha_ingreso: t?.fecha_ingreso ?? '',
     tipo_contrato: t?.tipo_contrato ?? 'indeterminado',
+    regimen_laboral: t?.regimen_laboral ?? NINGUNO,
     remuneracion_basica: t?.remuneracion_basica ?? '',
     asignacion_familiar: t?.asignacion_familiar ?? false,
     sistema_pension: t?.sistema_pension ?? 'onp',
@@ -116,6 +117,16 @@ const form = useForm({
     pais_emisor: t?.pais_emisor ?? '',
 });
 
+// El SIS es solo del régimen de microempresa: quien conserva el régimen general va con EsSalud.
+watch(
+    () => form.regimen_laboral,
+    (regimen) => {
+        if (regimen === 'general' && form.seguro_salud === 'sis') {
+            form.seguro_salud = 'essalud';
+        }
+    },
+);
+
 /* ---------- Pestañas y errores ---------- */
 const PESTANAS = {
     personales: [
@@ -135,6 +146,7 @@ const PESTANAS = {
         'cargo',
         'fecha_ingreso',
         'tipo_contrato',
+        'regimen_laboral',
         'remuneracion_basica',
         'asignacion_familiar',
         'prorrateo_agrario',
@@ -203,6 +215,8 @@ function guardar(): void {
         centro_costo_id:
             d.centro_costo_id === NINGUNO ? null : d.centro_costo_id,
         afp_id: d.afp_id === NINGUNO ? null : d.afp_id,
+        regimen_laboral:
+            d.regimen_laboral === NINGUNO ? null : d.regimen_laboral,
         categoria_ocupacional:
             d.categoria_ocupacional === NINGUNO
                 ? null
@@ -671,6 +685,33 @@ function eliminar(): void {
                         </Select>
                         <InputError :message="form.errors.tipo_contrato" />
                     </div>
+                    <div
+                        v-if="catalogos.permite_regimen_general"
+                        class="grid gap-2"
+                    >
+                        <Label for="regimen_laboral">Régimen laboral</Label>
+                        <Select v-model="form.regimen_laboral">
+                            <SelectTrigger id="regimen_laboral" class="w-full"
+                                ><SelectValue
+                            /></SelectTrigger>
+                            <SelectContent>
+                                <SelectItem :value="NINGUNO">
+                                    El de la empresa ({{
+                                        catalogos.regimen_empresa
+                                    }})
+                                </SelectItem>
+                                <SelectItem value="general">
+                                    Régimen general
+                                </SelectItem>
+                            </SelectContent>
+                        </Select>
+                        <p class="text-xs text-muted-foreground">
+                            Régimen general: para quien ya trabajaba antes de
+                            que la empresa se inscribiera en el REMYPE.
+                            Gratificación, CTS y vacaciones completas.
+                        </p>
+                        <InputError :message="form.errors.regimen_laboral" />
+                    </div>
                     <div class="grid gap-2">
                         <Label for="remuneracion_basica"
                             >Remuneración básica</Label
@@ -873,9 +914,12 @@ function eliminar(): void {
                                 <SelectItem value="essalud">EsSalud</SelectItem>
                                 <SelectItem
                                     value="sis"
-                                    :disabled="!catalogos.permite_sis"
+                                    :disabled="
+                                        !catalogos.permite_sis ||
+                                        form.regimen_laboral === 'general'
+                                    "
                                 >
-                                    SIS (solo microempresa)
+                                    SIS (solo régimen de microempresa)
                                 </SelectItem>
                             </SelectContent>
                         </Select>

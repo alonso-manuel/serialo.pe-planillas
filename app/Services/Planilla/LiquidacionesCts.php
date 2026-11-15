@@ -68,7 +68,7 @@ class LiquidacionesCts
         [$anioIni, $mesIni] = $meses[0];
         $inicio = CarbonImmutable::create($anioIni, $mesIni, 1);
 
-        $parametros = $this->parametros->cts($empresa, $fin->toDateString());
+        $parametros = []; // por régimen: un trabajador puede conservar el régimen general dentro de una MYPE
         $datosMeses = $this->datosMeses($empresa, $meses);
         [$anioGrati, $mesGrati] = $mes === 5 ? [$anio - 1, 12] : [$anio, 7];
         $gratificaciones = $this->gratificacionesPagadas($empresa, $anioGrati, $mesGrati);
@@ -79,7 +79,7 @@ class LiquidacionesCts
             ->where(fn ($q) => $q->whereNull('fecha_cese')->orWhereDate('fecha_cese', '>', $fin))
             ->get();
 
-        DB::transaction(function () use ($liquidacion, $trabajadores, $anio, $mes, $fin, $inicio, $parametros, $datosMeses, $gratificaciones, $empresa, $anioGrati, $mesGrati) {
+        DB::transaction(function () use ($liquidacion, $trabajadores, $anio, $mes, $fin, $inicio, &$parametros, $datosMeses, $gratificaciones, $empresa, $anioGrati, $mesGrati) {
             Auditoria::sinRegistrar(fn () => $liquidacion->lineas()->delete());
 
             foreach ($trabajadores as $trabajador) {
@@ -105,7 +105,7 @@ class LiquidacionesCts
                     asignacionFamiliar: $t->asignacion_familiar,
                     gratificacion: $grati,
                     meses: $datosMeses[$trabajador->id] ?? [],
-                ), $parametros);
+                ), $parametros[$t->regimenEn($empresa)->value] ??= $this->parametros->cts($empresa, $fin->toDateString(), $t));
 
                 if (! $r->corresponde()) {
                     continue;
@@ -248,6 +248,6 @@ class LiquidacionesCts
             fechaIngreso: $t->fecha_ingreso->toDateTimeImmutable(),
             remuneracionBasica: (string) $t->remuneracion_basica,
             asignacionFamiliar: $t->asignacion_familiar,
-        ), $this->parametros->gratificacionPara($empresa, $fecha->toDateString()))->gratificacion;
+        ), $this->parametros->gratificacionPara($empresa, $fecha->toDateString(), $t))->gratificacion;
     }
 }

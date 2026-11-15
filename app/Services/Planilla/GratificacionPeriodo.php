@@ -49,7 +49,7 @@ class GratificacionPeriodo
         }
 
         $periodo->loadMissing(['empresa', 'lineas.trabajador']);
-        $parametros = $this->parametros->gratificacion($periodo);
+        $parametros = []; // por régimen: un trabajador puede conservar el régimen general dentro de una MYPE
         $semestre = $this->semestre($periodo);
         $diaPago = CarbonImmutable::create($periodo->anio, $periodo->mes, self::DIA_PAGO)->startOfDay();
 
@@ -77,7 +77,7 @@ class GratificacionPeriodo
                     asignacionFamiliar: $t->asignacion_familiar,
                     meses: $semestre[$linea->trabajador_id] ?? [],
                 ),
-                $parametros,
+                $parametros[$t->regimenEn($periodo->empresa)->value] ??= $this->parametros->gratificacion($periodo, $t),
             );
         }
 

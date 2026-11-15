@@ -4,7 +4,6 @@ namespace App\Services\Panel;
 
 use App\Domain\Planilla\PeriodoVacacional;
 use App\Enums\EstadoPeriodo;
-use App\Enums\RegimenLaboral;
 use App\Enums\TipoConcepto;
 use App\Models\Afp;
 use App\Models\Empresa;
@@ -261,7 +260,7 @@ class PanelEstudio
                 ];
             }
 
-            $tieneBeneficios = $e->regimen_laboral !== RegimenLaboral::Microempresa;
+            $tieneBeneficios = $e->tieneGratificacionYCts();
 
             if ($tieneBeneficios && in_array($mes, [7, 12], true) && ($p === null || $p->estado === EstadoPeriodo::Abierto)) {
                 $alertas[] = [

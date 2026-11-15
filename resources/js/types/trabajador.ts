@@ -31,6 +31,8 @@ export type TrabajadorEditable = {
     cargo: string | null;
     fecha_ingreso: string;
     tipo_contrato: string;
+    /** null = el régimen de la empresa; «general» = lo conserva dentro de una MYPE. */
+    regimen_laboral: 'general' | null;
     remuneracion_basica: string;
     asignacion_familiar: boolean;
     sistema_pension: 'afp' | 'onp' | 'ninguno';
@@ -83,6 +85,10 @@ export type CatalogosTrabajador = {
     entidades_cts: Opcion[];
     seguro_por_defecto: 'essalud' | 'sis';
     permite_sis: boolean;
+    /** Etiqueta del régimen de la empresa. */
+    regimen_empresa: string;
+    /** Micro o pequeña empresa: un trabajador puede conservar el régimen general. */
+    permite_regimen_general: boolean;
     /** La empresa está en el régimen agrario (Ley 31110). */
     agrario: boolean;
     rmv: string | null;

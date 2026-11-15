@@ -54,7 +54,7 @@ class VacacionesTrabajador
         return $this->calculadora->periodos(
             $trabajador->fecha_ingreso->toDateTimeImmutable(),
             $corte->toDateTimeImmutable(),
-            fn (DateTimeImmutable $fecha) => $this->diasDerecho($empresa, $fecha),
+            fn (DateTimeImmutable $fecha) => $this->diasDerecho($empresa, $fecha, $trabajador),
             $goces,
             $this->noEfectivos($trabajador),
         );
@@ -173,10 +173,10 @@ class VacacionesTrabajador
             ->dividedBy(6, 2, RoundingMode::HalfUp);
     }
 
-    /** Días de vacaciones por año según el régimen de la empresa, vigentes en una fecha. */
-    public function diasDerecho(Empresa $empresa, DateTimeImmutable $fecha): int
+    /** Días de vacaciones por año según el régimen (del trabajador o de la empresa), vigentes en una fecha. */
+    public function diasDerecho(Empresa $empresa, DateTimeImmutable $fecha, ?Trabajador $trabajador = null): int
     {
-        $clave = match ($empresa->regimen_laboral) {
+        $clave = match (ParametrosRepositorio::regimen($empresa, $trabajador)) {
             RegimenLaboral::General, RegimenLaboral::Agrario => C::DiasVacacionesGeneral, // agrario: 30 días (Ley 31110, art. 3 g)
             RegimenLaboral::PequenaEmpresa => C::DiasVacacionesPequena,
             RegimenLaboral::Microempresa => C::DiasVacacionesMicro,

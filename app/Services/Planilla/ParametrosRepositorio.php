@@ -50,12 +50,21 @@ class ParametrosRepositorio
         );
     }
 
-    /** Indemnización por despido arbitrario de una empresa, vigente a la fecha de cese (Y-m-d). */
-    public function indemnizacion(Empresa $empresa, string $fecha): ParametrosIndemnizacion
+    /**
+     * Régimen con el que se calculan los beneficios: el del trabajador si se indica (puede conservar el régimen
+     * general dentro de una MYPE), si no el de la empresa.
+     */
+    public static function regimen(Empresa $empresa, ?Trabajador $trabajador = null): RegimenLaboral
+    {
+        return $trabajador?->regimenEn($empresa) ?? $empresa->regimen_laboral;
+    }
+
+    /** Indemnización por despido arbitrario según el régimen (del trabajador o de la empresa), vigente al cese (Y-m-d). */
+    public function indemnizacion(Empresa $empresa, string $fecha, ?Trabajador $trabajador = null): ParametrosIndemnizacion
     {
         $v = fn (C $clave) => (int) Parametro::vigente($clave, $fecha);
 
-        return match ($empresa->regimen_laboral) {
+        return match (self::regimen($empresa, $trabajador)) {
             // Agrario: 45 RD por año, tope 360 RD (art. 3 h) de la Ley 31110), como el régimen general.
             RegimenLaboral::General, RegimenLaboral::Agrario => new ParametrosIndemnizacion($v(C::IndemnizacionDiasAnioGeneral), $v(C::IndemnizacionTopeGeneral), $v(C::IndemnizacionDiasMesPlazoFijo)),
             RegimenLaboral::PequenaEmpresa => new ParametrosIndemnizacion($v(C::IndemnizacionDiasAnioPequena), $v(C::IndemnizacionTopePequena), null),
@@ -87,18 +96,18 @@ class ParametrosRepositorio
         );
     }
 
-    public function gratificacion(Periodo $periodo): ParametrosGratificacion
+    public function gratificacion(Periodo $periodo, ?Trabajador $trabajador = null): ParametrosGratificacion
     {
         /** @var Empresa $empresa */
         $empresa = $periodo->empresa;
 
-        return $this->gratificacionPara($empresa, $periodo->ultimoDia()->toDateString());
+        return $this->gratificacionPara($empresa, $periodo->ultimoDia()->toDateString(), $trabajador);
     }
 
-    /** Parámetros de la gratificación de una empresa vigentes en una fecha (Y-m-d). */
-    public function gratificacionPara(Empresa $empresa, string $fecha): ParametrosGratificacion
+    /** Parámetros de la gratificación según el régimen (del trabajador o de la empresa) vigentes en una fecha (Y-m-d). */
+    public function gratificacionPara(Empresa $empresa, string $fecha, ?Trabajador $trabajador = null): ParametrosGratificacion
     {
-        $regimen = $empresa->regimen_laboral;
+        $regimen = self::regimen($empresa, $trabajador);
 
         return new ParametrosGratificacion(
             rmv: Parametro::vigente(C::Rmv, $fecha),
@@ -114,14 +123,14 @@ class ParametrosRepositorio
         );
     }
 
-    /** Parámetros de la CTS de una empresa vigentes al cierre del periodo computable (Y-m-d). */
-    public function cts(Empresa $empresa, string $fecha): ParametrosCts
+    /** Parámetros de la CTS según el régimen (del trabajador o de la empresa) vigentes al cierre del periodo (Y-m-d). */
+    public function cts(Empresa $empresa, string $fecha, ?Trabajador $trabajador = null): ParametrosCts
     {
         return new ParametrosCts(
             rmv: Parametro::vigente(C::Rmv, $fecha),
             porcentajeAsignacionFamiliar: Parametro::vigente(C::PorcentajeAsignacionFamiliar, $fecha),
             // Régimen general: CTS completa (D.S. 001-97-TR). REMYPE: proporción con vigencia.
-            factorRegimen: match ($empresa->regimen_laboral) {
+            factorRegimen: match (self::regimen($empresa, $trabajador)) {
                 RegimenLaboral::General, RegimenLaboral::Agrario => '1',
                 RegimenLaboral::PequenaEmpresa => Parametro::vigente(C::FactorCtsPequena, $fecha),
                 RegimenLaboral::Microempresa => Parametro::vigente(C::FactorCtsMicro, $fecha),

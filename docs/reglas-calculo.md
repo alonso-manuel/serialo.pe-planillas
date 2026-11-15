@@ -81,6 +81,21 @@ Test: `CalculadoraPlanillaTest::caso_real_microempresa_afp_con_sis`. **No modifi
 | Vacaciones          | 30 días                       | 15 días                       | 15 días                                            |
 | Asignación familiar | Sí                            | ⚠ verificar                   | ⚠ verificar (criterio mayoritario: no obligatoria) |
 
+### Régimen por trabajador dentro de una MYPE ⚠ confirmar con contador
+
+Una micro o pequeña empresa puede tener trabajadores en dos regímenes: los contratados **antes** de su inscripción en
+el REMYPE conservan el **régimen general**, y los contratados después están en el régimen MYPE (TUO de la Ley MYPE,
+D.S. 013-2013-PRODUCE). No se puede cesar a alguien del régimen general para recontratarlo como MYPE.
+
+- Ficha del trabajador → **Régimen laboral**: «el de la empresa» (por defecto, `trabajadores.regimen_laboral = null`)
+  o «régimen general». La excepción solo existe en empresas pequeña o micro; ningún otro régimen se admite.
+- El régimen del trabajador (`Trabajador::regimenEn()`) define su gratificación (factor y bonificación), CTS,
+  vacaciones (30 días), indemnización por despido, liquidación, la proyección de gratificaciones en quinta, las
+  provisiones del costo laboral y el código de la tabla 33 en el T-Registro.
+- Quien conserva el régimen general **no puede ir con SIS** (solo el régimen de microempresa); va con EsSalud.
+- La planilla mensual (aportes, EsSalud) no cambia: depende del seguro y la pensión de cada trabajador, como siempre.
+- Pendiente: la carga masiva desde Excel todavía no trae la columna; se marca en la ficha.
+
 ## Régimen agrario (v2.0) — Ley 31110 y D.S. 005-2021-MIDAGRI ⚠ confirmar con contador
 
 Empresa con régimen «agrario». Fuentes: [Ley 31110](https://busquedas.elperuano.pe/dispositivo/NL/1916568-7) y

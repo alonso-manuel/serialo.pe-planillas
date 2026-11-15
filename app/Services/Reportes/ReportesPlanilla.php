@@ -317,13 +317,6 @@ class ReportesPlanilla
      */
     private function costoLaboral(Periodo $periodo, Collection $lineas): array
     {
-        /** @var Empresa $empresa */
-        $empresa = $periodo->empresa;
-        $fecha = $periodo->ultimoDia();
-        $grati = $this->parametros->gratificacionPara($empresa, $fecha->toDateString());
-        $cts = $this->parametros->cts($empresa, $fecha->toDateString());
-        $diasVacaciones = $this->vacaciones->diasDerecho($empresa, $fecha->toDateTimeImmutable());
-
         $filas = array_map(fn (array $f) => array_diff_key($f, ['centro' => true]), $this->costoPorLinea($periodo, $lineas));
 
         $columnas = [
@@ -354,12 +347,16 @@ class ReportesPlanilla
         /** @var Empresa $empresa */
         $empresa = $periodo->empresa;
         $fecha = $periodo->ultimoDia();
-        $grati = $this->parametros->gratificacionPara($empresa, $fecha->toDateString());
-        $cts = $this->parametros->cts($empresa, $fecha->toDateString());
-        $diasVacaciones = $this->vacaciones->diasDerecho($empresa, $fecha->toDateTimeImmutable());
+        // Provisiones por régimen: un trabajador puede conservar el régimen general dentro de una MYPE.
+        $porRegimen = [];
 
-        return array_values($lineas->map(function (PlanillaLinea $l) use ($periodo, $empresa, $grati, $cts, $diasVacaciones) {
+        return array_values($lineas->map(function (PlanillaLinea $l) use ($periodo, $empresa, $fecha, &$porRegimen) {
             $t = $this->historial->vistaAl($l->trabajador, $periodo->ultimoDia());
+            [$grati, $cts, $diasVacaciones] = $porRegimen[$t->regimenEn($empresa)->value] ??= [
+                $this->parametros->gratificacionPara($empresa, $fecha->toDateString(), $t),
+                $this->parametros->cts($empresa, $fecha->toDateString(), $t),
+                $this->vacaciones->diasDerecho($empresa, $fecha->toDateTimeImmutable(), $t),
+            ];
             $prorrateados = $t->beneficiosProrrateados($empresa); // agrario: ya están en los ingresos del mes
             $asignacion = $l->conceptos->first(fn (PlanillaConcepto $c) => $c->concepto->codigo_plame === '0201')->monto_pagado ?? '0';
             $p = ProvisionesMensuales::calcular(
