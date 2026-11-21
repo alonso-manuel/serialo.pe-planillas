@@ -35,6 +35,7 @@ class GuardarCuentaRequest extends FormRequest
             'tipo' => ['required', Rule::enum(TipoEstudio::class)],
             ...ActualizarCuentaRequest::reglasPlan(),
             'plan' => ['nullable', 'string', 'max:40'], // sin plan: la plantilla del tipo (config planillas.planes)
+            'datos_demo' => ['boolean'], // empresas ficticias para que el prospecto pruebe (se cargan en la cola)
             'vence_en' => ['nullable', 'date_format:Y-m-d', 'after:today', Rule::requiredIf($this->input('tipo') === TipoEstudio::Demo->value)],
         ];
     }

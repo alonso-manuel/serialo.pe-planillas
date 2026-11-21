@@ -7,6 +7,7 @@ use App\Enums\TipoEstudio;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Panel\ActualizarCuentaRequest;
 use App\Http\Requests\Panel\GuardarCuentaRequest;
+use App\Jobs\CargarDatosDemoJob;
 use App\Models\Central\Estudio;
 use App\Services\Central\GestionEstudios;
 use Carbon\CarbonImmutable;
@@ -116,6 +117,10 @@ class CuentaController extends Controller
                 'max_trabajadores' => $datos['max_trabajadores'] ?? null,
             ],
         );
+
+        if ($request->boolean('datos_demo')) {
+            CargarDatosDemoJob::dispatch($estudio->id);
+        }
 
         $this->avisarInvitacion($estudio, $this->gestion->invitar($estudio), 'creada');
 

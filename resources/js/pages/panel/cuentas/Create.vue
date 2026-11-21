@@ -24,6 +24,7 @@ const form = useForm({
     nombre_admin: '',
     correo_admin: '',
     tipo: 'demo' as 'demo' | 'cliente',
+    datos_demo: true,
     vence_en: props.vence_demo,
     plan: props.planes.demo?.nombre ?? 'Demo',
     max_empresas: props.planes.demo?.max_empresas ?? null,
@@ -58,6 +59,7 @@ watch(
     (tipo) => {
         form.vence_en =
             tipo === 'demo' ? form.vence_en || props.vence_demo : '';
+        form.datos_demo = tipo === 'demo';
         // Plantilla de plan según el tipo (se puede ajustar).
         const p = props.planes[tipo === 'demo' ? 'demo' : 'estudio'];
         if (p) {
@@ -198,6 +200,18 @@ function crear(): void {
                 />
                 <InputError :message="form.errors.vence_en" />
             </div>
+
+            <label class="flex cursor-pointer items-start gap-2 text-sm">
+                <input v-model="form.datos_demo" type="checkbox" class="mt-1" />
+                <span>
+                    <span class="font-medium">Cargar datos de prueba</span>
+                    <span class="block text-muted-foreground">
+                        7 empresas ficticias con trabajadores y un año de
+                        planillas. Se cargan en segundo plano, 1 a 2 minutos
+                        después de crear la cuenta.
+                    </span>
+                </span>
+            </label>
 
             <div>
                 <Button type="submit" :disabled="form.processing">

@@ -4,14 +4,18 @@ namespace Tests\Feature\PanelCentral;
 
 use App\Enums\EstadoEstudio;
 use App\Enums\TipoEstudio;
+use App\Jobs\CargarDatosDemoJob;
 use App\Models\Central\AuditoriaCentral;
 use App\Models\Central\Estudio;
 use App\Models\Central\Superadmin;
+use App\Models\Empresa;
 use App\Models\User;
 use App\Notifications\InvitacionEstudio;
+use App\Services\Central\DatosDemo;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Notification;
+use Illuminate\Support\Facades\Queue;
 use Inertia\Support\SessionKey;
 use Inertia\Testing\AssertableInertia as Assert;
 use PHPUnit\Framework\Attributes\Test;
@@ -82,6 +86,34 @@ class CuentasPanelTest extends TestCase
         $estudio->run(fn () => $this->assertSame('Ana Prueba', User::query()->sole()->name));
 
         $this->assertSame(['creado', 'invitado'], AuditoriaCentral::query()->orderBy('id')->pluck('accion')->all());
+    }
+
+    #[Test]
+    public function carga_los_datos_de_prueba_en_la_cola_solo_si_se_pide(): void
+    {
+        Notification::fake();
+        Queue::fake();
+        $this->estudiosDelTest[] = 'nuevo';
+        $this->estudiosDelTest[] = 'limpio';
+
+        $this->post(self::PANEL.'/cuentas', $this->cuenta(['datos_demo' => true]))->assertRedirect(self::PANEL.'/cuentas');
+        $this->post(self::PANEL.'/cuentas', $this->cuenta(['subdominio' => 'limpio', 'tipo' => 'cliente', 'vence_en' => null, 'datos_demo' => false]))
+            ->assertRedirect(self::PANEL.'/cuentas');
+
+        Queue::assertPushedTimes(CargarDatosDemoJob::class, 1);
+        Queue::assertPushed(CargarDatosDemoJob::class, fn (CargarDatosDemoJob $job) => $job->estudioId === 'nuevo');
+    }
+
+    #[Test]
+    public function el_trabajo_de_la_cola_carga_las_empresas_ficticias(): void
+    {
+        $estudio = $this->crearEstudio('prospecto', 'yo@prospecto.test');
+
+        (new CargarDatosDemoJob('prospecto'))->handle(app(DatosDemo::class));
+        (new CargarDatosDemoJob('ya-no-existe'))->handle(app(DatosDemo::class)); // cuenta eliminada: no falla
+
+        $estudio->run(fn () => $this->assertSame(count(DatosDemo::POR_DEFECTO), Empresa::query()->count()));
+        $this->assertTrue(AuditoriaCentral::query()->where('accion', 'datos demo')->exists());
     }
 
     #[Test]

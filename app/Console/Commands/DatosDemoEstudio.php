@@ -3,12 +3,10 @@
 namespace App\Console\Commands;
 
 use App\Enums\TipoEstudio;
-use App\Models\Auditoria;
 use App\Models\Central\Estudio;
-use App\Models\Trabajador;
+use App\Services\Central\DatosDemo;
 use App\Support\ModoSistema;
 use Database\Seeders\EstudioDemoSeeder;
-use Database\Seeders\HistorialDemoSeeder;
 use Illuminate\Console\Command;
 
 /**
@@ -27,10 +25,7 @@ class DatosDemoEstudio extends Command
 
     protected $description = 'Carga empresas, trabajadores y planillas ficticias en un estudio (SaaS) para demos';
 
-    /** Mezcla de régimen general, pequeña y microempresa, como un estudio contable típico. */
-    public const POR_DEFECTO = ['pacifico', 'misti', 'andes', 'huallaga', 'chira', 'ucayali', 'espiga'];
-
-    public function handle(): int
+    public function handle(DatosDemo $datos): int
     {
         if (! ModoSistema::saas()) {
             $this->error('Solo disponible con PLANILLAS_MODO=saas.');
@@ -46,7 +41,7 @@ class DatosDemoEstudio extends Command
         }
 
         $opcion = (string) $this->option('empresas');
-        $empresas = $opcion === '' ? self::POR_DEFECTO : array_values(array_filter(array_map('trim', explode(',', $opcion))));
+        $empresas = $opcion === '' ? DatosDemo::POR_DEFECTO : array_values(array_filter(array_map('trim', explode(',', $opcion))));
         $desconocidas = array_diff($empresas, EstudioDemoSeeder::CLAVES);
         if ($desconocidas !== []) {
             $this->error('Empresas desconocidas: '.implode(', ', $desconocidas).'. Disponibles: '.implode(', ', EstudioDemoSeeder::CLAVES).'.');
@@ -66,20 +61,7 @@ class DatosDemoEstudio extends Command
             return self::FAILURE;
         }
 
-        $estudio->run(function () use ($empresas, $correo): void {
-            Auditoria::sinRegistrar(function () use ($empresas, $correo): void {
-                $datos = app(EstudioDemoSeeder::class);
-                $datos->empresasElegidas = $empresas;
-                $datos->setContainer(app())->__invoke();
-
-                app(HistorialDemoSeeder::class)->setContainer(app())->__invoke();
-
-                // Los correos inventados (@ejemplo.test) rebotarían en el envío real y dañan la reputación del
-                // dominio: se reemplazan por el correo indicado o se quitan.
-                Trabajador::query()->where('numero_documento', 'like', '7000%')
-                    ->update(['email' => $correo]);
-            });
-        });
+        $datos->cargar($estudio, $empresas, $correo);
 
         $this->info('✓ Datos ficticios cargados en «'.$estudio->nombre.'»: '.implode(', ', $empresas).'.');
         if ($correo !== null) {
