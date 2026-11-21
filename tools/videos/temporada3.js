@@ -974,4 +974,131 @@ module.exports = {
             );
         },
     ],
+
+    /* ------------------------------------------------------------------ 32 */
+    '32-trabajo-nocturno': [
+        { empresa: 'Huallaga' },
+        async (d) => {
+            const p = d.page;
+            await d.ir('/conceptos');
+            await d.escena('Trabajo nocturno');
+            await d.sub(
+                'Quien trabaja entre las 10 de la noche y las 6 de la mañana no puede ganar menos que la RMV más 35 %: 1,525.50 soles al mes.',
+                4600,
+            );
+            await d.sub(
+                'Si además la empresa paga un adicional por las noches trabajadas, se registra como un concepto propio.',
+                3800,
+            );
+            await d.clic(
+                p.getByRole('button', { name: /Nuevo concepto/ }).first(),
+                1000,
+            );
+            await d.escribir('#codigo_plame', '0303');
+            await d.sub(
+                'En la tabla 22 de SUNAT corresponde el 0303: bonificación por producción, altura, turno, etc.',
+                3600,
+            );
+            await d.escribir('#nombre', 'Bonificación por trabajo nocturno');
+            for (const a of ['EsSalud', 'ONP', 'AFP']) {
+                await d.clic(
+                    p
+                        .getByRole('dialog')
+                        .locator('label')
+                        .filter({ hasText: a })
+                        .first(),
+                    300,
+                );
+            }
+            await d.clic(
+                p
+                    .getByRole('dialog')
+                    .locator('label')
+                    .filter({ hasText: /quinta|5\.ª/ })
+                    .first(),
+                500,
+            );
+            await d.sub(
+                'Es remunerativo: afecto a EsSalud, ONP, AFP y quinta categoría.',
+                3000,
+            );
+            await d.clic(
+                p.getByRole('button', { name: 'Registrar concepto' }),
+                1600,
+            );
+
+            await d.escena('Noches del mes');
+            await planillaNoviembre(d);
+            await d.sub(
+                'En Servicios Generales Huallaga, Pedro y Óscar se turnan la vigilancia nocturna durante el mes.',
+                3600,
+            );
+            await d.clic(
+                p.getByRole('button', { name: /Agregar columna/ }).first(),
+                900,
+            );
+            await d.clic(
+                p.getByRole('menuitem', { name: /0303/ }).first(),
+                1200,
+            );
+            await d.sub(
+                'Agregamos la columna y escribimos lo que le toca a cada uno según las noches de su rotación.',
+                3600,
+            );
+            await d.escribir(
+                p
+                    .locator(
+                        'input[aria-label^="Bonificación por trabajo nocturno de Chávez"]',
+                    )
+                    .first(),
+                '150',
+            );
+            await p.keyboard.press('Enter');
+            await d.espera(800);
+            await d.escribir(
+                p
+                    .locator(
+                        'input[aria-label^="Bonificación por trabajo nocturno de Salas"]',
+                    )
+                    .first(),
+                '100',
+            );
+            await p.keyboard.press('Enter');
+            // Que termine de guardar la fila antes de calcular (si no, el clic se pierde).
+            await d.clic(p.getByText('Escribe y muévete con').first(), 600);
+            await p.waitForLoadState('networkidle');
+            await d.espera(1500);
+
+            await d.escena('En la boleta');
+            await d.clic(
+                p
+                    .getByRole('button', {
+                        name: /Calcular planilla|Recalcular/,
+                    })
+                    .first(),
+                1000,
+            );
+            await p
+                .getByText(/calculada/)
+                .first()
+                .waitFor({ timeout: 30000 });
+            await d.sub(
+                'Calculamos la planilla y abrimos el detalle de Pedro.',
+                2400,
+            );
+            await d.clic(
+                p.getByRole('link', { name: /Chávez Vega/ }).first(),
+                1600,
+            );
+            await d.mover(p.getByText('0303').first());
+            await d.sub(
+                'La bonificación sale en su boleta con el código 0303 y suma a la base de AFP, EsSalud y quinta.',
+                4000,
+            );
+            await d.sub(
+                'En el PLAME se informa con ese mismo código. Cada mes solo cambias los montos según la rotación.',
+                4000,
+            );
+        },
+    ],
 };

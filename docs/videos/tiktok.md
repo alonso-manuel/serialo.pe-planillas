@@ -301,6 +301,15 @@ Parte 31 👉 ¿tienes empresas con régimen mixto? Cuéntame en comentarios.
 #SerialoPlanillas #planillas #contadoresperu #remype #mype #cts #gratificacion #peru
 ```
 
+## 32 · Trabajo nocturno
+
+```text
+¿Tus vigilantes trabajan de noche por turnos? 🌙
+De 10 p. m. a 6 a. m. nadie puede ganar menos que la RMV + 35 %. Si además pagas un adicional por las noches trabajadas, en Serialo Planillas lo registras con el concepto 0303 y sale en la boleta, afecto a EsSalud, AFP/ONP y quinta, y en el PLAME.
+Parte 32 👉 ¿cómo manejas los turnos nocturnos? Cuéntame en comentarios.
+#SerialoPlanillas #planillas #contadoresperu #trabajonocturno #vigilancia #plame #essalud #peru
+```
+
 ---
 
 ## Consejos para publicar

@@ -359,6 +359,15 @@ Cada video usa lo que dejó el anterior: se graban en orden (ver «Cómo volver 
 | CTS → «Calcular CTS» de noviembre                              | Ella recibe la CTS completa (S/ 1,794.54); sus compañeros, la mitad de la pequeña empresa.             |
 | Vacaciones                                                     | Su derecho es de 30 días por año; el de los demás, 15. Gratificación, liquidación y T-Registro, igual. |
 
+## 32 · Trabajo nocturno (~1:10)
+
+| En pantalla                                                            | Narración                                                                                                        |
+| ---------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------- |
+| Conceptos de Servicios Generales Huallaga                              | De 10 p. m. a 6 a. m. el mínimo es la RMV + 35 % (S/ 1,525.50). Un adicional por noches va como concepto propio. |
+| «Nuevo concepto»: 0303 «Bonificación por trabajo nocturno»             | Tabla 22: 0303 (producción, altura, turno). Remunerativo: EsSalud, ONP, AFP y quinta.                            |
+| Planilla de noviembre → «Agregar columna» → 0303; Pedro 150, Óscar 100 | Pedro y Óscar se turnan la vigilancia: cada uno recibe según las noches de su rotación.                          |
+| «Calcular planilla» → detalle de Pedro Chávez                          | El 0303 sale en la boleta y suma a la remuneración afecta (S/ 2,026.50). En PLAME va con el mismo código.        |
+
 ---
 
 ## Voz en off con ElevenLabs
