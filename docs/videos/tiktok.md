@@ -310,6 +310,18 @@ Parte 32 👉 ¿cómo manejas los turnos nocturnos? Cuéntame en comentarios.
 #SerialoPlanillas #planillas #contadoresperu #trabajonocturno #vigilancia #plame #essalud #peru
 ```
 
+## Especial · Construcción civil y minería (vertical, ~45 s)
+
+Video de historia (solo textos, 9:16): `node tools/videos/regimenes.js` → `videos/regimenes-especiales.mp4`.
+Voz: `docs/videos/elevenlabs/regimenes-especiales.txt`.
+
+```text
+Te lo confieso: no sé cómo funciona una planilla de construcción civil ni de minería 🙋‍♂️
+Contadores ya me lo están pidiendo y quiero hacerlo bien. ¿Sistema aparte o todo en Serialo Planillas? ¿Pago semanal, por jornal o por hora? ¿Jornadas 28×14?
+👉 Si llevas planillas de obra o mina, cuéntame en comentarios cómo lo trabajas. ¡Gracias a los contadores por sus comentarios!
+#SerialoPlanillas #planillas #contadoresperu #construccioncivil #mineria #rrhh #peru
+```
+
 ---
 
 ## Consejos para publicar

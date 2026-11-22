@@ -111,14 +111,15 @@ async function montar(nombre, html, toma) {
     });
     const page = await ctx.newPage();
     // Marcas de cámara de la toma (si existen) disponibles para el montaje antes de cargar la página.
-    const json = toma.replace(/\.webm$/, '.json');
-    const marcas = fs.existsSync(json) ? fs.readFileSync(json, 'utf8') : '[]';
+    const json = toma ? toma.replace(/\.webm$/, '.json') : '';
+    const marcas =
+        json && fs.existsSync(json) ? fs.readFileSync(json, 'utf8') : '[]';
     await page.addInitScript(`window.MARCAS = ${marcas};`);
     const aUrl = (ruta) => 'file:///' + ruta.split(path.sep).join('/');
+    // Sin toma: montaje solo con textos (videos de historia, sin grabar el sistema).
     const url =
         aUrl(path.resolve(__dirname, html)) +
-        '?toma=' +
-        encodeURIComponent(aUrl(path.resolve(toma)));
+        (toma ? '?toma=' + encodeURIComponent(aUrl(path.resolve(toma))) : '');
     await page.goto(url);
     await page.waitForFunction(() => window.terminado === true, null, {
         timeout: 120000,
@@ -269,28 +270,34 @@ function aMp4(webm) {
     return mp4;
 }
 
-void (async () => {
-    fs.mkdirSync(SALIDA, { recursive: true });
-    // SOLO_MONTAJE=1: reutiliza la toma ya grabada (cambios de textos o diseño sin volver a grabar el sistema).
-    if (
-        !process.env.SOLO_MONTAJE ||
-        !fs.existsSync(archivo('anuncio-v1-toma.webm'))
-    ) {
-        await grabar('anuncio-v1-toma', tomaV1, { empresa: 'Distribuidora' });
-        fs.writeFileSync(
-            archivo('anuncio-v1-toma.json'),
-            JSON.stringify(marcasV1, null, 1),
+module.exports = { montar, aMp4, conVoz, archivo, SALIDA };
+
+// Solo al ejecutarlo directamente (otros guiones reutilizan montar, aMp4 y conVoz).
+if (require.main === module)
+    void (async () => {
+        fs.mkdirSync(SALIDA, { recursive: true });
+        // SOLO_MONTAJE=1: reutiliza la toma ya grabada (cambios de textos o diseño sin volver a grabar el sistema).
+        if (
+            !process.env.SOLO_MONTAJE ||
+            !fs.existsSync(archivo('anuncio-v1-toma.webm'))
+        ) {
+            await grabar('anuncio-v1-toma', tomaV1, {
+                empresa: 'Distribuidora',
+            });
+            fs.writeFileSync(
+                archivo('anuncio-v1-toma.json'),
+                JSON.stringify(marcasV1, null, 1),
+            );
+        }
+        const webm = await montar(
+            'anuncio-v1',
+            'anuncio-v1.html',
+            archivo('anuncio-v1-toma.webm'),
         );
-    }
-    const webm = await montar(
-        'anuncio-v1',
-        'anuncio-v1.html',
-        archivo('anuncio-v1-toma.webm'),
-    );
-    const mp4 = aMp4(webm);
-    console.log('✓', mp4);
-    // VOZ=voz-v1.mp3 (en la carpeta de salida): además genera la versión con la voz en off.
-    if (process.env.VOZ) {
-        console.log('✓', conVoz(mp4, archivo(process.env.VOZ)));
-    }
-})();
+        const mp4 = aMp4(webm);
+        console.log('✓', mp4);
+        // VOZ=voz-v1.mp3 (en la carpeta de salida): además genera la versión con la voz en off.
+        if (process.env.VOZ) {
+            console.log('✓', conVoz(mp4, archivo(process.env.VOZ)));
+        }
+    })();
