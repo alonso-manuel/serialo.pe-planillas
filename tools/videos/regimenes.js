@@ -12,6 +12,46 @@ const SALIDA = process.env.SALIDA || path.resolve(__dirname, '../../videos');
 const FPS = Number(process.env.FPS || 30);
 const NOMBRE = 'regimenes-especiales';
 
+/**
+ * Sincronía con la voz (regimenes-especiales.mp3, 47.4 s): pares [segundo del timeline, segundo de la voz].
+ * Salen de las pausas de la voz (ffmpeg silencedetect) y de cuándo aparece cada cosa en regimenes.html:
+ * «ni de minería», «contadores me escriben», «funcionan muy distinto», cada calendario («en obra», «en mina»,
+ * «Serialo hoy»), «¿sistema aparte», «o todo en uno», el engranaje, cada duda de la libreta, «si llevas
+ * planillas» y «gracias». Entre dos pares el tiempo se estira o encoge en línea recta.
+ * Si se regraba la voz, volver a medir las pausas y ajustar la segunda columna.
+ */
+const PAUTA_VOZ = [
+    [0, 0],
+    [5.1, 3.95],
+    [8.4, 5.35],
+    [12.5, 8.75],
+    [13.3, 11.7],
+    [14.2, 13.8],
+    [15.1, 17.5],
+    [17.4, 19.85],
+    [19.9, 22.4],
+    [21.2, 23.3],
+    [23.3, 28.6],
+    [24.7, 30.3],
+    [26.05, 33.3],
+    [27.4, 34.75],
+    [28.75, 37.0],
+    [30.8, 39.0],
+    [34.0, 42.9],
+    [35.0, 43.6],
+    [38, 47.7],
+];
+/** Segundo de la voz → segundo del timeline. */
+function aTimeline(t) {
+    for (let i = 1; i < PAUTA_VOZ.length; i++) {
+        const [a0, v0] = PAUTA_VOZ[i - 1],
+            [a1, v1] = PAUTA_VOZ[i];
+        if (t <= v1) return a0 + ((t - v0) / (v1 - v0)) * (a1 - a0);
+    }
+    return PAUTA_VOZ[PAUTA_VOZ.length - 1][0];
+}
+const CON_VOZ = Boolean(process.env.VOZ);
+
 /** ffmpeg local o, si no está, el de la imagen de Docker (carpeta montada en /w). */
 function ffmpeg(args, carpeta) {
     try {
@@ -54,15 +94,20 @@ void (async () => {
         { timeout: 60000 },
     );
     const duracion = await page.evaluate(() => window.OPENER.DURATION);
-    const total = Math.ceil(duracion * FPS);
+    // Con voz, el video dura lo que la voz y el timeline se recorre según PAUTA_VOZ.
+    const largo = CON_VOZ ? PAUTA_VOZ[PAUTA_VOZ.length - 1][1] : duracion;
+    const total = Math.ceil(largo * FPS);
 
     for (let i = 0; i < total; i++) {
-        await page.evaluate(async (t) => {
-            window.OPENER.seek(t);
-            await new Promise((r) =>
-                requestAnimationFrame(() => requestAnimationFrame(r)),
-            );
-        }, i / FPS);
+        await page.evaluate(
+            async (t) => {
+                window.OPENER.seek(t);
+                await new Promise((r) =>
+                    requestAnimationFrame(() => requestAnimationFrame(r)),
+                );
+            },
+            CON_VOZ ? aTimeline(i / FPS) : i / FPS,
+        );
         await page.screenshot({
             path: path.join(cuadros, `f${String(i).padStart(5, '0')}.jpg`),
             type: 'jpeg',
@@ -72,7 +117,7 @@ void (async () => {
     }
     await navegador.close();
 
-    const mp4 = `${NOMBRE}.mp4`;
+    const mp4 = CON_VOZ ? `${NOMBRE}-mudo-sincronizado.mp4` : `${NOMBRE}.mp4`;
     ffmpeg(
         [
             '-y',
