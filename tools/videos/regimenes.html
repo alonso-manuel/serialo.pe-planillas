@@ -1,400 +1,1965 @@
 <!doctype html>
 <html lang="es">
+    <!-- Hecho con la skill Bang Motion (https://github.com/bangtutorial/bang-motion, MIT). -->
     <head>
         <meta charset="utf-8" />
-        <!-- Video vertical para TikTok (9:16): «¿Construcción civil y minería?». Solo textos, sin grabar el sistema.
-             Lo graba regimenes.js; las duraciones de cada escena (PAUTA) siguen la voz de
-             docs/videos/elevenlabs/regimenes-especiales.txt. -->
+        <title>Construcción civil y minería — Serialo Planillas</title>
+        <!--
+  Video vertical 9:16 para TikTok. Lo exporta regimenes.js cuadro por cuadro (window.OPENER).
+  ?debug=1 muestra el panel para revisar; ?clean=1 no arranca solo (exportación).
+
+  ===== STYLE BRIEF =====
+  Tema: el creador confiesa que no sabe exactamente cómo funciona la planilla de construcción civil
+        y de minería, y pide ayuda a los contadores. Honesto · curioso · cercano.
+  Concepto: DESCENSO VERTICAL sin cortes: obra en la superficie → capas de tierra → mina → el motor
+        (engranaje del logo) → libreta de dudas → comentario. (Descartados: plano de obra anotado;
+        casco que pasa de mano en mano.)
+  Huella: descenso · 7 tramos · grúa/casco, boca de mina/vagoneta, mensajes, calendarios,
+        túneles→engranaje, libreta, comentario · abre con la obra · cierra con el engranaje que barre la pantalla.
+  Paleta: #2558a8 (fondo del logo) · #7fcbe8 (engranaje del logo) · #f5b301 (derivado: amarillo de
+        seguridad de cascos y señalética). Cielo claro → tierra ocre → roca → azul profundo del motor.
+  Fuentes: Big Shoulders Display (letrero industrial) + Kalam (apuntes a mano).
+  Resaltado: cinta de seguridad amarilla/negra bajo la palabra clave, solo 2 veces.
+  Movimiento propio: los objetos CAEN Y SE ASIENTAN con rebote y polvo.
+  Fondo: la cámara siempre desciende o deriva; polvo que sube; nubes, lámparas que titilan.
+  Superficie: gradientes en capas + grano.
+  Objetos: ilustración plana con contorno fino.
+  Transiciones: sin cortes (descenso); al final, el engranaje barre la pantalla (object wipe).
+  Momento especial: los dos túneles convergen en el engranaje del logo («¿todo en uno?»).
+-->
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link
+            href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@600;800;900&family=Kalam:wght@400;700&display=swap"
+            rel="stylesheet"
+        />
+        <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
         <style>
+            :root {
+                --azul: #2558a8;
+                --celeste: #7fcbe8;
+                --amarillo: #f5b301;
+                --tinta: #10233f;
+                --blanco: #ffffff;
+            }
             * {
-                box-sizing: border-box;
                 margin: 0;
+                padding: 0;
+                box-sizing: border-box;
             }
             html,
             body {
+                width: 100%;
+                height: 100%;
+                background: #000;
+                overflow: hidden;
+            }
+            #filters {
+                position: fixed;
+                width: 0;
+                height: 0;
+                opacity: 0;
+                pointer-events: none;
+            }
+            #stage {
+                position: fixed;
+                left: 50%;
+                top: 50%;
                 width: 1080px;
                 height: 1920px;
+                transform: translate(-50%, -50%);
                 overflow: hidden;
-                font-family: 'Segoe UI', system-ui, sans-serif;
+                background: #0b1a3a;
+                font-family: 'Big Shoulders Display', sans-serif;
             }
-            body {
+            #cam {
+                position: absolute;
+                inset: 0;
+                transform-origin: 50% 50%;
+            }
+            #world {
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 1080px;
+                height: 13200px;
+                will-change: transform;
+            }
+            .abs {
+                position: absolute;
+            }
+
+            /* ---------- capas del mundo (de arriba hacia abajo) ---------- */
+            #cielo {
+                left: 0;
+                top: 0;
+                width: 1080px;
+                height: 2000px;
                 background:
                     radial-gradient(
-                        1200px 900px at 85% -10%,
-                        #3b82f6 0%,
-                        transparent 60%
+                        520px 520px at 830px 300px,
+                        #fff7dc 0%,
+                        rgba(255, 247, 220, 0) 70%
+                    ),
+                    linear-gradient(
+                        180deg,
+                        #9fd0ec 0%,
+                        #cfe8f5 55%,
+                        #eef6fa 100%
+                    );
+            }
+            .nube {
+                height: 90px;
+                border-radius: 60px;
+                background: #fff;
+                opacity: 0.85;
+                filter: blur(2px);
+            }
+            .nube::before,
+            .nube::after {
+                content: '';
+                position: absolute;
+                background: #fff;
+                border-radius: 50%;
+            }
+            .nube::before {
+                width: 120px;
+                height: 120px;
+                left: 40px;
+                top: -55px;
+            }
+            .nube::after {
+                width: 90px;
+                height: 90px;
+                left: 140px;
+                top: -35px;
+            }
+            #suelo {
+                left: 0;
+                top: 1690px;
+                width: 1080px;
+                height: 320px;
+                background: linear-gradient(
+                    180deg,
+                    #a9814f 0 34px,
+                    #8a6338 34px 100%
+                );
+            }
+            #tierra {
+                left: 0;
+                top: 2000px;
+                width: 1080px;
+                height: 2000px;
+                background:
+                    repeating-linear-gradient(
+                        176deg,
+                        rgba(0, 0, 0, 0) 0 150px,
+                        rgba(0, 0, 0, 0.18) 150px 160px
+                    ),
+                    linear-gradient(
+                        180deg,
+                        #7a5532 0%,
+                        #5a3c23 30%,
+                        #3e2a1b 65%,
+                        #2a1c12 100%
+                    );
+            }
+            .piedra {
+                border-radius: 46% 54% 40% 60%;
+                background: #9a7650;
+                opacity: 0.55;
+            }
+            #roca {
+                left: 0;
+                top: 4000px;
+                width: 1080px;
+                height: 3400px;
+                background:
+                    radial-gradient(
+                        420px 300px at 200px 300px,
+                        rgba(245, 179, 1, 0.16),
+                        transparent 70%
                     ),
                     radial-gradient(
-                        900px 900px at -10% 110%,
-                        #1e40af 0%,
-                        transparent 60%
+                        420px 300px at 880px 300px,
+                        rgba(245, 179, 1, 0.16),
+                        transparent 70%
                     ),
-                    #0b1530;
-                color: #fff;
+                    linear-gradient(
+                        180deg,
+                        #2a1c12 0%,
+                        #1e1510 40%,
+                        #141a2a 80%,
+                        #0e1d3f 100%
+                    );
             }
-            /* Barra de avance arriba: el espectador sabe que es corto. */
-            .avance {
-                position: absolute;
-                top: 0;
+            #nucleo {
                 left: 0;
-                height: 12px;
-                width: 0;
-                background: #fcd34d;
+                top: 7400px;
+                width: 1080px;
+                height: 5800px;
+                background:
+                    radial-gradient(
+                        700px 700px at 540px 1500px,
+                        rgba(127, 203, 232, 0.2),
+                        transparent 70%
+                    ),
+                    radial-gradient(
+                        900px 600px at 540px 4300px,
+                        rgba(37, 88, 168, 0.45),
+                        transparent 70%
+                    ),
+                    linear-gradient(
+                        180deg,
+                        #0e1d3f 0%,
+                        #11285a 35%,
+                        #173a7d 70%,
+                        #13306a 100%
+                    );
             }
-            .escena {
+
+            /* ---------- texto ---------- */
+            .frase {
+                font-weight: 800;
+                line-height: 0.98;
+                letter-spacing: -0.5px;
+                color: var(--blanco);
+                text-shadow: 0 3px 18px rgba(0, 0, 0, 0.35);
+            }
+            .frase.oscura {
+                color: var(--tinta);
+                text-shadow: none;
+            }
+            .wd {
+                display: inline-block;
+                white-space: nowrap;
+            }
+            .ch {
+                display: inline-block;
+                opacity: 0;
+                will-change: transform, opacity;
+            }
+            .cinta {
                 position: absolute;
-                inset: 260px 80px 360px;
+                left: -6px;
+                right: -6px;
+                bottom: -14px;
+                height: 20px;
+                transform: scaleX(0);
+                transform-origin: 0 50%;
+                background: repeating-linear-gradient(
+                    -45deg,
+                    var(--amarillo) 0 20px,
+                    #16120c 20px 40px
+                );
+                box-shadow: 0 4px 10px rgba(0, 0, 0, 0.25);
+            }
+            .marca {
+                position: relative;
+                display: inline-block;
+            }
+            .amarillo {
+                color: var(--amarillo);
+            }
+
+            /* ---------- obra ---------- */
+            .columna {
+                background: #1d3557;
+                width: 22px;
+            }
+            .viga {
+                background: var(--amarillo);
+                height: 18px;
+                box-shadow: inset 0 -4px 0 rgba(0, 0, 0, 0.18);
+            }
+            #mastil {
+                left: 742px;
+                top: 800px;
+                width: 46px;
+                height: 900px;
+                background:
+                    repeating-linear-gradient(
+                        45deg,
+                        transparent 0 22px,
+                        var(--amarillo) 22px 28px
+                    ),
+                    repeating-linear-gradient(
+                        -45deg,
+                        transparent 0 22px,
+                        var(--amarillo) 22px 28px
+                    );
+                border-left: 6px solid var(--amarillo);
+                border-right: 6px solid var(--amarillo);
+            }
+            #pluma {
+                left: 360px;
+                top: 780px;
+                width: 700px;
+                height: 34px;
+                background: repeating-linear-gradient(
+                    90deg,
+                    transparent 0 24px,
+                    var(--amarillo) 24px 30px
+                );
+                border-top: 6px solid var(--amarillo);
+                border-bottom: 6px solid var(--amarillo);
+            }
+            #cabina {
+                left: 720px;
+                top: 820px;
+                width: 92px;
+                height: 70px;
+                background: #1d3557;
+                border-radius: 6px;
+            }
+            #gancho {
+                left: 540px;
+                top: 814px;
+                width: 6px;
+                height: 260px;
+                background: #1d3557;
+                transform-origin: 50% 0;
+            }
+            #gancho .viga {
+                position: absolute;
+                left: -150px;
+                top: 258px;
+                width: 306px;
+            }
+            #casco {
+                left: 610px;
+                top: 1600px;
+                width: 150px;
+            }
+            .polvo {
+                border-radius: 50%;
+                background: #d9c39c;
+                opacity: 0;
+            }
+
+            /* ---------- mina ---------- */
+            #boca {
+                left: 250px;
+                top: 2930px;
+                width: 580px;
+                height: 620px;
+            }
+            #boca .hueco {
+                position: absolute;
+                left: 44px;
+                top: 60px;
+                right: 44px;
+                bottom: 0;
+                background: radial-gradient(
+                    80% 70% at 50% 100%,
+                    #2a1a10,
+                    #080503
+                );
+                border-radius: 240px 240px 0 0;
+            }
+            #boca .poste {
+                position: absolute;
+                top: 40px;
+                bottom: 0;
+                width: 46px;
+                background: #a0703a;
+                box-shadow: inset -8px 0 0 rgba(0, 0, 0, 0.2);
+            }
+            #boca .dintel {
+                position: absolute;
+                left: -30px;
+                right: -30px;
+                top: 10px;
+                height: 56px;
+                background: #b47c40;
+                box-shadow: inset 0 -8px 0 rgba(0, 0, 0, 0.2);
+            }
+            #rieles {
+                left: 300px;
+                top: 3330px;
+                width: 480px;
+                height: 400px;
+            }
+            #vagoneta {
+                left: 390px;
+                top: 3300px;
+                width: 300px;
+                transform-origin: 50% 100%;
+            }
+
+            /* ---------- mensajes ---------- */
+            .burbuja {
+                background: #fff;
+                color: #111;
+                border-radius: 34px 34px 34px 8px;
+                padding: 30px 40px;
+                font-family: 'Segoe UI', system-ui, sans-serif;
+                font-size: 58px;
+                font-weight: 600;
+                box-shadow: 0 18px 40px rgba(0, 0, 0, 0.45);
+                opacity: 0;
+                white-space: nowrap;
+            }
+            .burbuja small {
+                display: block;
+                font-size: 34px;
+                font-weight: 500;
+                color: #6b7280;
+                margin-bottom: 6px;
+            }
+            .lampara {
+                width: 34px;
+                height: 46px;
+                border-radius: 50% 50% 40% 40%;
+                background: #ffd76a;
+                box-shadow: 0 0 60px 30px rgba(255, 200, 80, 0.35);
+            }
+            .cable {
+                width: 4px;
+                background: #000;
+            }
+            .etiqueta {
+                font-family: 'Kalam', cursive;
+                font-size: 56px;
+                color: var(--amarillo);
+            }
+
+            /* ---------- calendarios ---------- */
+            .tarjeta {
+                z-index: 2;
+                left: 80px;
+                width: 920px;
+                height: 320px;
+                border-radius: 30px;
+                padding: 28px 36px;
+                background: rgba(255, 255, 255, 0.07);
+                border: 3px solid rgba(255, 255, 255, 0.18);
+                opacity: 0;
+            }
+            .tarjeta h3 {
+                font-size: 64px;
+                font-weight: 800;
+                color: #fff;
+                letter-spacing: 0.5px;
+                margin-bottom: 20px;
+            }
+            .tarjeta h3 span {
+                font-family: 'Kalam', cursive;
+                font-weight: 400;
+                font-size: 48px;
+                color: #cbd5e1;
+                margin-left: 16px;
+            }
+            .celdas {
+                display: flex;
+                gap: 8px;
+                flex-wrap: nowrap;
+            }
+            .celda {
+                flex: 1;
+                height: 120px;
+                border-radius: 12px;
+                background: rgba(255, 255, 255, 0.12);
+                transform: scaleY(0);
+                transform-origin: 50% 100%;
+            }
+
+            /* ---------- motor ---------- */
+            #vias {
+                left: 0;
+                top: 7900px;
+                width: 1080px;
+                height: 1500px;
+                overflow: visible;
+            }
+            #vias path {
+                fill: none;
+                stroke-linecap: round;
+            }
+            .caja {
+                width: 250px;
+                height: 160px;
+                border-radius: 26px;
+                background: #0b1a3a;
+                border: 4px solid var(--amarillo);
+                color: #fff;
+                font-size: 56px;
+                font-weight: 800;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                opacity: 0;
+            }
+            #engranaje {
+                left: 340px;
+                top: 8660px;
+                width: 400px;
+                height: 400px;
+                opacity: 0;
+            }
+
+            /* ---------- libreta ---------- */
+            #libreta {
+                left: 90px;
+                top: 9470px;
+                width: 900px;
+                height: 1380px;
+                border-radius: 18px;
+                transform: rotate(-2deg);
+                background:
+                    repeating-linear-gradient(
+                        180deg,
+                        transparent 0 99px,
+                        rgba(37, 88, 168, 0.22) 99px 102px
+                    ),
+                    #fbf6e8;
+                box-shadow: 0 30px 60px rgba(0, 0, 0, 0.45);
+                padding: 150px 60px 0 120px;
+                opacity: 0;
+            }
+            #libreta::before {
+                content: '';
+                position: absolute;
+                left: 80px;
+                top: 0;
+                bottom: 0;
+                width: 3px;
+                background: rgba(220, 60, 60, 0.45);
+            }
+            #libreta .espiral {
+                position: absolute;
+                left: 40px;
+                right: 40px;
+                top: -26px;
+                height: 56px;
+                background: radial-gradient(
+                        circle at 50% 50%,
+                        #6b7280 0 12px,
+                        transparent 13px
+                    )
+                    0 0/62px 56px repeat-x;
+            }
+            #libreta h4 {
+                font-family: 'Kalam', cursive;
+                font-weight: 700;
+                font-size: 92px;
+                color: var(--azul);
+                margin-bottom: 24px;
+            }
+            .duda {
+                font-family: 'Kalam', cursive;
+                font-size: 62px;
+                line-height: 100px;
+                color: #1f2937;
+                clip-path: inset(0 100% 0 0);
+            }
+
+            /* ---------- comentario ---------- */
+            #comentario {
+                left: 80px;
+                top: 12160px;
+                width: 920px;
+                border-radius: 32px;
+                background: #fff;
+                padding: 34px 40px;
+                display: flex;
+                gap: 26px;
+                align-items: center;
+                box-shadow: 0 24px 60px rgba(0, 0, 0, 0.45);
+                opacity: 0;
+            }
+            #comentario .avatar {
+                flex: none;
+                width: 96px;
+                height: 96px;
+                border-radius: 50%;
+                background: linear-gradient(135deg, var(--amarillo), #e07b00);
+            }
+            #comentario .texto {
+                font-family: 'Segoe UI', system-ui, sans-serif;
+                font-size: 60px;
+                color: #111;
+                font-weight: 500;
+                min-height: 62px;
+            }
+            #comentario .cursor {
+                display: inline-block;
+                width: 4px;
+                height: 52px;
+                background: #111;
+                vertical-align: -8px;
+                margin-left: 4px;
+            }
+
+            /* ---------- capa de pantalla (fuera de la cámara) ---------- */
+            #polvo {
+                position: absolute;
+                inset: 0;
+                pointer-events: none;
+            }
+            #polvo i {
+                position: absolute;
+                width: 8px;
+                height: 8px;
+                border-radius: 50%;
+                background: #fff;
+            }
+            #grano {
+                position: absolute;
+                left: -50px;
+                top: -50px;
+                pointer-events: none;
+                opacity: 0.07;
+                mix-blend-mode: overlay;
+            }
+            #barrido {
+                position: absolute;
+                left: 540px;
+                top: 2400px;
+                width: 2600px;
+                height: 2600px;
+                margin: -1300px 0 0 -1300px;
+            }
+            #final {
+                position: absolute;
+                inset: 0;
+                opacity: 0;
                 display: flex;
                 flex-direction: column;
                 align-items: center;
                 justify-content: center;
+                gap: 44px;
+                padding: 0 70px 260px;
                 text-align: center;
-                gap: 40px;
-                opacity: 0;
-                transform: translateY(90px);
-                transition:
-                    opacity 0.3s ease,
-                    transform 0.38s cubic-bezier(0.2, 0.9, 0.3, 1.15);
+                background:
+                    radial-gradient(
+                        800px 800px at 50% 40%,
+                        #3a74c9 0%,
+                        transparent 70%
+                    ),
+                    linear-gradient(180deg, #1f4c94, #163a75);
             }
-            .escena.on {
-                opacity: 1;
-                transform: none;
-                transition-delay: 0.16s;
+            #final .logo svg {
+                width: 220px;
+                height: 220px;
+                border-radius: 48px;
+                box-shadow: 0 24px 60px rgba(0, 0, 0, 0.4);
             }
-            .escena.sale {
-                opacity: 0;
-                transform: translateY(-90px);
-                transition-duration: 0.16s;
-            }
-            .escena.on .grande {
-                animation: crece 6s 0.5s ease-out forwards;
-            }
-            @keyframes crece {
-                to {
-                    transform: scale(1.06);
-                }
-            }
-            .emoji {
-                font-size: 170px;
-                line-height: 1;
-            }
-            .escena.on .emoji {
-                animation: entra 0.5s 0.2s cubic-bezier(0.2, 1.6, 0.4, 1) both;
-            }
-            @keyframes entra {
-                from {
-                    transform: scale(0.3);
-                    opacity: 0;
-                }
-            }
-            .grande {
-                font-size: 104px;
-                line-height: 1.05;
-                font-weight: 900;
-                letter-spacing: -2px;
-            }
-            .grande b {
-                color: #fcd34d;
-            }
-            .chico {
-                font-size: 56px;
-                line-height: 1.2;
-                font-weight: 700;
-                color: #cbd5e1;
-            }
-            .chico b {
+            #final .nombre {
+                font-size: 84px;
+                font-weight: 800;
                 color: #fff;
+                letter-spacing: 0.5px;
             }
-            /* Dilema: dos opciones enfrentadas */
-            .opciones {
-                display: grid;
-                gap: 30px;
-                width: 100%;
-            }
-            .opcion {
-                padding: 36px 40px;
-                border-radius: 36px;
-                font-size: 60px;
-                font-weight: 800;
-                background: rgba(255, 255, 255, 0.1);
-                border: 3px solid rgba(255, 255, 255, 0.25);
-                opacity: 0;
-            }
-            .opcion small {
-                display: block;
-                margin-top: 10px;
-                font-size: 38px;
-                font-weight: 600;
-                color: #cbd5e1;
-            }
-            .vs {
-                font-size: 56px;
+            #final .gracias {
+                font-size: 132px;
                 font-weight: 900;
-                color: #fcd34d;
-                opacity: 0;
+                color: #fff;
+                line-height: 0.95;
             }
-            /* Preguntas que van apareciendo una a una */
-            .lista {
-                display: grid;
-                gap: 26px;
-                width: 100%;
-                text-align: left;
-            }
-            .lista p,
-            .opciones > * {
-                transition:
-                    opacity 0.3s,
-                    transform 0.35s cubic-bezier(0.2, 1.4, 0.4, 1);
-                transform: translateX(-60px);
-            }
-            .lista p {
-                font-size: 54px;
+            #final .pill {
+                font-size: 62px;
                 font-weight: 800;
-                padding: 26px 34px;
-                border-radius: 28px;
-                background: rgba(255, 255, 255, 0.1);
-                border-left: 12px solid #fcd34d;
-                opacity: 0;
-            }
-            .lista p.on,
-            .opciones > .on {
-                opacity: 1;
-                transform: none;
-            }
-            /* Cierre */
-            .logo svg {
-                width: 190px;
-                height: 190px;
-                border-radius: 44px;
-                box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
-            }
-            .nombre {
-                font-size: 70px;
-                font-weight: 800;
-            }
-            .llamado {
-                font-size: 60px;
-                font-weight: 800;
-                background: #fcd34d;
-                color: #422006;
-                padding: 28px 50px;
+                background: var(--amarillo);
+                color: #3b2600;
+                padding: 26px 56px;
                 border-radius: 999px;
             }
-            .escena.on .llamado {
-                animation: latido 1.1s 0.6s ease-in-out infinite;
+
+            #ui {
+                position: fixed;
+                left: 50%;
+                bottom: 20px;
+                transform: translateX(-50%);
+                display: none;
+                gap: 12px;
+                align-items: center;
+                padding: 10px 16px;
+                border-radius: 14px;
+                background: rgba(14, 16, 22, 0.9);
+                color: #aab;
+                font: 13px system-ui;
+                z-index: 50;
             }
-            @keyframes latido {
-                50% {
-                    transform: scale(1.05);
-                }
+            #ui.on {
+                display: flex;
+            }
+            #ui button {
+                background: #262a34;
+                color: #fff;
+                border: 0;
+                padding: 7px 14px;
+                border-radius: 8px;
+                cursor: pointer;
+            }
+            #scrub {
+                width: 340px;
+            }
+            #clock {
+                font-variant-numeric: tabular-nums;
+                min-width: 5.2ch;
+                text-align: right;
             }
         </style>
     </head>
     <body>
-        <div class="avance"></div>
+        <svg id="filters"><defs></defs></svg>
 
-        <section class="escena">
-            <p class="emoji">🙋‍♂️</p>
-            <p class="grande">Te lo confieso:</p>
-            <p class="chico">
-                no sé cómo funciona una planilla de
-                <b>construcción civil</b> ni de <b>minería</b>.
-            </p>
-        </section>
+        <div id="stage">
+            <div id="cam">
+                <div id="world">
+                    <!-- 1 · obra en la superficie -->
+                    <div id="cielo" class="abs"></div>
+                    <div
+                        class="abs nube"
+                        id="nube1"
+                        style="left: 90px; top: 160px; width: 240px"
+                    ></div>
+                    <div
+                        class="abs nube"
+                        id="nube2"
+                        style="
+                            left: 640px;
+                            top: 560px;
+                            width: 200px;
+                            opacity: 0.6;
+                        "
+                    ></div>
 
-        <section class="escena">
-            <p class="emoji">📩</p>
-            <p class="grande">Y me lo están <b>pidiendo</b>.</p>
-            <p class="chico">Contadores que ya usan Serialo Planillas.</p>
-        </section>
-
-        <section class="escena">
-            <p class="emoji">⚙️</p>
-            <p class="grande">Funcionan <b>muy distinto</b>.</p>
-            <p class="chico">Cambiarían el motor de cálculo.</p>
-        </section>
-
-        <section class="escena" data-pasos="3">
-            <div class="opciones">
-                <div class="opcion">
-                    ¿Un sistema aparte?
-                    <small>Solo para construcción y minería</small>
-                </div>
-                <div class="vs">o</div>
-                <div class="opcion">
-                    ¿Todo en uno?
-                    <small
-                        >Un estudio puede llevar una constructora, una minera y
-                        una bodega</small
+                    <p
+                        id="fA"
+                        class="abs frase oscura"
+                        style="
+                            left: 80px;
+                            top: 240px;
+                            width: 940px;
+                            font-size: 96px;
+                        "
                     >
+                        <span class="t"
+                            >No sé exactamente cómo funciona una planilla
+                            de</span
+                        ><br />
+                        <span
+                            class="marca"
+                            style="font-size: 150px; margin-top: 14px"
+                            ><span class="t">construcción civil</span
+                            ><i class="cinta"></i
+                        ></span>
+                    </p>
+
+                    <!-- estructura del edificio -->
+                    <div
+                        class="abs"
+                        id="edificio"
+                        style="
+                            left: 80px;
+                            top: 1060px;
+                            width: 520px;
+                            height: 640px;
+                        "
+                    >
+                        <div
+                            class="abs columna"
+                            style="left: 0; top: 0; height: 640px"
+                        ></div>
+                        <div
+                            class="abs columna"
+                            style="left: 170px; top: 0; height: 640px"
+                        ></div>
+                        <div
+                            class="abs columna"
+                            style="left: 340px; top: 0; height: 640px"
+                        ></div>
+                        <div
+                            class="abs columna"
+                            style="left: 498px; top: 160px; height: 480px"
+                        ></div>
+                        <div
+                            class="abs viga"
+                            style="left: 0; top: 0; width: 362px"
+                        ></div>
+                        <div
+                            class="abs viga"
+                            style="left: 0; top: 160px; width: 520px"
+                        ></div>
+                        <div
+                            class="abs viga"
+                            style="left: 0; top: 320px; width: 520px"
+                        ></div>
+                        <div
+                            class="abs viga"
+                            style="left: 0; top: 480px; width: 520px"
+                        ></div>
+                    </div>
+                    <div id="mastil" class="abs"></div>
+                    <div id="pluma" class="abs"></div>
+                    <div id="cabina" class="abs"></div>
+                    <div id="gancho" class="abs"><div class="viga"></div></div>
+                    <div id="suelo" class="abs"></div>
+                    <svg id="casco" class="abs" viewBox="0 0 150 96">
+                        <path
+                            d="M8 78 Q10 14 75 10 Q140 14 142 78 Z"
+                            fill="#f5b301"
+                            stroke="#7a5500"
+                            stroke-width="4"
+                        />
+                        <rect
+                            x="0"
+                            y="74"
+                            width="150"
+                            height="16"
+                            rx="8"
+                            fill="#e0a200"
+                            stroke="#7a5500"
+                            stroke-width="4"
+                        />
+                        <path
+                            d="M62 12 Q75 2 88 12 L88 74 L62 74 Z"
+                            fill="#ffc933"
+                        />
+                    </svg>
+                    <i
+                        class="abs polvo"
+                        id="p1"
+                        style="
+                            left: 560px;
+                            top: 1660px;
+                            width: 90px;
+                            height: 50px;
+                        "
+                    ></i>
+                    <i
+                        class="abs polvo"
+                        id="p2"
+                        style="
+                            left: 720px;
+                            top: 1650px;
+                            width: 110px;
+                            height: 60px;
+                        "
+                    ></i>
+                    <i
+                        class="abs polvo"
+                        id="p3"
+                        style="
+                            left: 640px;
+                            top: 1640px;
+                            width: 70px;
+                            height: 40px;
+                        "
+                    ></i>
+
+                    <!-- 2 · capas de tierra y boca de mina -->
+                    <div id="tierra" class="abs"></div>
+                    <i
+                        class="abs piedra"
+                        style="
+                            left: 120px;
+                            top: 2140px;
+                            width: 70px;
+                            height: 44px;
+                        "
+                    ></i>
+                    <i
+                        class="abs piedra"
+                        style="
+                            left: 860px;
+                            top: 2560px;
+                            width: 90px;
+                            height: 56px;
+                        "
+                    ></i>
+                    <i
+                        class="abs piedra"
+                        style="
+                            left: 420px;
+                            top: 3880px;
+                            width: 60px;
+                            height: 40px;
+                        "
+                    ></i>
+                    <i
+                        class="abs piedra"
+                        style="
+                            left: 930px;
+                            top: 3300px;
+                            width: 54px;
+                            height: 36px;
+                        "
+                    ></i>
+                    <i
+                        class="abs piedra"
+                        style="
+                            left: 70px;
+                            top: 3500px;
+                            width: 80px;
+                            height: 50px;
+                        "
+                    ></i>
+
+                    <p
+                        id="fB"
+                        class="abs frase"
+                        style="
+                            left: 80px;
+                            top: 2260px;
+                            width: 940px;
+                            font-size: 160px;
+                        "
+                    >
+                        <span class="t">…ni de</span>
+                        <span class="marca"
+                            ><span class="t amarillo">minería</span
+                            ><i class="cinta"></i
+                        ></span>
+                    </p>
+
+                    <div id="boca" class="abs">
+                        <div class="hueco"></div>
+                        <div class="poste" style="left: 0"></div>
+                        <div class="poste" style="right: 0"></div>
+                        <div class="dintel"></div>
+                    </div>
+                    <svg id="rieles" class="abs" viewBox="0 0 480 400">
+                        <path
+                            d="M200 0 L40 400 M280 0 L440 400"
+                            stroke="#8b8f98"
+                            stroke-width="10"
+                        />
+                        <path
+                            d="M190 40 h100 M170 110 h140 M140 190 h200 M110 270 h260 M70 360 h340"
+                            stroke="#6b4a2e"
+                            stroke-width="16"
+                        />
+                    </svg>
+                    <svg id="vagoneta" class="abs" viewBox="0 0 300 200">
+                        <path
+                            d="M40 40 h120 l10 -26 l22 30 l26 -22 l18 18 h24 l-20 110 h-180 Z"
+                            fill="#2c2f36"
+                        />
+                        <path
+                            d="M20 40 h260 l-24 110 h-212 Z"
+                            fill="#6b7280"
+                            stroke="#2c2f36"
+                            stroke-width="6"
+                        />
+                        <circle cx="80" cy="168" r="26" fill="#1f2228" />
+                        <circle cx="220" cy="168" r="26" fill="#1f2228" />
+                    </svg>
+
+                    <!-- 3 · túnel: los mensajes -->
+                    <div id="roca" class="abs"></div>
+                    <div
+                        class="abs cable"
+                        style="left: 216px; top: 4000px; height: 120px"
+                    ></div>
+                    <div
+                        class="abs lampara"
+                        id="l1"
+                        style="left: 200px; top: 4118px"
+                    ></div>
+                    <div
+                        class="abs cable"
+                        style="left: 880px; top: 4000px; height: 90px"
+                    ></div>
+                    <div
+                        class="abs lampara"
+                        id="l2"
+                        style="left: 864px; top: 4088px"
+                    ></div>
+                    <p
+                        id="eti"
+                        class="abs etiqueta"
+                        style="left: 90px; top: 4560px; font-size: 64px"
+                    >
+                        Contadores me escriben:
+                    </p>
+                    <div
+                        id="b1"
+                        class="abs burbuja"
+                        style="left: 70px; top: 4760px; font-size: 66px"
+                    >
+                        <small>Estudio contable</small>¿Tienen construcción
+                        civil?
+                    </div>
+                    <div
+                        id="b2"
+                        class="abs burbuja"
+                        style="left: 380px; top: 5180px; font-size: 66px"
+                    >
+                        <small>Otro estudio</small>¿Y minería?
+                    </div>
+
+                    <!-- 4 · funcionan distinto -->
+                    <p
+                        id="fC"
+                        class="abs frase"
+                        style="
+                            left: 80px;
+                            top: 5820px;
+                            width: 940px;
+                            font-size: 132px;
+                        "
+                    >
+                        <span class="t">Funcionan muy distinto</span>
+                    </p>
+                    <div id="k1" class="abs tarjeta" style="top: 6330px">
+                        <h3>Obra<span>¿pago semanal?</span></h3>
+                        <div
+                            class="celdas"
+                            data-n="7"
+                            data-color="#f5b301"
+                        ></div>
+                    </div>
+                    <div id="k2" class="abs tarjeta" style="top: 6730px">
+                        <h3>Mina<span>¿28 × 14?</span></h3>
+                        <div
+                            class="celdas"
+                            data-n="42"
+                            data-on="28"
+                            data-color="#f5b301"
+                        ></div>
+                    </div>
+                    <div id="k3" class="abs tarjeta" style="top: 7130px">
+                        <h3>Serialo hoy<span>mes a mes</span></h3>
+                        <div
+                            class="celdas"
+                            data-n="30"
+                            data-color="#7fcbe8"
+                        ></div>
+                    </div>
+
+                    <!-- 5 · el motor -->
+                    <div id="nucleo" class="abs"></div>
+                    <p
+                        id="fD1"
+                        class="abs frase"
+                        style="
+                            left: 80px;
+                            top: 7580px;
+                            width: 940px;
+                            font-size: 128px;
+                        "
+                    >
+                        <span class="t">¿Sistema aparte</span>
+                    </p>
+                    <p
+                        id="fD2"
+                        class="abs frase"
+                        style="
+                            left: 80px;
+                            top: 7720px;
+                            width: 940px;
+                            font-size: 128px;
+                        "
+                    >
+                        <span class="t">o</span>
+                        <span class="t amarillo">todo en uno</span
+                        ><span class="t">?</span>
+                    </p>
+                    <svg id="vias" class="abs" viewBox="0 0 1080 1500">
+                        <path
+                            id="vO"
+                            d="M110 0 C110 240 240 330 240 520"
+                            stroke="#f5b301"
+                            stroke-width="16"
+                        />
+                        <path
+                            id="vM"
+                            d="M970 0 C970 240 840 330 840 520"
+                            stroke="#f5b301"
+                            stroke-width="16"
+                        />
+                        <path
+                            id="vO2"
+                            d="M240 690 C240 820 380 860 470 930"
+                            stroke="#7fcbe8"
+                            stroke-width="16"
+                        />
+                        <path
+                            id="vM2"
+                            d="M840 690 C840 820 700 860 610 930"
+                            stroke="#7fcbe8"
+                            stroke-width="16"
+                        />
+                    </svg>
+                    <div
+                        id="cO"
+                        class="abs caja"
+                        style="left: 115px; top: 8430px"
+                    >
+                        Obra
+                    </div>
+                    <div
+                        id="cM"
+                        class="abs caja"
+                        style="left: 715px; top: 8430px"
+                    >
+                        Mina
+                    </div>
+                    <svg id="engranaje" class="abs" viewBox="0 0 32 32">
+                        <g fill="#7fcbe8">
+                            <rect
+                                x="14.4"
+                                y="1"
+                                width="3.2"
+                                height="6"
+                                rx=".8"
+                                transform="rotate(0 16 16)"
+                            />
+                            <rect
+                                x="14.4"
+                                y="1"
+                                width="3.2"
+                                height="6"
+                                rx=".8"
+                                transform="rotate(45 16 16)"
+                            />
+                            <rect
+                                x="14.4"
+                                y="1"
+                                width="3.2"
+                                height="6"
+                                rx=".8"
+                                transform="rotate(90 16 16)"
+                            />
+                            <rect
+                                x="14.4"
+                                y="1"
+                                width="3.2"
+                                height="6"
+                                rx=".8"
+                                transform="rotate(135 16 16)"
+                            />
+                            <rect
+                                x="14.4"
+                                y="1"
+                                width="3.2"
+                                height="6"
+                                rx=".8"
+                                transform="rotate(180 16 16)"
+                            />
+                            <rect
+                                x="14.4"
+                                y="1"
+                                width="3.2"
+                                height="6"
+                                rx=".8"
+                                transform="rotate(225 16 16)"
+                            />
+                            <rect
+                                x="14.4"
+                                y="1"
+                                width="3.2"
+                                height="6"
+                                rx=".8"
+                                transform="rotate(270 16 16)"
+                            />
+                            <rect
+                                x="14.4"
+                                y="1"
+                                width="3.2"
+                                height="6"
+                                rx=".8"
+                                transform="rotate(315 16 16)"
+                            />
+                            <circle cx="16" cy="16" r="10.5" />
+                        </g>
+                        <circle cx="16" cy="16" r="4.4" fill="#13306a" />
+                    </svg>
+
+                    <!-- 6 · libreta de dudas -->
+                    <div id="libreta" class="abs">
+                        <div class="espiral"></div>
+                        <h4>Mis dudas</h4>
+                        <p class="duda">
+                            ¿Pago semanal, por jornal o por hora?
+                        </p>
+                        <p class="duda">¿Jornadas atípicas como 28×14?</p>
+                        <p class="duda">
+                            ¿Qué conceptos y aportes son propios?
+                        </p>
+                        <p class="duda">¿Cómo se pagan los beneficios?</p>
+                    </div>
+
+                    <!-- 7 · comentario -->
+                    <p
+                        id="fE"
+                        class="abs frase"
+                        style="
+                            left: 80px;
+                            top: 11330px;
+                            width: 940px;
+                            font-size: 156px;
+                        "
+                    >
+                        <span class="t">¿Llevas planillas de obra o mina?</span>
+                    </p>
+                    <div id="comentario" class="abs">
+                        <div class="avatar"></div>
+                        <div class="texto">
+                            <span id="tecleo"></span><i class="cursor"></i>
+                        </div>
+                    </div>
                 </div>
             </div>
-        </section>
 
-        <section class="escena" data-pasos="4">
-            <p class="grande" style="font-size: 84px">Mis dudas 🤔</p>
-            <div class="lista">
-                <p>¿Pago semanal, por jornal o por hora?</p>
-                <p>¿Jornadas atípicas como 28&nbsp;×&nbsp;14?</p>
-                <p>¿Qué conceptos y aportes son propios?</p>
-                <p>¿Cómo se pagan los beneficios?</p>
+            <div id="polvo"></div>
+            <svg id="grano" width="1180" height="2020">
+                <filter id="ruido">
+                    <feTurbulence
+                        type="fractalNoise"
+                        baseFrequency=".9"
+                        numOctaves="2"
+                        seed="3"
+                    />
+                </filter>
+                <rect width="100%" height="100%" filter="url(#ruido)" />
+            </svg>
+
+            <div id="final">
+                <p class="gracias">Gracias, contadores</p>
+                <div class="logo">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+                        <rect width="32" height="32" rx="7" fill="#2558a8" />
+                        <g fill="#7fcbe8">
+                            <rect
+                                x="9.4"
+                                y="7.6"
+                                width="3.2"
+                                height="4.4"
+                                rx="0.7"
+                                transform="rotate(0 11 16)"
+                            />
+                            <rect
+                                x="9.4"
+                                y="7.6"
+                                width="3.2"
+                                height="4.4"
+                                rx="0.7"
+                                transform="rotate(45 11 16)"
+                            />
+                            <rect
+                                x="9.4"
+                                y="7.6"
+                                width="3.2"
+                                height="4.4"
+                                rx="0.7"
+                                transform="rotate(90 11 16)"
+                            />
+                            <rect
+                                x="9.4"
+                                y="7.6"
+                                width="3.2"
+                                height="4.4"
+                                rx="0.7"
+                                transform="rotate(135 11 16)"
+                            />
+                            <rect
+                                x="9.4"
+                                y="7.6"
+                                width="3.2"
+                                height="4.4"
+                                rx="0.7"
+                                transform="rotate(180 11 16)"
+                            />
+                            <rect
+                                x="9.4"
+                                y="7.6"
+                                width="3.2"
+                                height="4.4"
+                                rx="0.7"
+                                transform="rotate(225 11 16)"
+                            />
+                            <rect
+                                x="9.4"
+                                y="7.6"
+                                width="3.2"
+                                height="4.4"
+                                rx="0.7"
+                                transform="rotate(270 11 16)"
+                            />
+                            <rect
+                                x="9.4"
+                                y="7.6"
+                                width="3.2"
+                                height="4.4"
+                                rx="0.7"
+                                transform="rotate(315 11 16)"
+                            />
+                            <circle cx="11" cy="16" r="5.4" />
+                        </g>
+                        <circle cx="11" cy="16" r="2.3" fill="#2558a8" />
+                        <g fill="#ffffff">
+                            <rect
+                                x="20.4"
+                                y="9.5"
+                                width="1.6"
+                                height="13"
+                                rx="0.4"
+                            />
+                            <rect
+                                x="23"
+                                y="9.5"
+                                width="0.9"
+                                height="13"
+                                rx="0.3"
+                            />
+                            <rect
+                                x="24.8"
+                                y="9.5"
+                                width="1.9"
+                                height="13"
+                                rx="0.4"
+                            />
+                            <rect
+                                x="27.5"
+                                y="9.5"
+                                width="0.9"
+                                height="13"
+                                rx="0.3"
+                            />
+                        </g>
+                    </svg>
+                </div>
+                <p class="nombre">Serialo Planillas</p>
+                <p class="pill">Te leo en comentarios 👇</p>
             </div>
-        </section>
 
-        <section class="escena">
-            <p class="emoji">💬</p>
-            <p class="grande">
-                ¿Llevas planillas de <b>obra</b> o <b>mina</b>?
-            </p>
-            <p class="chico">Cuéntame en comentarios cómo lo trabajas.</p>
-        </section>
+            <svg id="barrido" viewBox="0 0 32 32" style="opacity: 0">
+                <g fill="#2558a8">
+                    <rect
+                        x="14.4"
+                        y="0"
+                        width="3.2"
+                        height="7"
+                        rx=".8"
+                        transform="rotate(0 16 16)"
+                    />
+                    <rect
+                        x="14.4"
+                        y="0"
+                        width="3.2"
+                        height="7"
+                        rx=".8"
+                        transform="rotate(45 16 16)"
+                    />
+                    <rect
+                        x="14.4"
+                        y="0"
+                        width="3.2"
+                        height="7"
+                        rx=".8"
+                        transform="rotate(90 16 16)"
+                    />
+                    <rect
+                        x="14.4"
+                        y="0"
+                        width="3.2"
+                        height="7"
+                        rx=".8"
+                        transform="rotate(135 16 16)"
+                    />
+                    <rect
+                        x="14.4"
+                        y="0"
+                        width="3.2"
+                        height="7"
+                        rx=".8"
+                        transform="rotate(180 16 16)"
+                    />
+                    <rect
+                        x="14.4"
+                        y="0"
+                        width="3.2"
+                        height="7"
+                        rx=".8"
+                        transform="rotate(225 16 16)"
+                    />
+                    <rect
+                        x="14.4"
+                        y="0"
+                        width="3.2"
+                        height="7"
+                        rx=".8"
+                        transform="rotate(270 16 16)"
+                    />
+                    <rect
+                        x="14.4"
+                        y="0"
+                        width="3.2"
+                        height="7"
+                        rx=".8"
+                        transform="rotate(315 16 16)"
+                    />
+                    <circle cx="16" cy="16" r="11.5" />
+                </g>
+            </svg>
+        </div>
 
-        <section class="escena">
-            <p class="emoji">🙏</p>
-            <p class="grande">Gracias, contadores.</p>
-            <p class="chico">
-                Por sus comentarios.<br />Se vienen <b>actualizaciones</b>.
-            </p>
-        </section>
-
-        <section class="escena">
-            <div class="logo">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
-                    <rect width="32" height="32" rx="7" fill="#2558a8" />
-                    <g fill="#7fcbe8">
-                        <rect
-                            x="9.4"
-                            y="7.6"
-                            width="3.2"
-                            height="4.4"
-                            rx="0.7"
-                            transform="rotate(0 11 16)"
-                        />
-                        <rect
-                            x="9.4"
-                            y="7.6"
-                            width="3.2"
-                            height="4.4"
-                            rx="0.7"
-                            transform="rotate(45 11 16)"
-                        />
-                        <rect
-                            x="9.4"
-                            y="7.6"
-                            width="3.2"
-                            height="4.4"
-                            rx="0.7"
-                            transform="rotate(90 11 16)"
-                        />
-                        <rect
-                            x="9.4"
-                            y="7.6"
-                            width="3.2"
-                            height="4.4"
-                            rx="0.7"
-                            transform="rotate(135 11 16)"
-                        />
-                        <rect
-                            x="9.4"
-                            y="7.6"
-                            width="3.2"
-                            height="4.4"
-                            rx="0.7"
-                            transform="rotate(180 11 16)"
-                        />
-                        <rect
-                            x="9.4"
-                            y="7.6"
-                            width="3.2"
-                            height="4.4"
-                            rx="0.7"
-                            transform="rotate(225 11 16)"
-                        />
-                        <rect
-                            x="9.4"
-                            y="7.6"
-                            width="3.2"
-                            height="4.4"
-                            rx="0.7"
-                            transform="rotate(270 11 16)"
-                        />
-                        <rect
-                            x="9.4"
-                            y="7.6"
-                            width="3.2"
-                            height="4.4"
-                            rx="0.7"
-                            transform="rotate(315 11 16)"
-                        />
-                        <circle cx="11" cy="16" r="5.4" />
-                    </g>
-                    <circle cx="11" cy="16" r="2.3" fill="#2558a8" />
-                    <g fill="#ffffff">
-                        <rect
-                            x="20.4"
-                            y="9.5"
-                            width="1.6"
-                            height="13"
-                            rx="0.4"
-                        />
-                        <rect x="23" y="9.5" width="0.9" height="13" rx="0.3" />
-                        <rect
-                            x="24.8"
-                            y="9.5"
-                            width="1.9"
-                            height="13"
-                            rx="0.4"
-                        />
-                        <rect
-                            x="27.5"
-                            y="9.5"
-                            width="0.9"
-                            height="13"
-                            rx="0.3"
-                        />
-                    </g>
-                </svg>
-            </div>
-            <p class="nombre">Serialo Planillas</p>
-            <p class="llamado">Te leo en comentarios 👇</p>
-        </section>
+        <div id="ui">
+            <button id="btn-play">Pausa</button
+            ><button id="btn-restart">Reiniciar</button>
+            <input id="scrub" type="range" min="0" max="1000" value="0" /><span
+                id="clock"
+                >0.00s</span
+            >
+        </div>
 
         <script>
-            const espera = (ms) => new Promise((r) => setTimeout(r, ms));
-            // Segundos de cada escena (ajustar a la voz). Las escenas con data-pasos reparten su tiempo entre
-            // los elementos que van apareciendo.
-            const PAUTA = [5.2, 4.2, 4.2, 7.5, 9.5, 5, 5, 4];
-            window.terminado = false;
-
-            (async () => {
-                await espera(300);
-                const total = PAUTA.reduce((a, b) => a + b, 0);
-                const avance = document.querySelector('.avance');
-                avance.style.transition = `width ${total}s linear`;
-                requestAnimationFrame(() => (avance.style.width = '100%'));
-
-                const escenas = [...document.querySelectorAll('.escena')];
-                for (const [i, escena] of escenas.entries()) {
-                    escenas[i - 1]?.classList.replace('on', 'sale');
-                    escena.classList.add('on');
-                    const pasos = [
-                        ...escena.querySelectorAll('.opciones > *, .lista p'),
-                    ];
-                    if (pasos.length) {
-                        const cada = (PAUTA[i] * 1000 - 600) / pasos.length;
-                        await espera(500);
-                        for (const paso of pasos) {
-                            paso.classList.add('on');
-                            await espera(cada);
-                        }
-                        await espera(100);
-                    } else {
-                        await espera(PAUTA[i] * 1000);
+            /* ============ utilidades (de la skill: split por letra + desenfoque direccional) ============ */
+            const $ = (s, r = document) => r.querySelector(s),
+                $$ = (s, r = document) => [...r.querySelectorAll(s)];
+            const defs = $('#filters defs');
+            let fc = 0;
+            function makeBlur() {
+                const id = 'mb' + fc++,
+                    NS = 'http://www.w3.org/2000/svg';
+                const f = document.createElementNS(NS, 'filter');
+                f.id = id;
+                f.setAttribute('x', '-70%');
+                f.setAttribute('y', '-70%');
+                f.setAttribute('width', '240%');
+                f.setAttribute('height', '240%');
+                const g = document.createElementNS(NS, 'feGaussianBlur');
+                g.setAttribute('stdDeviation', '0 0');
+                f.appendChild(g);
+                defs.appendChild(f);
+                return { url: `url(#${id})`, node: g };
+            }
+            function blurTween(
+                tl,
+                targets,
+                at,
+                from,
+                to,
+                dur,
+                { ease = 'power3.out', ax = 0.1, ay = 1 } = {},
+            ) {
+                const b = makeBlur(),
+                    o = { v: from };
+                tl.set(targets, { filter: b.url }, at);
+                tl.to(
+                    o,
+                    {
+                        v: to,
+                        duration: dur,
+                        ease,
+                        onUpdate() {
+                            b.node.setAttribute(
+                                'stdDeviation',
+                                `${(o.v * ax).toFixed(2)} ${(o.v * ay).toFixed(2)}`,
+                            );
+                        },
+                    },
+                    at,
+                );
+                tl.set(targets, { filter: 'none' }, at + dur);
+            }
+            function splitChars(el) {
+                const words = (el.textContent || '')
+                    .replace(/\s+/g, ' ')
+                    .trim()
+                    .split(' '); // el formateador mete saltos de línea
+                el.textContent = '';
+                const out = [];
+                words.forEach((w, i) => {
+                    const wr = document.createElement('span');
+                    wr.className = 'wd';
+                    for (const c of w) {
+                        const s = document.createElement('span');
+                        s.className = 'ch';
+                        s.textContent = c;
+                        wr.appendChild(s);
+                        out.push(s);
                     }
+                    el.appendChild(wr);
+                    if (i < words.length - 1) {
+                        // espacio normal (no &nbsp;): al partir la línea no deja sangría
+                        el.appendChild(document.createTextNode(' '));
+                    }
+                });
+                return out;
+            }
+
+            /* ============ timeline: el único lugar donde se escribe el tiempo ============ */
+            const Q = new URLSearchParams(location.search);
+            const DURATION = 38;
+            const tl = gsap.timeline({ paused: true });
+            const world = $('#world'),
+                cam = $('#cam');
+
+            // Texto: entra letra por letra desde abajo; sale rápido hacia arriba (ritmo asimétrico).
+            const entra = (el, at, { dur = 0.8, st = 0.022, dy = 70 } = {}) => {
+                const ch = $$('.ch', el);
+                tl.fromTo(
+                    ch,
+                    { opacity: 0, yPercent: dy, scaleY: 1.4 },
+                    {
+                        opacity: 1,
+                        yPercent: 0,
+                        scaleY: 1,
+                        duration: dur,
+                        ease: 'power4.out',
+                        stagger: st,
+                        immediateRender: false,
+                    },
+                    at,
+                );
+                blurTween(tl, el, at, 28, 0, dur);
+            };
+            const cinta = (el, at) =>
+                tl.fromTo(
+                    $('.cinta', el),
+                    { scaleX: 0 },
+                    {
+                        scaleX: 1,
+                        duration: 0.55,
+                        ease: 'power3.out',
+                        immediateRender: false,
+                    },
+                    at,
+                );
+            // Firma de movimiento: cae y se asienta (rebote corto + polvo).
+            const cae = (
+                el,
+                at,
+                { dy = -700, dur = 0.9, polvo = null } = {},
+            ) => {
+                tl.set(el, { opacity: 1 }, at);
+                tl.fromTo(
+                    el,
+                    { y: dy },
+                    {
+                        y: 0,
+                        duration: dur,
+                        ease: 'bounce.out',
+                        immediateRender: false,
+                    },
+                    at,
+                );
+                if (polvo)
+                    polvo.forEach((p, i) =>
+                        tl.fromTo(
+                            p,
+                            { opacity: 0.85, scale: 0.3, x: 0 },
+                            {
+                                opacity: 0,
+                                scale: 1.8,
+                                x: (i - 1) * 60,
+                                duration: 0.9,
+                                ease: 'power2.out',
+                                immediateRender: false,
+                            },
+                            at + dur * 0.38,
+                        ),
+                    );
+            };
+            // Cámara: baja hasta que la fila y del mundo quede arriba de la pantalla.
+            const baja = (y, at, dur = 1.3, ease = 'power2.inOut') =>
+                tl.to(world, { y: -y, duration: dur, ease }, at);
+
+            /* ---- estado inicial ---- */
+            $$('.frase .t').forEach(splitChars);
+            tl.set(world, { y: 0 }, 0);
+            tl.set(
+                [
+                    '#casco',
+                    '#b1',
+                    '#b2',
+                    '#k1',
+                    '#k2',
+                    '#k3',
+                    '#cO',
+                    '#cM',
+                    '#engranaje',
+                    '#libreta',
+                    '#comentario',
+                    '#final',
+                    '#eti',
+                ],
+                { opacity: 0 },
+                0,
+            );
+            tl.set('#vagoneta', { scale: 0.35, y: -40, opacity: 0 }, 0);
+            ['#vO', '#vM', '#vO2', '#vM2'].forEach((s) => {
+                const p = $(s),
+                    L = p.getTotalLength();
+                p.style.strokeDasharray = L;
+                tl.set(p, { strokeDashoffset: L }, 0);
+            });
+            $$('.celdas').forEach((c) => {
+                const n = +c.dataset.n,
+                    on = +(c.dataset.on || n);
+                for (let i = 0; i < n; i++) {
+                    const d = document.createElement('i');
+                    d.className = 'celda';
+                    if (i < on) d.style.background = c.dataset.color;
+                    c.appendChild(d);
                 }
-                await espera(400);
-                window.terminado = true;
+                if (n > 20) c.style.gap = '4px';
+            });
+            tl.fromTo(
+                cam,
+                { scale: 1 },
+                {
+                    scale: 1.04,
+                    duration: DURATION,
+                    ease: 'sine.inOut',
+                    immediateRender: false,
+                },
+                0,
+            ); // cámara que respira
+
+            /* ---- 1 · obra (0–4.2) ---- */
+            tl.fromTo(
+                '#gancho',
+                { rotate: -7 },
+                {
+                    rotate: 7,
+                    duration: 2.1,
+                    ease: 'sine.inOut',
+                    yoyo: true,
+                    repeat: 1,
+                    immediateRender: false,
+                },
+                0,
+            );
+            entra($('#fA'), 0.35);
+            cinta($('#fA .marca'), 1.45);
+            cae($('#casco'), 1.9, {
+                dy: -1100,
+                dur: 1,
+                polvo: [$('#p1'), $('#p3'), $('#p2')],
+            });
+
+            /* ---- 2 · tierra y boca de mina (4.2–7.4) ---- */
+            baja(1950, 4.2, 1.5);
+            entra($('#fB'), 5.2, { dur: 0.9 });
+            cinta($('#fB .marca'), 5.9);
+            tl.to('#vagoneta', { opacity: 1, duration: 0.2 }, 5.9);
+            tl.to(
+                '#vagoneta',
+                { scale: 1, y: 260, duration: 1.5, ease: 'power2.out' },
+                5.9,
+            );
+
+            /* ---- 3 · túnel: mensajes (7.4–11.6) ---- */
+            baja(3980, 7.4, 1.4);
+            tl.fromTo(
+                '#eti',
+                { opacity: 0, x: -40 },
+                {
+                    opacity: 1,
+                    x: 0,
+                    duration: 0.6,
+                    ease: 'power3.out',
+                    immediateRender: false,
+                },
+                8.5,
+            );
+            cae($('#b1'), 9.0, { dy: -500, dur: 0.85 });
+            cae($('#b2'), 10.0, { dy: -500, dur: 0.85 });
+
+            /* ---- 4 · funcionan distinto (11.6–16.6) ---- */
+            baja(5650, 11.6, 1.4);
+            entra($('#fC'), 12.6);
+            [
+                ['#k1', 13.4],
+                ['#k2', 14.3],
+                ['#k3', 15.2],
+            ].forEach(([k, at]) => {
+                tl.fromTo(
+                    k,
+                    { opacity: 0, y: 60 },
+                    {
+                        opacity: 1,
+                        y: 0,
+                        duration: 0.6,
+                        ease: 'power3.out',
+                        immediateRender: false,
+                    },
+                    at,
+                );
+                tl.to(
+                    $$('.celda', $(k)),
+                    {
+                        scaleY: 1,
+                        duration: 0.35,
+                        ease: 'back.out(2)',
+                        stagger: { amount: 0.7 },
+                    },
+                    at + 0.2,
+                );
+            });
+
+            /* ---- 5 · el motor: ¿aparte o todo en uno? (16.6–23.3) ---- */
+            baja(7450, 16.6, 1.5);
+            entra($('#fD1'), 17.5);
+            tl.to(
+                '#vO',
+                { strokeDashoffset: 0, duration: 1, ease: 'power2.inOut' },
+                18.2,
+            );
+            tl.to(
+                '#vM',
+                { strokeDashoffset: 0, duration: 1, ease: 'power2.inOut' },
+                18.2,
+            );
+            cae($('#cO'), 18.9, { dy: -300, dur: 0.7 });
+            cae($('#cM'), 19.0, { dy: -300, dur: 0.7 });
+            entra($('#fD2'), 20.0);
+            tl.to(
+                '#vO2',
+                { strokeDashoffset: 0, duration: 0.9, ease: 'power2.inOut' },
+                20.6,
+            );
+            tl.to(
+                '#vM2',
+                { strokeDashoffset: 0, duration: 0.9, ease: 'power2.inOut' },
+                20.6,
+            );
+            // momento especial: el engranaje del logo nace donde convergen los dos túneles
+            tl.fromTo(
+                '#engranaje',
+                { opacity: 0, scale: 0.2, rotate: -120 },
+                {
+                    opacity: 1,
+                    scale: 1,
+                    rotate: 0,
+                    duration: 1.1,
+                    ease: 'back.out(1.6)',
+                    immediateRender: false,
+                },
+                21.3,
+            );
+            tl.to(
+                ['#cO', '#cM'],
+                { borderColor: '#7fcbe8', duration: 0.4 },
+                21.3,
+            );
+            tl.to(
+                '#engranaje',
+                { rotate: 200, duration: 15, ease: 'none' },
+                22.4,
+            );
+            tl.to(world, { y: -7540, duration: 1.8, ease: 'sine.inOut' }, 21.4); // la cámara acerca el engranaje
+
+            /* ---- 6 · libreta de dudas (23.3–30) ---- */
+            baja(9330, 23.3, 1.4);
+            tl.fromTo(
+                '#libreta',
+                { opacity: 0, y: 120, rotate: 4 },
+                {
+                    opacity: 1,
+                    y: 0,
+                    rotate: -2,
+                    duration: 0.9,
+                    ease: 'power3.out',
+                    immediateRender: false,
+                },
+                24.0,
+            );
+            $$('#libreta .duda').forEach((d, i) =>
+                tl.to(
+                    d,
+                    {
+                        clipPath: 'inset(0 0% 0 0)',
+                        duration: 1.1,
+                        ease: 'none',
+                    },
+                    24.8 + i * 1.35,
+                ),
+            );
+            tl.to(world, { y: -9520, duration: 5, ease: 'sine.inOut' }, 24.8); // push lento hacia lo escrito
+
+            /* ---- 7 · comentario (30–34) ---- */
+            baja(11150, 30.0, 1.4);
+            entra($('#fE'), 30.9);
+            cae($('#comentario'), 31.7, { dy: -400, dur: 0.8 });
+            {
+                const el = $('#tecleo'),
+                    str = 'Yo lo trabajo así…',
+                    o = { i: 0 };
+                tl.fromTo(
+                    o,
+                    { i: 0 },
+                    {
+                        i: str.length,
+                        duration: 1.4,
+                        ease: 'none',
+                        immediateRender: false,
+                        onUpdate() {
+                            el.textContent = str.slice(0, Math.round(o.i));
+                        },
+                    },
+                    32.5,
+                );
+            }
+
+            /* ---- cierre: el engranaje barre la pantalla y deja el logo (34–38) ---- */
+            tl.set('#barrido', { opacity: 0 }, 0);
+            tl.fromTo(
+                '#barrido',
+                { opacity: 1, y: 0, rotate: 0, scale: 0.2 },
+                {
+                    y: -1500,
+                    scale: 1.6,
+                    rotate: 180,
+                    duration: 1.1,
+                    ease: 'power2.in',
+                    immediateRender: false,
+                },
+                34.0,
+            );
+            tl.set('#final', { opacity: 1 }, 34.75);
+            tl.to(
+                '#barrido',
+                { y: -4200, opacity: 0, duration: 0.6, ease: 'power2.out' },
+                35.0,
+            );
+            {
+                const g = $('#final .gracias'),
+                    l = $('#final .logo'),
+                    n = $('#final .nombre'),
+                    p = $('#final .pill');
+                tl.fromTo(
+                    g,
+                    { opacity: 0, y: 80 },
+                    {
+                        opacity: 1,
+                        y: 0,
+                        duration: 0.7,
+                        ease: 'power4.out',
+                        immediateRender: false,
+                    },
+                    35.0,
+                );
+                tl.fromTo(
+                    l,
+                    { opacity: 0, scale: 0.4, rotate: -30 },
+                    {
+                        opacity: 1,
+                        scale: 1,
+                        rotate: 0,
+                        duration: 0.8,
+                        ease: 'back.out(1.8)',
+                        immediateRender: false,
+                    },
+                    35.4,
+                );
+                tl.fromTo(
+                    n,
+                    { opacity: 0, y: 40 },
+                    {
+                        opacity: 1,
+                        y: 0,
+                        duration: 0.6,
+                        ease: 'power3.out',
+                        immediateRender: false,
+                    },
+                    35.8,
+                );
+                tl.set(p, { opacity: 0 }, 0);
+                cae(p, 36.3, { dy: -260, dur: 0.8 });
+            }
+            tl.to({}, { duration: 0.01 }, DURATION);
+
+            /* ============ capa viva: función pura del tiempo (sin reloj ni azar) ============ */
+            const polvo = $('#polvo');
+            const motas = Array.from({ length: 34 }, (_, i) => {
+                const d = document.createElement('i');
+                polvo.appendChild(d);
+                return {
+                    d,
+                    x: (i * 317) % 1080,
+                    y0: (i * 577) % 1920,
+                    v: 30 + ((i * 13) % 50),
+                    s: 0.4 + ((i * 7) % 10) / 14,
+                    a: 0.08 + ((i * 5) % 9) / 60,
+                };
+            });
+            function render(t) {
+                for (const m of motas) {
+                    const y = (((m.y0 - t * m.v) % 1920) + 1920) % 1920;
+                    m.d.style.transform = `translate(${m.x + Math.sin(t * 0.7 + m.x) * 14}px,${y}px) scale(${m.s})`;
+                    m.d.style.opacity = m.a;
+                }
+                $('#nube1').style.transform = `translateX(${t * 9}px)`;
+                $('#nube2').style.transform = `translateX(${-t * 6}px)`;
+                const f = (a) =>
+                    0.75 + 0.25 * Math.sin(t * a) * Math.sin(t * a * 2.3);
+                $('#l1').style.opacity = f(5);
+                $('#l2').style.opacity = f(4.2);
+                $('#grano').style.transform =
+                    `translate(${((Math.floor(t * 12) * 37) % 50) - 25}px,${((Math.floor(t * 12) * 53) % 50) - 25}px)`;
+            }
+
+            /* ============ pegamento: escala, panel, exportación ============ */
+            const stage = $('#stage');
+            const fit = () => {
+                const s = Math.min(innerWidth / 1080, innerHeight / 1920);
+                stage.style.transform = `translate(-50%,-50%) scale(${s})`;
+            };
+            addEventListener('resize', fit);
+            fit();
+            const clock = $('#clock'),
+                scrub = $('#scrub'),
+                btn = $('#btn-play');
+            let scrubbing = false;
+            (function frame() {
+                const t = tl.time();
+                render(t);
+                clock.textContent = t.toFixed(2) + 's';
+                if (!scrubbing) scrub.value = String((t / DURATION) * 1000);
+                requestAnimationFrame(frame);
             })();
+            const toggle = () => {
+                if (tl.paused()) {
+                    tl.play();
+                    btn.textContent = 'Pausa';
+                } else {
+                    tl.pause();
+                    btn.textContent = 'Play';
+                }
+            };
+            btn.onclick = toggle;
+            $('#btn-restart').onclick = () => {
+                tl.pause(0);
+                tl.play();
+            };
+            scrub.addEventListener('pointerdown', () => {
+                scrubbing = true;
+                tl.pause();
+            });
+            addEventListener('pointerup', () => (scrubbing = false));
+            scrub.addEventListener('input', () => {
+                tl.pause();
+                tl.time((scrub.value / 1000) * DURATION);
+            });
+            addEventListener('keydown', (e) => {
+                if (e.code === 'Space') {
+                    e.preventDefault();
+                    toggle();
+                }
+                if (/^[rR]$/.test(e.key)) {
+                    tl.pause(0);
+                    tl.play();
+                }
+            });
+            if (Q.has('debug')) $('#ui').classList.add('on');
+            tl.eventCallback('onComplete', () => tl.play(0));
+            const seek = (t) => {
+                tl.pause();
+                tl.time(t, false);
+                render(t);
+            };
+            window.OPENER = { tl, DURATION, seek, ready: false };
+            document.fonts.ready.then(() => {
+                window.OPENER.ready = true;
+                if (!Q.has('clean')) tl.play(0);
+            });
         </script>
     </body>
 </html>

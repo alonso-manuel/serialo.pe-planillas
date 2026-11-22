@@ -1,13 +1,15 @@
-Te lo confieso: no sé cómo funciona una planilla de construcción civil, ni una de minería.
-<break time="1.0s" />
-Y me la están pidiendo contadores que ya usan Serialo Planillas.
-<break time="1.0s" />
-Por lo que voy entendiendo, funcionan muy distinto, y cambiarían el motor de cálculo.
-<break time="1.0s" />
-Entonces, ¿lo hago como un sistema aparte, solo para obra y mina? ¿O todo en uno? Porque un mismo estudio contable puede llevar una constructora, una minera y una bodega.
-<break time="1.0s" />
-Y tengo dudas: ¿se paga por semana, por jornal o por hora? ¿Cómo se manejan jornadas como veintiocho por catorce? ¿Qué conceptos y aportes son propios? ¿Y cómo se pagan los beneficios?
-<break time="1.0s" />
+No sé exactamente cómo funciona una planilla de construcción civil…
+<break time="0.6s" />
+ni de minería.
+<break time="0.8s" />
+Y contadores ya me escriben preguntando si el sistema las tiene.
+<break time="0.8s" />
+Por lo que voy viendo, funcionan muy distinto: en obra, ¿se paga por semana? En mina, ¿cómo se manejan jornadas de veintiocho por catorce? Y Serialo hoy trabaja mes a mes.
+<break time="0.8s" />
+Entonces, ¿lo hago como un sistema aparte… o todo en uno? Porque un mismo estudio puede llevar una constructora, una minera y una bodega.
+<break time="0.8s" />
+Estas son mis dudas: ¿pago semanal, por jornal o por hora? ¿Jornadas atípicas? ¿Qué conceptos y aportes son propios? ¿Y cómo se pagan los beneficios?
+<break time="0.8s" />
 Si llevas planillas de obra o de mina, cuéntame en comentarios cómo lo trabajas.
-<break time="1.0s" />
-Y gracias a los contadores por sus comentarios sobre el sistema. Se vienen actualizaciones.
+<break time="0.6s" />
+Y gracias, contadores, por sus comentarios. Se vienen actualizaciones.
