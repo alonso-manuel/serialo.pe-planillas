@@ -24,6 +24,7 @@ use Laravel\Fortify\TwoFactorAuthenticatable;
  * @property RolUsuario $rol
  * @property bool $activo
  * @property bool $es_soporte Usuario «Soporte Serialo.pe» (modo SaaS): no cuenta para el plan ni entra con contraseña
+ * @property CarbonImmutable|null $opinion_pedida_en Modo SaaS: cuándo se le mostró la ventana que pide su comentario
  * @property CarbonImmutable|null $email_verified_at
  * @property string $password
  * @property string|null $two_factor_secret
@@ -64,6 +65,7 @@ class User extends Authenticatable implements MustVerifyEmail, PasskeyUser
             'rol' => RolUsuario::class,
             'activo' => 'boolean',
             'es_soporte' => 'boolean',
+            'opinion_pedida_en' => 'immutable_datetime',
             'two_factor_confirmed_at' => 'datetime',
         ];
     }

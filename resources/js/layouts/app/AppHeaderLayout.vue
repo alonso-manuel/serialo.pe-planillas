@@ -5,6 +5,7 @@ import AppShell from '@/components/AppShell.vue';
 import AvisoLicencia from '@/components/AvisoLicencia.vue';
 import AvisoSoporte from '@/components/AvisoSoporte.vue';
 import { Toaster } from '@/components/ui/sonner';
+import VentanaOpinion from '@/components/VentanaOpinion.vue';
 import type { BreadcrumbItem } from '@/types';
 
 type Props = {
@@ -24,6 +25,7 @@ withDefaults(defineProps<Props>(), {
         <AppContent variant="header">
             <slot />
         </AppContent>
+        <VentanaOpinion v-if="$page.props.opinion?.habilitada" />
         <Toaster />
     </AppShell>
 </template>

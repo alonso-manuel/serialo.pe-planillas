@@ -4,6 +4,7 @@ use App\Http\Controllers\Panel\AccesoPanelController;
 use App\Http\Controllers\Panel\ActividadPanelController;
 use App\Http\Controllers\Panel\CuentaController;
 use App\Http\Controllers\Panel\DobleFactorPanelController;
+use App\Http\Controllers\Panel\OpinionPanelController;
 use App\Http\Middleware\ExigirDobleFactorPanel;
 use Illuminate\Support\Facades\Route;
 
@@ -43,6 +44,8 @@ Route::domain((string) config('planillas.dominio_panel'))
                 Route::delete('cuentas/{estudio}', [CuentaController::class, 'destroy'])->name('cuentas.destroy');
 
                 Route::get('actividad', ActividadPanelController::class)->name('actividad');
+                Route::get('comentarios', [OpinionPanelController::class, 'index'])->name('opiniones.index');
+                Route::patch('comentarios/{opinion}/leida', [OpinionPanelController::class, 'leida'])->name('opiniones.leida');
             });
         });
     });

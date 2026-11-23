@@ -23,6 +23,7 @@ class ModoSoloLectura
         'licencia.update',
         'respaldos.store',
         'soporte.*',
+        'opinion.*', // un cliente con la licencia vencida igual puede dejar su comentario
     ];
 
     public function __construct(private readonly LicenciaActual $licencia) {}

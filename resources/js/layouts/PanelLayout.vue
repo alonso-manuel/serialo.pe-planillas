@@ -16,8 +16,10 @@ const superadmin = computed(
 
 const enlaces = [
     { titulo: 'Cuentas', href: rutasPanel.cuentas },
+    { titulo: 'Comentarios', href: rutasPanel.comentarios },
     { titulo: 'Actividad', href: rutasPanel.actividad },
 ];
+const sinLeer = computed(() => Number(page.props.opinionesSinLeer ?? 0));
 
 function activo(href: string): boolean {
     return page.url === href || page.url.startsWith(href + '/');
@@ -58,7 +60,14 @@ function salir(): void {
                                 ? 'bg-muted text-foreground'
                                 : 'text-muted-foreground'
                         "
-                        >{{ e.titulo }}</Link
+                        >{{ e.titulo
+                        }}<span
+                            v-if="
+                                e.href === rutasPanel.comentarios && sinLeer > 0
+                            "
+                            class="ml-1.5 rounded-full bg-primary px-1.5 py-0.5 text-[10px] font-semibold text-primary-foreground tabular-nums"
+                            >{{ sinLeer }}</span
+                        ></Link
                     >
                 </nav>
                 <div class="ml-auto flex items-center gap-3">

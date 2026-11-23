@@ -2,9 +2,11 @@
 
 namespace App\Http\Middleware;
 
+use App\Models\Central\Opinion;
 use App\Models\Empresa;
 use App\Services\Empresas\EmpresaActiva;
 use App\Services\Licencia\LicenciaActual;
+use App\Services\Opiniones\PedidoOpinion;
 use Illuminate\Http\Request;
 use Inertia\Middleware;
 
@@ -22,6 +24,7 @@ class HandleInertiaRequests extends Middleware
     public function __construct(
         private readonly EmpresaActiva $empresaActiva,
         private readonly LicenciaActual $licenciaActual,
+        private readonly PedidoOpinion $pedidoOpinion,
     ) {}
 
     /**
@@ -62,6 +65,13 @@ class HandleInertiaRequests extends Middleware
                 ->all(),
             // Panel central (modo SaaS): el superadmin autenticado.
             'superadmin' => fn () => $request->user('superadmin')?->only(['name', 'email']),
+            'opinionesSinLeer' => fn () => $request->user('superadmin') === null ? 0
+                : Opinion::query()->whereNull('leida_en')->count(),
+            // Comentarios sobre el sistema (modo SaaS): la ventana se abre sola una única vez.
+            'opinion' => fn () => [
+                'habilitada' => $this->pedidoOpinion->habilitada($user),
+                'pedir' => $this->pedidoOpinion->debePedir($user),
+            ],
             'avisoLicencia' => fn () => $user === null ? null : $this->avisoLicencia($request),
             'sidebarOpen' => ! $request->hasCookie('sidebar_state') || $request->cookie('sidebar_state') === 'true',
         ];

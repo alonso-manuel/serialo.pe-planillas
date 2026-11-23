@@ -18,6 +18,7 @@ use App\Http\Controllers\Guia\GuiaController;
 use App\Http\Controllers\Instalador\InstaladorController;
 use App\Http\Controllers\Legal\LegalController;
 use App\Http\Controllers\Licencia\LicenciaController;
+use App\Http\Controllers\Opiniones\OpinionController;
 use App\Http\Controllers\PanelController;
 use App\Http\Controllers\Parametros\ParametroController;
 use App\Http\Controllers\Periodos\AsistenciaController;
@@ -84,6 +85,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('dashboard', PanelController::class)->name('dashboard');
 
     Route::put('empresa-activa', [EmpresaActivaController::class, 'update'])->name('empresa-activa.update');
+
+    // Comentarios sobre el sistema (modo SaaS; se leen en el panel central)
+    Route::post('opinion/mostrada', [OpinionController::class, 'mostrada'])->name('opinion.mostrada');
+    Route::post('opinion', [OpinionController::class, 'store'])->middleware('throttle:10,1')->name('opinion.store');
 
     // Guía: videos tutoriales y manual de usuario (todos los usuarios; no depende de la empresa activa)
     Route::get('guia', [GuiaController::class, 'index'])->name('guia.index');

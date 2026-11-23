@@ -17,4 +17,6 @@ export const rutasPanel = {
     exportar: (id: string) => `/cuentas/${encodeURIComponent(id)}/exportar`,
     editar: (id: string) => `/cuentas/${encodeURIComponent(id)}/editar`,
     actividad: '/actividad',
+    comentarios: '/comentarios',
+    comentarioLeido: (id: number) => `/comentarios/${id}/leida`,
 } as const;

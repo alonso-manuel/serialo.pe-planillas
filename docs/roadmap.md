@@ -88,6 +88,7 @@ Marca `[x]` al terminar (o usa `/actualizar-roadmap`). Cada tarea: código + tes
 - [x] Demos por estudio desde el panel central: ya cubierto por **Nueva cuenta** tipo demo (app limpia, vencimiento y avisos)
 - [x] Manual de uso y videos cortos — `docs/manual-usuario.md`, `docs/manual-desarrollador.md` y `docs/videos/`
 - [x] Panel central: **último ingreso** de cada cuenta (para saber si un prospecto probó la demo)
+- [x] **Comentarios de los usuarios**: ventana que pide su opinión una sola vez (tras 3 días de uso) + «Enviar comentario» en el menú del usuario; se leen en Panel central → Comentarios
 - [x] Módulo **Guía** (Ayuda → Guía): los 31 videos servidos desde el propio servidor y descarga del manual en PDF
 - [x] Beta pública `v1.0.0-beta.1` (12/11/2026): etiqueta «Beta» en el sistema (`PLANILLAS_BETA`) y sección de beta en los términos, para empezar a publicitarlo
 - [x] Versión `v1.0.0` (15/11/2026): sin etiqueta «Beta» (`PLANILLAS_BETA=false` por defecto) y la versión al pie de cada página. Siguen pendientes: probar la importación real en PLAME/AFPnet, la validación del contador (⚠ en docs/reglas-calculo.md) y la revisión legal de los términos

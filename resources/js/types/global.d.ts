@@ -29,6 +29,10 @@ declare module '@inertiajs/core' {
             empresas: EmpresaResumen[];
             avisoLicencia: AvisoLicencia | null;
             sidebarOpen: boolean;
+            /** Comentarios sobre el sistema (modo SaaS): la ventana se abre sola una única vez. */
+            opinion: { habilitada: boolean; pedir: boolean };
+            /** Panel central: comentarios sin leer. */
+            opinionesSinLeer: number;
             [key: string]: unknown;
         };
     }

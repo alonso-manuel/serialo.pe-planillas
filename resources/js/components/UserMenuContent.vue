@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { Link, router } from '@inertiajs/vue3';
-import { LogOut, Settings } from '@lucide/vue';
+import { Link, router, usePage } from '@inertiajs/vue3';
+import { LogOut, MessageSquareHeart, Settings } from '@lucide/vue';
 import {
     DropdownMenuGroup,
     DropdownMenuItem,
@@ -8,6 +8,7 @@ import {
     DropdownMenuSeparator,
 } from '@/components/ui/dropdown-menu';
 import UserInfo from '@/components/UserInfo.vue';
+import { abrirVentanaOpinion } from '@/lib/opinion';
 import { logout } from '@/routes';
 import { edit } from '@/routes/profile';
 import type { User } from '@/types';
@@ -21,6 +22,8 @@ const handleLogout = () => {
 };
 
 defineProps<Props>();
+
+const page = usePage();
 </script>
 
 <template>
@@ -36,6 +39,14 @@ defineProps<Props>();
                 <Settings class="mr-2 h-4 w-4" />
                 Configuración
             </Link>
+        </DropdownMenuItem>
+        <DropdownMenuItem
+            v-if="page.props.opinion?.habilitada"
+            class="cursor-pointer"
+            @select="abrirVentanaOpinion"
+        >
+            <MessageSquareHeart class="mr-2 h-4 w-4" />
+            Enviar comentario
         </DropdownMenuItem>
     </DropdownMenuGroup>
     <DropdownMenuSeparator />
