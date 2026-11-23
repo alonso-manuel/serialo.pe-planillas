@@ -3,6 +3,8 @@
 namespace Tests\Feature\EmpresaActiva;
 
 use App\Models\Empresa;
+use App\Models\Periodo;
+use App\Models\Trabajador;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Inertia\Testing\AssertableInertia as Assert;
@@ -44,6 +46,34 @@ class EmpresaActivaTest extends TestCase
 
         $this->get(route('dashboard'))
             ->assertInertia(fn (Assert $page) => $page->where('empresaActiva.id', $beta->id));
+    }
+
+    #[Test]
+    public function al_cambiar_desde_un_registro_de_la_empresa_anterior_va_al_listado_del_modulo(): void
+    {
+        $admin = User::factory()->admin()->create();
+        $alfa = Empresa::factory()->create(['razon_social' => 'Alfa S.A.C.']);
+        $beta = Empresa::factory()->create(['razon_social' => 'Beta S.A.C.']);
+        $periodo = Periodo::factory()->for($alfa)->create();
+        $trabajador = Trabajador::factory()->for($alfa)->create();
+
+        // Desde /periodos/{id} de Alfa: volver ahí reactivaría Alfa, así que va a /periodos.
+        $this->actingAs($admin)
+            ->withSession(['empresa_id' => $alfa->id])
+            ->from(route('periodos.show', $periodo))
+            ->put(route('empresa-activa.update'), ['empresa_id' => $beta->id])
+            ->assertRedirect(route('periodos.index'));
+        $this->get(route('periodos.index'))
+            ->assertInertia(fn (Assert $page) => $page->where('empresaActiva.id', $beta->id));
+
+        $this->from(route('trabajadores.edit', $trabajador))
+            ->put(route('empresa-activa.update'), ['empresa_id' => $alfa->id])
+            ->assertRedirect(route('trabajadores.index'));
+
+        // Desde un listado sí vuelve a la misma página.
+        $this->from(route('periodos.index'))
+            ->put(route('empresa-activa.update'), ['empresa_id' => $beta->id])
+            ->assertRedirect(route('periodos.index'));
     }
 
     #[Test]
