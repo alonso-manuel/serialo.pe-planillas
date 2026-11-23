@@ -7,6 +7,13 @@ Cómo se numera (`MAYOR.MENOR.PARCHE`): **PARCHE** solo correcciones; **MENOR** 
 **MAYOR** un cambio grande que obliga a adaptarse. Una versión por despliegue. Detalle en
 `docs/manual-desarrollador.md`, sección 7.
 
+## 1.2.0 — 23/11/2026
+
+**Nuevo**
+
+- **Video «Turno nocturno»** en Ayuda → Guía → Nuevas implementaciones: el mínimo para quien trabaja de
+  10 p. m. a 6 a. m. y cómo pagar una bonificación por las noches con el concepto 0303.
+
 ## 1.1.1 — 23/11/2026
 
 **Corregido**
