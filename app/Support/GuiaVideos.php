@@ -13,6 +13,7 @@ final class GuiaVideos
     public const SECCIONES = [
         // Lo último que se agregó al sistema; al publicar un video nuevo de una función, va aquí primero.
         'Nuevas implementaciones' => [
+            ['clave' => 'turno-nocturno', 'numero' => 32, 'titulo' => 'Turno nocturno', 'descripcion' => 'Mínimo nocturno y bonificación por trabajo de noche (concepto 0303).'],
             ['clave' => 'regimen-por-trabajador', 'numero' => 31, 'titulo' => 'Régimen por trabajador', 'descripcion' => 'Trabajadores en régimen general dentro de una micro o pequeña empresa.'],
         ],
         'Primeros pasos' => [

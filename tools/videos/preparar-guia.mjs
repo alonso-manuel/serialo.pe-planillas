@@ -1,5 +1,6 @@
 // Prepara los videos de la Guía (menú Ayuda → Guía) desde los originales editados.
-// - Nombre: «Panel administrativo.mp4» → «panel-administrativo.mp4» (la clave de App\Support\GuiaVideos).
+// - Nombre: «Panel administrativo.mp4» → «panel-administrativo.mp4» y «TurnoNocturno.mp4» → «turno-nocturno.mp4»
+//   (la clave de App\Support\GuiaVideos).
 // - Formato web: 1080p, H.264 (CRF 23, texto de pantalla nítido), AAC 128k y «faststart» (empieza a reproducirse
 //   sin descargar todo). Un minuto pasa de ~70 MB a ~8 MB.
 // Uso: node preparar-guia.mjs [origen] [destino]
@@ -19,6 +20,7 @@ mkdirSync(destino, { recursive: true });
 
 const clave = (nombre) =>
     basename(nombre, '.mp4')
+        .replace(/([a-z])([A-Z])/g, '$1-$2')
         .normalize('NFD')
         .replace(/[̀-ͯ]/g, '')
         .toLowerCase()
