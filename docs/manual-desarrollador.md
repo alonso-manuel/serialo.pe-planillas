@@ -216,7 +216,14 @@ Antes de dar una tarea por terminada: `composer test` y `npm run types:check` en
 - CI (`.github/workflows/tests.yml`): PHP 8.3, MySQL 8.4 y Node 22. `composer setup` migra contra MySQL y compila
   los assets; `composer ci:check` corre el lint del frontend, `vue-tsc`, Pint, PHPStan y los tests.
 - Al terminar una tarea: casilla en `docs/roadmap.md` y, si cambió una regla legal, `docs/reglas-calculo.md`.
-- Versiones semánticas (`v1.0.0`) con notas de cambio para clientes.
+- Versiones semánticas (`MAYOR.MENOR.PARCHE`) con notas de cambio para clientes en `CHANGELOG.md`:
+    - **PARCHE** (1.1.**1**): solo correcciones. **MENOR** (1.**2**.0): algo nuevo que el usuario ve o usa, sin romper
+      lo anterior. **MAYOR** (**2**.0.0): un cambio que obliga al cliente a adaptarse. Si hay nuevo y corregido, manda
+      lo mayor.
+    - **Una versión por despliegue**, no por commit. Lo que no toca el sistema (videos, documentos) no cambia la versión.
+    - Al publicar: subir `planillas.version` en `config/planillas.php`, agregar la entrada en `CHANGELOG.md`, commit
+      `chore: versión X.Y.Z`, etiqueta `git tag -a vX.Y.Z -m "Versión X.Y.Z"` y `git push origin main --tags`. Luego
+      desplegar.
 
 ---
 

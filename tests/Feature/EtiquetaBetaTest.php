@@ -7,7 +7,7 @@ use Inertia\Testing\AssertableInertia as Assert;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 
-/** Versión 1.0.0: sin etiqueta «Beta» salvo que se encienda (PLANILLAS_BETA), y la versión al pie de página. */
+/** Desde la versión 1.0.0: sin etiqueta «Beta» salvo que se encienda (PLANILLAS_BETA), y la versión al pie de página. */
 class EtiquetaBetaTest extends TestCase
 {
     use RefreshDatabase;
@@ -15,7 +15,7 @@ class EtiquetaBetaTest extends TestCase
     #[Test]
     public function por_defecto_es_la_version_1_sin_beta(): void
     {
-        $this->get(route('login'))->assertInertia(fn (Assert $p) => $p->where('beta', false)->where('version', '1.0.0'));
+        $this->get(route('login'))->assertInertia(fn (Assert $p) => $p->where('beta', false)->where('version', config('planillas.version')));
         $this->get(route('legal.terminos'))->assertInertia(fn (Assert $p) => $p->where('beta', false));
     }
 

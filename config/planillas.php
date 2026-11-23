@@ -61,9 +61,10 @@ return [
     | ⚠ Textos por revisar con un abogado antes de vender (docs/manual-usuario.md, sección 12).
     */
     /*
-    | Versión del sistema (se muestra al pie de cada página). Subirla con cada etiqueta de git (vX.Y.Z).
+    | Versión del sistema (se muestra al pie de cada página). Se sube en cada despliegue con cambios del sistema, junto
+    | con la etiqueta de git (vX.Y.Z) y la entrada en CHANGELOG.md. Regla en docs/manual-desarrollador.md, sección 7.
     */
-    'version' => '1.0.0',
+    'version' => '1.1.0',
 
     /*
     | Beta pública: etiqueta «Beta» junto al nombre del sistema y sección de beta en los términos. Terminó con la
