@@ -34,8 +34,19 @@ class HistorialDemoSeeder extends Seeder
 
         Auditoria::sinRegistrar(function () use ($admin, $hasta, $periodos, $calculo, $cierre): void {
             foreach (Empresa::query()->where('ruc', 'like', '200000000%')->get() as $empresa) {
+                $creados = 0;
                 for ($mes = $hasta->subMonths(10); $mes < $hasta; $mes = $mes->addMonth()) {
-                    $this->mesCerrado($empresa, $mes, $admin, $periodos, $calculo, $cierre);
+                    $creados += (int) $this->mesCerrado($empresa, $mes, $admin, $periodos, $calculo, $cierre);
+                }
+
+                // El DemoSeeder calculó el mes $hasta antes de que existiera esta historia: su quinta categoría no
+                // vio las remuneraciones de los meses anteriores. Se recalcula ahora, como si se hubiera llevado en orden.
+                $ultimo = Periodo::query()->where('empresa_id', $empresa->id)
+                    ->where('anio', $hasta->year)->where('mes', $hasta->month)->first();
+                if ($creados > 0 && $ultimo?->estaCerrado()) {
+                    $cierre->reabrir($ultimo, 'Datos de prueba: recálculo tras cargar los meses anteriores');
+                    $calculo->ejecutar($ultimo->refresh());
+                    $cierre->cerrar($ultimo->refresh(), $admin);
                 }
             }
         });
@@ -43,14 +54,14 @@ class HistorialDemoSeeder extends Seeder
         $this->datosDeContacto();
     }
 
-    private function mesCerrado(Empresa $empresa, CarbonImmutable $mes, User $admin, PeriodosPlanilla $periodos, CalcularPlanillaPeriodo $calculo, CierrePeriodo $cierre): void
+    private function mesCerrado(Empresa $empresa, CarbonImmutable $mes, User $admin, PeriodosPlanilla $periodos, CalcularPlanillaPeriodo $calculo, CierrePeriodo $cierre): bool
     {
         $existe = Periodo::query()->where('empresa_id', $empresa->id)
             ->where('anio', $mes->year)->where('mes', $mes->month)->exists();
         $trabajadores = $periodos->trabajadoresDelMes($empresa, $mes->year, $mes->month);
 
         if ($existe || $trabajadores->isEmpty()) {
-            return;
+            return false;
         }
 
         // Se crea directo: abrir() solo permite el mes siguiente al último periodo.
@@ -61,6 +72,8 @@ class HistorialDemoSeeder extends Seeder
 
         $calculo->ejecutar($periodo);
         $cierre->cerrar($periodo->refresh(), $admin);
+
+        return true;
     }
 
     private function datosDeContacto(): void

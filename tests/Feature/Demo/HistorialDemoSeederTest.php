@@ -48,6 +48,20 @@ class HistorialDemoSeederTest extends TestCase
             ->sum('planilla_conceptos.monto_pagado');
         $this->assertGreaterThan(0, (float) $gratificacion);
 
+        // Octubre lo calculó el DemoSeeder antes de la historia: se recalcula para que su quinta vea los meses previos.
+        // El gerente (S/ 8,500) supera las 7 UIT al año: retiene quinta en octubre como en septiembre.
+        $quinta = fn (int $mes): float => (float) DB::table('planilla_conceptos')
+            ->join('planilla_lineas', 'planilla_lineas.id', '=', 'planilla_conceptos.planilla_linea_id')
+            ->join('trabajadores', 'trabajadores.id', '=', 'planilla_lineas.trabajador_id')
+            ->join('conceptos', 'conceptos.id', '=', 'planilla_conceptos.concepto_id')
+            ->where('planilla_lineas.periodo_id', $meses->firstWhere('mes', $mes)?->id)
+            ->where('trabajadores.remuneracion_basica', '8500.00')
+            ->where('conceptos.codigo_plame', '0605')
+            ->sum('planilla_conceptos.monto_pagado');
+        $this->assertGreaterThan(0, $quinta(9));
+        $this->assertGreaterThan(0, $quinta(10));
+        $this->assertSame(EstadoPeriodo::Cerrado, $meses->firstWhere('mes', 10)?->estado);
+
         // Correo y cuenta CTS para todos menos uno; la historia no llena la auditoría.
         $this->assertSame(5, Trabajador::query()->where('empresa_id', $general->id)->whereNotNull('cuenta_cts')->count());
         $this->assertSame($auditorias, Auditoria::query()->count());
