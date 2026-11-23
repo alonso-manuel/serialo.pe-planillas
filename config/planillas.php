@@ -64,7 +64,7 @@ return [
     | Versión del sistema (se muestra al pie de cada página). Se sube en cada despliegue con cambios del sistema, junto
     | con la etiqueta de git (vX.Y.Z) y la entrada en CHANGELOG.md. Regla en docs/manual-desarrollador.md, sección 7.
     */
-    'version' => '1.1.0',
+    'version' => '1.1.1',
 
     /*
     | Beta pública: etiqueta «Beta» junto al nombre del sistema y sección de beta en los términos. Terminó con la

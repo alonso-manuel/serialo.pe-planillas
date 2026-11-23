@@ -7,6 +7,13 @@ Cómo se numera (`MAYOR.MENOR.PARCHE`): **PARCHE** solo correcciones; **MENOR** 
 **MAYOR** un cambio grande que obliga a adaptarse. Una versión por despliegue. Detalle en
 `docs/manual-desarrollador.md`, sección 7.
 
+## 1.1.1 — 23/11/2026
+
+**Corregido**
+
+- Datos de prueba: en el último mes cerrado de las cuentas de demostración no se retenía la renta de quinta categoría
+  a los trabajadores que superan las 7 UIT al año. Ahora ese mes se calcula con la historia completa del año.
+
 ## 1.1.0 — 23/11/2026
 
 **Nuevo**
