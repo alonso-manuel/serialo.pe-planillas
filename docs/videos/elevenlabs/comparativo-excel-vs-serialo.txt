@@ -1,0 +1,23 @@
+Un mismo mes de planillas. La misma empresa, con diez trabajadores. Dos formas de hacerlo.
+<break time="0.6s" />
+A la izquierda, una planilla en Excel sin macros. A la derecha, Serialo Planillas.
+<break time="0.8s" />
+En los dos lados se registran las mismas novedades: horas extra y faltas.
+<break time="0.6s" />
+En Serialo, los trabajadores y sus sueldos ya están cargados. Escribes las novedades, calculas y cierras el mes.
+<break time="0.6s" />
+Las boletas salen todas juntas en un PDF, y el PLAME y AFPnet se descargan listos para subir.
+<break time="1.0s" />
+Serialo ya terminó… y el Excel sigue.
+<break time="0.8s" />
+Ahí, cada boleta se exporta una por una: elegir al trabajador, exportar, ponerle nombre… diez veces.
+<break time="0.6s" />
+Para el PLAME, hay que copiar los montos a otra hoja y guardar cada archivo a mano.
+<break time="0.6s" />
+Y para AFPnet, filtrar a los afiliados, copiar y guardar otra vez.
+<break time="1.0s" />
+El resultado: en Excel, treinta y dos datos escritos, ochenta y un clics y quince archivos armados a mano.
+<break time="0.6s" />
+En Serialo, ocho datos, diez clics… y ningún archivo a mano.
+<break time="0.8s" />
+Pide tu cuenta de prueba en impulso punto c f d.
