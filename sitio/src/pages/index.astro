@@ -178,6 +178,63 @@ const preguntas = [
         </div>
     </section>
 
+    <!-- Comparativo: recreación con una empresa ficticia (tools/videos/comparativo.js) -->
+    <section id="comparativo" class="scroll-mt-20 bg-tinta py-20 text-white">
+        <div class="mx-auto max-w-6xl px-4 sm:px-6">
+            <div class="mx-auto max-w-2xl text-center">
+                <p class="text-sm font-semibold text-celeste">Excel vs. Serialo</p>
+                <h2 class="mt-2 text-3xl font-bold tracking-tight text-balance sm:text-4xl">
+                    El mismo mes de planillas, contado acción por acción
+                </h2>
+                <p class="mt-4 text-lg text-slate-300">
+                    Una empresa ficticia de 10 trabajadores, las mismas novedades y el mismo ritmo en los dos lados: de las
+                    horas extra y las faltas hasta las boletas, el PLAME y AFPnet.
+                </p>
+            </div>
+            <video
+                class="mt-10 w-full rounded-2xl border border-white/10 shadow-2xl"
+                src="/videos/excel-vs-serialo.mp4"
+                poster="/videos/excel-vs-serialo.jpg"
+                controls
+                muted
+                playsinline
+                preload="none"
+            >
+            </video>
+            <div class="mt-8 overflow-hidden rounded-2xl border border-white/10">
+                <table class="w-full text-left">
+                    <thead class="bg-white/5 text-sm text-slate-300">
+                        <tr>
+                            <th class="px-4 py-3 font-medium sm:px-6">Un mes, 10 trabajadores</th>
+                            <th class="px-4 py-3 text-center font-medium sm:px-6">Excel sin macros</th>
+                            <th class="px-4 py-3 text-center font-medium text-celeste sm:px-6">Serialo</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-white/10 tabular-nums">
+                        {
+                            [
+                                ['Datos escritos', '32', '8'],
+                                ['Clics', '81', '10'],
+                                ['Copiar y pegar', '6', '0'],
+                                ['Archivos armados a mano', '15', '0'],
+                            ].map(([que, excel, serialo]) => (
+                                <tr>
+                                    <td class="px-4 py-3 sm:px-6">{que}</td>
+                                    <td class="px-4 py-3 text-center text-lg font-semibold sm:px-6">{excel}</td>
+                                    <td class="px-4 py-3 text-center text-lg font-semibold text-celeste sm:px-6">{serialo}</td>
+                                </tr>
+                            ))
+                        }
+                    </tbody>
+                </table>
+            </div>
+            <p class="mt-4 text-sm text-slate-400">
+                Recreación con una empresa ficticia del régimen general y un libro de Excel sin macros armado para la
+                prueba. Se cuentan las acciones, no el tiempo: cada persona trabaja a su ritmo.
+            </p>
+        </div>
+    </section>
+
     <!-- Funciones -->
     <section id="funciones" class="scroll-mt-20 bg-slate-50 py-20">
         <div class="mx-auto max-w-6xl px-4 sm:px-6">

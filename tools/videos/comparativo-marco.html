@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="es">
+    <head>
+        <meta charset="utf-8" />
+        <!--
+            Fondo (?vista=marco) y tarjeta final (?vista=final) del video comparativo. comparativo-montar.js las
+            captura en PNG (1920×1080) y ffmpeg pone encima las dos tomas. Las cifras llegan por la URL.
+        -->
+        <link rel="preconnect" href="https://fonts.bunny.net" />
+        <link rel="stylesheet" href="https://fonts.bunny.net/css?family=instrument-sans:400,600,700&display=swap" />
+        <style>
+            * {
+                box-sizing: border-box;
+                margin: 0;
+            }
+            body {
+                width: 1920px;
+                height: 1080px;
+                background: #0f1b2d;
+                color: #fff;
+                font-family: 'Instrument Sans', system-ui, sans-serif;
+                overflow: hidden;
+            }
+            .marco h1 {
+                text-align: center;
+                font-size: 46px;
+                font-weight: 700;
+                padding-top: 52px;
+                letter-spacing: -0.5px;
+            }
+            .marco h1 span {
+                color: #7fcbe8;
+            }
+            .titulos {
+                position: absolute;
+                top: 190px;
+                left: 0;
+                right: 0;
+                display: grid;
+                grid-template-columns: 960px 960px;
+            }
+            .titulos div {
+                text-align: center;
+                font-size: 30px;
+                font-weight: 700;
+            }
+            .excel {
+                color: #9fd3b0;
+            }
+            .serialo {
+                color: #7fcbe8;
+            }
+            .pie {
+                position: absolute;
+                bottom: 52px;
+                left: 0;
+                right: 0;
+                text-align: center;
+                font-size: 22px;
+                color: #94a3b8;
+            }
+            .final {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                height: 100%;
+                gap: 44px;
+            }
+            .final h2 {
+                font-size: 54px;
+                font-weight: 700;
+                letter-spacing: -0.5px;
+            }
+            table {
+                border-collapse: collapse;
+                font-size: 34px;
+            }
+            th,
+            td {
+                padding: 18px 44px;
+                border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+            }
+            th {
+                font-size: 26px;
+                color: #94a3b8;
+                font-weight: 600;
+            }
+            td.n {
+                text-align: center;
+                font-weight: 700;
+                font-size: 44px;
+                font-variant-numeric: tabular-nums;
+            }
+            .marca {
+                display: flex;
+                align-items: center;
+                gap: 16px;
+                font-size: 34px;
+                font-weight: 700;
+            }
+            .nota {
+                font-size: 22px;
+                color: #94a3b8;
+                max-width: 1300px;
+                text-align: center;
+                line-height: 1.4;
+            }
+        </style>
+    </head>
+    <body>
+        <div id="raiz"></div>
+        <script>
+            const q = new URLSearchParams(location.search);
+            const n = (k) => q.get(k) ?? '0';
+            const raiz = document.getElementById('raiz');
+            const logo = `<svg width="64" height="64" viewBox="0 0 32 32"><rect width="32" height="32" rx="7" fill="#2558a8"/><g fill="#7fcbe8">${[0, 45, 90, 135, 180, 225, 270, 315].map((a) => `<rect x="9.4" y="7.6" width="3.2" height="4.4" rx="0.7" transform="rotate(${a} 11 16)"/>`).join('')}<circle cx="11" cy="16" r="5.4"/></g><circle cx="11" cy="16" r="2.3" fill="#2558a8"/><g fill="#fff"><rect x="20.4" y="9.5" width="1.6" height="13" rx=".4"/><rect x="23" y="9.5" width=".9" height="13" rx=".3"/><rect x="24.8" y="9.5" width="1.9" height="13" rx=".4"/><rect x="27.5" y="9.5" width=".9" height="13" rx=".3"/></g></svg>`;
+            if (q.get('vista') === 'final') {
+                raiz.className = 'final';
+                raiz.style.height = '1080px';
+                raiz.innerHTML = `
+                    <h2>Un mes de planillas, 10 trabajadores</h2>
+                    <table>
+                        <tr><th></th><th class="excel">Excel sin macros</th><th class="serialo">Serialo Planillas</th></tr>
+                        <tr><td>Datos escritos</td><td class="n">${n('ed')}</td><td class="n">${n('sd')}</td></tr>
+                        <tr><td>Clics</td><td class="n">${n('ec')}</td><td class="n">${n('sc')}</td></tr>
+                        <tr><td>Copiar y pegar</td><td class="n">${n('ep')}</td><td class="n">${n('sp')}</td></tr>
+                        <tr><td>Archivos armados a mano</td><td class="n">${n('ea')}</td><td class="n">${n('sa')}</td></tr>
+                    </table>
+                    <div class="marca">${logo} Serialo Planillas</div>
+                    <p class="nota">Recreación con una empresa ficticia del régimen general: mismas novedades y mismo ritmo por acción en los dos lados. Se cuentan las acciones, no el tiempo.</p>`;
+            } else {
+                raiz.className = 'marco';
+                raiz.innerHTML = `
+                    <h1>Un mes de planillas: <span>Excel vs. Serialo</span></h1>
+                    <div class="titulos"><div class="excel">Excel sin macros (recreación)</div><div class="serialo">Serialo Planillas</div></div>
+                    <p class="pie">Empresa ficticia · 10 trabajadores · noviembre 2026 · mismas novedades en los dos lados</p>`;
+            }
+        </script>
+    </body>
+</html>

@@ -40,3 +40,24 @@ Reglas de contenido:
 
 Al pasar a `serialo.pe`: `PLANILLAS_DOMINIO_SITIO=serialo.pe`, `docker compose build --build-arg SITIO_URL=https://serialo.pe`
 y actualizar `sitio/public/robots.txt`.
+
+## Video «Excel vs. Serialo» (sección `#comparativo`)
+
+Recreación con una empresa **ficticia** (`tools/videos/comparativo-caso.json`: Inversiones Ejemplo S.A.C., 10
+trabajadores, noviembre 2026). Las dos tomas usan las mismas novedades y el mismo ritmo por acción; se publican
+**acciones contadas** (datos escritos, clics, copiar y pegar, archivos armados a mano), nunca tiempos. El lado Excel es
+un libro genérico propio (`comparativo-excel.html`), sin macros ni nada copiado de libros de terceros, y muestra los
+montos que calculó Serialo (cuadran al céntimo).
+
+```bash
+php artisan migrate:fresh --seed && php tools/videos/comparativo-preparar.php
+composer dev                                   # servidor y cola
+cd tools/videos
+node comparativo.js serialo                    # videos/comparativo-serialo.webm + cifras
+php comparativo-resultado.php                 # montos para el Excel
+node comparativo.js excel                      # videos/comparativo-excel.webm + cifras
+node comparativo-montar.js                     # pantalla partida + cierre → comparativo-web.mp4
+```
+
+Luego copiar `videos/comparativo-web.mp4` a `sitio/public/videos/excel-vs-serialo.mp4` y actualizar la tabla de
+`sitio/src/pages/index.astro` con las cifras de `videos/comparativo-*-cifras.json`.

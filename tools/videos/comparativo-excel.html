@@ -1,0 +1,719 @@
+<!doctype html>
+<html lang="es">
+    <head>
+        <meta charset="utf-8" />
+        <title>Planilla en hoja de cálculo (recreación)</title>
+        <!--
+            Recreación GENÉRICA de una planilla en hoja de cálculo para el video comparativo (comparativo.js).
+            Diseño y hojas propios: no copia ningún libro de terceros. Los montos vienen de la planilla calculada
+            en Serialo (comparativo-resultado.json), así las dos tomas cuadran al céntimo. Datos ficticios.
+        -->
+        <style>
+            :root {
+                --verde: #3f6f52;
+                --borde: #d4d7dc;
+                --cab: #f1f3f5;
+            }
+            * {
+                box-sizing: border-box;
+            }
+            body {
+                margin: 0;
+                font: 13px 'Segoe UI', system-ui, sans-serif;
+                color: #1f2328;
+                background: #fff;
+                height: 100vh;
+                display: flex;
+                flex-direction: column;
+                overflow: hidden;
+            }
+            .titulo {
+                background: var(--verde);
+                color: #fff;
+                height: 34px;
+                display: flex;
+                align-items: center;
+                justify-content: flex-start;
+                padding-left: 16px;
+                font-size: 13px;
+                position: relative;
+            }
+            .menu {
+                display: flex;
+                gap: 2px;
+                background: var(--verde);
+                padding: 0 8px;
+            }
+            .menu button {
+                background: none;
+                border: 0;
+                color: #e8f0eb;
+                font: inherit;
+                padding: 6px 12px;
+                cursor: pointer;
+            }
+            .menu button.activo,
+            .menu button:hover {
+                background: rgba(255, 255, 255, 0.15);
+                color: #fff;
+            }
+            .cinta {
+                display: flex;
+                gap: 6px;
+                align-items: center;
+                padding: 6px 10px;
+                border-bottom: 1px solid var(--borde);
+                background: #fafbfc;
+                height: 44px;
+            }
+            .cinta .btn {
+                border: 1px solid var(--borde);
+                background: #fff;
+                border-radius: 4px;
+                padding: 5px 10px;
+                font: inherit;
+                cursor: pointer;
+            }
+            .cinta .btn.on {
+                background: #e3efe7;
+                border-color: var(--verde);
+            }
+            .sep {
+                width: 1px;
+                height: 24px;
+                background: var(--borde);
+                margin: 0 4px;
+            }
+            .barra {
+                display: flex;
+                border-bottom: 1px solid var(--borde);
+                height: 28px;
+                align-items: center;
+            }
+            .barra .ref {
+                width: 110px;
+                border-right: 1px solid var(--borde);
+                padding: 0 8px;
+                color: #444;
+            }
+            .barra .fx {
+                padding: 0 8px;
+                color: #888;
+                font-style: italic;
+                border-right: 1px solid var(--borde);
+            }
+            .barra .val {
+                padding: 0 10px;
+                flex: 1;
+                white-space: nowrap;
+                overflow: hidden;
+            }
+            .area {
+                flex: 1;
+                overflow: auto;
+                position: relative;
+            }
+            table {
+                border-collapse: collapse;
+                table-layout: fixed;
+            }
+            th,
+            td {
+                border: 1px solid var(--borde);
+                height: 24px;
+                padding: 0 6px;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+            }
+            th {
+                background: var(--cab);
+                font-weight: 400;
+                color: #555;
+                text-align: center;
+                font-size: 12px;
+            }
+            td {
+                user-select: none;
+            }
+            td[contenteditable] {
+                user-select: text;
+            }
+            /* Títulos: el texto se extiende sobre las celdas vacías de la derecha, como en una hoja de cálculo. */
+            td.t {
+                overflow: visible;
+                position: relative;
+                z-index: 1;
+            }
+            td.num {
+                text-align: right;
+                font-variant-numeric: tabular-nums;
+            }
+            td.b {
+                font-weight: 700;
+            }
+            td.h {
+                background: #e9efe9;
+                font-weight: 600;
+                text-align: center;
+                font-size: 12px;
+                white-space: normal;
+                line-height: 1.15;
+            }
+            td.ed {
+                background: #fffbe6;
+            }
+            td.sel {
+                outline: 2px solid var(--verde);
+                outline-offset: -2px;
+            }
+            td.rango {
+                background: rgba(63, 111, 82, 0.14);
+            }
+            td.copia {
+                outline: 2px dashed var(--verde);
+                outline-offset: -2px;
+            }
+            td.cambio {
+                animation: cambio 1s;
+            }
+            @keyframes cambio {
+                from {
+                    background: #fff3b0;
+                }
+            }
+            td:focus {
+                outline: 2px solid var(--verde);
+                outline-offset: -2px;
+            }
+            tr.oculta {
+                display: none;
+            }
+            .pestanas {
+                display: flex;
+                gap: 0;
+                border-top: 1px solid var(--borde);
+                background: var(--cab);
+                height: 30px;
+                padding-left: 40px;
+            }
+            .pestanas button {
+                border: 0;
+                border-right: 1px solid var(--borde);
+                background: none;
+                font: inherit;
+                padding: 0 18px;
+                cursor: pointer;
+                color: #444;
+            }
+            .pestanas button.activa {
+                background: #fff;
+                color: var(--verde);
+                font-weight: 600;
+                border-bottom: 2px solid var(--verde);
+            }
+            .desplegable {
+                position: absolute;
+                top: 60px;
+                left: 8px;
+                background: #fff;
+                border: 1px solid var(--borde);
+                box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+                z-index: 20;
+                display: none;
+                min-width: 200px;
+            }
+            .desplegable.on {
+                display: block;
+            }
+            .desplegable button {
+                display: block;
+                width: 100%;
+                text-align: left;
+                border: 0;
+                background: none;
+                font: inherit;
+                padding: 9px 16px;
+                cursor: pointer;
+            }
+            .desplegable button:hover {
+                background: #eef3ef;
+            }
+            .fondo {
+                position: fixed;
+                inset: 0;
+                background: rgba(0, 0, 0, 0.25);
+                display: none;
+                align-items: center;
+                justify-content: center;
+                z-index: 30;
+            }
+            .fondo.on {
+                display: flex;
+            }
+            .dialogo {
+                background: #fff;
+                width: 520px;
+                border-radius: 6px;
+                box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+                overflow: hidden;
+            }
+            .dialogo .cab {
+                background: #f6f7f8;
+                padding: 10px 16px;
+                font-weight: 600;
+                border-bottom: 1px solid var(--borde);
+            }
+            .dialogo .cuerpo {
+                padding: 16px;
+                display: grid;
+                gap: 10px;
+            }
+            .dialogo label {
+                display: grid;
+                grid-template-columns: 120px 1fr;
+                align-items: center;
+                gap: 8px;
+            }
+            .dialogo input,
+            .dialogo select {
+                font: inherit;
+                padding: 6px 8px;
+                border: 1px solid var(--borde);
+                border-radius: 3px;
+            }
+            .dialogo .pie {
+                padding: 10px 16px;
+                display: flex;
+                justify-content: flex-end;
+                gap: 8px;
+                border-top: 1px solid var(--borde);
+            }
+            .dialogo .pie button {
+                font: inherit;
+                padding: 6px 18px;
+                border-radius: 3px;
+                border: 1px solid var(--borde);
+                background: #fff;
+            }
+            .dialogo .pie .ok {
+                background: var(--verde);
+                color: #fff;
+                border-color: var(--verde);
+            }
+            .aviso {
+                position: fixed;
+                right: 16px;
+                bottom: 44px;
+                background: #1f2328;
+                color: #fff;
+                padding: 8px 14px;
+                border-radius: 6px;
+                font-size: 12px;
+                opacity: 0;
+                transition: opacity 0.3s;
+                z-index: 25;
+            }
+            .aviso.on {
+                opacity: 0.92;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="titulo"><span id="nombre-libro">Planilla_Octubre_2026.xlsx</span></div>
+        <div class="menu">
+            <button data-menu="archivo">Archivo</button>
+            <button>Inicio</button>
+            <button>Insertar</button>
+            <button>Fórmulas</button>
+            <button>Datos</button>
+            <button>Vista</button>
+        </div>
+        <div class="desplegable" id="menu-archivo">
+            <button data-menu="guardar-como">Guardar como…</button>
+            <button data-menu="exportar-pdf">Exportar a PDF…</button>
+            <button>Imprimir</button>
+        </div>
+        <div class="cinta">
+            <button class="btn"><b>N</b></button>
+            <button class="btn"><i>K</i></button>
+            <span class="sep"></span>
+            <button class="btn">Formato de número</button>
+            <button class="btn">Copiar</button>
+            <button class="btn">Pegar valores</button>
+            <span class="sep"></span>
+            <button class="btn" data-menu="filtro-afp">Filtro: solo AFP</button>
+            <button class="btn">Ordenar</button>
+        </div>
+        <div class="barra">
+            <span class="ref" id="ref">A1</span><span class="fx">fx</span><span class="val" id="val"></span>
+        </div>
+        <div class="area" id="area"></div>
+        <div class="pestanas" id="pestanas"></div>
+
+        <div class="fondo" id="fondo">
+            <div class="dialogo">
+                <div class="cab" id="dialogo-titulo">Guardar como</div>
+                <div class="cuerpo">
+                    <label>Nombre de archivo <input id="dialogo-nombre" /></label>
+                    <label id="fila-tipo"
+                        >Tipo
+                        <select id="dialogo-tipo">
+                            <option value="xlsx">Libro (*.xlsx)</option>
+                            <option value="xls">Libro 97-2003 (*.xls)</option>
+                            <option value="rem">Texto (*.rem)</option>
+                            <option value="jor">Texto (*.jor)</option>
+                            <option value="snl">Texto (*.snl)</option>
+                            <option value="pdf">PDF (*.pdf)</option>
+                        </select></label
+                    >
+                </div>
+                <div class="pie">
+                    <button>Cancelar</button><button class="ok" id="dialogo-guardar">Guardar</button>
+                </div>
+            </div>
+        </div>
+        <div class="aviso" id="aviso"></div>
+
+        <script>
+            const LETRAS = 'ABCDEFGHIJKLMNOP'.split('');
+            const fmt = (n) =>
+                n === '' || n === null || n === undefined
+                    ? ''
+                    : Number(n).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+            const r2 = (n) => Math.round((n + Number.EPSILON) * 100) / 100;
+            let R = null; // resultado de Serialo
+            let hojaActual = 'Planilla';
+            let seleccion = null; // { hoja, desde, hasta }
+            let copiado = null; // { hoja, celdas: [[valor...]] }
+            let filtroAfp = false;
+            const hojas = {}; // hoja -> { cols:[anchos], filas, celdas: { 'B6': { v, cls, ed } } }
+            const pendientes = {}; // fila de Planilla -> novedades que faltan
+
+            const sumaPension = (c) =>
+                ['0601', '0606', '0608', '0607'].reduce((s, k) => s + Number(c[k] || 0), 0);
+
+            /** Montos de una fila de Planilla: «antes» (sin novedades) o los calculados por Serialo. */
+            function filaPlanilla(t, final) {
+                const c = t.conceptos;
+                const asig = Number(c['0201'] || 0);
+                if (final) {
+                    const he = Number(c['0105'] || 0) + Number(c['0106'] || 0);
+                    return {
+                        J: Number(c['0121']),
+                        K: he,
+                        L: Number(t.ingresos),
+                        M: sumaPension(c),
+                        N: Number(t.neto),
+                        O: Number(c['0804']),
+                    };
+                }
+                const L = Number(t.sueldo) + asig;
+                const M = t.pension === 'ONP' ? r2(L * 0.13) : r2(L * 0.1) + r2(L * 0.0137);
+                return { J: Number(t.sueldo), K: 0, L, M, N: r2(L - M), O: r2(Math.max(L, 1130) * 0.09) };
+            }
+
+            function crearHojas() {
+                const T = R.trabajadores;
+                // Datos
+                const d = { cols: [150, 260, 110, 110, 110, 110], filas: 22, celdas: {} };
+                d.celdas.A1 = { v: 'DATOS GENERALES', cls: 'b t' };
+                d.celdas.A2 = { v: 'Mes:' };
+                d.celdas.B2 = { v: 'OCTUBRE 2026', ed: true, cls: 'b' };
+                [
+                    ['RMV', '1,130.00'],
+                    ['Asignación familiar', '113.00'],
+                    ['ONP', '13.00%'],
+                    ['AFP aporte', '10.00%'],
+                    ['AFP prima de seguro', '1.37%'],
+                    ['EsSalud', '9.00%'],
+                ].forEach(([a, b], i) => {
+                    d.celdas['A' + (i + 3)] = { v: a };
+                    d.celdas['B' + (i + 3)] = { v: b, cls: 'num' };
+                });
+                ['DNI', 'Trabajador', 'Pensión', 'Básico', 'Asig. fam.'].forEach((h, i) => (d.celdas[LETRAS[i] + 11] = { v: h, cls: 'h' }));
+                T.forEach((t, i) => {
+                    const f = 12 + i;
+                    d.celdas['A' + f] = { v: t.dni };
+                    d.celdas['B' + f] = { v: t.nombre };
+                    d.celdas['C' + f] = { v: t.pension === 'ONP' ? 'ONP' : 'AFP ' + t.pension };
+                    d.celdas['D' + f] = { v: fmt(t.sueldo), cls: 'num' };
+                    d.celdas['E' + f] = { v: t.conceptos['0201'] ? '113.00' : '', cls: 'num' };
+                });
+                hojas.Datos = d;
+
+                // Planilla
+                const p = { cols: [34, 78, 190, 82, 78, 66, 54, 60, 60, 82, 74, 86, 82, 86, 76], filas: 18, celdas: {} };
+                p.celdas.A1 = { v: R.empresa.razon_social.toUpperCase(), cls: 'b t' };
+                p.celdas.A2 = { v: 'PLANILLA DE REMUNERACIONES — OCTUBRE 2026', cls: 'b t' };
+                p.celdas.A3 = { v: 'RUC ' + R.empresa.ruc, cls: 't' };
+                ['N°', 'DNI', 'Trabajador', 'Pensión', 'Básico', 'Asig. fam.', 'Faltas', 'HE 25 % (h)', 'HE 35 % (h)', 'Rem. del mes', 'Horas extra', 'Total ingresos', 'AFP / ONP', 'Neto a pagar', 'EsSalud'].forEach(
+                    (h, i) => (p.celdas[LETRAS[i] + 5] = { v: h, cls: 'h' }),
+                );
+                T.forEach((t, i) => {
+                    const f = 6 + i;
+                    p.celdas['A' + f] = { v: String(i + 1), cls: 'num' };
+                    p.celdas['B' + f] = { v: t.dni };
+                    p.celdas['C' + f] = { v: t.nombre };
+                    p.celdas['D' + f] = { v: t.pension === 'ONP' ? 'ONP' : 'AFP ' + t.pension };
+                    p.celdas['E' + f] = { v: fmt(t.sueldo), cls: 'num' };
+                    p.celdas['F' + f] = { v: t.conceptos['0201'] ? '113.00' : '', cls: 'num' };
+                    p.celdas['G' + f] = { v: '', cls: 'num ed', ed: true };
+                    p.celdas['H' + f] = { v: '', cls: 'num ed', ed: true };
+                    p.celdas['I' + f] = { v: '', cls: 'num ed', ed: true };
+                    const apellido = t.nombre.split(' ')[0];
+                    const faltan = R.novedadesCaso.filter((n) => n.trabajador === apellido).length;
+                    if (faltan) pendientes[f] = faltan;
+                    ponerMontos(p, f, filaPlanilla(t, !faltan));
+                });
+                p.celdas.C16 = { v: 'TOTALES', cls: 'b' };
+                totales(p);
+                hojas.Planilla = p;
+
+                // Boleta
+                const b = { cols: [30, 200, 140, 120, 120], filas: 22, celdas: {} };
+                b.celdas.B2 = { v: 'BOLETA DE PAGO', cls: 'b' };
+                b.celdas.B4 = { v: 'N° de trabajador:' };
+                b.celdas.C4 = { v: '', ed: true, cls: 'ed b' };
+                hojas.Boleta = b;
+
+                // PLAME
+                const pl = { cols: [70, 90, 100, 100, 100, 100], filas: 16, celdas: {} };
+                pl.celdas.A1 = { v: 'EXPORTACIÓN PLAME (.rem / .jor / .snl)', cls: 'b t' };
+                ['Tipo doc.', 'N° doc.', '0121 Rem.', '0201 Asig.', '0105-6 HE', 'Pensión'].forEach((h, i) => (pl.celdas[LETRAS[i] + 2] = { v: h, cls: 'h' }));
+                T.forEach((_, i) => (pl.celdas['A' + (3 + i)] = { v: '01' }));
+                hojas.PLAME = pl;
+
+                // AFPnet
+                const af = { cols: [78, 190, 92, 80, 70, 54, 60, 60, 82, 74, 92], filas: 14, celdas: {} };
+                af.celdas.A1 = { v: 'AFPnet — PLANILLA DE APORTES', cls: 'b t' };
+                ['DNI', 'Trabajador', 'AFP', 'Básico', 'Asig. fam.', 'Faltas', 'HE 25 %', 'HE 35 %', 'Rem. del mes', 'Horas extra', 'Rem. asegurable'].forEach(
+                    (h, i) => (af.celdas[LETRAS[i] + 2] = { v: h, cls: 'h' }),
+                );
+                hojas.AFPnet = af;
+            }
+
+            function ponerMontos(p, f, m) {
+                for (const [col, v] of Object.entries(m)) p.celdas[col + f] = { v: v ? fmt(v) : col === 'K' ? '' : fmt(v), cls: 'num' };
+            }
+            function totales(p) {
+                for (const col of ['L', 'M', 'N', 'O']) {
+                    let s = 0;
+                    for (let f = 6; f <= 15; f++) s += Number(String(p.celdas[col + f]?.v || '0').replace(/,/g, ''));
+                    p.celdas[col + 16] = { v: fmt(r2(s)), cls: 'num b' };
+                }
+            }
+
+            function pintar() {
+                const h = hojas[hojaActual];
+                let html = `<table style="width:${40 + h.cols.reduce((x, y) => x + y, 0)}px">` + '<colgroup><col style="width:40px">' + h.cols.map((w) => `<col style="width:${w}px">`).join('') + '</colgroup>';
+                html += '<tr><th></th>' + h.cols.map((_, i) => `<th>${LETRAS[i]}</th>`).join('') + '</tr>';
+                for (let f = 1; f <= h.filas; f++) {
+                    const oculta = hojaActual === 'Planilla' && filtroAfp && f >= 6 && f <= 15 && h.celdas['D' + f]?.v === 'ONP';
+                    html += `<tr class="${oculta ? 'oculta' : ''}"><th>${f}</th>`;
+                    h.cols.forEach((_, i) => {
+                        const id = LETRAS[i] + f;
+                        const c = h.celdas[id] || { v: '' };
+                        html += `<td data-celda="${hojaActual}!${id}" class="${c.cls || ''}" ${c.ed ? 'contenteditable="true"' : ''}>${c.v ?? ''}</td>`;
+                    });
+                    html += '</tr>';
+                }
+                document.getElementById('area').innerHTML = html + '</table>';
+                document.querySelectorAll('[data-hoja]').forEach((b) => b.classList.toggle('activa', b.dataset.hoja === hojaActual));
+                marcar();
+            }
+
+            const partes = (id) => {
+                const [hoja, ref] = id.split('!');
+                return { hoja, col: LETRAS.indexOf(ref[0]), fila: Number(ref.slice(1)) };
+            };
+            function enRango(id) {
+                if (!seleccion) return false;
+                const a = partes(seleccion.desde),
+                    b = partes(seleccion.hasta || seleccion.desde),
+                    c = partes(id);
+                return (
+                    c.hoja === a.hoja &&
+                    c.col >= Math.min(a.col, b.col) &&
+                    c.col <= Math.max(a.col, b.col) &&
+                    c.fila >= Math.min(a.fila, b.fila) &&
+                    c.fila <= Math.max(a.fila, b.fila)
+                );
+            }
+            function marcar() {
+                document.querySelectorAll('td[data-celda]').forEach((td) => {
+                    const id = td.dataset.celda;
+                    td.classList.toggle('sel', seleccion?.desde === id && !seleccion?.hasta);
+                    td.classList.toggle('rango', !!seleccion?.hasta && enRango(id));
+                    td.classList.toggle('copia', !!copiado?.ids?.includes(id));
+                });
+                if (seleccion) {
+                    const ref = seleccion.desde.split('!')[1] + (seleccion.hasta ? ':' + seleccion.hasta.split('!')[1] : '');
+                    document.getElementById('ref').textContent = ref;
+                    const c = hojas[hojaActual].celdas[seleccion.desde.split('!')[1]];
+                    document.getElementById('val').textContent = c?.v ?? '';
+                }
+            }
+
+            function confirmar(td) {
+                const ref = td.dataset.celda.split('!')[1];
+                const h = hojas[hojaActual];
+                const valor = td.textContent.trim();
+                h.celdas[ref] = { ...(h.celdas[ref] || {}), v: valor };
+                if (hojaActual === 'Datos' && ref === 'B2') {
+                    hojas.Planilla.celdas.A2.v = 'PLANILLA DE REMUNERACIONES — ' + valor;
+                }
+                if (hojaActual === 'Planilla') {
+                    const f = Number(ref.slice(1));
+                    if (pendientes[f] && --pendientes[f] === 0) {
+                        ponerMontos(h, f, filaPlanilla(R.trabajadores[f - 6], true));
+                        totales(h);
+                        setTimeout(() => {
+                            pintar();
+                            ['J', 'K', 'L', 'M', 'N', 'O'].forEach((c) =>
+                                document.querySelector(`[data-celda="Planilla!${c}${f}"]`)?.classList.add('cambio'),
+                            );
+                        }, 50);
+                    }
+                }
+                if (hojaActual === 'Boleta' && ref === 'C4') boleta(Number(valor));
+            }
+
+            function boleta(n) {
+                const t = R.trabajadores[n - 1];
+                const b = hojas.Boleta;
+                if (!t) return;
+                const c = t.conceptos;
+                const filas = [
+                    ['Trabajador', t.nombre],
+                    ['DNI', t.dni],
+                    ['Periodo', hojas.Datos.celdas.B2.v],
+                    ['Días laborados', String(t.dias)],
+                    ['', ''],
+                    ['INGRESOS', ''],
+                    ['Remuneración básica', fmt(c['0121'])],
+                    ['Asignación familiar', c['0201'] ? fmt(c['0201']) : ''],
+                    ['Horas extra', c['0105'] ? fmt(Number(c['0105']) + Number(c['0106'] || 0)) : ''],
+                    ['DESCUENTOS', ''],
+                    [t.pension === 'ONP' ? 'ONP' : 'AFP ' + t.pension, fmt(sumaPension(c))],
+                    ['NETO A PAGAR', fmt(t.neto)],
+                    ['', ''],
+                    ['Aporte del empleador: EsSalud', fmt(c['0804'])],
+                ];
+                filas.forEach(([a, v], i) => {
+                    b.celdas['B' + (6 + i)] = { v: a, cls: /^[A-Z ]+$/.test(a) && a ? 'b' : '' };
+                    b.celdas['C' + (6 + i)] = { v, cls: 'num' + (a === 'NETO A PAGAR' ? ' b' : '') };
+                });
+                setTimeout(pintar, 50);
+            }
+
+            function pegar(destinoId) {
+                if (!copiado) return;
+                const d = partes(destinoId);
+                const h = hojas[d.hoja];
+                copiado.valores.forEach((fila, i) =>
+                    fila.forEach((v, j) => {
+                        h.celdas[LETRAS[d.col + j] + (d.fila + i)] = { v, cls: /^[\d,.]+$/.test(v) && v.includes('.') ? 'num cambio' : 'cambio' };
+                    }),
+                );
+                copiado = null;
+                pintar();
+            }
+
+            function copiar() {
+                if (!seleccion) return;
+                const a = partes(seleccion.desde),
+                    b = partes(seleccion.hasta || seleccion.desde);
+                const h = hojas[a.hoja];
+                const valores = [],
+                    ids = [];
+                for (let f = Math.min(a.fila, b.fila); f <= Math.max(a.fila, b.fila); f++) {
+                    if (a.hoja === 'Planilla' && filtroAfp && h.celdas['D' + f]?.v === 'ONP') continue; // filas ocultas no se copian
+                    const fila = [];
+                    for (let c = Math.min(a.col, b.col); c <= Math.max(a.col, b.col); c++) {
+                        fila.push(h.celdas[LETRAS[c] + f]?.v ?? '');
+                        ids.push(`${a.hoja}!${LETRAS[c]}${f}`);
+                    }
+                    valores.push(fila);
+                }
+                copiado = { valores, ids };
+                marcar();
+            }
+
+            function aviso(texto) {
+                const a = document.getElementById('aviso');
+                a.textContent = texto;
+                a.classList.add('on');
+                setTimeout(() => a.classList.remove('on'), 1600);
+            }
+
+            let modoDialogo = 'guardar';
+            function abrirDialogo(modo) {
+                modoDialogo = modo;
+                document.getElementById('menu-archivo').classList.remove('on');
+                document.getElementById('dialogo-titulo').textContent = modo === 'pdf' ? 'Exportar a PDF' : 'Guardar como';
+                document.getElementById('fila-tipo').style.display = modo === 'pdf' ? 'none' : '';
+                document.getElementById('dialogo-nombre').value = '';
+                document.getElementById('fondo').classList.add('on');
+            }
+
+            document.addEventListener('click', (e) => {
+                const m = e.target.closest('[data-menu]');
+                if (m) {
+                    const que = m.dataset.menu;
+                    if (que === 'archivo') document.getElementById('menu-archivo').classList.toggle('on');
+                    if (que === 'guardar-como') abrirDialogo('guardar');
+                    if (que === 'exportar-pdf') abrirDialogo('pdf');
+                    if (que === 'filtro-afp') {
+                        filtroAfp = !filtroAfp;
+                        m.classList.toggle('on', filtroAfp);
+                        pintar();
+                    }
+                    return;
+                }
+                const pest = e.target.closest('[data-hoja]');
+                if (pest) {
+                    hojaActual = pest.dataset.hoja;
+                    seleccion = null;
+                    pintar();
+                    return;
+                }
+                if (e.target.id === 'dialogo-guardar') {
+                    const nombre = document.getElementById('dialogo-nombre').value;
+                    const tipo = modoDialogo === 'pdf' ? 'pdf' : document.getElementById('dialogo-tipo').value;
+                    document.getElementById('fondo').classList.remove('on');
+                    if (modoDialogo === 'guardar' && tipo === 'xlsx') document.getElementById('nombre-libro').textContent = nombre + '.xlsx';
+                    aviso(`Guardado: ${nombre}.${tipo}`);
+                    return;
+                }
+                const td = e.target.closest('td[data-celda]');
+                if (td) {
+                    if (e.shiftKey && seleccion) seleccion.hasta = td.dataset.celda;
+                    else seleccion = { desde: td.dataset.celda };
+                    marcar();
+                }
+            });
+
+            document.addEventListener('keydown', (e) => {
+                const td = e.target.closest?.('td[contenteditable]');
+                if (td && e.key === 'Enter') {
+                    e.preventDefault();
+                    confirmar(td);
+                    td.blur();
+                    return;
+                }
+                if (e.ctrlKey && e.key.toLowerCase() === 'c') copiar();
+                if (e.ctrlKey && e.key.toLowerCase() === 'v' && seleccion) pegar(seleccion.desde);
+            });
+
+            window.cargar = (resultado) => {
+                R = resultado;
+                crearHojas();
+                document.getElementById('pestanas').innerHTML = Object.keys(hojas)
+                    .map((h) => `<button data-hoja="${h}">${h}</button>`)
+                    .join('');
+                pintar();
+            };
+        </script>
+    </body>
+</html>

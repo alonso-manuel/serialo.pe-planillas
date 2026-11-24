@@ -1,0 +1,28 @@
+{
+    "nota": "Caso FICTICIO del video comparativo Excel vs. Serialo (noviembre 2026). DNI 7100xxxx y RUC inventados.",
+    "empresa": {
+        "ruc": "20000000044",
+        "razon_social": "Inversiones Ejemplo S.A.C.",
+        "direccion": "Av. Ejemplo 321, Lima"
+    },
+    "trabajadores": [
+        { "dni": "71000001", "apellido_paterno": "Alvarado", "apellido_materno": "Ruiz", "nombres": "Mónica", "sexo": "F", "cargo": "Administradora", "ingreso": "2022-03-01", "sueldo": "2500.00", "asignacion_familiar": true, "pension": "Integra" },
+        { "dni": "71000002", "apellido_paterno": "Bravo", "apellido_materno": "Cáceres", "nombres": "Julio", "sexo": "M", "cargo": "Vendedor", "ingreso": "2023-01-02", "sueldo": "1500.00", "asignacion_familiar": false, "pension": "ONP" },
+        { "dni": "71000003", "apellido_paterno": "Cárdenas", "apellido_materno": "Poma", "nombres": "Elena", "sexo": "F", "cargo": "Cajera", "ingreso": "2023-06-01", "sueldo": "1130.00", "asignacion_familiar": true, "pension": "Prima" },
+        { "dni": "71000004", "apellido_paterno": "Delgado", "apellido_materno": "Ríos", "nombres": "Hugo", "sexo": "M", "cargo": "Almacenero", "ingreso": "2021-09-01", "sueldo": "1300.00", "asignacion_familiar": false, "pension": "Habitat" },
+        { "dni": "71000005", "apellido_paterno": "Espinoza", "apellido_materno": "Lara", "nombres": "Karen", "sexo": "F", "cargo": "Asistente contable", "ingreso": "2024-02-01", "sueldo": "1800.00", "asignacion_familiar": true, "pension": "ONP" },
+        { "dni": "71000006", "apellido_paterno": "Fuentes", "apellido_materno": "Ortiz", "nombres": "Raúl", "sexo": "M", "cargo": "Chofer", "ingreso": "2022-07-01", "sueldo": "1600.00", "asignacion_familiar": true, "pension": "Profuturo" },
+        { "dni": "71000007", "apellido_paterno": "Gómez", "apellido_materno": "Tello", "nombres": "Lucía", "sexo": "F", "cargo": "Vendedora", "ingreso": "2024-05-02", "sueldo": "1500.00", "asignacion_familiar": false, "pension": "Integra" },
+        { "dni": "71000008", "apellido_paterno": "Herrera", "apellido_materno": "Vidal", "nombres": "Andrés", "sexo": "M", "cargo": "Repartidor", "ingreso": "2025-01-02", "sueldo": "1200.00", "asignacion_familiar": false, "pension": "ONP" },
+        { "dni": "71000009", "apellido_paterno": "Ibáñez", "apellido_materno": "Cruz", "nombres": "Sara", "sexo": "F", "cargo": "Recepcionista", "ingreso": "2023-10-02", "sueldo": "1250.00", "asignacion_familiar": true, "pension": "Prima" },
+        { "dni": "71000010", "apellido_paterno": "Juárez", "apellido_materno": "Montes", "nombres": "Iván", "sexo": "M", "cargo": "Técnico de mantenimiento", "ingreso": "2022-11-02", "sueldo": "2200.00", "asignacion_familiar": false, "pension": "ONP" }
+    ],
+    "novedades": [
+        { "trabajador": "Bravo", "campo": "HE 25 %", "valor": "6" },
+        { "trabajador": "Bravo", "campo": "HE 35 %", "valor": "2" },
+        { "trabajador": "Cárdenas", "campo": "Faltas", "valor": "1" },
+        { "trabajador": "Gómez", "campo": "HE 25 %", "valor": "4" },
+        { "trabajador": "Herrera", "campo": "Faltas", "valor": "2" },
+        { "trabajador": "Juárez", "campo": "HE 25 %", "valor": "3" }
+    ]
+}
