@@ -1,0 +1,19 @@
+Así se hace un mes de planillas en Serialo. Una empresa con diez trabajadores, noviembre.
+<break time="0.8s" />
+Los trabajadores y sus sueldos ya están en el sistema. Entras al periodo del mes… y solo escribes las novedades: horas extra y faltas.
+<break time="0.6s" />
+Cada fila se guarda sola. No hay fórmulas que revisar.
+<break time="1.0s" />
+Un clic en «Calcular planilla»: ingresos, horas extra, AFP u ONP, EsSalud y el neto de cada trabajador.
+<break time="0.8s" />
+Revisas y cierras el mes. Desde ese momento, nadie puede modificarlo.
+<break time="0.8s" />
+Las diez boletas salen juntas en un solo PDF, una por hoja. También en zip, o por correo a cada trabajador.
+<break time="1.0s" />
+Para SUNAT, eliges el mes y descargas el PLAME: los archivos ya vienen con el nombre que pide SUNAT, listos para importar.
+<break time="1.0s" />
+Y para las AFP, el archivo de AFPnet con cada afiliado y su remuneración asegurable.
+<break time="1.0s" />
+Mes completo: ocho datos escritos, diez clics… y ningún archivo armado a mano.
+<break time="0.6s" />
+Eso es Serialo Planillas.
