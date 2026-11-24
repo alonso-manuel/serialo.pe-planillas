@@ -324,6 +324,19 @@ Contadores ya me lo están pidiendo y quiero hacerlo bien. ¿Sistema aparte o to
 #SerialoPlanillas #planillas #contadoresperu #construccioncivil #mineria #rrhh #peru
 ```
 
+## Especial · Un mes de planillas en Serialo (comparativo)
+
+Recorrido real del sistema con una empresa ficticia de 10 trabajadores: novedades, cálculo, cierre, boletas, PLAME y
+AFPnet, con contador de acciones en pantalla. Grabación: `node tools/videos/comparativo.js serialo` →
+`videos/comparativo-serialo.webm`. Voz: `docs/videos/elevenlabs/comparativo-serialo.txt` (los subtítulos salen de ahí).
+
+```text
+Un mes de planillas completo: 8 datos escritos y 10 clics ⏱️
+Escribes las horas extra y las faltas, calculas y cierras. Las 10 boletas salen en un solo PDF, y el PLAME y AFPnet se descargan listos para subir. Ningún archivo armado a mano.
+👉 ¿Cuántos pasos te toma a ti en Excel? Cuéntame en comentarios.
+#SerialoPlanillas #planillas #contadoresperu #plame #afpnet #boletasdepago #excel #peru
+```
+
 ---
 
 ## Consejos para publicar
