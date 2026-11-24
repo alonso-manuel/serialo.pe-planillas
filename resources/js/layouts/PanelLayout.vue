@@ -16,10 +16,15 @@ const superadmin = computed(
 
 const enlaces = [
     { titulo: 'Cuentas', href: rutasPanel.cuentas },
+    { titulo: 'Solicitudes', href: rutasPanel.solicitudes },
     { titulo: 'Comentarios', href: rutasPanel.comentarios },
     { titulo: 'Actividad', href: rutasPanel.actividad },
 ];
-const sinLeer = computed(() => Number(page.props.opinionesSinLeer ?? 0));
+/** Contador junto a cada enlace: comentarios sin leer y solicitudes sin atender. */
+const pendientes = computed<Record<string, number>>(() => ({
+    [rutasPanel.comentarios]: Number(page.props.opinionesSinLeer ?? 0),
+    [rutasPanel.solicitudes]: Number(page.props.solicitudesSinAtender ?? 0),
+}));
 
 function activo(href: string): boolean {
     return page.url === href || page.url.startsWith(href + '/');
@@ -62,11 +67,9 @@ function salir(): void {
                         "
                         >{{ e.titulo
                         }}<span
-                            v-if="
-                                e.href === rutasPanel.comentarios && sinLeer > 0
-                            "
+                            v-if="(pendientes[e.href] ?? 0) > 0"
                             class="ml-1.5 rounded-full bg-primary px-1.5 py-0.5 text-[10px] font-semibold text-primary-foreground tabular-nums"
-                            >{{ sinLeer }}</span
+                            >{{ pendientes[e.href] }}</span
                         ></Link
                     >
                 </nav>

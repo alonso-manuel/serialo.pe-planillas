@@ -5,6 +5,7 @@ use App\Http\Controllers\Panel\ActividadPanelController;
 use App\Http\Controllers\Panel\CuentaController;
 use App\Http\Controllers\Panel\DobleFactorPanelController;
 use App\Http\Controllers\Panel\OpinionPanelController;
+use App\Http\Controllers\Panel\SolicitudPanelController;
 use App\Http\Middleware\ExigirDobleFactorPanel;
 use Illuminate\Support\Facades\Route;
 
@@ -46,6 +47,8 @@ Route::domain((string) config('planillas.dominio_panel'))
                 Route::get('actividad', ActividadPanelController::class)->name('actividad');
                 Route::get('comentarios', [OpinionPanelController::class, 'index'])->name('opiniones.index');
                 Route::patch('comentarios/{opinion}/leida', [OpinionPanelController::class, 'leida'])->name('opiniones.leida');
+                Route::get('solicitudes', [SolicitudPanelController::class, 'index'])->name('solicitudes.index');
+                Route::patch('solicitudes/{solicitud}/atendida', [SolicitudPanelController::class, 'atendida'])->name('solicitudes.atendida');
             });
         });
     });

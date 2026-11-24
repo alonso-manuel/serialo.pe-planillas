@@ -1,0 +1,45 @@
+---
+import Base from '../layouts/Base.astro';
+import { WHATSAPP_VISIBLE } from '../datos';
+---
+
+<Base
+    titulo="Privacidad · Serialo Planillas"
+    descripcion="Cómo usa Serialo.pe los datos que envías desde esta web."
+>
+    <article class="mx-auto max-w-3xl px-4 py-16 leading-relaxed text-slate-700 sm:px-6">
+        <h1 class="text-3xl font-bold tracking-tight text-tinta">Privacidad de esta web</h1>
+        <p class="mt-2 text-sm text-slate-500">Última actualización: 23 de noviembre de 2026</p>
+
+        <h2 class="mt-10 text-xl font-semibold text-tinta">Qué datos recogemos</h2>
+        <p class="mt-3">
+            Solo los que escribes en el formulario «Pide tu cuenta de prueba»: tu nombre, el nombre de tu estudio o
+            empresa, tu celular, tu correo y, si los llenas, cuántas empresas o trabajadores manejas y tu mensaje.
+            También guardamos la fecha del envío y la dirección IP desde la que se hizo, para evitar abusos.
+        </p>
+
+        <h2 class="mt-8 text-xl font-semibold text-tinta">Para qué los usamos</h2>
+        <p class="mt-3">
+            Para contactarte, crear tu cuenta de prueba y contarte sobre Serialo Planillas. No los vendemos ni los
+            compartimos con terceros para publicidad.
+        </p>
+
+        <h2 class="mt-8 text-xl font-semibold text-tinta">Cuánto tiempo los guardamos</h2>
+        <p class="mt-3">
+            Mientras exista una conversación comercial contigo. Si nos pides borrarlos, los eliminamos.
+        </p>
+
+        <h2 class="mt-8 text-xl font-semibold text-tinta">Tus derechos</h2>
+        <p class="mt-3">
+            Conforme a la Ley 29733, Ley de Protección de Datos Personales, puedes pedir acceder a tus datos,
+            corregirlos, cancelarlos u oponerte a su uso. Escríbenos por WhatsApp al {WHATSAPP_VISIBLE}.
+        </p>
+
+        <h2 class="mt-8 text-xl font-semibold text-tinta">Los datos de tus trabajadores</h2>
+        <p class="mt-3">
+            Esta página trata solo los datos del formulario. Los datos que registras dentro de Serialo Planillas
+            (trabajadores, remuneraciones, planillas) se rigen por los términos y la política de privacidad del
+            sistema, que aceptas al ingresar a tu cuenta.
+        </p>
+    </article>
+</Base>

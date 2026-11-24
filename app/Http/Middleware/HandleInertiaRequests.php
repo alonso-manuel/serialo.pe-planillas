@@ -3,6 +3,7 @@
 namespace App\Http\Middleware;
 
 use App\Models\Central\Opinion;
+use App\Models\Central\Solicitud;
 use App\Models\Empresa;
 use App\Services\Empresas\EmpresaActiva;
 use App\Services\Licencia\LicenciaActual;
@@ -67,6 +68,8 @@ class HandleInertiaRequests extends Middleware
             'superadmin' => fn () => $request->user('superadmin')?->only(['name', 'email']),
             'opinionesSinLeer' => fn () => $request->user('superadmin') === null ? 0
                 : Opinion::query()->whereNull('leida_en')->count(),
+            'solicitudesSinAtender' => fn () => $request->user('superadmin') === null ? 0
+                : Solicitud::query()->whereNull('atendida_en')->count(),
             // Comentarios sobre el sistema (modo SaaS): la ventana se abre sola una única vez.
             'opinion' => fn () => [
                 'habilitada' => $this->pedidoOpinion->habilitada($user),

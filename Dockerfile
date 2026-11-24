@@ -1,6 +1,6 @@
 # Serialo Planillas en contenedores (modo SaaS en el VPS). Ver docs/docker.md.
 #   app  → PHP-FPM con el código (también corre la cola y el programador)
-#   web  → Nginx interno que sirve /public y pasa PHP a «app»
+#   web  → Nginx interno que sirve /public y pasa PHP a «app»; en el dominio raíz entrega la web pública (sitio/)
 # El TLS y los subdominios *.impulso.cfd los atiende el proxy del servidor, delante de «web».
 
 ARG PHP_VERSION=8.3
@@ -36,7 +36,18 @@ COPY . .
 RUN composer dump-autoload --optimize --classmap-authoritative --no-dev \
     && php artisan package:discover --ansi \
     && npm run build \
-    && rm -rf node_modules
+    && rm -rf node_modules sitio
+
+# ---------------------------------------------------------------- web pública (Astro, estática)
+FROM node:24-bookworm-slim AS sitio
+
+WORKDIR /sitio
+COPY sitio/package.json sitio/package-lock.json ./
+RUN npm ci --no-audit --no-fund
+COPY sitio/ ./
+# Dirección pública de la web (enlaces canónicos y sitemap). Cambiar al pasar a serialo.pe.
+ARG SITIO_URL=https://impulso.cfd
+RUN SITIO_URL=${SITIO_URL} npm run build
 
 # ---------------------------------------------------------------- app (PHP-FPM, cola y programador)
 FROM php-base AS app
@@ -56,3 +67,4 @@ FROM nginx:1.27-alpine AS web
 
 COPY deploy/docker/nginx.conf /etc/nginx/conf.d/default.conf
 COPY --from=build /var/www/html/public /var/www/html/public
+COPY --from=sitio /sitio/dist /var/www/sitio

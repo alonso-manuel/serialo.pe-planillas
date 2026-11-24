@@ -6,6 +6,9 @@
 serialo.env
 !.env.example
 node_modules
+sitio/node_modules
+sitio/dist
+sitio/.astro
 vendor
 public/build
 public/hot

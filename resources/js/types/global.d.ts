@@ -33,6 +33,8 @@ declare module '@inertiajs/core' {
             opinion: { habilitada: boolean; pedir: boolean };
             /** Panel central: comentarios sin leer. */
             opinionesSinLeer: number;
+            /** Panel central: solicitudes de prueba sin atender (web pública). */
+            solicitudesSinAtender: number;
             [key: string]: unknown;
         };
     }

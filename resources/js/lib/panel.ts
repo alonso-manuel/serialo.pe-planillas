@@ -19,4 +19,6 @@ export const rutasPanel = {
     actividad: '/actividad',
     comentarios: '/comentarios',
     comentarioLeido: (id: number) => `/comentarios/${id}/leida`,
+    solicitudes: '/solicitudes',
+    solicitudAtendida: (id: number) => `/solicitudes/${id}/atendida`,
 } as const;

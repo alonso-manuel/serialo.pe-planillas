@@ -11,7 +11,8 @@ use Symfony\Component\HttpFoundation\IpUtils;
 
 /**
  * Modo SaaS: Caddy pregunta aquí antes de emitir el certificado HTTPS de un subdominio (on-demand TLS).
- * 200 = el panel o un estudio que existe; 404 = no (así nadie fuerza certificados para subdominios inventados).
+ * 200 = el panel, la web pública (y su www) o un estudio que existe; 404 = no (así nadie fuerza certificados para
+ * subdominios inventados).
  * Solo atiende a la red interna (Caddy está en la misma red de Docker) para no revelar qué estudios existen.
  */
 class PermisoCertificadoController extends Controller
@@ -23,6 +24,11 @@ class PermisoCertificadoController extends Controller
 
         $dominio = mb_strtolower(trim($request->string('domain')->toString()));
         abort_if($dominio === '', 404);
+
+        $sitio = mb_strtolower((string) config('planillas.dominio_sitio'));
+        if ($sitio !== '' && in_array($dominio, [$sitio, 'www.'.$sitio], true)) {
+            return response('', 200);
+        }
 
         if ($dominio === mb_strtolower((string) config('planillas.dominio_panel'))) {
             return response('', 200);

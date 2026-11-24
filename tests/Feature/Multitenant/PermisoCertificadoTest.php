@@ -30,6 +30,8 @@ class PermisoCertificadoTest extends TestCase
         $this->crearEstudio('garcia', 'admin@garcia.test');
 
         $this->preguntar('admin.localhost')->assertOk();
+        $this->preguntar('impulso.cfd')->assertOk(); // web pública (planillas.dominio_sitio) y su www
+        $this->preguntar('www.impulso.cfd')->assertOk();
         $this->preguntar('garcia.localhost')->assertOk();
         $this->preguntar('GARCIA.localhost')->assertOk();
 

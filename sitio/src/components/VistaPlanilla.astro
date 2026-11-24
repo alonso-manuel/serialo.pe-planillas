@@ -1,0 +1,79 @@
+---
+/** Vista ilustrativa de la planilla del mes (datos ficticios), dibujada en HTML para que se lea nítida en cualquier pantalla. */
+// Montos coherentes entre sí: AFP 10 % + prima 1.37 % (comisión sobre el saldo), ONP 13 %, EsSalud 9 %; nadie llega a la quinta.
+const filas = [
+    ['Chávez Soto, Pedro', 'AFP Prima', '2,026.50', '1,796.09'],
+    ['Huamán Quispe, Rosa', 'ONP', '1,243.00', '1,081.41'],
+    ['Panduro Ríos, Gloria', 'AFP Integra', '2,613.00', '2,315.90'],
+    ['Salas Vega, Luis', 'ONP', '1,800.00', '1,566.00'],
+    ['Torres León, Óscar', 'AFP Habitat', '1,630.00', '1,444.67'],
+];
+---
+
+<div
+    class="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-2xl shadow-marca-900/15"
+    role="img"
+    aria-label="Vista de la planilla de noviembre calculada en Serialo Planillas, con datos ficticios"
+>
+    <div class="flex items-center gap-1.5 border-b border-slate-100 bg-slate-50 px-4 py-2.5">
+        <span class="size-2.5 rounded-full bg-slate-300"></span>
+        <span class="size-2.5 rounded-full bg-slate-300"></span>
+        <span class="size-2.5 rounded-full bg-slate-300"></span>
+        <span class="ml-3 truncate rounded-md bg-white px-3 py-0.5 text-[11px] text-slate-400">
+            tu-estudio.impulso.cfd/periodos
+        </span>
+    </div>
+    <div class="p-4 sm:p-5">
+        <div class="flex flex-wrap items-start justify-between gap-3">
+            <div>
+                <p class="text-[11px] font-medium tracking-wide text-slate-500 uppercase">Distribuidora Pacífico S.A.</p>
+                <p class="text-lg font-semibold">Planilla de noviembre 2026</p>
+            </div>
+            <span class="rounded-full bg-emerald-50 px-2.5 py-1 text-xs font-medium text-emerald-700 ring-1 ring-emerald-200"
+                >Calculada</span
+            >
+        </div>
+        <div class="mt-4 grid grid-cols-3 gap-2 text-center">
+            <div class="rounded-lg bg-marca-50 px-2 py-2">
+                <p class="text-[10px] text-slate-500 uppercase">Trabajadores</p>
+                <p class="font-semibold tabular-nums">5</p>
+            </div>
+            <div class="rounded-lg bg-marca-50 px-2 py-2">
+                <p class="text-[10px] text-slate-500 uppercase">Neto a pagar</p>
+                <p class="font-semibold tabular-nums">S/ 8,204.07</p>
+            </div>
+            <div class="rounded-lg bg-marca-50 px-2 py-2">
+                <p class="text-[10px] text-slate-500 uppercase">EsSalud</p>
+                <p class="font-semibold tabular-nums">S/ 838.13</p>
+            </div>
+        </div>
+        <table class="mt-4 w-full text-left text-xs">
+            <thead class="text-[10px] text-slate-500 uppercase">
+                <tr class="border-b border-slate-100">
+                    <th class="py-1.5 font-medium">Trabajador</th>
+                    <th class="hidden py-1.5 font-medium sm:table-cell">Pensión</th>
+                    <th class="py-1.5 text-right font-medium">Ingresos</th>
+                    <th class="py-1.5 text-right font-medium">Neto</th>
+                </tr>
+            </thead>
+            <tbody>
+                {
+                    filas.map(([nombre, pension, ingresos, neto]) => (
+                        <tr class="border-b border-slate-50 last:border-0">
+                            <td class="py-1.5 pr-2">{nombre}</td>
+                            <td class="hidden py-1.5 text-slate-500 sm:table-cell">{pension}</td>
+                            <td class="py-1.5 text-right tabular-nums">{ingresos}</td>
+                            <td class="py-1.5 text-right font-medium tabular-nums">{neto}</td>
+                        </tr>
+                    ))
+                }
+            </tbody>
+        </table>
+        <div class="mt-4 flex flex-wrap gap-2 text-[11px]">
+            <span class="rounded-md bg-marca-600 px-2.5 py-1 font-medium text-white">Boletas PDF</span>
+            <span class="rounded-md border border-slate-200 px-2.5 py-1 text-slate-600">PLAME</span>
+            <span class="rounded-md border border-slate-200 px-2.5 py-1 text-slate-600">AFPnet</span>
+            <span class="rounded-md border border-slate-200 px-2.5 py-1 text-slate-600">Cerrar periodo</span>
+        </div>
+    </div>
+</div>

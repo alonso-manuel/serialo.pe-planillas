@@ -1,0 +1,174 @@
+---
+/**
+ * Solicitud de cuenta de prueba. Envía a /solicitud (Laravel, mismo dominio): llega al panel central como «Solicitud».
+ * Con JavaScript se envía sin recargar y muestra los errores junto a cada campo; sin JavaScript es un formulario normal
+ * que vuelve a /gracias. El campo «sitio_web» es una trampa para robots: una persona no lo ve ni lo llena.
+ */
+const campo =
+    'mt-1.5 block w-full rounded-lg border border-slate-300 bg-white px-3.5 py-2.5 text-base outline-none placeholder:text-slate-400 focus:border-marca-600 focus:ring-3 focus:ring-marca-600/15';
+---
+
+<form
+    id="formulario-prueba"
+    action="/solicitud"
+    method="post"
+    class="rounded-2xl border border-slate-200 bg-white p-6 shadow-xl shadow-marca-900/5 sm:p-8"
+    novalidate
+>
+    <div class="grid gap-5 sm:grid-cols-2">
+        <div class="sm:col-span-2">
+            <label for="nombre" class="text-sm font-medium">Nombre y apellido</label>
+            <input id="nombre" name="nombre" required maxlength="120" autocomplete="name" class={campo} />
+            <p class="mt-1 hidden text-sm text-red-600" data-error="nombre"></p>
+        </div>
+        <fieldset class="sm:col-span-2">
+            <legend class="text-sm font-medium">¿Para quién es?</legend>
+            <div class="mt-2 grid grid-cols-2 gap-3">
+                <label
+                    class="flex cursor-pointer items-center gap-2.5 rounded-lg border border-slate-300 px-3.5 py-2.5 has-checked:border-marca-600 has-checked:bg-marca-50"
+                >
+                    <input type="radio" name="tipo" value="estudio" checked class="accent-marca-600" />
+                    Estudio contable
+                </label>
+                <label
+                    class="flex cursor-pointer items-center gap-2.5 rounded-lg border border-slate-300 px-3.5 py-2.5 has-checked:border-marca-600 has-checked:bg-marca-50"
+                >
+                    <input type="radio" name="tipo" value="empresa" class="accent-marca-600" />
+                    Empresa
+                </label>
+            </div>
+        </fieldset>
+        <div class="sm:col-span-2">
+            <label for="organizacion" class="text-sm font-medium">Nombre del estudio o de la empresa</label>
+            <input id="organizacion" name="organizacion" required maxlength="150" autocomplete="organization" class={campo} />
+            <p class="mt-1 hidden text-sm text-red-600" data-error="organizacion"></p>
+        </div>
+        <div>
+            <label for="celular" class="text-sm font-medium">Celular</label>
+            <input
+                id="celular"
+                name="celular"
+                type="tel"
+                required
+                maxlength="20"
+                autocomplete="tel"
+                inputmode="tel"
+                placeholder="987 654 321"
+                class={campo}
+            />
+            <p class="mt-1 hidden text-sm text-red-600" data-error="celular"></p>
+        </div>
+        <div>
+            <label for="correo" class="text-sm font-medium">Correo</label>
+            <input id="correo" name="correo" type="email" required maxlength="150" autocomplete="email" class={campo} />
+            <p class="mt-1 hidden text-sm text-red-600" data-error="correo"></p>
+        </div>
+        <div class="sm:col-span-2">
+            <label for="empresas" class="text-sm font-medium"
+                >¿Cuántas empresas o trabajadores manejas? <span class="font-normal text-slate-500">(opcional)</span></label
+            >
+            <input id="empresas" name="empresas" maxlength="60" placeholder="Ej.: 25 empresas, unos 80 trabajadores" class={campo} />
+        </div>
+        <div class="sm:col-span-2">
+            <label for="mensaje" class="text-sm font-medium"
+                >¿Algo que debamos saber? <span class="font-normal text-slate-500">(opcional)</span></label
+            >
+            <textarea id="mensaje" name="mensaje" rows="3" maxlength="1500" class={campo}></textarea>
+            <p class="mt-1 hidden text-sm text-red-600" data-error="mensaje"></p>
+        </div>
+        <div class="absolute -left-[9999px]" aria-hidden="true">
+            <label for="sitio_web">Sitio web</label>
+            <input id="sitio_web" name="sitio_web" tabindex="-1" autocomplete="off" />
+        </div>
+        <div class="sm:col-span-2">
+            <label class="flex items-start gap-2.5 text-sm text-slate-600">
+                <input type="checkbox" name="acepta" value="1" required class="mt-0.5 accent-marca-600" />
+                <span
+                    >Acepto que Serialo.pe use estos datos solo para contactarme sobre Serialo Planillas (<a
+                        href="/privacidad"
+                        class="text-marca-700 underline">política de privacidad</a
+                    >).</span
+                >
+            </label>
+            <p class="mt-1 hidden text-sm text-red-600" data-error="acepta"></p>
+        </div>
+    </div>
+
+    <button
+        type="submit"
+        class="mt-6 w-full rounded-xl bg-marca-600 px-6 py-3.5 font-semibold text-white shadow-lg shadow-marca-600/25 hover:bg-marca-700 disabled:opacity-60"
+    >
+        Solicitar cuenta de prueba
+    </button>
+    <p class="mt-3 hidden rounded-lg bg-red-50 px-3 py-2 text-sm text-red-700" data-error="general" role="alert"></p>
+</form>
+
+<div
+    id="formulario-enviado"
+    class="hidden rounded-2xl border border-emerald-200 bg-white p-8 text-center shadow-xl shadow-marca-900/5"
+    role="status"
+    tabindex="-1"
+>
+    <p class="mx-auto flex size-12 items-center justify-center rounded-full bg-emerald-50 text-2xl text-emerald-600">✓</p>
+    <p class="mt-4 text-xl font-semibold">¡Gracias! Recibimos tu solicitud</p>
+    <p class="mt-2 text-slate-600">
+        Te escribiremos al celular o al correo que nos dejaste para activar tu cuenta de prueba.
+    </p>
+</div>
+
+<script>
+    const formulario = document.getElementById('formulario-prueba') as HTMLFormElement | null;
+    const enviado = document.getElementById('formulario-enviado');
+
+    function limpiarErrores(): void {
+        formulario?.querySelectorAll<HTMLElement>('[data-error]').forEach((el) => {
+            el.textContent = '';
+            el.classList.add('hidden');
+        });
+    }
+
+    function mostrarError(campo: string, mensaje: string): void {
+        const el = formulario?.querySelector<HTMLElement>(`[data-error="${campo}"]`) ??
+            formulario?.querySelector<HTMLElement>('[data-error="general"]');
+        if (el) {
+            el.textContent = mensaje;
+            el.classList.remove('hidden');
+        }
+    }
+
+    formulario?.addEventListener('submit', async (evento) => {
+        evento.preventDefault();
+        limpiarErrores();
+        const boton = formulario.querySelector('button[type="submit"]') as HTMLButtonElement;
+        boton.disabled = true;
+
+        try {
+            const respuesta = await fetch(formulario.action, {
+                method: 'POST',
+                headers: { Accept: 'application/json' },
+                body: new FormData(formulario),
+            });
+
+            if (respuesta.ok) {
+                formulario.classList.add('hidden');
+                enviado?.classList.remove('hidden');
+                enviado?.focus();
+                return;
+            }
+
+            if (respuesta.status === 422) {
+                const datos = (await respuesta.json()) as { errors?: Record<string, string[]> };
+                Object.entries(datos.errors ?? {}).forEach(([campo, mensajes]) => mostrarError(campo, mensajes[0] ?? ''));
+                formulario.querySelector<HTMLElement>('[data-error]:not(.hidden)')?.scrollIntoView({ block: 'center' });
+            } else if (respuesta.status === 429) {
+                mostrarError('general', 'Enviaste varias solicitudes seguidas. Espera un minuto o escríbenos por WhatsApp.');
+            } else {
+                mostrarError('general', 'No pudimos enviar tu solicitud. Inténtalo de nuevo o escríbenos por WhatsApp.');
+            }
+        } catch {
+            mostrarError('general', 'No hay conexión. Revisa tu internet o escríbenos por WhatsApp.');
+        } finally {
+            boton.disabled = false;
+        }
+    });
+</script>

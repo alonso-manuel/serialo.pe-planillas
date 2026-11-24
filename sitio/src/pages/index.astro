@@ -1,0 +1,379 @@
+---
+import Base from '../layouts/Base.astro';
+import FormularioPrueba from '../components/FormularioPrueba.astro';
+import VistaPlanilla from '../components/VistaPlanilla.astro';
+import { enlaceWhatsapp, MENSAJE_DEMO } from '../datos';
+
+const funciones = [
+    {
+        titulo: 'Cálculo de la planilla en lote',
+        texto: 'Remuneraciones, horas extra, faltas, subsidios, AFP u ONP, EsSalud y quinta categoría, de una empresa o de todas a la vez.',
+    },
+    {
+        titulo: 'Boletas en PDF y por correo',
+        texto: 'Boletas de todos los trabajadores en un clic, protegidas con su DNI y con firma digital de la empresa si la tienes.',
+    },
+    {
+        titulo: 'Archivos para SUNAT y AFPnet',
+        texto: 'PLAME (.rem, .jor, .snl, .toc, .4ta, .ps4), planilla de AFPnet y altas y bajas del T-Registro, listos para subir.',
+    },
+    {
+        titulo: 'Gratificaciones y CTS',
+        texto: 'Julio y diciembre con su bonificación extraordinaria; depósitos de mayo y noviembre con la constancia en PDF.',
+    },
+    {
+        titulo: 'Vacaciones y liquidaciones',
+        texto: 'Récord y saldos de vacaciones; liquidación de beneficios sociales con hoja, certificado de trabajo y carta de CTS.',
+    },
+    {
+        titulo: 'Carga masiva desde Excel',
+        texto: 'Trabajadores y asistencia del mes desde una plantilla, con la lista de errores fila por fila antes de guardar.',
+    },
+    {
+        titulo: 'Reportes para gerencia',
+        texto: 'Planilla, resumen, costo laboral, comparativo con el mes anterior, costo por centro de costo y asiento contable.',
+    },
+    {
+        titulo: 'Préstamos y pagos a bancos',
+        texto: 'Préstamos en cuotas que se descuentan solos, adelantos y el archivo de pagos del periodo por banco.',
+    },
+];
+
+const antes = [
+    'Un Excel con macros por cada empresa',
+    'Copiar los datos a mano para el PLAME',
+    'Un solo usuario trabajando a la vez',
+    'Fórmulas que nadie se atreve a tocar',
+];
+const ahora = [
+    'Todas tus empresas en un solo sistema',
+    'Los archivos de SUNAT y AFPnet se generan solos',
+    'Varios asistentes, cada uno con sus empresas',
+    'RMV, UIT y tasas con su fecha de vigencia',
+];
+
+const preguntas = [
+    {
+        p: '¿Tengo que instalar algo?',
+        r: 'No. Serialo Planillas funciona en el navegador, desde la computadora de la oficina o la de tu casa. Cada estudio o empresa tiene su propia dirección y su propia base de datos.',
+    },
+    {
+        p: '¿Cómo se mantiene al día con la norma?',
+        r: 'La RMV, la UIT, las tasas de EsSalud y ONP y las comisiones de cada AFP son parámetros con fecha de vigencia. Cuando cambian, se registra el valor nuevo y los meses anteriores se siguen calculando con el valor de su fecha.',
+    },
+    {
+        p: '¿Qué regímenes laborales maneja?',
+        r: 'Régimen general, pequeña empresa, microempresa y agrario. Dentro de una MYPE también puedes marcar a los trabajadores que conservan el régimen general. Construcción civil y minería no están disponibles todavía.',
+    },
+    {
+        p: '¿Puedo pasar mis trabajadores desde Excel?',
+        r: 'Sí. Descargas la plantilla, la llenas y el sistema te muestra los errores de cada fila antes de guardar. Lo mismo con la asistencia del mes.',
+    },
+    {
+        p: '¿Qué pasa con mis datos?',
+        r: 'Cada cuenta tiene su base de datos separada, con respaldo automático todos los días. El acceso admite doble factor y cada cambio importante queda registrado con quién lo hizo y cuándo.',
+    },
+    {
+        p: '¿Cuánto cuesta?',
+        r: 'Tenemos planes mensuales según el número de empresas y de usuarios. Pide tu cuenta de prueba y te contamos el plan que mejor te queda.',
+    },
+];
+---
+
+<Base
+    titulo="Serialo Planillas · Sistema de planillas para estudios contables y empresas del Perú"
+    descripcion="Calcula la planilla de todas tus empresas, emite boletas en PDF y genera los archivos de PLAME, AFPnet y T-Registro. Hecho para la norma peruana."
+>
+    <!-- Portada -->
+    <section class="relative overflow-hidden bg-gradient-to-b from-marca-50 via-white to-white">
+        <div
+            class="pointer-events-none absolute -top-40 -right-40 size-[32rem] rounded-full bg-celeste/25 blur-3xl"
+            aria-hidden="true"
+        >
+        </div>
+        <div
+            class="relative mx-auto grid max-w-6xl items-center gap-12 px-4 pt-14 pb-16 sm:px-6 md:pt-20 lg:grid-cols-[1.05fr_1fr] lg:gap-10 lg:pb-24"
+        >
+            <div>
+                <p
+                    class="inline-flex items-center gap-2 rounded-full border border-marca-200 bg-white px-3 py-1 text-xs font-medium text-marca-700"
+                >
+                    <span class="size-1.5 rounded-full bg-ambar"></span>
+                    Hecho para la norma laboral peruana
+                </p>
+                <h1 class="mt-5 text-4xl leading-[1.08] font-bold tracking-tight text-balance sm:text-5xl lg:text-[3.4rem]">
+                    La planilla de todas tus empresas, <span class="text-marca-600">en un solo lugar</span>
+                </h1>
+                <p class="mt-5 max-w-xl text-lg text-pretty text-slate-600">
+                    Calcula la planilla del mes, emite las boletas y genera los archivos de PLAME, AFPnet y T-Registro sin
+                    copiar datos a mano. Para estudios contables y empresas.
+                </p>
+                <div class="mt-8 flex flex-col gap-3 sm:flex-row">
+                    <a
+                        href="#prueba"
+                        class="rounded-xl bg-marca-600 px-6 py-3.5 text-center font-semibold text-white shadow-lg shadow-marca-600/25 hover:bg-marca-700"
+                        >Pide tu cuenta de prueba</a
+                    >
+                    <a
+                        href={enlaceWhatsapp(MENSAJE_DEMO)}
+                        rel="noopener"
+                        class="rounded-xl border border-slate-300 bg-white px-6 py-3.5 text-center font-semibold text-tinta hover:border-marca-400 hover:text-marca-700"
+                        >Escríbenos por WhatsApp</a
+                    >
+                </div>
+                <p class="mt-4 text-sm text-slate-500">Cuenta de prueba con empresas y trabajadores ficticios ya cargados.</p>
+            </div>
+            <VistaPlanilla />
+        </div>
+    </section>
+
+    <!-- Formatos oficiales -->
+    <section class="border-y border-slate-200 bg-white">
+        <div
+            class="mx-auto flex max-w-6xl flex-wrap items-center justify-center gap-x-8 gap-y-3 px-4 py-6 text-sm font-medium text-slate-500 sm:px-6"
+        >
+            <span class="text-slate-400">Genera y calcula:</span>
+            <span>PLAME</span><span>AFPnet</span><span>T-Registro</span><span>EsSalud</span><span>ONP y AFP</span><span
+                >Quinta y cuarta categoría</span
+            >
+        </div>
+    </section>
+
+    <!-- Antes y ahora -->
+    <section class="mx-auto max-w-6xl px-4 py-20 sm:px-6">
+        <div class="mx-auto max-w-2xl text-center">
+            <h2 class="text-3xl font-bold tracking-tight text-balance sm:text-4xl">Deja atrás el Excel de cada empresa</h2>
+            <p class="mt-4 text-lg text-slate-600">
+                Las planillas se siguen haciendo con libros llenos de macros, uno por empresa. Funciona, hasta que cambia
+                la RMV, entra un asistente nuevo o hay que presentar el PLAME de treinta empresas el mismo día.
+            </p>
+        </div>
+        <div class="mt-12 grid gap-5 md:grid-cols-2">
+            <div class="rounded-2xl border border-slate-200 bg-slate-50 p-7">
+                <p class="text-sm font-semibold tracking-wide text-slate-500 uppercase">Antes</p>
+                <ul class="mt-5 space-y-3.5">
+                    {
+                        antes.map((t) => (
+                            <li class="flex gap-3 text-slate-600">
+                                <span class="mt-0.5 text-slate-400" aria-hidden="true">✕</span>
+                                {t}
+                            </li>
+                        ))
+                    }
+                </ul>
+            </div>
+            <div class="rounded-2xl border border-marca-200 bg-marca-50 p-7">
+                <p class="text-sm font-semibold tracking-wide text-marca-700 uppercase">Con Serialo Planillas</p>
+                <ul class="mt-5 space-y-3.5">
+                    {
+                        ahora.map((t) => (
+                            <li class="flex gap-3 font-medium">
+                                <span class="mt-0.5 text-marca-600" aria-hidden="true">✓</span>
+                                {t}
+                            </li>
+                        ))
+                    }
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <!-- Funciones -->
+    <section id="funciones" class="scroll-mt-20 bg-slate-50 py-20">
+        <div class="mx-auto max-w-6xl px-4 sm:px-6">
+            <div class="max-w-2xl">
+                <p class="text-sm font-semibold text-marca-600">Funciones</p>
+                <h2 class="mt-2 text-3xl font-bold tracking-tight text-balance sm:text-4xl">
+                    Todo el mes de planillas, de principio a fin
+                </h2>
+                <p class="mt-4 text-lg text-slate-600">
+                    Registras las novedades del mes, calculas, revisas, cierras y presentas. El sistema hace las cuentas
+                    y arma los archivos.
+                </p>
+            </div>
+            <div class="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+                {
+                    funciones.map((f, i) => (
+                        <article class="rounded-2xl border border-slate-200 bg-white p-6">
+                            <span class="flex size-9 items-center justify-center rounded-lg bg-marca-600 text-sm font-bold text-white tabular-nums">
+                                {String(i + 1).padStart(2, '0')}
+                            </span>
+                            <h3 class="mt-4 font-semibold">{f.titulo}</h3>
+                            <p class="mt-2 text-sm leading-relaxed text-slate-600">{f.texto}</p>
+                        </article>
+                    ))
+                }
+            </div>
+        </div>
+    </section>
+
+    <!-- Para estudios y empresas -->
+    <section id="estudios" class="mx-auto max-w-6xl scroll-mt-20 px-4 py-20 sm:px-6">
+        <div class="grid gap-6 lg:grid-cols-2">
+            <div class="rounded-3xl bg-marca-700 p-8 text-white sm:p-10">
+                <p class="text-sm font-semibold text-celeste">Para estudios contables</p>
+                <h2 class="mt-2 text-2xl font-bold sm:text-3xl">Treinta empresas, un solo panel</h2>
+                <ul class="mt-6 space-y-3 text-marca-100">
+                    <li>Cambias de empresa con un clic; cada una con su régimen, sus parámetros y su seguro de salud.</li>
+                    <li>Calculas y exportas el PLAME de todas tus empresas a la vez.</li>
+                    <li>Tus asistentes entran con su propio usuario y solo ven las empresas que les asignas.</li>
+                    <li>El panel del mes te muestra qué empresas faltan calcular o cerrar.</li>
+                </ul>
+            </div>
+            <div class="rounded-3xl border border-slate-200 bg-white p-8 sm:p-10">
+                <p class="text-sm font-semibold text-marca-600">Para empresas</p>
+                <h2 class="mt-2 text-2xl font-bold sm:text-3xl">Tu área de personal, ordenada</h2>
+                <ul class="mt-6 space-y-3 text-slate-600">
+                    <li>La ficha de cada trabajador con su historial, derechohabientes y datos de SUNAT.</li>
+                    <li>Boletas que le llegan por correo a cada trabajador, protegidas con su DNI.</li>
+                    <li>Reportes de costo laboral y por centro de costo para la gerencia.</li>
+                    <li>Gratificaciones, CTS, vacaciones y liquidaciones calculadas con las fechas legales.</li>
+                </ul>
+            </div>
+        </div>
+        <div class="mt-6 rounded-3xl border border-slate-200 bg-slate-50 p-8 sm:p-10">
+            <h3 class="text-xl font-bold">Regímenes laborales</h3>
+            <div class="mt-5 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+                <div>
+                    <p class="font-semibold">General</p>
+                    <p class="mt-1 text-sm text-slate-600">Beneficios completos según el D. Leg. 728.</p>
+                </div>
+                <div>
+                    <p class="font-semibold">Pequeña empresa</p>
+                    <p class="mt-1 text-sm text-slate-600">Gratificación y CTS a la mitad; vacaciones de 15 días.</p>
+                </div>
+                <div>
+                    <p class="font-semibold">Microempresa</p>
+                    <p class="mt-1 text-sm text-slate-600">Sin gratificación ni CTS; EsSalud o SIS.</p>
+                </div>
+                <div>
+                    <p class="font-semibold">Agrario</p>
+                    <p class="mt-1 text-sm text-slate-600">Ley 31110: BETA, prorrateo y EsSalud agrario.</p>
+                </div>
+            </div>
+            <p class="mt-5 text-sm text-slate-600">
+                Dentro de una MYPE puedes marcar a los trabajadores que conservan el régimen general, y el sistema les
+                calcula sus beneficios completos.
+            </p>
+        </div>
+    </section>
+
+    <!-- Seguridad -->
+    <section id="seguridad" class="scroll-mt-20 bg-tinta py-20 text-white">
+        <div class="mx-auto max-w-6xl px-4 sm:px-6">
+            <div class="max-w-2xl">
+                <p class="text-sm font-semibold text-celeste">Seguridad</p>
+                <h2 class="mt-2 text-3xl font-bold tracking-tight text-balance sm:text-4xl">
+                    Los datos de tus trabajadores, protegidos
+                </h2>
+                <p class="mt-4 text-lg text-slate-300">
+                    Una planilla tiene DNI, sueldos y cuentas bancarias. Por eso el sistema se diseñó desde el inicio
+                    pensando en la Ley de Protección de Datos Personales (Ley 29733).
+                </p>
+            </div>
+            <div class="mt-12 grid gap-px overflow-hidden rounded-2xl bg-white/10 sm:grid-cols-2 lg:grid-cols-4">
+                <div class="bg-tinta p-6">
+                    <p class="font-semibold">Base de datos propia</p>
+                    <p class="mt-2 text-sm text-slate-400">Cada cuenta tiene su base separada; nadie más ve tus datos.</p>
+                </div>
+                <div class="bg-tinta p-6">
+                    <p class="font-semibold">Respaldo diario</p>
+                    <p class="mt-2 text-sm text-slate-400">Copia automática todas las noches, que puedes descargar.</p>
+                </div>
+                <div class="bg-tinta p-6">
+                    <p class="font-semibold">Doble factor y passkeys</p>
+                    <p class="mt-2 text-sm text-slate-400">Acceso con un segundo paso o con la huella del dispositivo.</p>
+                </div>
+                <div class="bg-tinta p-6">
+                    <p class="font-semibold">Auditoría</p>
+                    <p class="mt-2 text-sm text-slate-400">Quién creó, cambió o cerró cada cosa, y cuándo.</p>
+                </div>
+            </div>
+            <p class="mt-6 text-sm text-slate-400">
+                Un mes cerrado no se puede modificar sin reabrirlo, y la reapertura queda registrada con su motivo.
+            </p>
+        </div>
+    </section>
+
+    <!-- Cómo empezar -->
+    <section class="mx-auto max-w-6xl px-4 py-20 sm:px-6">
+        <h2 class="text-center text-3xl font-bold tracking-tight sm:text-4xl">Empieza en tres pasos</h2>
+        <ol class="mt-12 grid gap-8 md:grid-cols-3">
+            <li class="text-center">
+                <span
+                    class="mx-auto flex size-12 items-center justify-center rounded-full bg-marca-50 text-lg font-bold text-marca-700"
+                    >1</span
+                >
+                <p class="mt-4 font-semibold">Pide tu cuenta de prueba</p>
+                <p class="mt-2 text-sm text-slate-600">Con el formulario o por WhatsApp. Te llega un correo para crear tu contraseña.</p>
+            </li>
+            <li class="text-center">
+                <span
+                    class="mx-auto flex size-12 items-center justify-center rounded-full bg-marca-50 text-lg font-bold text-marca-700"
+                    >2</span
+                >
+                <p class="mt-4 font-semibold">Practica con datos de ejemplo</p>
+                <p class="mt-2 text-sm text-slate-600">
+                    Tu cuenta trae empresas y trabajadores ficticios con meses ya calculados, y videos cortos en la Guía.
+                </p>
+            </li>
+            <li class="text-center">
+                <span
+                    class="mx-auto flex size-12 items-center justify-center rounded-full bg-marca-50 text-lg font-bold text-marca-700"
+                    >3</span
+                >
+                <p class="mt-4 font-semibold">Carga tus empresas</p>
+                <p class="mt-2 text-sm text-slate-600">
+                    Registra tus empresas con su RUC, sube a tus trabajadores desde Excel y calcula tu primera planilla.
+                </p>
+            </li>
+        </ol>
+    </section>
+
+    <!-- Preguntas -->
+    <section id="preguntas" class="scroll-mt-20 bg-slate-50 py-20">
+        <div class="mx-auto max-w-3xl px-4 sm:px-6">
+            <h2 class="text-center text-3xl font-bold tracking-tight sm:text-4xl">Preguntas frecuentes</h2>
+            <div class="mt-10 divide-y divide-slate-200 rounded-2xl border border-slate-200 bg-white">
+                {
+                    preguntas.map(({ p, r }) => (
+                        <details class="group px-6 py-5">
+                            <summary class="flex cursor-pointer list-none items-center justify-between gap-4 font-semibold">
+                                {p}
+                                <span class="text-xl text-marca-600 transition group-open:rotate-45" aria-hidden="true">
+                                    +
+                                </span>
+                            </summary>
+                            <p class="mt-3 leading-relaxed text-slate-600">{r}</p>
+                        </details>
+                    ))
+                }
+            </div>
+        </div>
+    </section>
+
+    <!-- Prueba -->
+    <section id="prueba" class="scroll-mt-20 bg-gradient-to-b from-white to-marca-50 py-20">
+        <div class="mx-auto grid max-w-6xl gap-12 px-4 sm:px-6 lg:grid-cols-[1fr_1.1fr]">
+            <div>
+                <h2 class="text-3xl font-bold tracking-tight text-balance sm:text-4xl">Pide tu cuenta de prueba</h2>
+                <p class="mt-4 text-lg text-slate-600">
+                    Déjanos tus datos y te creamos una cuenta con datos de ejemplo para que recorras el sistema con
+                    calma. Sin tarjeta y sin compromiso.
+                </p>
+                <ul class="mt-8 space-y-3 text-slate-700">
+                    <li class="flex gap-3"><span class="text-marca-600" aria-hidden="true">✓</span>Te escribimos para activar tu cuenta.</li>
+                    <li class="flex gap-3"><span class="text-marca-600" aria-hidden="true">✓</span>Empresas y trabajadores ficticios ya cargados.</li>
+                    <li class="flex gap-3"><span class="text-marca-600" aria-hidden="true">✓</span>Videos cortos que explican cada módulo.</li>
+                </ul>
+                <a
+                    href={enlaceWhatsapp(MENSAJE_DEMO)}
+                    rel="noopener"
+                    class="mt-8 inline-flex items-center gap-2 font-semibold text-marca-700 hover:underline"
+                    >¿Prefieres WhatsApp? Escríbenos aquí →</a
+                >
+            </div>
+            <FormularioPrueba />
+        </div>
+    </section>
+</Base>

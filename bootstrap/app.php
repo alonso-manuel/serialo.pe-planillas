@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Central\PermisoCertificadoController;
+use App\Http\Controllers\Sitio\SolicitudController;
 use App\Http\Middleware\AsegurarUsuarioActivo;
 use App\Http\Middleware\HandleAppearance;
 use App\Http\Middleware\HandleInertiaRequests;
@@ -25,9 +26,14 @@ return Application::configure(basePath: dirname(__DIR__))
         web: __DIR__.'/../routes/web.php',
         commands: __DIR__.'/../routes/console.php',
         health: '/up',
-        // Sin el grupo «web» (ni sesión ni estudio): la consulta interna de Caddy antes de emitir un certificado.
+        // Sin el grupo «web» (ni sesión ni estudio): la consulta interna de Caddy antes de emitir un certificado
+        // y el formulario de la web pública (sitio/ es estática: no hay sesión ni token CSRF que enviar).
         then: function (): void {
             Route::get('caddy/permitido', PermisoCertificadoController::class)->middleware('throttle:120,1')->name('caddy.permitido');
+            Route::domain((string) config('planillas.dominio_sitio'))
+                ->post('solicitud', [SolicitudController::class, 'store'])
+                ->middleware('throttle:5,1')
+                ->name('sitio.solicitud');
         },
     )
     ->withMiddleware(function (Middleware $middleware): void {

@@ -1,0 +1,43 @@
+@import 'tailwindcss';
+
+/* Marca Serialo: azul del logo, celeste del engranaje y ámbar de acento. */
+@theme {
+    --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif;
+    --color-marca-50: #eef4fc;
+    --color-marca-100: #dbe7f8;
+    --color-marca-200: #b9cff0;
+    --color-marca-400: #5b8fd6;
+    --color-marca-600: #2558a8;
+    --color-marca-700: #1d4686;
+    --color-marca-800: #163565;
+    --color-marca-900: #0f2445;
+    --color-celeste: #7fcbe8;
+    --color-ambar: #f5b301;
+    --color-tinta: #0f1b2d;
+}
+
+html {
+    scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
+}
+
+body {
+    @apply bg-white font-sans text-tinta antialiased;
+}
+
+:focus-visible {
+    outline: 2px solid var(--color-marca-600);
+    outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    html {
+        scroll-behavior: auto;
+    }
+    *,
+    *::before,
+    *::after {
+        animation: none !important;
+        transition: none !important;
+    }
+}

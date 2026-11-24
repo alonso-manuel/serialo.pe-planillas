@@ -13,6 +13,7 @@ use Symfony\Component\HttpFoundation\Response;
  * Modo SaaS (middleware global): antes del enrutamiento decide el contexto de la petición.
  * - Dominio del panel (admin.impulso.cfd): contexto central, con sus propias sesiones.
  * - Subdominio de un estudio (garcia.impulso.cfd): su base; si está suspendido, aviso y nada más.
+ * - Dominio de la web pública (impulso.cfd): contexto central; solo existe su formulario (POST /solicitud).
  * - Cualquier otro (desconocido o central): 404, salvo /up y /caddy/permitido (consulta interna de Caddy).
  * En modo «unica» no hace nada.
  */
@@ -32,6 +33,10 @@ class IdentificarEstudio
             $request->attributes->set(self::ATRIBUTO_PANEL, true);
             config(['session.table' => 'sesiones_panel']);
 
+            return $next($request);
+        }
+
+        if ($request->getHost() === config('planillas.dominio_sitio')) {
             return $next($request);
         }
 

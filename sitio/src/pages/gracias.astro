@@ -1,0 +1,22 @@
+---
+import Base from '../layouts/Base.astro';
+import { enlaceWhatsapp, MENSAJE_DEMO } from '../datos';
+---
+
+<Base titulo="Solicitud recibida · Serialo Planillas" descripcion="Recibimos tu solicitud de cuenta de prueba.">
+    <section class="mx-auto max-w-xl px-4 py-24 text-center sm:px-6">
+        <p class="mx-auto flex size-14 items-center justify-center rounded-full bg-emerald-50 text-3xl text-emerald-600">✓</p>
+        <h1 class="mt-6 text-3xl font-bold tracking-tight">¡Gracias! Recibimos tu solicitud</h1>
+        <p class="mt-4 text-lg text-slate-600">
+            Te escribiremos al celular o al correo que nos dejaste para activar tu cuenta de prueba.
+        </p>
+        <div class="mt-8 flex flex-col justify-center gap-3 sm:flex-row">
+            <a href="/" class="rounded-xl border border-slate-300 px-6 py-3 font-semibold hover:border-marca-400">Volver al inicio</a>
+            <a
+                href={enlaceWhatsapp(MENSAJE_DEMO)}
+                rel="noopener"
+                class="rounded-xl bg-marca-600 px-6 py-3 font-semibold text-white hover:bg-marca-700">Escríbenos por WhatsApp</a
+            >
+        </div>
+    </section>
+</Base>
