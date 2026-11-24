@@ -95,66 +95,97 @@ async function elegirNoviembre(d) {
 }
 
 /* ---------------------------------------------------------------- Serialo */
+// Los subtítulos son, frase por frase, el texto de la voz en off (docs/videos/elevenlabs/comparativo-serialo.txt):
+// se leen de ese archivo para que nunca se desfasen. Cada frase queda en pantalla lo que tarda en decirse
+// (~15 caracteres por segundo, como la voz de ElevenLabs) más su pausa.
+const VOZ = fs
+    .readFileSync(path.resolve(__dirname, '../../docs/videos/elevenlabs/comparativo-serialo.txt'), 'utf8')
+    .split(/\r?\n/)
+    .map((l) => l.trim())
+    .filter((l) => l && !l.startsWith('<break'));
+const duracionFrase = (t) => Math.round(t.length * 66) + 700;
+
+/** Muestra la frase `i` de la voz; las acciones de `mientras` ocurren mientras se dice. */
+async function narrar(d, i, mientras = null) {
+    const inicio = Date.now();
+    await d.sub(VOZ[i], 0);
+    if (mientras) await mientras();
+    const resta = duracionFrase(VOZ[i]) - (Date.now() - inicio);
+    if (resta > 0) await d.espera(resta);
+}
+
 async function serialo(demo) {
     const p = demo.page;
     await demo.ir('/dashboard');
     const d = await preparar(demo, 'Serialo Planillas', '#2558a8');
     await d.escena('Serialo Planillas');
-    await d.sub('Inversiones Ejemplo S.A.C. (ficticia): 10 trabajadores, planilla de noviembre.', 3000);
-
-    await d.clic(p.getByRole('link', { name: 'Periodos' }).first(), 1200);
-    await d.clic(p.getByRole('link', { name: /Noviembre 2026/ }).first(), 1500);
+    await narrar(d, 0); // Así se hace un mes de planillas…
 
     await d.escena('1 · Novedades del mes');
-    await d.sub('Los trabajadores y sus sueldos ya están en el sistema: solo se escriben las novedades del mes.', 3000);
-    for (const n of CASO.novedades) {
-        const campo = p.locator(`input[aria-label^="${n.campo} de ${nombreFila(n.trabajador)}"]`).first();
-        await d.escribir(campo, n.valor);
-        await p.keyboard.press('Enter');
-        await d.espera(500);
-    }
-    await d.page.getByText('Escribe y muévete con').first().click();
-    await p.waitForLoadState('networkidle');
-    await d.espera(1500);
+    await narrar(d, 1, async () => {
+        // Los trabajadores y sus sueldos ya están… solo escribes las novedades.
+        await d.clic(p.getByRole('link', { name: 'Periodos' }).first(), 900);
+        await d.clic(p.getByRole('link', { name: /Noviembre 2026/ }).first(), 1200);
+        for (const n of CASO.novedades) {
+            const campo = p.locator(`input[aria-label^="${n.campo} de ${nombreFila(n.trabajador)}"]`).first();
+            await d.escribir(campo, n.valor);
+            await p.keyboard.press('Enter');
+            await d.espera(400);
+        }
+    });
+    await narrar(d, 2, async () => {
+        // Cada fila se guarda sola.
+        await d.page.getByText('Escribe y muévete con').first().click();
+        await p.waitForLoadState('networkidle');
+    });
 
     await d.escena('2 · Cálculo');
-    await d.clic(p.getByRole('button', { name: /Calcular planilla|Recalcular/ }).first(), 3500);
-    await d.sub('Ingresos, horas extra, faltas, AFP u ONP, EsSalud y neto de los 10 trabajadores.', 3200);
+    await narrar(d, 3, async () => {
+        await d.clic(p.getByRole('button', { name: /Calcular planilla|Recalcular/ }).first(), 2500);
+    });
 
     await d.escena('3 · Cierre');
-    await d.clic(p.getByRole('button', { name: 'Cerrar periodo' }).first(), 1200);
-    await d.clic(p.getByRole('dialog').getByRole('button', { name: 'Cerrar periodo' }), 2500);
+    await narrar(d, 4, async () => {
+        await d.clic(p.getByRole('button', { name: 'Cerrar periodo' }).first(), 1000);
+        await d.clic(p.getByRole('dialog').getByRole('button', { name: 'Cerrar periodo' }), 1500);
+    });
 
     await d.escena('4 · Boletas');
-    await d.sumar('clics');
-    await d.verPdf(p.getByRole('link', { name: /Boletas PDF/ }).first(), { titulo: 'Boletas de noviembre 2026.pdf', paginas: 2 });
-    await d.sub('Las 10 boletas en un solo PDF, una por hoja. También salen en zip o por correo a cada trabajador.', 3400);
+    await narrar(d, 5, async () => {
+        await d.sumar('clics');
+        await d.verPdf(p.getByRole('link', { name: /Boletas PDF/ }).first(), { titulo: 'Boletas de noviembre 2026.pdf', paginas: 2 });
+    });
     await d.cerrarVisor();
 
     await d.escena('5 · PLAME');
-    await d.clic(p.getByRole('link', { name: 'PLAME' }).first(), 1500);
-    await elegirNoviembre(d);
-    const fila = p.locator('tr', { hasText: 'Inversiones Ejemplo' });
-    await d.sumar('clics');
-    const zip = await d.descargar(fila.locator('a, button').filter({ hasText: /Descargar zip/ }).first());
-    await d.verArchivo(zip);
-    await d.sub('Los archivos del PLAME (.rem, .jor, .snl…) con el nombre que pide SUNAT, listos para importar.', 3400);
+    await narrar(d, 6, async () => {
+        await d.clic(p.getByRole('link', { name: 'PLAME' }).first(), 1000);
+        await elegirNoviembre(d);
+        const fila = p.locator('tr', { hasText: 'Inversiones Ejemplo' });
+        await d.sumar('clics');
+        await d.verArchivo(await d.descargar(fila.locator('a, button').filter({ hasText: /Descargar zip/ }).first()));
+    });
     await d.cerrarVisor();
 
     await d.escena('6 · AFPnet');
-    await d.clic(p.getByRole('link', { name: 'AFPnet' }).first(), 1500);
-    await elegirNoviembre(d);
-    const filaAfp = p.locator('tr', { hasText: 'Inversiones Ejemplo' });
-    await d.sumar('clics');
-    const txt = await d.descargar(filaAfp.locator('a, button').filter({ hasText: /Descargar TXT/ }).first());
-    await d.verArchivo(txt);
-    await d.sub('Los 6 afiliados a AFP con su CUSPP y su remuneración asegurable, en el formato de AFPnet.', 3200);
+    await narrar(d, 7, async () => {
+        await d.clic(p.getByRole('link', { name: 'AFPnet' }).first(), 1000);
+        await elegirNoviembre(d);
+        const fila = p.locator('tr', { hasText: 'Inversiones Ejemplo' });
+        await d.sumar('clics');
+        await d.verArchivo(await d.descargar(fila.locator('a, button').filter({ hasText: /Descargar TXT/ }).first()));
+    });
     await d.cerrarVisor();
 
     const cifras = await p.evaluate(() => window.__cmpLeer());
     await d.escena('Listo');
-    await d.sub(`Mes completo: ${cifras.datos} datos escritos y ${cifras.clics} clics. Ningún archivo armado a mano.`, 4500);
+    await narrar(d, 8); // Mes completo: ocho datos escritos, diez clics…
+    await narrar(d, 9); // Eso es Serialo Planillas.
 
+    // La voz dice las cifras en palabras: si cambian, hay que actualizar el texto de ElevenLabs.
+    if (cifras.datos !== 8 || cifras.clics !== 10) {
+        console.warn(`⚠ Las cifras cambiaron (${cifras.datos} datos, ${cifras.clics} clics): actualiza comparativo-serialo.txt`);
+    }
     fs.writeFileSync(path.join(SALIDA, 'comparativo-serialo-cifras.json'), JSON.stringify(cifras, null, 4));
 }
 
