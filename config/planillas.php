@@ -11,6 +11,8 @@ return [
     // Solo SaaS: dirección de cada estudio y dominio del panel central (superadmin).
     'url_estudio' => env('PLANILLAS_URL_ESTUDIO', 'https://{estudio}.impulso.cfd'),
     'dominio_panel' => env('PLANILLAS_DOMINIO_PANEL', 'admin.impulso.cfd'),
+    // Web pública (sitio/, estática): Nginx la entrega en este dominio y en www.; Laravel solo atiende su formulario.
+    'dominio_sitio' => env('PLANILLAS_DOMINIO_SITIO', 'impulso.cfd'),
 
     /*
     | Solo SaaS: planes que propone el panel al crear una cuenta (se pueden ajustar por cuenta).
@@ -64,7 +66,7 @@ return [
     | Versión del sistema (se muestra al pie de cada página). Se sube en cada despliegue con cambios del sistema, junto
     | con la etiqueta de git (vX.Y.Z) y la entrada en CHANGELOG.md. Regla en docs/manual-desarrollador.md, sección 7.
     */
-    'version' => '1.2.0',
+    'version' => '1.3.0',
 
     /*
     | Beta pública: etiqueta «Beta» junto al nombre del sistema y sección de beta en los términos. Terminó con la

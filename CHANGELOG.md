@@ -7,6 +7,13 @@ Cómo se numera (`MAYOR.MENOR.PARCHE`): **PARCHE** solo correcciones; **MENOR** 
 **MAYOR** un cambio grande que obliga a adaptarse. Una versión por despliegue. Detalle en
 `docs/manual-desarrollador.md`, sección 7.
 
+## 1.3.0 — 24/11/2026
+
+**Nuevo**
+
+- **Web de Serialo Planillas** en impulso.cfd: qué hace el sistema, para quién es, seguridad, preguntas frecuentes y
+  un formulario para pedir una cuenta de prueba (o escribir por WhatsApp).
+
 ## 1.2.0 — 23/11/2026
 
 **Nuevo**
